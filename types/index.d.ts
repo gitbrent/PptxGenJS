@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.4.0
+// Type definitions for pptxgenjs 3.7.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -26,6 +26,7 @@ declare class PptxGenJS {
 	readonly OutputType: typeof PptxGenJS.OutputType
 	readonly SchemeColor: typeof PptxGenJS.SchemeColor
 	readonly ShapeType: typeof PptxGenJS.ShapeType
+	readonly PlaceholderType: typeof PptxGenJS.PLACEHOLDER_TYPES
 
 	// Presentation Props
 
@@ -81,57 +82,60 @@ declare class PptxGenJS {
 
 	/**
 	 * Export the current Presentation to stream
+	 * @param {WriteBaseProps} props output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file stream
 	 */
-	stream(): Promise<string | ArrayBuffer | Blob | Uint8Array>
+	stream(props?: PptxGenJS.WriteBaseProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	 * @param {WriteProps} props output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file content in selected type
 	 */
-	write(outputType: PptxGenJS.JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Uint8Array>
+	write(props?: PptxGenJS.WriteProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {string} exportName - file name
+	 * @param {WriteFileProps} props output file properties
+	 * @example pptx.writeFile({ fileName:'CustomerReport.pptx' }) // export presentation as "CustomerReport.pptx"
+	 * @example pptx.writeFile({ fileName:'CustomerReport.pptx', compression:true }) // export presentation as "CustomerReport.pptx" compressed (can save up to 30%)
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(exportName?: string): Promise<string>
+	writeFile(props?: PptxGenJS.WriteFileProps): Promise<string>
 	/**
 	 * Add a new Section to Presentation
-	 * @param {SectionProps} section - section properties
+	 * @param {SectionProps} props section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: PptxGenJS.SectionProps): void
+	addSection(props: PptxGenJS.SectionProps): void
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {AddSlideProps} options - slide options
+	 * @param {AddSlideProps} props slide options
 	 * @returns {Slide} the new Slide
 	 */
-	addSlide(options?: PptxGenJS.AddSlideProps): PptxGenJS.Slide
+	addSlide(props?: PptxGenJS.AddSlideProps): PptxGenJS.Slide
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {string} masterName - master slide name
+	 * @param {string} masterName master slide name
 	 * @returns {Slide} the new Slide
 	 * @deprecated use `addSlide(IAddSlideOptions)`
 	 */
 	addSlide(masterName?: string): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
-	 * @param {PresLayout} layout - an object with user-defined w/h
+	 * @param {PresLayout} layout an object with user-defined w/h
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
 	defineLayout(layout: PptxGenJS.PresLayout): void
 	/**
 	 * Create a new slide master [layout] for the Presentation
-	 * @param {SlideMasterProps} slideMasterOpts - layout definition
+	 * @param {SlideMasterProps} props layout definition
 	 */
 	defineSlideMaster(props: PptxGenJS.SlideMasterProps): void
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-	 * @param {string} eleId - table HTML element ID
-	 * @param {TableToSlidesProps} options - generation options
+	 * @param {string} eleId table HTML element ID
+	 * @param {TableToSlidesProps} props generation options
 	 */
-	tableToSlides(eleId: string, options?: PptxGenJS.TableToSlidesProps): void
+	tableToSlides(eleId: string, props?: PptxGenJS.TableToSlidesProps): void
 }
 
 declare namespace PptxGenJS {
@@ -577,6 +581,7 @@ declare namespace PptxGenJS {
 
 	// @source `core-enums.ts`
 	export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	export type WRITE_OUTPUT_TYPE = JSZIP_OUTPUT_TYPE | 'STREAM'
 	export enum CHART_TYPE {
 		'AREA' = 'area',
 		'BAR' = 'bar',
@@ -612,7 +617,15 @@ declare namespace PptxGenJS {
 		'table' = 'tbl',
 		'media' = 'media',
 	}
+	export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
+
 	export type SHAPE_NAME =
+		| 'accentBorderCallout1'
+		| 'accentBorderCallout2'
+		| 'accentBorderCallout3'
+		| 'accentCallout1'
+		| 'accentCallout2'
+		| 'accentCallout3'
 		| 'actionButtonBackPrevious'
 		| 'actionButtonBeginning'
 		| 'actionButtonBlank'
@@ -626,11 +639,18 @@ declare namespace PptxGenJS {
 		| 'actionButtonReturn'
 		| 'actionButtonSound'
 		| 'arc'
-		| 'wedgeRoundRectCallout'
 		| 'bentArrow'
 		| 'bentUpArrow'
 		| 'bevel'
 		| 'blockArc'
+		| 'borderCallout1'
+		| 'borderCallout2'
+		| 'borderCallout3'
+		| 'bracePair'
+		| 'bracketPair'
+		| 'callout1'
+		| 'callout2'
+		| 'callout3'
 		| 'can'
 		| 'chartPlus'
 		| 'chartStar'
@@ -642,54 +662,49 @@ declare namespace PptxGenJS {
 		| 'cloudCallout'
 		| 'corner'
 		| 'cornerTabs'
-		| 'plus'
 		| 'cube'
 		| 'curvedDownArrow'
-		| 'ellipseRibbon'
 		| 'curvedLeftArrow'
 		| 'curvedRightArrow'
 		| 'curvedUpArrow'
-		| 'ellipseRibbon2'
 		| 'decagon'
 		| 'diagStripe'
 		| 'diamond'
 		| 'dodecagon'
 		| 'donut'
-		| 'bracePair'
-		| 'bracketPair'
 		| 'doubleWave'
 		| 'downArrow'
 		| 'downArrowCallout'
-		| 'ribbon'
-		| 'irregularSeal1'
-		| 'irregularSeal2'
+		| 'ellipse'
+		| 'ellipseRibbon'
+		| 'ellipseRibbon2'
 		| 'flowChartAlternateProcess'
-		| 'flowChartPunchedCard'
 		| 'flowChartCollate'
 		| 'flowChartConnector'
-		| 'flowChartInputOutput'
 		| 'flowChartDecision'
 		| 'flowChartDelay'
-		| 'flowChartMagneticDrum'
 		| 'flowChartDisplay'
 		| 'flowChartDocument'
 		| 'flowChartExtract'
+		| 'flowChartInputOutput'
 		| 'flowChartInternalStorage'
 		| 'flowChartMagneticDisk'
+		| 'flowChartMagneticDrum'
+		| 'flowChartMagneticTape'
 		| 'flowChartManualInput'
 		| 'flowChartManualOperation'
 		| 'flowChartMerge'
 		| 'flowChartMultidocument'
 		| 'flowChartOfflineStorage'
 		| 'flowChartOffpageConnector'
+		| 'flowChartOnlineStorage'
 		| 'flowChartOr'
 		| 'flowChartPredefinedProcess'
 		| 'flowChartPreparation'
 		| 'flowChartProcess'
+		| 'flowChartPunchedCard'
 		| 'flowChartPunchedTape'
-		| 'flowChartMagneticTape'
 		| 'flowChartSort'
-		| 'flowChartOnlineStorage'
 		| 'flowChartSummingJunction'
 		| 'flowChartTerminator'
 		| 'folderCorner'
@@ -701,8 +716,10 @@ declare namespace PptxGenJS {
 		| 'heart'
 		| 'heptagon'
 		| 'hexagon'
+		| 'homePlate'
 		| 'horizontalScroll'
-		| 'triangle'
+		| 'irregularSeal1'
+		| 'irregularSeal2'
 		| 'leftArrow'
 		| 'leftArrowCallout'
 		| 'leftBrace'
@@ -715,22 +732,6 @@ declare namespace PptxGenJS {
 		| 'leftRightUpArrow'
 		| 'leftUpArrow'
 		| 'lightningBolt'
-		| 'borderCallout1'
-		| 'accentCallout1'
-		| 'accentBorderCallout1'
-		| 'callout1'
-		| 'borderCallout2'
-		| 'accentCallout2'
-		| 'accentBorderCallout2'
-		| 'callout2'
-		| 'borderCallout3'
-		| 'accentCallout3'
-		| 'accentBorderCallout3'
-		| 'callout3'
-		| 'borderCallout3'
-		| 'accentCallout3'
-		| 'accentBorderCallout3'
-		| 'callout3'
 		| 'line'
 		| 'lineInv'
 		| 'mathDivide'
@@ -740,33 +741,31 @@ declare namespace PptxGenJS {
 		| 'mathNotEqual'
 		| 'mathPlus'
 		| 'moon'
+		| 'noSmoking'
 		| 'nonIsoscelesTrapezoid'
 		| 'notchedRightArrow'
-		| 'noSmoking'
 		| 'octagon'
-		| 'ellipse'
-		| 'wedgeEllipseCallout'
 		| 'parallelogram'
-		| 'homePlate'
+		| 'pentagon'
 		| 'pie'
 		| 'pieWedge'
 		| 'plaque'
 		| 'plaqueTabs'
+		| 'plus'
 		| 'quadArrow'
 		| 'quadArrowCallout'
 		| 'rect'
-		| 'wedgeRectCallout'
-		| 'pentagon'
+		| 'ribbon'
+		| 'ribbon2'
 		| 'rightArrow'
 		| 'rightArrowCallout'
 		| 'rightBrace'
 		| 'rightBracket'
-		| 'rtTriangle'
-		| 'roundRect'
-		| 'wedgeRoundRectCallout'
 		| 'round1Rect'
 		| 'round2DiagRect'
 		| 'round2SameRect'
+		| 'roundRect'
+		| 'rtTriangle'
 		| 'smileyFace'
 		| 'snip1Rect'
 		| 'snip2DiagRect'
@@ -788,14 +787,17 @@ declare namespace PptxGenJS {
 		| 'swooshArrow'
 		| 'teardrop'
 		| 'trapezoid'
+		| 'triangle'
 		| 'upArrow'
 		| 'upArrowCallout'
 		| 'upDownArrow'
 		| 'upDownArrowCallout'
-		| 'ribbon2'
 		| 'uturnArrow'
 		| 'verticalScroll'
 		| 'wave'
+		| 'wedgeEllipseCallout'
+		| 'wedgeRectCallout'
+		| 'wedgeRoundRectCallout'
 
 	export enum SLIDE_OBJECT_TYPES {
 		'chart' = 'chart',
@@ -883,10 +885,10 @@ declare namespace PptxGenJS {
 		 */
 		data?: string
 	}
-	export interface BackgroundProps extends DataOrPathProps {
+	export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 		/**
 		 * Color (hex format)
-		 * @example 'FF3399'
+		 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 		 */
 		fill?: HexColor
 	}
@@ -900,6 +902,7 @@ declare namespace PptxGenJS {
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
+
 	// used by charts, shape, text
 	export interface BorderProps {
 		/**
@@ -913,6 +916,7 @@ declare namespace PptxGenJS {
 		 * @default '666666'
 		 */
 		color?: HexColor
+
 		// TODO: add `width` - deprecate `pt`
 		/**
 		 * Border size (points)
@@ -937,7 +941,7 @@ declare namespace PptxGenJS {
 	}
 	export interface PlaceholderProps {
 		name: string
-		type: PLACEHOLDER_TYPES
+		type: PLACEHOLDER_TYPE
 		x: Coord
 		y: Coord
 		w: Coord
@@ -994,17 +998,17 @@ declare namespace PptxGenJS {
 		 * @default 0
 		 */
 		transparency?: number
+		/**
+		 * Fill type
+		 * @default 'solid'
+		 */
+		type?: 'none' | 'solid'
 
 		/**
 		 * Transparency (percent)
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
-		/**
-		 * Fill type
-		 * - 'solid' @deprecated v3.3.0
-		 */
-		type?: 'none' | 'solid'
 	}
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
@@ -1036,11 +1040,11 @@ declare namespace PptxGenJS {
 		 */
 		lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeBegin`
+		 * @deprecated v3.3.0 - use `beginArrowType`
 		 */
 		lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeEnd`
+		 * @deprecated v3.3.0 - use `endArrowType`
 		 */
 		lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
@@ -1071,6 +1075,12 @@ declare namespace PptxGenJS {
 		 * @default false
 		 */
 		breakLine?: boolean
+		/**
+		 * Add a soft line-break (shift+enter) before line text content
+		 * @default false
+		 * @since v3.5.0
+		 */
+		softBreakBefore?: boolean
 		/**
 		 * Add standard or custom bullet
 		 * - use `true` for standard bullet
@@ -1170,6 +1180,11 @@ declare namespace PptxGenJS {
 		 */
 		fontSize?: number
 		/**
+		 * Text highlight color (hex format)
+		 * @example 'FFFF00' // yellow
+		 */
+		highlight?: HexColor
+		/**
 		 * italic style
 		 * @default false
 		 */
@@ -1182,10 +1197,37 @@ declare namespace PptxGenJS {
 		 */
 		lang?: string
 		/**
-		 * underline style
-		 * @default false
+		 * tab stops
+		 * - PowerPoint: Paragraph > Tabs > Tab stop position
+		 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
 		 */
-		underline?: boolean
+		tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+		/**
+		 * underline properties
+		 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+		 * @default (none)
+		 */
+		underline?: {
+			style?:
+				| 'dash'
+				| 'dashHeavy'
+				| 'dashLong'
+				| 'dashLongHeavy'
+				| 'dbl'
+				| 'dotDash'
+				| 'dotDashHeave'
+				| 'dotDotDash'
+				| 'dotDotDashHeavy'
+				| 'dotted'
+				| 'dottedHeavy'
+				| 'heavy'
+				| 'none'
+				| 'sng'
+				| 'wavy'
+				| 'wavyDbl'
+				| 'wavyHeavy'
+			color?: Color
+		}
 		/**
 		 * vertical alignment
 		 * @default 'top'
@@ -1227,9 +1269,29 @@ declare namespace PptxGenJS {
 			 * Image height
 			 */
 			h: number
+			/**
+			 * Area horizontal position related to the image
+			 * - Values: 0-n
+			 * - `crop` only
+			 */
 			x?: number
+			/**
+			 * Area vertical position related to the image
+			 * - Values: 0-n
+			 * - `crop` only
+			 */
 			y?: number
 		}
+		/**
+		 * Flip horizontally?
+		 * @default false
+		 */
+		flipH?: boolean
+		/**
+		 * Flip vertical?
+		 * @default false
+		 */
+		flipV?: boolean
 	}
 	/**
 	 * Add media (audio/video) to slide
@@ -1265,6 +1327,22 @@ declare namespace PptxGenJS {
 		 */
 		align?: HAlign
 		/**
+		 * Radius (only for pptx.shapes.PIE, pptx.shapes.ARC, pptx.shapes.BLOCK_ARC)
+		 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
+		 * - values: [0-359, 0-359]
+		 * @since v3.4.0
+		 * @default [270, 0]
+		 */
+		angleRange?: [number, number]
+		/**
+		 * Radius (only for pptx.shapes.BLOCK_ARC)
+		 * - You have to setup the angleRange values too
+		 * - values: 0.0-1.0
+		 * @since v3.4.0
+		 * @default 0.5
+		 */
+		arcThicknessRatio?: number
+		/**
 		 * Shape fill color properties
 		 * @example { color:'FF0000' } // hex string (red)
 		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
@@ -1291,16 +1369,16 @@ declare namespace PptxGenJS {
 		 */
 		line?: ShapeLineProps
 		/**
-		 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
-		 * - values: 0-180(TODO:values?)
+		 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+		 * - values: 0.0 to 1.0
 		 * @default 0
 		 */
 		rectRadius?: number
 		/**
-		 * Image rotation (degrees)
+		 * Rotation (degrees)
 		 * - range: -360 to 360
 		 * @default 0
-		 * @example 180 // rotate image 180 degrees
+		 * @example 180 // rotate 180 degrees
 		 */
 		rotate?: number
 		/**
@@ -1337,6 +1415,9 @@ declare namespace PptxGenJS {
 	// tables =========================================================================================
 
 	export interface TableToSlidesProps extends TableProps {
+		//_arrObjTabHeadRows?: TableRow[]
+		//_masterSlide?: SlideLayout
+
 		/**
 		 * Add an image to slide(s) created during autopaging
 		 */
@@ -1448,8 +1529,9 @@ declare namespace PptxGenJS {
 		colspan?: number
 		/**
 		 * Fill color
-		 * @example 'FF0000' // hex string (red)
-		 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 		 */
 		fill?: ShapeFillProps
@@ -1464,6 +1546,8 @@ declare namespace PptxGenJS {
 		rowspan?: number
 	}
 	export interface TableProps extends PositionProps, TextBaseProps {
+		//_arrObjTabHeadRows?: TableRow[]
+
 		/**
 		 * Whether to enable auto-paging
 		 * - auto-paging creates new slides as content overflows a slide
@@ -1523,6 +1607,9 @@ declare namespace PptxGenJS {
 		colW?: number | number[]
 		/**
 		 * Cell background color
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1572,6 +1659,7 @@ declare namespace PptxGenJS {
 	}
 
 	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
+		baseline?: number
 		/**
 		 * Character spacing
 		 */
@@ -1584,7 +1672,7 @@ declare namespace PptxGenJS {
 		 * - 'shrink' = Shrink text on overflow
 		 * - 'resize' = Resize shape to fit text
 		 *
-		 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+		 * **Note** 'shrink' and 'resize' only take effect after editing text/resize shape.
 		 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 		 *
 		 * There is no way for this library to trigger that behavior, sorry.
@@ -1592,6 +1680,12 @@ declare namespace PptxGenJS {
 		 * @default "none"
 		 */
 		fit?: 'none' | 'shrink' | 'resize'
+		/**
+		 * Shape fill
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+		 */
 		fill?: ShapeFillProps
 		/**
 		 * Flip shape horizontally?
@@ -1609,13 +1703,38 @@ declare namespace PptxGenJS {
 		inset?: number
 		isTextBox?: boolean
 		line?: ShapeLineProps
+		/**
+		 * Line spacing (pt)
+		 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Exactly"
+		 * @example 28 // 28pt
+		 */
 		lineSpacing?: number
+		/**
+		 * line spacing multiple (percent)
+		 * - range: 0.0-9.99
+		 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Multiple"
+		 * @example 1.5 // 1.5X line spacing
+		 * @since v3.5.0
+		 */
+		lineSpacingMultiple?: number
 		margin?: Margin
 		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
 		paraSpaceBefore?: number
 		placeholder?: string
-		rotate?: number // (degree * 60,000)
+		/**
+		 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+		 * - values: 0.0 to 1.0
+		 * @default 0
+		 */
+		rectRadius?: number
+		/**
+		 * Rotation (degrees)
+		 * - range: -360 to 360
+		 * @default 0
+		 * @example 180 // rotate 180 degrees
+		 */
+		rotate?: number
 		/**
 		 * Whether to enable right-to-left mode
 		 * @default false
@@ -1623,10 +1742,9 @@ declare namespace PptxGenJS {
 		rtlMode?: boolean
 		shadow?: ShadowProps
 		shape?: SHAPE_NAME
-		strike?: boolean
+		strike?: boolean | 'dblStrike' | 'sngStrike'
 		subscript?: boolean
 		superscript?: boolean
-		underline?: boolean
 		valign?: VAlign
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		/**
@@ -1638,29 +1756,29 @@ declare namespace PptxGenJS {
 
 		/**
 		 * Whather "Fit to Shape?" is enabled
-		 * @deprecated v3.3.0 - use `textFit`
+		 * @deprecated v3.3.0 - use `fit`
 		 */
 		autoFit?: boolean
 		/**
 		 * Whather "Shrink Text on Overflow?" is enabled
-		 * @deprecated v3.3.0 - use `textFit`
+		 * @deprecated v3.3.0 - use `fit`
 		 */
 		shrinkText?: boolean
 		/**
 		 * Dash type
-		 * @deprecated v3.3.0 - use `dashType`
+		 * @deprecated v3.3.0 - use `line.dashType`
 		 */
 		lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeBegin`
+		 * @deprecated v3.3.0 - use `line.beginArrowType`
 		 */
 		lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
-		 * @deprecated v3.3.0 - use `line.size`
+		 * @deprecated v3.3.0 - use `line.width`
 		 */
 		lineSize?: number
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeEnd`
+		 * @deprecated v3.3.0 - use `line.endArrowType`
 		 */
 		lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	}
@@ -1696,13 +1814,6 @@ declare namespace PptxGenJS {
 		 * Gridline style
 		 */
 		style?: 'solid' | 'dash' | 'dot' | 'none'
-	}
-	export interface IChartTitleOpts extends TextBaseProps {
-		color?: Color
-		rotate?: number
-		title: string
-		titleAlign?: string // TODO: values
-		titlePos?: { x: number; y: number }
 	}
 	export interface IChartMulti {
 		type: CHART_NAME
@@ -1754,11 +1865,15 @@ declare namespace PptxGenJS {
 		catAxisLabelColor?: string
 		catAxisLabelFontBold?: boolean
 		catAxisLabelFontFace?: string
+		catAxisLabelFontItalic?: boolean
 		catAxisLabelFontSize?: number
 		catAxisLabelFrequency?: string
 		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		catAxisLabelRotate?: number
+		catAxisLineColor?: string
 		catAxisLineShow?: boolean
+		catAxisLineSize?: number
+		catAxisLineStyle?: 'solid' | 'dash' | 'dot'
 		catAxisMajorTickMark?: ChartAxisTickMark
 		catAxisMajorTimeUnit?: string
 		catAxisMajorUnit?: number
@@ -1767,7 +1882,7 @@ declare namespace PptxGenJS {
 		catAxisMinorTimeUnit?: string
 		catAxisMinorUnit?: string
 		catAxisMinVal?: number
-		catAxisOrientation?: 'minMax' | 'minMax'
+		catAxisOrientation?: 'minMax'
 		catAxisTitle?: string
 		catAxisTitleColor?: string
 		catAxisTitleFontFace?: string
@@ -1775,6 +1890,10 @@ declare namespace PptxGenJS {
 		catAxisTitleRotate?: number
 		catGridLine?: OptsChartGridLine
 		catLabelFormatCode?: string
+		/**
+		 * Whether data should use secondary category axis (instead of primary)
+		 * @default false
+		 */
 		secondaryCatAxis?: boolean
 		showCatAxisTitle?: boolean
 	}
@@ -1782,10 +1901,13 @@ declare namespace PptxGenJS {
 		serAxisBaseTimeUnit?: string
 		serAxisHidden?: boolean
 		serAxisLabelColor?: string
+		serAxisLabelFontBold?: boolean
 		serAxisLabelFontFace?: string
+		serAxisLabelFontItalic?: boolean
 		serAxisLabelFontSize?: number
 		serAxisLabelFrequency?: string
 		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		serAxisLineColor?: string
 		serAxisLineShow?: boolean
 		serAxisMajorTimeUnit?: string
 		serAxisMajorUnit?: number
@@ -1802,6 +1924,10 @@ declare namespace PptxGenJS {
 		showSerAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisVal {
+		/**
+		 * Whether data should use secondary value axis (instead of primary)
+		 * @default false
+		 */
 		secondaryValAxis?: boolean
 		showValAxisTitle?: boolean
 		/**
@@ -1815,17 +1941,27 @@ declare namespace PptxGenJS {
 		valAxisLabelColor?: string
 		valAxisLabelFontBold?: boolean
 		valAxisLabelFontFace?: string
+		valAxisLabelFontItalic?: boolean
 		valAxisLabelFontSize?: number
 		valAxisLabelFormatCode?: string
 		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		valAxisLabelRotate?: number
+		valAxisLineColor?: string
 		valAxisLineShow?: boolean
+		valAxisLineSize?: number
+		valAxisLineStyle?: 'solid' | 'dash' | 'dot'
+		/**
+		 * PowerPoint: Format Axis > Axis Options > Logarithmic scale - Base
+		 * - range: 2-99
+		 * @since v3.5.0
+		 */
+		valAxisLogScaleBase?: number
 		valAxisMajorTickMark?: ChartAxisTickMark
 		valAxisMajorUnit?: number
 		valAxisMaxVal?: number
 		valAxisMinorTickMark?: ChartAxisTickMark
 		valAxisMinVal?: number
-		valAxisOrientation?: 'minMax' | 'minMax'
+		valAxisOrientation?: 'minMax'
 		valAxisTitle?: string
 		valAxisTitleColor?: string
 		valAxisTitleFontFace?: string
@@ -1848,7 +1984,6 @@ declare namespace PptxGenJS {
 		barGapDepthPct?: number
 		barGapWidthPct?: number
 		barGrouping?: string
-		valueBarColors?: string[]
 	}
 	export interface IChartPropsChartDoughnut {
 		dataNoEffects?: boolean
@@ -1865,6 +2000,14 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartPie {
 		dataNoEffects?: boolean
+		/**
+		 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+		 * - angle (degrees)
+		 * - range: 0-359
+		 * @since v3.4.0
+		 * @default 0
+		 */
+		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
 		radarStyle?: 'standard' | 'marker' | 'filled'
@@ -1874,6 +2017,7 @@ declare namespace PptxGenJS {
 		dataLabelColor?: string
 		dataLabelFontBold?: boolean
 		dataLabelFontFace?: string
+		dataLabelFontItalic?: boolean
 		dataLabelFontSize?: number
 		/**
 		 * Data label format code
@@ -1883,7 +2027,7 @@ declare namespace PptxGenJS {
 		 */
 		dataLabelFormatCode?: string
 		dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd'
 	}
 	export interface IChartPropsDataTable {
 		dataTableFontSize?: number
@@ -1907,9 +2051,10 @@ declare namespace PptxGenJS {
 		legendFontSize?: number
 		legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 	}
-	export interface IChartPropsTitle {
+	export interface IChartPropsTitle extends TextBaseProps {
 		title?: string
 		titleAlign?: string
+		titleBold?: boolean
 		titleColor?: string
 		titleFontFace?: string
 		titleFontSize?: number
@@ -1931,7 +2076,13 @@ declare namespace PptxGenJS {
 			IChartPropsLegend,
 			IChartPropsTitle,
 			OptsChartGridLine,
-			PositionProps {}
+			PositionProps {
+		/**
+		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
+		 */
+		altText?: string
+	}
 	export interface ISlideRelChart extends OptsChartData {
 		type: CHART_NAME | IChartMulti[]
 		opts: IChartOpts
@@ -1944,6 +2095,29 @@ declare namespace PptxGenJS {
 
 	// Core
 	// ====
+	export interface WriteBaseProps {
+		/**
+		 * Whether to compress export (can save substantial space, but takes a bit longer to export)
+		 * @default false
+		 * @since v3.5.0
+		 */
+		compression?: boolean
+	}
+	export interface WriteProps extends WriteBaseProps {
+		/**
+		 * Output type
+		 * - values: 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array' | 'STREAM'
+		 * @default 'blob'
+		 */
+		outputType?: WRITE_OUTPUT_TYPE
+	}
+	export interface WriteFileProps extends WriteBaseProps {
+		/**
+		 * Export file name
+		 * @default 'Presentation.pptx'
+		 */
+		fileName?: string
+	}
 	export interface SectionProps {
 		/**
 		 * Section title
@@ -1964,7 +2138,9 @@ declare namespace PptxGenJS {
 		width: number
 		height: number
 	}
-	export interface SlideNumberProps extends PositionProps, TextBaseProps {}
+	export interface SlideNumberProps extends PositionProps, TextBaseProps {
+		margin?: Margin
+	}
 	export interface SlideMasterProps {
 		/**
 		 * Unique name for this master
@@ -1972,7 +2148,23 @@ declare namespace PptxGenJS {
 		title: string
 		margin?: Margin
 		background?: BackgroundProps
-		objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+		objects?: (
+			| { chart: {} }
+			| { image: {} }
+			| { line: {} }
+			| { rect: {} }
+			| { text: TextProps }
+			| {
+					placeholder: {
+						options: PlaceholderProps
+						/**
+						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+						 */
+						text?: string
+					}
+			  }
+		)[]
 		slideNumber?: SlideNumberProps
 
 		/**
@@ -1997,8 +2189,9 @@ declare namespace PptxGenJS {
 		addText: Function
 
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
@@ -2051,8 +2244,9 @@ declare namespace PptxGenJS {
 	 */
 	export class Slide {
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency: 50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

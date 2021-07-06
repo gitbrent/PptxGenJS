@@ -1,34 +1,34 @@
-/*\
-|*|  :: pptxgen.ts ::
-|*|
-|*|  JavaScript framework that creates PowerPoint (pptx) presentations
-|*|  https://github.com/gitbrent/PptxGenJS
-|*|
-|*|  This framework is released under the MIT Public License (MIT)
-|*|
-|*|  PptxGenJS (C) 2015-2020 Brent Ely -- https://github.com/gitbrent
-|*|
-|*|  Some code derived from the OfficeGen project:
-|*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
-|*|
-|*|  Permission is hereby granted, free of charge, to any person obtaining a copy
-|*|  of this software and associated documentation files (the "Software"), to deal
-|*|  in the Software without restriction, including without limitation the rights
-|*|  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-|*|  copies of the Software, and to permit persons to whom the Software is
-|*|  furnished to do so, subject to the following conditions:
-|*|
-|*|  The above copyright notice and this permission notice shall be included in all
-|*|  copies or substantial portions of the Software.
-|*|
-|*|  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-|*|  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-|*|  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-|*|  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-|*|  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-|*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-|*|  SOFTWARE.
-\*/
+/**
+ *  :: pptxgen.ts ::
+ *
+ *  JavaScript framework that creates PowerPoint (pptx) presentations
+ *  https://github.com/gitbrent/PptxGenJS
+ *
+ *  This framework is released under the MIT Public License (MIT)
+ *
+ *  PptxGenJS (C) 2015-present Brent Ely -- https://github.com/gitbrent
+ *
+ *  Some code derived from the OfficeGen project:
+ *  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
 
 /**
  * Units of Measure used in PowerPoint documents
@@ -70,7 +70,6 @@ import {
 	DEF_PRES_LAYOUT_NAME,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
-	JSZIP_OUTPUT_TYPE,
 	OutputType,
 	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
@@ -78,14 +77,27 @@ import {
 	ShapeType,
 	WRITE_OUTPUT_TYPE,
 } from './core-enums'
-import { AddSlideProps, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, SlideNumberProps, TableToSlidesProps } from './core-interfaces'
+import {
+	AddSlideProps,
+	IPresentationProps,
+	PresLayout,
+	PresSlide,
+	SectionProps,
+	SlideLayout,
+	SlideMasterProps,
+	SlideNumberProps,
+	TableToSlidesProps,
+	WriteBaseProps,
+	WriteFileProps,
+	WriteProps,
+} from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.4.0-beta-20201207-2320'
+const VERSION = '3.7.0-beta-20210705-1510'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -446,7 +458,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
-	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
+	private exportPresentation = (props: WriteProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
 		let arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
 		let zip = new JSZip()
@@ -519,15 +531,15 @@ export default class PptxGenJS implements IPresentationProps {
 
 			// E: Wait for Promises (if any) then generate the PPTX file
 			return Promise.all(arrChartPromises).then(() => {
-				if (outputType === 'STREAM') {
+				if (props.outputType === 'STREAM') {
 					// A: stream file
-					return zip.generateAsync({ type: 'nodebuffer' })
-				} else if (outputType) {
+					return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
+				} else if (props.outputType) {
 					// B: Node [fs]: Output type user option or default
-					return zip.generateAsync({ type: outputType })
+					return zip.generateAsync({ type: props.outputType })
 				} else {
 					// C: Browser: Output blob as app/ms-pptx
-					return zip.generateAsync({ type: 'blob' })
+					return zip.generateAsync({ type: 'blob', compression: props.compression ? 'DEFLATE' : 'STORE' })
 				}
 			})
 		})
@@ -537,31 +549,51 @@ export default class PptxGenJS implements IPresentationProps {
 
 	/**
 	 * Export the current Presentation to stream
+	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
-	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return this.exportPresentation('STREAM')
+	stream(props?: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: 'STREAM',
+		})
 	}
 
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	 * @param {WriteProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
-	write(outputType: JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return this.exportPresentation(outputType)
+	write(props?: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		// DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
+		const propsOutpType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: propsOutpType,
+		})
 	}
 
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {string} exportName - file name
+	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(exportName?: string): Promise<string> {
+	writeFile(props?: WriteFileProps | string): Promise<string> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-		let fileName = exportName ? (exportName.toString().toLowerCase().endsWith('.pptx') ? exportName : exportName + '.pptx') : 'Presentation.pptx'
+		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
+		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
+		const propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : ''
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+		let fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx'
 
-		return this.exportPresentation(fs ? 'nodebuffer' : null).then(content => {
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: fs ? 'nodebuffer' : null,
+		}).then(content => {
 			if (fs) {
 				// Node: Output
 				return new Promise<string>((resolve, reject) => {
@@ -690,7 +722,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {SlideMasterProps} props - layout properties
 	 */
 	defineSlideMaster(props: SlideMasterProps) {
-		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+		if (!props.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: SlideLayout = {
 			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
@@ -703,27 +735,20 @@ export default class PptxGenJS implements IPresentationProps {
 			_slideNum: 1000 + this.slideLayouts.length + 1,
 			_slideNumberProps: props.slideNumber || null,
 			_slideObjects: [],
-		}
-
-		// DEPRECATED:
-		if (props.bkgd && !props.background) {
-			props.background = {}
-			if (typeof props.bkgd === 'string') props.background.fill = props.bkgd
-			else {
-				if (props.bkgd.data) props.background.data = props.bkgd.data
-				if (props.bkgd.path) props.background.path = props.bkgd.path
-				if (props.bkgd['src']) props.background.path = props.bkgd['src'] // @deprecated (drop in 4.x)
-			}
-			delete props.bkgd
+			background: props.background || null,
+			bkgd: props.bkgd || null,
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(props, newLayout)
+		genObj.createSlideMaster(props, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
 
-		// STEP 3: Add slideNumber to master slide (if any)
+		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (props.background || props.bkgd) genObj.addBackgroundDefinition(props.background, newLayout)
+
+		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 	}
 

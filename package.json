@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "3.4.0-beta",
+  "version": "3.7.0-beta",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -19,6 +19,7 @@
     "build": "rollup -c",
     "start": "gulp",
     "ship": "gulp ship",
+    "defs": "gulp reactTestDefs",
     "watch": "rollup -cw",
     "doctoc": "./node_modules/doctoc/doctoc.js README.md"
   },
@@ -31,13 +32,15 @@
     "path": false
   },
   "dependencies": {
-    "@types/node": "^14.14.10",
+    "@types/node": "^16.0.0",
     "https": "^1.0.0",
-    "image-size": "^0.9.3",
-    "jszip": "^3.5.0"
+    "image-size": "^1.0.0",
+    "jszip": "^3.6.0"
   },
   "devDependencies": {
-    "doctoc": "^2.0.0",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "doctoc": "^2.0.1",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
@@ -46,9 +49,10 @@
     "gulp-insert": "^0.5.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-uglify": "^3.0.2",
-    "rollup": "^2.34.2",
-    "rollup-plugin-typescript2": "^0.29.0",
-    "typescript": "^4.1.2"
+    "rollup": "^2.52.7",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
   },
   "repository": {
     "type": "git",
