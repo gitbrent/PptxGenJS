@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Alt Text to images [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
 - ### Fixed
+- Background in master template broken (support multiple `background` props) [\#968](https://github.com/gitbrent/PptxGenJS/issues/968) ([viral-sh](https://github.com/viral-sh))
 - Arguments for radius not allowed in TypeScript for rectangles [\#969](https://github.com/gitbrent/PptxGenJS/issues/969) ([ln56b](https://github.com/ln56b))
 ### Chart Updates
 Comprehensive Pull
