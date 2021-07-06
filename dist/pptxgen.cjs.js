@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.0-beta @ 2021-07-06T19:19:47.236Z */
+/* PptxGenJS 3.7.0-beta @ 2021-07-06T20:13:01.932Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2395,7 +2395,8 @@ function genXmlTextBody(slideObj) {
         // Handle cases 1,2
         tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} });
     }
-    else if (!Array.isArray(slideObj.text) && slideObj.text.hasOwnProperty('text')) {
+    else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).indexOf('text') > -1) {
+        //} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
         // Handle case 3
         tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} });
     }
@@ -3595,7 +3596,7 @@ function addShapeDefinition(target, shapeName, opts) {
     // 3: Handle line (lots of deprecated opts)
     if (typeof options.line === 'string') {
         var tmpOpts = newLineOpts;
-        tmpOpts.color = options.line.toString(); // @deprecated `options.line` string (was line color)
+        tmpOpts.color = options.line + ''; // @deprecated `options.line` string (was line color)
         options.line = tmpOpts;
     }
     if (typeof options.lineSize === 'number')
@@ -6167,7 +6168,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.7.0-beta-20210705-1411';
+var VERSION = '3.7.0-beta-20210705-1510';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
