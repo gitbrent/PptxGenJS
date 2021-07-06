@@ -198,43 +198,40 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 	// barGrouping must be handled before data label validation as it can affect valid label positioning
 	if (options._type === CHART_TYPE.AREA) {
-		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-			options.barGrouping = 'standard';
+		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
 	}
 	if (options._type === CHART_TYPE.BAR) {
-        if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-            options.barGrouping = 'clustered';
-    }
-    if (options._type === CHART_TYPE.BAR3D) {
-            if (['clustered', 'stacked','standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-                options.barGrouping = 'standard';
-    }
-    if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
-        if (!options.barGapWidthPct)
-            options.barGapWidthPct = 50;
-    }
+		if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'clustered'
+	}
+	if (options._type === CHART_TYPE.BAR3D) {
+		if (['clustered', 'stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
+	}
+	if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
+		if (!options.barGapWidthPct) options.barGapWidthPct = 50
+	}
 	// Clean up and validate data label positions
-    // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
-    if (options.dataLabelPosition) {
-        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR) delete options.dataLabelPosition 
-        if (options._type === CHART_TYPE.PIE) {
-            if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-        }
-        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
-            if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-        }
-        if (options._type === CHART_TYPE.BAR) {
-            if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr','inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-            }
-            if (['clustered'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr','inBase', 'inEnd','outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-            }
-        }
-    }
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
-    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r';
-	
+	// REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
+	if (options.dataLabelPosition) {
+		if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR)
+			delete options.dataLabelPosition
+		if (options._type === CHART_TYPE.PIE) {
+			if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+		}
+		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+			if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+		}
+		if (options._type === CHART_TYPE.BAR) {
+			if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
+				if (['ctr', 'inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+			}
+			if (['clustered'].indexOf(options.barGrouping || '') < 0) {
+				if (['ctr', 'inBase', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+			}
+		}
+	}
+	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
+	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
+
 	// 3D bar: ST_Shape
 	if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0) options.bar3DShape = 'box'
 	// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
@@ -642,7 +639,7 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	// 3: Handle line (lots of deprecated opts)
 	if (typeof options.line === 'string') {
 		let tmpOpts = newLineOpts
-		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
+		tmpOpts.color = options.line + '' // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
 	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLineProps` now)

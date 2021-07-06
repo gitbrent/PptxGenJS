@@ -1155,7 +1155,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
 		// Handle cases 1,2
 		tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} })
-	} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) {
+	} else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).indexOf('text') > -1) {
+		//} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
 		// Handle case 3
 		tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} })
 	} else if (Array.isArray(slideObj.text)) {
