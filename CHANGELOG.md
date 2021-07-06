@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
-## [3.7.0] - 2021-06-??
+## [3.7.0] - 2021-07-??
 ### Added
 - Alt Text to images [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+- ### Fixed
+- Arguments for radius not allowed in TypeScript for rectangles [\#969](https://github.com/gitbrent/PptxGenJS/issues/969) ([ln56b](https://github.com/ln56b))
 ### Chart Updates
 Comprehensive Pull
 - Multiple Chart Enhancements and Bugfixes [\#938](https://github.com/gitbrent/PptxGenJS/pull/938) ([ReimaFrgos](https://github.com/ReimaFrgos))
