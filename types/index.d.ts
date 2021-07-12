@@ -1372,16 +1372,16 @@ declare namespace PptxGenJS {
 		 */
 		line?: ShapeLineProps
 		/**
-		 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
-		 * - values: 0-180(TODO:values?)
+		 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+		 * - values: 0.0 to 1.0
 		 * @default 0
 		 */
 		rectRadius?: number
 		/**
-		 * Image rotation (degrees)
+		 * Rotation (degrees)
 		 * - range: -360 to 360
 		 * @default 0
-		 * @example 180 // rotate image 180 degrees
+		 * @example 180 // rotate 180 degrees
 		 */
 		rotate?: number
 		/**
@@ -1725,7 +1725,19 @@ declare namespace PptxGenJS {
 		paraSpaceAfter?: number
 		paraSpaceBefore?: number
 		placeholder?: string
-		rotate?: number // (degree * 60,000)
+		/**
+		 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+		 * - values: 0.0 to 1.0
+		 * @default 0
+		 */
+		rectRadius?: number
+		/**
+		 * Rotation (degrees)
+		 * - range: -360 to 360
+		 * @default 0
+		 * @example 180 // rotate 180 degrees
+		 */
+		rotate?: number
 		/**
 		 * Whether to enable right-to-left mode
 		 * @default false

@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.0-beta @ 2021-06-14T11:37:03.803Z */
+/* PptxGenJS 3.7.0-beta @ 2021-07-12T08:01:08.191Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -1375,33 +1375,23 @@ var imageSizingXml = {
 function slideObjectToXml(slide) {
     var strSlideXml = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>';
     var intTableNum = 1;
-    // STEP 1: Add background
-    if (slide.background && slide.background.color) {
+    // STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
+    if (slide._bkgdImgRid) {
+        strSlideXml += "<p:bg><p:bgPr><a:blipFill dpi=\"0\" rotWithShape=\"1\"><a:blip r:embed=\"rId" + slide._bkgdImgRid + "\"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>";
+    }
+    else if (slide.background && slide.background.color) {
         strSlideXml += "<p:bg><p:bgPr>" + genXmlColorSelection(slide.background) + "</p:bgPr></p:bg>";
     }
     else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
         // NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
-        strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>';
+        strSlideXml += "<p:bg><p:bgRef idx=\"1001\"><a:schemeClr val=\"bg1\"/></p:bgRef></p:bg>";
     }
-    // STEP 2: Add background image (using Strech) (if any)
-    if (slide._bkgdImgRid) {
-        // FIXME: We should be doing this in the slideLayout...
-        strSlideXml +=
-            '<p:bg>' +
-                '<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
-                '<a:blip r:embed="rId' +
-                slide._bkgdImgRid +
-                '"><a:lum/></a:blip>' +
-                '<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
-                '<a:effectLst/></p:bgPr>' +
-                '</p:bg>';
-    }
-    // STEP 3: Continue slide by starting spTree node
+    // STEP 2: Continue slide by starting spTree node
     strSlideXml += '<p:spTree>';
     strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>';
     strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>';
     strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
-    // STEP 4: Loop over all Slide.data objects and add them to this slide
+    // STEP 3: Loop over all Slide.data objects and add them to this slide
     slide._slideObjects.forEach(function (slideItemObj, idx) {
         var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide._presLayout), cy = 0;
         var placeholderObj;
@@ -1928,7 +1918,7 @@ function slideObjectToXml(slide) {
                 break;
         }
     });
-    // STEP 5: Add slide numbers (if any) last
+    // STEP 4: Add slide numbers (if any) last
     if (slide._slideNumberProps) {
         // Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
         if (!slide._slideNumberProps.align)
@@ -1993,7 +1983,7 @@ function slideObjectToXml(slide) {
         strSlideXml += "<a:t></a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>";
         strSlideXml += '</p:txBody></p:sp>';
     }
-    // STEP 6: Close spTree and finalize slide XML
+    // STEP 5: Close spTree and finalize slide XML
     strSlideXml += '</p:spTree>';
     strSlideXml += '</p:cSld>';
     // LAST: Return
@@ -2439,7 +2429,8 @@ function genXmlTextBody(slideObj) {
         // Handle cases 1,2
         tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} });
     }
-    else if (!Array.isArray(slideObj.text) && slideObj.text.hasOwnProperty('text')) {
+    else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).indexOf('text') > -1) {
+        //} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
         // Handle case 3
         tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} });
     }
@@ -3286,6 +3277,32 @@ function addChartDefinition(target, type, data, opt) {
     options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
     if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
         options.legendPos = 'r';
+    // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
+    if (options.dataLabelPosition) {
+        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.SUNBURST || options._type === CHART_TYPE.RADAR)
+            delete options.dataLabelPosition;
+        if (options._type === CHART_TYPE.PIE) {
+            if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
+                delete options.dataLabelPosition;
+        }
+        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+            if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0)
+                delete options.dataLabelPosition;
+        }
+        if (options._type === CHART_TYPE.BAR) {
+            if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
+                if (['ctr', 'inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0)
+                    delete options.dataLabelPosition;
+            }
+            if (['clustered'].indexOf(options.barGrouping || '') < 0) {
+                if (['ctr', 'inBase', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
+                    delete options.dataLabelPosition;
+            }
+        }
+    }
+    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
+    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
+        options.legendPos = 'r';
     // 3D bar: ST_Shape
     if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0)
         options.bar3DShape = 'box';
@@ -3676,7 +3693,7 @@ function addShapeDefinition(target, shapeName, opts) {
     // 3: Handle line (lots of deprecated opts)
     if (typeof options.line === 'string') {
         var tmpOpts = newLineOpts;
-        tmpOpts.color = options.line.toString(); // @deprecated `options.line` string (was line color)
+        tmpOpts.color = options.line + ''; // @deprecated `options.line` string (was line color)
         options.line = tmpOpts;
     }
     if (typeof options.lineSize === 'number')
@@ -7077,7 +7094,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.7.0-beta-20210521-2050';
+var VERSION = '3.7.0-beta';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;

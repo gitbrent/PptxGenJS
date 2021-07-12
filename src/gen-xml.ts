@@ -89,35 +89,23 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	let strSlideXml: string = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>'
 	let intTableNum: number = 1
 
-	// STEP 1: Add background
-	if (slide.background && slide.background.color) {
+	// STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
+	if (slide._bkgdImgRid) {
+		strSlideXml += `<p:bg><p:bgPr><a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${slide._bkgdImgRid}"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>`
+	} else if (slide.background && slide.background.color) {
 		strSlideXml += `<p:bg><p:bgPr>${genXmlColorSelection(slide.background)}</p:bgPr></p:bg>`
 	} else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
-		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
+		strSlideXml += `<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>`
 	}
 
-	// STEP 2: Add background image (using Strech) (if any)
-	if (slide._bkgdImgRid) {
-		// FIXME: We should be doing this in the slideLayout...
-		strSlideXml +=
-			'<p:bg>' +
-			'<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
-			'<a:blip r:embed="rId' +
-			slide._bkgdImgRid +
-			'"><a:lum/></a:blip>' +
-			'<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
-			'<a:effectLst/></p:bgPr>' +
-			'</p:bg>'
-	}
-
-	// STEP 3: Continue slide by starting spTree node
+	// STEP 2: Continue slide by starting spTree node
 	strSlideXml += '<p:spTree>'
 	strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>'
 	strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>'
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
-	// STEP 4: Loop over all Slide.data objects and add them to this slide
+	// STEP 3: Loop over all Slide.data objects and add them to this slide
 	slide._slideObjects.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
@@ -675,7 +663,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 	})
 
-	// STEP 5: Add slide numbers (if any) last
+	// STEP 4: Add slide numbers (if any) last
 	if (slide._slideNumberProps) {
 		// Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
 		if (!slide._slideNumberProps.align) slide._slideNumberProps.align = 'left'
@@ -735,7 +723,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 
-	// STEP 6: Close spTree and finalize slide XML
+	// STEP 5: Close spTree and finalize slide XML
 	strSlideXml += '</p:spTree>'
 	strSlideXml += '</p:cSld>'
 
@@ -1202,7 +1190,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
 		// Handle cases 1,2
 		tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} })
-	} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) {
+	} else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).indexOf('text') > -1) {
+		//} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
 		// Handle case 3
 		tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} })
 	} else if (Array.isArray(slideObj.text)) {
