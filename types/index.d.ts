@@ -1370,6 +1370,12 @@ declare namespace PptxGenJS {
 		line?: ShapeLineProps
 		/**
 		 * Points (only for pptx.shapes.CUSTOM_GEOMETRY)
+		 * - type: 'arc'
+		 * - `hR` Shape Arc Height Radius
+		 * - `wR` Shape Arc Width Radius
+		 * - `stAng` Shape Arc Start Angle
+		 * - `swAng` Shape Arc Swing Angle
+		 * @see http://www.datypic.com/sc/ooxml/e-a_arcTo-1.html
 		 * @example [{ x: 0, y: 0 }, { x: 10, y: 10 }] // draw a line between those two points
 		 */
 		points?: Array<
