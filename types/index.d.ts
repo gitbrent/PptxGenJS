@@ -1369,6 +1369,23 @@ declare namespace PptxGenJS {
 		 */
 		line?: ShapeLineProps
 		/**
+		 * Points (only for pptx.shapes.CUSTOM_GEOMETRY)
+		 * - type: 'arc'
+		 * - `hR` Shape Arc Height Radius
+		 * - `wR` Shape Arc Width Radius
+		 * - `stAng` Shape Arc Start Angle
+		 * - `swAng` Shape Arc Swing Angle
+		 * @see http://www.datypic.com/sc/ooxml/e-a_arcTo-1.html
+		 * @example [{ x: 0, y: 0 }, { x: 10, y: 10 }] // draw a line between those two points
+		 */
+		points?: Array<
+			| { x: Coord; y: Coord; moveTo?: boolean }
+			| { x: Coord; y: Coord; curve: { type: 'arc'; hR: Coord; wR: Coord; stAng: number; swAng: number } }
+			| { x: Coord; y: Coord; curve: { type: 'quadratic'; x1: Coord; y1: Coord } }
+			| { x: Coord; y: Coord; curve: { type: 'cubic'; x1: Coord; y1: Coord; x2: Coord; y2: Coord } }
+			| { close: true }
+		>
+		/**
 		 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
 		 * - values: 0.0 to 1.0
 		 * @default 0

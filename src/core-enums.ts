@@ -163,6 +163,7 @@ export enum ShapeType {
 	'curvedLeftArrow' = 'curvedLeftArrow',
 	'curvedRightArrow' = 'curvedRightArrow',
 	'curvedUpArrow' = 'curvedUpArrow',
+	'custGeom' = 'custGeom',
 	'decagon' = 'decagon',
 	'diagStripe' = 'diagStripe',
 	'diamond' = 'diamond',
@@ -357,6 +358,7 @@ export enum SHAPE_TYPE {
 	CURVED_RIGHT_ARROW = 'curvedRightArrow',
 	CURVED_UP_ARROW = 'curvedUpArrow',
 	CURVED_UP_RIBBON = 'ellipseRibbon2',
+	CUSTOM_GEOMETRY = 'custGeom',
 	DECAGON = 'decagon',
 	DIAGONAL_STRIPE = 'diagStripe',
 	DIAMOND = 'diamond',
@@ -552,6 +554,7 @@ export type SHAPE_NAME =
 	| 'curvedLeftArrow'
 	| 'curvedRightArrow'
 	| 'curvedUpArrow'
+	| 'custGeom'
 	| 'decagon'
 	| 'diagStripe'
 	| 'diamond'
