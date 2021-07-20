@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.0-beta @ 2021-07-06T20:13:01.938Z */
+/* PptxGenJS 3.7.0-beta @ 2021-07-20T04:30:29.507Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -189,6 +189,7 @@ var ShapeType;
     ShapeType["curvedLeftArrow"] = "curvedLeftArrow";
     ShapeType["curvedRightArrow"] = "curvedRightArrow";
     ShapeType["curvedUpArrow"] = "curvedUpArrow";
+    ShapeType["custGeom"] = "custGeom";
     ShapeType["decagon"] = "decagon";
     ShapeType["diagStripe"] = "diagStripe";
     ShapeType["diamond"] = "diamond";
@@ -386,6 +387,7 @@ var SHAPE_TYPE;
     SHAPE_TYPE["CURVED_RIGHT_ARROW"] = "curvedRightArrow";
     SHAPE_TYPE["CURVED_UP_ARROW"] = "curvedUpArrow";
     SHAPE_TYPE["CURVED_UP_RIBBON"] = "ellipseRibbon2";
+    SHAPE_TYPE["CUSTOM_GEOMETRY"] = "custGeom";
     SHAPE_TYPE["DECAGON"] = "decagon";
     SHAPE_TYPE["DIAGONAL_STRIPE"] = "diagStripe";
     SHAPE_TYPE["DIAMOND"] = "diamond";
@@ -1391,6 +1393,7 @@ function slideObjectToXml(slide) {
     strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
     // STEP 3: Loop over all Slide.data objects and add them to this slide
     slide._slideObjects.forEach(function (slideItemObj, idx) {
+        var _a;
         var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide._presLayout), cy = 0;
         var placeholderObj;
         var locationAttr = '';
@@ -1697,20 +1700,60 @@ function slideObjectToXml(slide) {
                 strSlideXml += "<a:xfrm" + locationAttr + ">";
                 strSlideXml += "<a:off x=\"" + x + "\" y=\"" + y + "\"/>";
                 strSlideXml += "<a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></a:xfrm>";
-                strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>';
-                if (slideItemObj.options.rectRadius) {
-                    strSlideXml += "<a:gd name=\"adj\" fmla=\"val " + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + "\"/>";
+                if (slideItemObj.shape === 'custGeom') {
+                    strSlideXml += '<a:custGeom><a:avLst />';
+                    strSlideXml += '<a:gdLst>';
+                    strSlideXml += '</a:gdLst>';
+                    strSlideXml += '<a:ahLst />';
+                    strSlideXml += '<a:cxnLst>';
+                    strSlideXml += '</a:cxnLst>';
+                    strSlideXml += '<a:rect l="l" t="t" r="r" b="b" />';
+                    strSlideXml += '<a:pathLst>';
+                    strSlideXml += "<a:path w=\"" + cx + "\" h=\"" + cy + "\">";
+                    (_a = slideItemObj.options.points) === null || _a === void 0 ? void 0 : _a.map(function (point, i) {
+                        if ('curve' in point) {
+                            switch (point.curve.type) {
+                                case 'arc':
+                                    strSlideXml += "<a:arcTo hR=\"" + getSmartParseNumber(point.curve.hR, 'Y', slide._presLayout) + "\" wR=\"" + getSmartParseNumber(point.curve.wR, 'X', slide._presLayout) + "\" stAng=\"" + convertRotationDegrees(point.curve.stAng) + "\" swAng=\"" + convertRotationDegrees(point.curve.swAng) + "\" />";
+                                    break;
+                                case 'cubic':
+                                    strSlideXml += "<a:cubicBezTo>\n\t\t\t\t\t\t\t\t\t<a:pt x=\"" + getSmartParseNumber(point.curve.x1, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout) + "\" />\n\t\t\t\t\t\t\t\t\t<a:pt x=\"" + getSmartParseNumber(point.curve.x2, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.curve.y2, 'Y', slide._presLayout) + "\" />\n\t\t\t\t\t\t\t\t\t<a:pt x=\"" + getSmartParseNumber(point.x, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.y, 'Y', slide._presLayout) + "\" />\n\t\t\t\t\t\t\t\t\t</a:cubicBezTo>";
+                                    break;
+                                case 'quadratic':
+                                    strSlideXml += "<a:quadBezTo>\n\t\t\t\t\t\t\t\t\t<a:pt x=\"" + getSmartParseNumber(point.curve.x1, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout) + "\" />\n\t\t\t\t\t\t\t\t\t<a:pt x=\"" + getSmartParseNumber(point.x, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.y, 'Y', slide._presLayout) + "\" />\n\t\t\t\t\t\t\t\t\t</a:quadBezTo>";
+                                    break;
+                            }
+                        }
+                        else if ('close' in point) {
+                            strSlideXml += "<a:close />";
+                        }
+                        else if (point.moveTo || i === 0) {
+                            strSlideXml += "<a:moveTo><a:pt x=\"" + getSmartParseNumber(point.x, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.y, 'Y', slide._presLayout) + "\" /></a:moveTo>";
+                        }
+                        else {
+                            strSlideXml += "<a:lnTo><a:pt x=\"" + getSmartParseNumber(point.x, 'X', slide._presLayout) + "\" y=\"" + getSmartParseNumber(point.y, 'Y', slide._presLayout) + "\" /></a:lnTo>";
+                        }
+                    });
+                    strSlideXml += '</a:path>';
+                    strSlideXml += '</a:pathLst>';
+                    strSlideXml += '</a:custGeom>';
                 }
-                else if (slideItemObj.options.angleRange) {
-                    for (var i = 0; i < 2; i++) {
-                        var angle = slideItemObj.options.angleRange[i];
-                        strSlideXml += "<a:gd name=\"adj" + (i + 1) + "\" fmla=\"val " + convertRotationDegrees(angle) + "\" />";
+                else {
+                    strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>';
+                    if (slideItemObj.options.rectRadius) {
+                        strSlideXml += "<a:gd name=\"adj\" fmla=\"val " + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + "\"/>";
                     }
-                    if (slideItemObj.options.arcThicknessRatio) {
-                        strSlideXml += "<a:gd name=\"adj3\" fmla=\"val " + Math.round(slideItemObj.options.arcThicknessRatio * 50000) + "\" />";
+                    else if (slideItemObj.options.angleRange) {
+                        for (var i = 0; i < 2; i++) {
+                            var angle = slideItemObj.options.angleRange[i];
+                            strSlideXml += "<a:gd name=\"adj" + (i + 1) + "\" fmla=\"val " + convertRotationDegrees(angle) + "\" />";
+                        }
+                        if (slideItemObj.options.arcThicknessRatio) {
+                            strSlideXml += "<a:gd name=\"adj3\" fmla=\"val " + Math.round(slideItemObj.options.arcThicknessRatio * 50000) + "\" />";
+                        }
                     }
+                    strSlideXml += '</a:avLst></a:prstGeom>';
                 }
-                strSlideXml += '</a:avLst></a:prstGeom>';
                 // Option: FILL
                 strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
                 // shape Type: LINE: line color
@@ -6162,7 +6205,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.7.0-beta-20210705-1510';
+var VERSION = '3.7.0-beta-20210719-2321';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
