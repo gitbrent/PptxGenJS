@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.7.0] - 2021-07-??
 ### Added
 - Alt Text to images [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+- Custom geometry support (freeform) [\#872](https://github.com/gitbrent/PptxGenJS/pull/872) ([apresmoi](https://github.com/apresmoi))
+Resolves:
+-- Custom polygon generation [\#597](https://github.com/gitbrent/PptxGenJS/issues/597) ([hirenj](https://github.com/hirenj))
+-- Is there any way to draw a bell curve shape? [\#946](https://github.com/gitbrent/PptxGenJS/issues/946) ([gurdeep-sourcefuse](https://github.com/gurdeep-sourcefuse))
 - ### Fixed
 - Background in master template broken (support multiple `background` props) [\#968](https://github.com/gitbrent/PptxGenJS/issues/968) ([viral-sh](https://github.com/viral-sh))
 - Arguments for radius not allowed in TypeScript for rectangles [\#969](https://github.com/gitbrent/PptxGenJS/issues/969) ([ln56b](https://github.com/ln56b))
@@ -16,13 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Comprehensive Pull
 - Multiple Chart Enhancements and Bugfixes [\#938](https://github.com/gitbrent/PptxGenJS/pull/938) ([ReimaFrgos](https://github.com/ReimaFrgos))
 Resolves:
-- Using scheme colors and fonts in chart axis labels, axis lines and series labels #858 [robertedjones]
-- dataLabelPosition option for Pie charts #837 kornarakis
-- Bubble chart catAxisMajorUnit not working #747 dscdngnw
-- dataLabelFontBold option not working as expected. #662 belall-shaikh
-- dataLabelPosition is not working in Multi Type Charts #815 Adt-SakshamSethi
-- dataLabelPosition "t" in Bar chart is crashing ppt in latest MS office Power Point #788 jsvishal
-- Setting dataLabelPosition to a line chart causes latest office application to ask for repair #768 artdomg
+-- Using scheme colors and fonts in chart axis labels, axis lines and series labels #858 [robertedjones]
+-- dataLabelPosition option for Pie charts #837 [kornarakis]
+-- Bubble chart catAxisMajorUnit not working #747 [dscdngnw]
+-- dataLabelFontBold option not working as expected. #662 [belall-shaikh]
+-- dataLabelPosition is not working in Multi Type Charts #815 [Adt-SakshamSethi]
+-- dataLabelPosition "t" in Bar chart is crashing ppt in latest MS office Power Point #788 [jsvishal]
+-- Setting dataLabelPosition to a line chart causes latest office application to ask for repair #768 [artdomg]
 
 
 
