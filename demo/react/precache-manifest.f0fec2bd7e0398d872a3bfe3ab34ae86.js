@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f16c9fe8c4ce3a37ed11c78d0df97165",
+    "revision": "4d942d67b07272f2d85e4c11340c1b52",
     "url": "/PptxGenJS/demo/react/index.html"
   },
   {
@@ -8,8 +8,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/PptxGenJS/demo/react/static/css/main.b100e6da.chunk.css"
   },
   {
-    "revision": "ca356a74b42996062d70",
-    "url": "/PptxGenJS/demo/react/static/js/2.577fa7a9.chunk.js"
+    "revision": "9fe8dcfae5fc2c649fdf",
+    "url": "/PptxGenJS/demo/react/static/js/2.cbcf5821.chunk.js"
   },
   {
     "revision": "118c1062d71838aa0e5e",
