@@ -213,7 +213,9 @@ export function table2slides1() {
 	pptx.layout = "LAYOUT_WIDE";
 
 	// STEP 2: Set generated Slide options
-	let objOpts = {};
+	let objOpts = {
+		autoPageCharWeight: -0.2,
+	};
 	//objOpts.verbose = true;
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
