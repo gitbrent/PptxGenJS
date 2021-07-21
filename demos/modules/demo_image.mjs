@@ -40,10 +40,10 @@ function genSlide01(pptx) {
 	// TOP: 1
 	slide.addText("Type: Animated GIF", { x: 0.5, y: 0.6, w: 2.5, h: 0.4, color: "0088CC" });
 	slide.addImage({ x: 1.0, y: 1.1, w: 1.5, h: 1.5, path: IMAGE_PATHS.gifAnimTrippy.path });
-	slide.addText("(use slide Show)", {
-		x: 1.0,
+	slide.addText("(leagacy PPT only animates in slide show)", {
+		x: 0.5,
 		y: 2.7,
-		w: 1.5,
+		w: 2.6,
 		h: 0.3,
 		align: "center",
 		fontSize: 10,
