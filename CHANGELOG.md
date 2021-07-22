@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
+## [3.7.1] - 2021-07-21
+
+### Fixed
+
+- Added missing `altText` prop to ImageProps [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+
 ## [3.7.0] - 2021-07-20
 
 ### Added
