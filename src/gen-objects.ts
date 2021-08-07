@@ -844,7 +844,7 @@ export function addTableDefinition(
 	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
 	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
 
-	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to skip autopaging while here
+	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to unset `autoPage` while here
 	arrRows.forEach(row => {
 		row.forEach((cell, idy) => {
 			// A: Transform cell data if needed
@@ -873,7 +873,8 @@ export function addTableDefinition(
 			// B: Check for fine-grained formatting, disable auto-page when found
 			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
 			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
-			if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+			//if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+			// TODO: FIXME: WIP: 20210807: We cant do this anymore
 		})
 	})
 
