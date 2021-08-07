@@ -693,12 +693,6 @@ export interface TableToSlidesProps extends TableProps {
 	 * - this margin will be across all slides created by auto-paging
 	 */
 	slideMargin?: Margin
-	/**
-	 * DEV TOOL: Verbose Mode (to console)
-	 * - tell the library to provide an almost ridiculous amount of detail during auto-paging calculations
-	 * @default false // obviously
-	 */
-	verbose?: boolean // Undocumented; shows verbose output
 
 	/**
 	 * @deprecated v3.3.0 - use `autoPageRepeatHeader`
@@ -833,6 +827,12 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	 * @default rows of equal height based upon `h`
 	 */
 	rowH?: number | number[]
+	/**
+	 * DEV TOOL: Verbose Mode (to console)
+	 * - tell the library to provide an almost ridiculous amount of detail during auto-paging calculations
+	 * @default false // obviously
+	 */
+	verbose?: boolean // Undocumented; shows verbose output
 
 	/**
 	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
