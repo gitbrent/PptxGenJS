@@ -214,7 +214,7 @@ export function table2slides1() {
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {
-		autoPageCharWeight: -0.2,
+		autoPageCharWeight: -0.4,
 	};
 	//objOpts.verbose = true;
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
