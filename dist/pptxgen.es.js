@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-08T19:46:46.091Z */
+/* PptxGenJS 3.7.1 @ 2021-08-08T22:36:35.935Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -824,55 +824,134 @@ function getNewRelId(target) {
  * PptxGenJS: Table Generation
  */
 /**
- * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
+ * Break cell text into lines based upon table column width (e.g.: Magic Happens Here(tm))
  * @param {TableCell} cell - table cell
  * @param {number} colWidth - table column width
- * @return {string[]} XML
+ * @return {TableRow[]} - cell's text objects grouped into lines
  */
 function parseTextToLines(cell, colWidth) {
     var CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (An approximation of the Golden Ratio)
-    var CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
-    var arrLines = [];
-    var strCurrLine = '';
-    // A: Allow a single space/whitespace as cell text (user-requested feature)
+    (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
+    var inputCells = [];
+    var inputLines = [[]];
+    var parsedLines = [];
+    /**
+     * EX INPUTS: `cell.text`
+     * - string....: "Account Name Column"
+     * - object....: { text:"Account Name Column" }
+     * - object[]..: [{ text:"Account Name", options:{ bold:true } }, { text:" Column" }]
+     * - object[]..: [{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]
+     */
+    /**
+     * EX OUTPUTS:
+     * - string....: [{ text:"Account Name Column" }]
+     * - object....: [{ text:"Account Name Column" }]
+     * - object[]..: [{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]
+     * - object[]..: [{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]
+     */
+    // A: Ensure inputCells is an array of TableCells
     if (cell.text && cell.text.toString().trim().length === 0) {
-        arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' });
-        return arrLines;
+        // Allow a single space/whitespace as cell text (user-requested feature)
+        inputCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' });
     }
-    // B: Remove leading/trailing spaces (support complex-text)
-    var inStr = '';
-    if (typeof cell.text === 'number' || typeof cell.text === 'string') {
-        inStr = (cell.text || '').toString().trim();
+    else if (typeof cell.text === 'number' || typeof cell.text === 'string') {
+        inputCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: (cell.text || '').toString().trim() });
     }
     else if (Array.isArray(cell.text)) {
-        cell.text.forEach(function (obj) {
-            inStr += (obj.text || '').toString().trim();
-            if (obj.options && obj.options.breakLine)
-                inStr += '\n';
-        });
+        inputCells = cell.text;
     }
-    // C: Build line array
-    inStr.split('\n').forEach(function (line) {
-        line.split(' ').forEach(function (word) {
-            if (strCurrLine.length + word.length + 1 < CPL) {
-                strCurrLine += word + ' ';
-            }
-            else {
-                if (strCurrLine)
-                    arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine });
-                strCurrLine = word + ' ';
-            }
-        });
-        // All words for this line have been exhausted, flush buffer to new line, clear line var
-        if (strCurrLine)
-            arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF });
-        strCurrLine = '';
+    // B: Group table cells into lines
+    inputCells.forEach(function (cell) {
+        // EX: `[{ text:"Account Name" }, { text:"Input" }]`
+        // EX: `[{ text:"Account Name\n Input" }]`
+        // EX: `[{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]`
+        if (typeof cell.text === 'string')
+            cell.text.split('\n').forEach(function (textStr) {
+                var currLine = inputLines[inputLines.length - 1];
+                currLine.push({
+                    _type: SLIDE_OBJECT_TYPES.tablecell,
+                    text: textStr,
+                    options: cell.options,
+                });
+                if (cell.options && cell.options.breakLine)
+                    inputLines.push([]);
+            });
     });
+    console.log('\n==================================================');
+    //console.log('inputLines')
+    //console.log(JSON.stringify(inputLines))
+    parsedLines = inputLines; // TODO: Keep going, incorporate `CPL` etc below!!
+    // WIP: CURRENT: ^^^^^
+    //	let textLine = ''
+    //	inputCells.forEach(cell => (textLine += cell.text.toString() + (cell.options && cell.options.breakLine ? '\n' : '')))
+    /*
+    // C: Break cell text into lines based upon CR or length or chars
+    let strCurrLine = ''
+    textLine.split('\n').forEach(line => {
+        line.split(' ').forEach(word => {
+            if (strCurrLine.length + word.length + 1 < CPL) {
+                strCurrLine += word + ' '
+            } else {
+                if (strCurrLine) parsedLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine })
+                strCurrLine = word + ' '
+            }
+        })
+
+        // All words for this line have been exhausted, flush buffer to new line, clear line var
+        if (strCurrLine) {
+            parsedLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF })
+            strCurrLine = ''
+        }
+    })
+
     // D: Remove trailing linebreak
-    arrLines[arrLines.length - 1].text = arrLines[arrLines.length - 1].text.trim();
-    console.log('arrLines:');
-    console.log(JSON.stringify(arrLines)); // TODO: WIP:
-    return arrLines;
+    parsedLines[parsedLines.length - 1].text = (parsedLines[parsedLines.length - 1].text as string).trim()
+*/
+    // B: Done
+    console.log('parsedLines:');
+    console.log(JSON.stringify(parsedLines)); // TODO: WIP:
+    return parsedLines;
+    // OLD BELOW ***********************
+    /*
+        // A: Allow a single space/whitespace as cell text (user-requested feature)
+        if (cell.text && cell.text.toString().trim().length === 0) {
+            arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' })
+            return arrLines
+        }
+
+        // B: Collpase all cells into lines of text (support complex-text)
+        let inStr = ''
+        if (typeof cell.text === 'number' || typeof cell.text === 'string') {
+            inStr = (cell.text || '').toString().trim()
+        } else if (Array.isArray(cell.text)) {
+            cell.text.forEach(obj => {
+                inStr += (obj.text || '').toString().trim()
+                if (obj.options && obj.options.breakLine) inStr += '\n'
+            })
+        }
+
+        // C: Build line array
+        inStr.split('\n').forEach(line => {
+            line.split(' ').forEach(word => {
+                if (strCurrLine.length + word.length + 1 < CPL) {
+                    strCurrLine += word + ' '
+                } else {
+                    if (strCurrLine) arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine })
+                    strCurrLine = word + ' '
+                }
+            })
+
+            // All words for this line have been exhausted, flush buffer to new line, clear line var
+            if (strCurrLine) { arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF }) }
+            strCurrLine = ''
+        })
+
+        // D: Remove trailing linebreak
+        arrLines[arrLines.length - 1].text = (arrLines[arrLines.length - 1].text as string).trim()
+
+        // E: Done
+        return arrLines
+    */
 }
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
@@ -1075,7 +1154,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     console.log("** NEW SLIDE CREATED *****************************************" +
                         (" (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeightEmu / EMU).toFixed(2) + " > " + emuSlideTabH / EMU));
                 // 1: Add a new slide
-                tableRowSlides.push({ rows: [], });
+                tableRowSlides.push({ rows: [] });
                 // 2: Reset current table height for new Slide
                 emuTabCurrH = 0; // This row's emuRowH w/b added below
                 // 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
@@ -1085,8 +1164,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     linesRow.forEach(function (cell) {
                         newRowSlide_1.push({
                             _type: SLIDE_OBJECT_TYPES.tablecell,
-                            //text: cell._lines.join(''), // TODO: WIP:
-                            text: cell._lines,
+                            text: cell._lines.reduce(function (prev, next) { return [].concat(prev, next); }),
                             options: cell.options,
                         });
                     });
@@ -1124,9 +1202,17 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     var rowCell = currSlide_2.rows[currSlide_2.rows.length - 1][idxR];
                     // ORIG: let currText = rowCell.text.toString()
                     // ORIG: WIP: rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
+                    console.log('cell._lines');
+                    console.log(cell._lines);
                     if (Array.isArray(rowCell.text))
-                        rowCell.text.push(cell._lines.shift()); // TODO: What about above? it it handled now??
+                        rowCell.text = rowCell.text.concat(cell._lines.shift()); // TODO: What about above? it it handled now??
                     // TODO: howto add last bit of text
+                    /*
+                    // WIP:
+                    console.log(cell._lines);
+                    console.log(cell._lines.reduce((prev, next) => [].concat(prev, next)));
+                    throw new Error('WTF?!')
+                    */
                     // 2
                     if (cell._lineHeight > maxLineHeightEmu)
                         maxLineHeightEmu = cell._lineHeight;

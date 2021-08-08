@@ -747,13 +747,12 @@ function genSlide08(pptx) {
 	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Complex" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Auto-Paging Using Complex Text Example", options: DEMO_TITLE_OPTS },
-		],
-		BASE_TABLE_OPTS
-	);
+	slide.addText([{ text: "Table Examples: Auto-Paging Using Complex Text Example", options: DEMO_TITLE_TEXTBK }], {
+		x: 0.23,
+		y: 0.13,
+		w: 8,
+		h: 0.4,
+	});
 
 	// ------------
 
@@ -767,10 +766,17 @@ function genSlide08(pptx) {
 		arrRows.push([
 			{ text: idx.toString(), options: { align: "center" } },
 			{ text: name },
-			{
-				text: [{ text: "Title", options: { bold: true, color: "FF0000", breakLine: true } }, { text: strText }],
-			},
+			{ text: [{ text: "Title", options: { bold: true, color: "FF0000", breakLine: true } }, { text: strText }] },
 		]);
 	});
-	slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 8, colW: [1, 1, 6], border: { color: "CFCFCF" }, autoPage: true, verbose: false });
+	slide.addTable(arrRows, {
+		x: 0.5,
+		y: 0.6,
+		w: 8,
+		colW: [1, 1, 6],
+		border: { color: "CFCFCF" },
+		autoPage: true,
+		autoPageRepeatHeader: true,
+		verbose: false,
+	});
 }

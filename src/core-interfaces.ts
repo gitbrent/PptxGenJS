@@ -841,7 +841,10 @@ export interface TableProps extends PositionProps, TextBaseProps {
 }
 export interface TableCell {
 	_type: SLIDE_OBJECT_TYPES.tablecell
-	_lines?: TableCell[] // WIP:
+	/** lines in this cell (autoPage) */
+	_lines?: TableCell[][]
+	/** `text` prop but guaranteed to hold "TableCell[]" */
+	_tableCells?: TableCell[]
 	/** height in EMU */
 	_lineHeight?: number
 	_hmerge?: boolean
