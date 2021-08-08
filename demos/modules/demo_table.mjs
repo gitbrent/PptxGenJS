@@ -752,7 +752,7 @@ function genSlide08(pptx) {
 			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
 			{ text: "Auto-Paging Using Complex Text Example", options: DEMO_TITLE_OPTS },
 		],
-		{ x: 0.5, y: 0.13, w: "90%" }
+		BASE_TABLE_OPTS
 	);
 
 	// ------------
@@ -768,34 +768,9 @@ function genSlide08(pptx) {
 			{ text: idx.toString(), options: { align: "center" } },
 			{ text: name },
 			{
-				text: [{ text: "Title", options: { bold: true, breakLine: true } }, { text: strText }],
+				text: [{ text: "Title", options: { bold: true, color: "FF0000", breakLine: true } }, { text: strText }],
 			},
 		]);
 	});
-	slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 3, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
-
-	slide.addTable([
-		[
-			{
-				text: [
-					{ text: "I am a text object with bullets ", options: { color: "CC0000", bullet: { code: "2605" } } },
-					{ text: "and i am the next text object", options: { color: "00CD00", bullet: { code: "25BA" } } },
-					{ text: "Final text object w/ bullet:true", options: { color: "0000AB", bullet: true } },
-				],
-			},
-			{
-				text: [
-					{ text: "Cell", options: { fontSize: 36, align: "left", color: "8648cd" } },
-					{ text: "#2", options: { fontSize: 60, align: "right", color: "CD0101" } },
-				],
-			},
-			{
-				text: [
-					{ text: "Cell", options: { fontSize: 36, fontFace: "Courier", color: "dd0000", breakLine: true } },
-					{ text: "#", options: { fontSize: 60, color: "8648cd" } },
-					{ text: "3", options: { fontSize: 60, fontFace: "Times", color: "33ccef" } },
-				],
-			},
-		],
-	]);
+	slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 8, colW: [1, 1, 6], border: { color: "CFCFCF" }, autoPage: true, verbose: false });
 }

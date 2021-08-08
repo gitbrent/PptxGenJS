@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-07T17:41:09.367Z */
+/* PptxGenJS 3.7.1 @ 2021-08-08T19:46:46.086Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -841,10 +841,22 @@ function parseTextToLines(cell, colWidth) {
     var arrLines = [];
     var strCurrLine = '';
     // A: Allow a single space/whitespace as cell text (user-requested feature)
-    if (cell.text && cell.text.toString().trim().length === 0)
-        return [' '];
-    // B: Remove leading/trailing spaces
-    var inStr = (cell.text || '').toString().trim();
+    if (cell.text && cell.text.toString().trim().length === 0) {
+        arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' });
+        return arrLines;
+    }
+    // B: Remove leading/trailing spaces (support complex-text)
+    var inStr = '';
+    if (typeof cell.text === 'number' || typeof cell.text === 'string') {
+        inStr = (cell.text || '').toString().trim();
+    }
+    else if (Array.isArray(cell.text)) {
+        cell.text.forEach(function (obj) {
+            inStr += (obj.text || '').toString().trim();
+            if (obj.options && obj.options.breakLine)
+                inStr += '\n';
+        });
+    }
     // C: Build line array
     inStr.split('\n').forEach(function (line) {
         line.split(' ').forEach(function (word) {
@@ -853,17 +865,19 @@ function parseTextToLines(cell, colWidth) {
             }
             else {
                 if (strCurrLine)
-                    arrLines.push(strCurrLine);
+                    arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine });
                 strCurrLine = word + ' ';
             }
         });
         // All words for this line have been exhausted, flush buffer to new line, clear line var
         if (strCurrLine)
-            arrLines.push(strCurrLine.trim() + CRLF);
+            arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF });
         strCurrLine = '';
     });
     // D: Remove trailing linebreak
-    arrLines[arrLines.length - 1] = arrLines[arrLines.length - 1].trim();
+    arrLines[arrLines.length - 1].text = arrLines[arrLines.length - 1].text.trim();
+    console.log('arrLines:');
+    console.log(JSON.stringify(arrLines)); // TODO: WIP:
     return arrLines;
 }
 /**
@@ -883,14 +897,14 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         },
     ];
     if (tabOpts.verbose) {
-        console.log("-- VERBOSE MODE ----------------------------------");
-        console.log(".. (PARAMETERS)");
-        console.log("presLayout.height ......... = " + presLayout.height / EMU);
-        console.log("tabOpts.h ................. = " + tabOpts.h);
-        console.log("tabOpts.w ................. = " + tabOpts.w);
-        console.log("tabOpts.colW .............. = " + tabOpts.colW);
-        console.log("tabOpts.slideMargin ....... = " + (tabOpts.slideMargin || ''));
-        console.log(".. (/PARAMETERS)");
+        console.log('[[VERBOSE MODE]]');
+        console.log('|-- TABLE PROPS -----------------------------------|');
+        console.log("| presLayout.height ......... = " + presLayout.height / EMU);
+        console.log("| tabOpts.h ................. = " + tabOpts.h);
+        console.log("| tabOpts.w ................. = " + tabOpts.w);
+        console.log("| tabOpts.colW .............. = " + tabOpts.colW);
+        console.log("| tabOpts.slideMargin ....... = " + (tabOpts.slideMargin || ''));
+        console.log('|-- CALCULATIONS ----------------------------------|');
     }
     // STEP 1: Calculate margins
     {
@@ -910,7 +924,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin];
         }
         if (tabOpts.verbose)
-            console.log('arrInchMargins ......... = ' + arrInchMargins.toString());
+            console.log('| arrInchMargins ............ = ' + arrInchMargins.toString());
     }
     // STEP 2: Calculate number of columns
     {
@@ -924,7 +938,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1);
         });
         if (tabOpts.verbose)
-            console.log('numCols ................ = ' + numCols);
+            console.log('| numCols ................... = ' + numCols);
     }
     // STEP 3: Calculate tabOpts.w if tabOpts.colW was provided
     if (!tabOpts.w && tabOpts.colW) {
@@ -943,7 +957,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 ? inch2Emu(tabOpts.w)
                 : presLayout.width - inch2Emu((typeof tabOpts.x === 'number' ? tabOpts.x : arrInchMargins[1]) + arrInchMargins[3]);
         if (tabOpts.verbose)
-            console.log('emuSlideTabW (in) ...... = ' + (emuSlideTabW / EMU).toFixed(1));
+            console.log('| emuSlideTabW (in) ......... = ' + (emuSlideTabW / EMU).toFixed(1));
     }
     // STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
     if (!tabOpts.colW || !Array.isArray(tabOpts.colW)) {
@@ -971,17 +985,17 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         var row = tableRows.shift();
         iRow++;
         // A: Row variables
-        var maxLineHeight = 0;
         var linesRow = [];
         var maxCellMarTopEmu = 0;
         var maxCellMarBtmEmu = 0;
+        var maxLineHeightEmu = 0;
         // B: Create new row in data model
         var currSlide = tableRowSlides[tableRowSlides.length - 1];
         var newRowSlide = [];
         row.forEach(function (cell) {
             newRowSlide.push({
-                type: SLIDE_OBJECT_TYPES.tablecell,
-                text: '',
+                _type: SLIDE_OBJECT_TYPES.tablecell,
+                text: [],
                 options: cell.options,
             });
             if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu)
@@ -998,8 +1012,10 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             tabOpts.h && typeof tabOpts.h === 'number'
                 ? tabOpts.h
                 : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0);
-        if (tabOpts.verbose)
-            console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1));
+        if (tabOpts.verbose) {
+            console.log('| emuSlideTabH (in) ......... = ' + (emuSlideTabH / EMU).toFixed(1));
+            console.log('|--------------------------------------------------|\n');
+        }
         // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
         if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
             emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.autoPageSlideStartY + arrInchMargins[2]);
@@ -1025,7 +1041,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 _lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
                     (LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
                     100),
-                text: '',
+                text: [],
                 options: cell.options,
             };
             //if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(2)}`)
@@ -1048,7 +1064,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: maxCellMarTopEmu=" + maxCellMarTopEmu + " / maxCellMarBtmEmu=" + maxCellMarBtmEmu);
         emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
         // G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
-        if (emuTabCurrH + maxLineHeight <= emuSlideTabH)
+        if (emuTabCurrH + maxLineHeightEmu <= emuSlideTabH)
             currSlide.rows.push(newRowSlide);
         /* H: **PAGE DATA SET**
          * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
@@ -1060,14 +1076,12 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
         var _loop_2 = function () {
             // A: Add new Slide if there is no more space to fix 1 new line
-            if (emuTabCurrH + maxLineHeight > emuSlideTabH) {
+            if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
                 if (tabOpts.verbose)
                     console.log("** NEW SLIDE CREATED *****************************************" +
-                        (" (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU));
+                        (" (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeightEmu / EMU).toFixed(2) + " > " + emuSlideTabH / EMU));
                 // 1: Add a new slide
-                tableRowSlides.push({
-                    rows: [],
-                });
+                tableRowSlides.push({ rows: [], });
                 // 2: Reset current table height for new Slide
                 emuTabCurrH = 0; // This row's emuRowH w/b added below
                 // 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
@@ -1076,8 +1090,9 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     var newRowSlide_1 = [];
                     linesRow.forEach(function (cell) {
                         newRowSlide_1.push({
-                            type: SLIDE_OBJECT_TYPES.tablecell,
-                            text: cell._lines.join(''),
+                            _type: SLIDE_OBJECT_TYPES.tablecell,
+                            //text: cell._lines.join(''), // TODO: WIP:
+                            text: cell._lines,
                             options: cell.options,
                         });
                     });
@@ -1098,8 +1113,8 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     var newRowSlide_2 = [];
                     row.forEach(function (cell) {
                         newRowSlide_2.push({
-                            type: SLIDE_OBJECT_TYPES.tablecell,
-                            text: '',
+                            _type: SLIDE_OBJECT_TYPES.tablecell,
+                            text: [],
                             options: cell.options,
                         });
                     });
@@ -1113,17 +1128,26 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     var currSlide_2 = tableRowSlides[tableRowSlides.length - 1];
                     // NOTE: TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always string b/c we craft it, hence this TS workaround
                     var rowCell = currSlide_2.rows[currSlide_2.rows.length - 1][idxR];
-                    var currText = rowCell.text.toString();
-                    rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift();
+                    // ORIG: let currText = rowCell.text.toString()
+                    // ORIG: WIP: rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
+                    if (Array.isArray(rowCell.text))
+                        rowCell.text.push(cell._lines.shift()); // TODO: What about above? it it handled now??
+                    // TODO: howto add last bit of text
                     // 2
-                    if (cell._lineHeight > maxLineHeight)
-                        maxLineHeight = cell._lineHeight;
+                    if (cell._lineHeight > maxLineHeightEmu)
+                        maxLineHeightEmu = cell._lineHeight;
                 }
             });
             // C: Increase table height by one line height as 1-N cells below are
-            emuTabCurrH += maxLineHeight;
-            if (tabOpts.verbose)
+            emuTabCurrH += maxLineHeightEmu;
+            if (tabOpts.verbose) {
                 console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: one line added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
+            }
+            // TODO: WIP: vvv
+            if (tableRowSlides.length > 20) {
+                console.log(tableRowSlides);
+                throw new Error('FUCK!');
+            }
         };
         while (linesRow.filter(function (cell) { return cell._lines.length > 0; }).length > 0) {
             var state_1 = _loop_2();
@@ -6211,7 +6235,9 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.7.2-beta-20210807-1053';
+//const VERSION = '3.8.0-beta-20210808-1338'
+var verdate = new Date().toISOString();
+var VERSION = "3.8.0-beta-" + verdate;
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
