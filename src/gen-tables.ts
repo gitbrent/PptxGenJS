@@ -13,17 +13,28 @@ import PptxGenJS from './pptxgen'
  * @param {number} colWidth - table column width
  * @return {string[]} XML
  */
-function parseTextToLines(cell: TableCell, colWidth: number): string[] {
-	let CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
-	let arrLines = []
+function parseTextToLines(cell: TableCell, colWidth: number): TableCell[] {
+	const CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	const CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let arrLines: TableCell[] = []
 	let strCurrLine = ''
 
 	// A: Allow a single space/whitespace as cell text (user-requested feature)
-	if (cell.text && cell.text.toString().trim().length === 0) return [' ']
+	if (cell.text && cell.text.toString().trim().length === 0) {
+		arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' })
+		return arrLines
+	}
 
-	// B: Remove leading/trailing spaces
-	let inStr = (cell.text || '').toString().trim()
+	// B: Remove leading/trailing spaces (support complex-text)
+	let inStr = ''
+	if (typeof cell.text === 'number' || typeof cell.text === 'string') {
+		inStr = (cell.text || '').toString().trim()
+	} else if (Array.isArray(cell.text)) {
+		cell.text.forEach(obj => {
+			inStr += (obj.text || '').toString().trim()
+			if (obj.options && obj.options.breakLine) inStr += '\n'
+		})
+	}
 
 	// C: Build line array
 	inStr.split('\n').forEach(line => {
@@ -31,18 +42,20 @@ function parseTextToLines(cell: TableCell, colWidth: number): string[] {
 			if (strCurrLine.length + word.length + 1 < CPL) {
 				strCurrLine += word + ' '
 			} else {
-				if (strCurrLine) arrLines.push(strCurrLine)
+				if (strCurrLine) arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine })
 				strCurrLine = word + ' '
 			}
 		})
 
 		// All words for this line have been exhausted, flush buffer to new line, clear line var
-		if (strCurrLine) arrLines.push(strCurrLine.trim() + CRLF)
+		if (strCurrLine) arrLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF })
 		strCurrLine = ''
 	})
 
 	// D: Remove trailing linebreak
-	arrLines[arrLines.length - 1] = arrLines[arrLines.length - 1].trim()
+	arrLines[arrLines.length - 1].text = (arrLines[arrLines.length - 1].text as string).trim()
+
+	console.log(arrLines);
 
 	return arrLines
 }
@@ -231,6 +244,11 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			linesRow.push(newCell)
 		})
 
+		if (tableRowSlides.length > 10) {
+			console.log(tableRowSlides);
+			throw new Error('FUCK!')
+		}
+
 		// F: Start row height with margins
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
 		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
@@ -265,11 +283,12 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
 				if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
 					// A: Add remaining cell lines
-					let newRowSlide = []
+					let newRowSlide: TableRow = []
 					linesRow.forEach(cell => {
 						newRowSlide.push({
-							type: SLIDE_OBJECT_TYPES.tablecell,
-							text: cell._lines.join(''),
+							_type: SLIDE_OBJECT_TYPES.tablecell,
+							//text: cell._lines.join(''), // TODO: WIP:
+							text: cell._lines,
 							options: cell.options,
 						})
 					})
@@ -309,7 +328,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					// NOTE: TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always string b/c we craft it, hence this TS workaround
 					let rowCell = currSlide.rows[currSlide.rows.length - 1][idxR] as TableCell
 					let currText = rowCell.text.toString()
-					rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
+					//rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
+					//if (Array.isArray(rowCell.text)) rowCell.text.push((currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift())
+					// TODO: howto add last bit of text
 
 					// 2
 					if (cell._lineHeight > maxLineHeight) maxLineHeight = cell._lineHeight

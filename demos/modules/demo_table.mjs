@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.6.0
- * BLD.: 20210404
+ * VER.: 3.7.2
+ * BLD.: 20210807
  */
 
 import {
@@ -21,7 +21,7 @@ import {
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
-
+	/*
 	genSlide01(pptx);
 	genSlide02(pptx);
 	genSlide03(pptx);
@@ -29,6 +29,8 @@ export function genSlides_Table(pptx) {
 	genSlide05(pptx);
 	genSlide06(pptx);
 	genSlide07(pptx);
+*/
+	genSlide08(pptx);
 }
 
 /**
@@ -554,6 +556,7 @@ function genSlide07(pptx) {
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
 	slide.addTable(arrRows, { x: 0.5, y: 0.6, colW: [0.75, 1.75, 10], margin: 2, border: { color: "CFCFCF" }, autoPage: true });
+	//slide.addTable(arrRows, { x: 0.5, y: 0.6, colW: [0.75, 1.75, 10], margin: 2, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
 
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
@@ -731,4 +734,68 @@ function genSlide07(pptx) {
 		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
 	);
 	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: -0.25 });
+}
+
+/**
+ * SLIDE 8[...]: Table auto-paging with complex text array (unsupported until 3.7.2/3.8.0)
+ * @param {PptxGenJS} pptx
+ */
+function genSlide08(pptx) {
+	let slide = null;
+	let arrRows = [];
+
+	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Complex" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+	slide.addText(
+		[
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Auto-Paging Using Complex Text Example", options: DEMO_TITLE_OPTS },
+		],
+		{ x: 0.5, y: 0.13, w: "90%" }
+	);
+
+	// ------------
+
+	arrRows.push([
+		{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+		{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+		{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+	]);
+	TABLE_NAMES_F.forEach((name, idx) => {
+		let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
+		arrRows.push([
+			{ text: idx.toString(), options: { align: "center" } },
+			{ text: name },
+			{
+				text: [{ text: "Title", options: { bold: true, breakLine: true } }, { text: strText }],
+			},
+		]);
+	});
+	slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 3, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
+
+	slide.addTable([
+		[
+			{
+				text: [
+					{ text: "I am a text object with bullets ", options: { color: "CC0000", bullet: { code: "2605" } } },
+					{ text: "and i am the next text object", options: { color: "00CD00", bullet: { code: "25BA" } } },
+					{ text: "Final text object w/ bullet:true", options: { color: "0000AB", bullet: true } },
+				],
+			},
+			{
+				text: [
+					{ text: "Cell", options: { fontSize: 36, align: "left", color: "8648cd" } },
+					{ text: "#2", options: { fontSize: 60, align: "right", color: "CD0101" } },
+				],
+			},
+			{
+				text: [
+					{ text: "Cell", options: { fontSize: 36, fontFace: "Courier", color: "dd0000", breakLine: true } },
+					{ text: "#", options: { fontSize: 60, color: "8648cd" } },
+					{ text: "3", options: { fontSize: 60, fontFace: "Times", color: "33ccef" } },
+				],
+			},
+		],
+	]);
 }
