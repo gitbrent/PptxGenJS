@@ -777,6 +777,6 @@ function genSlide08(pptx) {
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageRepeatHeader: true,
-		verbose: false,
+		verbose: true,
 	});
 }

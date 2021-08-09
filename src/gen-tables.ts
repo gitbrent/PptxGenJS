@@ -16,9 +16,10 @@ import PptxGenJS from './pptxgen'
 function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 	const CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (An approximation of the Golden Ratio)
 	const CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
-	let inputCells: TableCell[] = []
-	let inputLines: TableCell[][] = [[]]
 	let parsedLines: TableCell[][] = []
+	let inputCells: TableCell[] = []
+	let inputLines1: TableCell[][] = [[]]
+	let inputLines2: TableCell[][] = []
 
 	/**
 	 * EX INPUTS: `cell.text`
@@ -47,52 +48,92 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 	}
 
 	// B: Group table cells into lines
+	// B-1: Break on "\n" or `breakLine` prop
 	inputCells.forEach(cell => {
 		// EX: `[{ text:"Account Name" }, { text:"Input" }]`
 		// EX: `[{ text:"Account Name\n Input" }]`
 		// EX: `[{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]`
 		if (typeof cell.text === 'string')
-			cell.text.split('\n').forEach(textStr => {
-				let currLine = inputLines[inputLines.length - 1]
+			cell.text.split('\n').forEach(textLine => {
+				let currLine = inputLines1[inputLines1.length - 1]
 				currLine.push({
 					_type: SLIDE_OBJECT_TYPES.tablecell,
-					text: textStr,
+					text: textLine,
 					options: cell.options,
 				})
-				if (cell.options && cell.options.breakLine) inputLines.push([])
+				if (cell.options && cell.options.breakLine) inputLines1.push([])
 			})
 	})
-	console.log('\n==================================================')
-	//console.log('inputLines')
-	//console.log(JSON.stringify(inputLines))
-	parsedLines = inputLines // TODO: Keep going, incorporate `CPL` etc below!!
-	// WIP: CURRENT: ^^^^^
 
-	//	let textLine = ''
-	//	inputCells.forEach(cell => (textLine += cell.text.toString() + (cell.options && cell.options.breakLine ? '\n' : '')))
-	/*
-	// C: Break cell text into lines based upon CR or length or chars
+	// B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
+	inputLines1.forEach(line => {
+		line.forEach(cell => {
+			let lineCells: TableCell[] = []
+
+			let lineWords = cell.text as string
+			lineWords.split(' ').forEach(word => (word ? lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + ' ', options: cell.options }) : null))
+
+			inputLines2.push(lineCells)
+		})
+	})
+	//console.log('inputLines2')
+	//console.log(JSON.stringify(inputLines2, null, 4))
+
+	// B-3: Break lines on word character spaces consumed
 	let strCurrLine = ''
-	textLine.split('\n').forEach(line => {
-		line.split(' ').forEach(word => {
-			if (strCurrLine.length + word.length + 1 < CPL) {
-				strCurrLine += word + ' '
+	inputLines2.forEach(line => {
+		let lineCells: TableCell[] = []
+
+		line.forEach(word => {
+			if (strCurrLine.length + word.text.length > CPL) {
+				parsedLines.push(lineCells)
+				lineCells = [word]
 			} else {
-				if (strCurrLine) parsedLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine })
-				strCurrLine = word + ' '
+				lineCells.push(word)
 			}
+			strCurrLine += word.text
 		})
 
-		// All words for this line have been exhausted, flush buffer to new line, clear line var
+		// All words for this line have been exhausted, flush buffer
 		if (strCurrLine) {
-			parsedLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF })
+			// Remove trailing space // TODO: FIXME: not working
+			let lastText = lineCells[lineCells.length - 1].text as string
+			lastText = lastText.trim()
+			parsedLines.push(lineCells)
 			strCurrLine = ''
 		}
 	})
 
-	// D: Remove trailing linebreak
-	parsedLines[parsedLines.length - 1].text = (parsedLines[parsedLines.length - 1].text as string).trim()
-*/
+	console.log('\n==================================================')
+	//console.log('inputLines')
+	//console.log(JSON.stringify(inputLines))
+
+	//	let textLine = ''
+	//	inputCells.forEach(cell => (textLine += cell.text.toString() + (cell.options && cell.options.breakLine ? '\n' : '')))
+	/*
+		// C: Break cell text into lines based upon CR or length or chars
+		let strCurrLine = ''
+		textLine.split('\n').forEach(line => {
+			line.split(' ').forEach(word => {
+				if (strCurrLine.length + word.length + 1 < CPL) {
+					strCurrLine += word + ' '
+				} else {
+					if (strCurrLine) parsedLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine })
+					strCurrLine = word + ' '
+				}
+			})
+
+			// All words for this line have been exhausted, flush buffer to new line, clear line var
+			if (strCurrLine) {
+				parsedLines.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: strCurrLine.trim() + CRLF })
+				strCurrLine = ''
+			}
+		})
+
+		// D: Remove trailing linebreak
+		parsedLines[parsedLines.length - 1].text = (parsedLines[parsedLines.length - 1].text as string).trim()
+	*/
+
 	// B: Done
 	console.log('parsedLines:')
 	console.log(JSON.stringify(parsedLines)) // TODO: WIP:
@@ -300,7 +341,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		row.forEach((cell, iCell) => {
 			let newCell: TableCell = {
 				_type: SLIDE_OBJECT_TYPES.tablecell,
-				_lines: [],
+				_lines: null,
 				_lineHeight: inch2Emu(
 					((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
 						(LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
@@ -323,10 +364,18 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				totalColW = tabOpts.colW.filter((_cell, idx) => idx >= iCell && idx < idx + cell.options.colspan).reduce((prev, curr) => prev + curr)
 			}
 			newCell._lines = parseTextToLines(cell, totalColW / ONEPT)
+			if (newCell._lines[0]) {
+				console.log(newCell._lines.length);
+				console.log(newCell._lines[0].length);
+				// CURR: FIXME: WIP: ^^^ NO!! Returned result is words?
+			}
 
 			// 4: Add to array
 			linesRow.push(newCell)
 		})
+		console.log('linesRow') // TODO: WIP:
+		console.log(linesRow.length);
+		//console.log(JSON.stringify(linesRow,null,4)) // TODO: WIP:
 
 		// F: Start row height with margins
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
@@ -335,7 +384,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		// G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
 		if (emuTabCurrH + maxLineHeightEmu <= emuSlideTabH) currSlide.rows.push(newRowSlide)
 
-		/* H: **PAGE DATA SET**
+		/** H: **PAGE DATA SET**
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
 		 * Design: Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line.
 		 * Therefore, build the whole row, 1-line-at-a-time, spanning all columns.
@@ -364,7 +413,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					linesRow.forEach(cell => {
 						newRowSlide.push({
 							_type: SLIDE_OBJECT_TYPES.tablecell,
-							text: cell._lines.reduce((prev, next) => [].concat(prev, next)),
+							text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
 							options: cell.options,
 						})
 					})
@@ -405,16 +454,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					let rowCell = currSlide.rows[currSlide.rows.length - 1][idxR] as TableCell
 					// ORIG: let currText = rowCell.text.toString()
 					// ORIG: WIP: rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
-					console.log('cell._lines')
-					console.log(cell._lines)
-					if (Array.isArray(rowCell.text)) rowCell.text=rowCell.text.concat(cell._lines.shift()) // TODO: What about above? it it handled now??
-					// TODO: howto add last bit of text
-					/*
-					// WIP:
-					console.log(cell._lines);
-					console.log(cell._lines.reduce((prev, next) => [].concat(prev, next)));
-					throw new Error('WTF?!')
-					*/
+					if (Array.isArray(rowCell.text)) rowCell.text = rowCell.text.concat(cell._lines.shift()) // TODO: What about above? it it handled now??
 
 					// 2
 					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
@@ -428,7 +468,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			}
 
 			// TODO: WIP: vvv
-			if (tableRowSlides.length > 20) {
+			if (tableRowSlides.length > 25) {
 				console.log(tableRowSlides)
 				throw new Error('FUCK!')
 			}
