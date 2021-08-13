@@ -18,7 +18,7 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 	const CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let parsedLines: TableCell[][] = []
 	let inputCells: TableCell[] = []
-	let inputLines1: TableCell[][] = [[]]
+	let inputLines1: TableCell[][] = []
 	let inputLines2: TableCell[][] = []
 
 	/**
@@ -49,29 +49,58 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 
 	// B: Group table cells into lines
 	// B-1: Break on "\n" or `breakLine` prop
+	/**
+	 * - EX: `[{ text:"Input Output" }, { text:"Extra" }]`							== 1 line
+	 * - EX: `[{ text:"Input\nOutput" }]`											== 2 lines
+	 * - EX: `[{ text:"Input", options:{ breakLine:true } }, { text:"Output" }]`	== 2 lines
+	 */
 	inputCells.forEach(cell => {
-		// EX: `[{ text:"Account Name" }, { text:"Input" }]`
-		// EX: `[{ text:"Account Name\n Input" }]`
-		// EX: `[{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]`
-		if (typeof cell.text === 'string')
-			cell.text.split('\n').forEach(textLine => {
-				let currLine = inputLines1[inputLines1.length - 1]
-				currLine.push({
+		let newLine: TableCell[] = []
+
+		// (this is always true, we just consturcted them above, but we need to tell typescript that)
+		if (typeof cell.text === 'string') {
+			if (cell.text.split('\n').length > 0) {
+				cell.text.split('\n').forEach(textLine => {
+					newLine.push({
+						_type: SLIDE_OBJECT_TYPES.tablecell,
+						text: textLine,
+						options: cell.options,
+					})
+				})
+			} else {
+				newLine.push({
 					_type: SLIDE_OBJECT_TYPES.tablecell,
-					text: textLine,
+					text: cell.text,
 					options: cell.options,
 				})
-				if (cell.options && cell.options.breakLine) inputLines1.push([])
-			})
+				if (cell.options && cell.options.breakLine) inputLines1.push(newLine)
+			}
+		}
+
+		inputLines1.push(newLine)
 	})
 
 	// B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
+	inputLines1.forEach(line=>console.log(`line: ${JSON.stringify(line)}`))
+	//console.log(JSON.stringify(inputLines1))
+	//console.log(JSON.stringify(inputLines1, null, 2))
+
 	inputLines1.forEach(line => {
 		line.forEach(cell => {
 			let lineCells: TableCell[] = []
+			let cellTextStr = cell.text + '' // force convert to string (compiled JS is better with this than a cast)
+			let lineWords = cellTextStr.split(' ')
 
-			let lineWords = cell.text as string
-			lineWords.split(' ').forEach(word => (word ? lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + ' ', options: cell.options }) : null))
+			lineWords
+				.filter(word => word)
+				.forEach((word, idx) => {
+					let cellProps = { ...cell.options }
+					// IMPORTANT: Handle `breakLine` prop - we cannot apply to each word - only apply to very last word!
+					//if (cellProps && cellProps.breakLine) console.log(`${idx} > ${word}`) // TODO:
+					if (cellProps && cellProps.breakLine) cellProps.breakLine = idx + 1 === lineWords.length
+					// DEBUG: console.log(`"${cellTextStr}" => [${idx}] > "${word}" - breakLine? (${idx + 1} === ${lineWords.length})? ${cellProps.breakLine ? 'Y' : 'n'}`) // TODO:
+					if (word) lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + ' ', options: cellProps })
+				})
 
 			inputLines2.push(lineCells)
 		})
@@ -135,8 +164,8 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 	*/
 
 	// B: Done
-	console.log('parsedLines:')
-	console.log(JSON.stringify(parsedLines)) // TODO: WIP:
+	//console.log('parsedLines:')
+	//console.log(JSON.stringify(parsedLines)) // TODO: WIP:
 	return parsedLines
 
 	// OLD BELOW ***********************
@@ -286,13 +315,14 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 	}
 
 	// STEP 6: **MAIN** Iterate over rows, add table content, create new slides as rows overflow
+	// TODO: CURR: FIXME: Brent! change this to forEach before checking in branch
 	let iRow = 0
 	while (tableRows.length > 0) {
 		let row = tableRows.shift()
 		iRow++
 
 		// A: Row variables
-		let linesRow: TableCell[] = []
+		let rowCellLines: TableCell[] = []
 		let maxCellMarTopEmu = 0
 		let maxCellMarBtmEmu = 0
 		let maxLineHeightEmu = 0
@@ -363,19 +393,27 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			if (cell.options.colspan && Array.isArray(tabOpts.colW)) {
 				totalColW = tabOpts.colW.filter((_cell, idx) => idx >= iCell && idx < idx + cell.options.colspan).reduce((prev, curr) => prev + curr)
 			}
-			newCell._lines = parseTextToLines(cell, totalColW / ONEPT)
+
+			// FIXME: TODO: CURRENT: DEBUG: WHY IS THE CELL TEXT ALREADY FUCKED UP??? ITS OTKENIZE WITH PSACES HERE??!
+			console.log(JSON.stringify(cell.text));//TODO:
+			newCell._lines = [] // DEBUG: IS THIS MUTATING??? parseTextToLines(cell, totalColW / ONEPT)
+			// FIXME: FIXME: FIXME: THIS CALL IS MUTATING OUR DATA !!!!! (cell.text is *perfect* until line above!!!!)
+			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT)
+			// NOPE!!! still mutates // newCell._lines = parseTextToLines(JSON.parse(JSON.stringify(cell)), totalColW / ONEPT)
+
+			/*
 			if (newCell._lines[0]) {
-				console.log(newCell._lines.length);
-				console.log(newCell._lines[0].length);
+				console.log(newCell._lines.length)
+				console.log(newCell._lines[0].length)
 				// CURR: FIXME: WIP: ^^^ NO!! Returned result is words?
-			}
+			}*/
 
 			// 4: Add to array
-			linesRow.push(newCell)
+			rowCellLines.push(newCell)
 		})
-		console.log('linesRow') // TODO: WIP:
-		console.log(linesRow.length);
-		//console.log(JSON.stringify(linesRow,null,4)) // TODO: WIP:
+		//console.log('rowCellLines') // TODO: WIP:
+		//console.log(rowCellLines.length)
+		//console.log(JSON.stringify(rowCellLines,null,4)) // TODO: WIP:
 
 		// F: Start row height with margins
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
@@ -391,7 +429,83 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		 * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
 		 */
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
-		while (linesRow.filter(cell => cell._lines.length > 0).length > 0) {
+		// NEW!!!!!!!!
+		rowCellLines.forEach((cell, cellIdx) => {
+			cell._lines.forEach(line => {
+				// A: create a new slide if there is insufficient room for the current row
+				if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
+					if (tabOpts.verbose) {
+						console.log(
+							`** NEW SLIDE CREATED *****************************************` +
+								` (why?): ${(emuTabCurrH / EMU).toFixed(2)}+${(maxLineHeightEmu / EMU).toFixed(2)} > ${emuSlideTabH / EMU}`
+						)
+					}
+
+					// 1: Add a new slide
+					tableRowSlides.push({ rows: [] as TableRow[] })
+
+					// 2: Reset current table height for new Slide
+					emuTabCurrH = 0 // This row's emuRowH w/b added below
+
+					// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
+					if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
+						// A: Add remaining cell lines
+						let newRowSlide: TableRow = []
+						rowCellLines.forEach(cell => {
+							newRowSlide.push({
+								_type: SLIDE_OBJECT_TYPES.tablecell,
+								text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
+								options: cell.options,
+							})
+						})
+						tableRows.unshift(newRowSlide)
+
+						// B: Add header row(s)
+						let tableHeadRows: TableCell[][] = []
+						tabOpts._arrObjTabHeadRows.forEach(row => {
+							let newHeadRow = []
+							row.forEach(cell => newHeadRow.push(cell))
+							tableHeadRows.push(newHeadRow)
+						})
+						tableRows = [...tableHeadRows, ...tableRows]
+
+						// C:
+						// FIXME: TODO: break
+					} else {
+						// A: Add new row to new slide
+						let newRowSlide: TableRow = []
+						row.forEach(cell => {
+							newRowSlide.push({
+								_type: SLIDE_OBJECT_TYPES.tablecell,
+								text: [],
+								options: cell.options,
+							})
+						})
+						currSlide.rows.push(newRowSlide)
+					}
+				}
+				// A: get current cell on this `tableRow`
+				//currSlide = tableRowSlides[tableRowSlides.length - 1]
+				let currCell = currSlide.rows[currSlide.rows.length - 1][cellIdx]
+
+				// B: create new line (add all words)
+				if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
+
+				// C: increase current table row height
+				if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
+
+				//  Increase table height by the max height from above
+				emuTabCurrH += maxLineHeightEmu
+				if (tabOpts.verbose) {
+					console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: CELL [${cellIdx}]: one line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)}`)
+				}
+			})
+		})
+		// TODO: ABOVE replaces BELOW WIP:
+
+		/*
+		// ORIG: TODO: WIP:
+		while (rowCellLines.filter(cell => cell._lines.length > 0).length > 0) {
 			// A: Add new Slide if there is no more space to fix 1 new line
 			if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
 				if (tabOpts.verbose)
@@ -410,7 +524,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
 					// A: Add remaining cell lines
 					let newRowSlide: TableRow = []
-					linesRow.forEach(cell => {
+					rowCellLines.forEach(cell => {
 						newRowSlide.push({
 							_type: SLIDE_OBJECT_TYPES.tablecell,
 							text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
@@ -446,7 +560,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			}
 
 			// B: Add a line of text to 1-N cells that still have `lines`
-			linesRow.forEach((cell, idxR) => {
+			rowCellLines.forEach((cell, idxR) => {
 				if (cell._lines.length > 0) {
 					// 1
 					let currSlide = tableRowSlides[tableRowSlides.length - 1]
@@ -454,7 +568,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					let rowCell = currSlide.rows[currSlide.rows.length - 1][idxR] as TableCell
 					// ORIG: let currText = rowCell.text.toString()
 					// ORIG: WIP: rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
-					if (Array.isArray(rowCell.text)) rowCell.text = rowCell.text.concat(cell._lines.shift()) // TODO: What about above? it it handled now??
+					if (Array.isArray(rowCell.text)) rowCell.text = rowCell.text.concat(cell._lines.shift())
 
 					// 2
 					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
@@ -473,7 +587,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				throw new Error('FUCK!')
 			}
 			// TODO: WIP: ^^^
-		}
+		}*/
 
 		if (tabOpts.verbose)
 			console.log(
@@ -490,6 +604,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		console.log(`|================================================|\n\n`)
 	}
 
+	//console.log(JSON.stringify(tableRowSlides, null, 3)) // WIP:
 	return tableRowSlides
 }
 

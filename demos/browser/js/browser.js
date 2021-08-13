@@ -214,9 +214,10 @@ export function table2slides1() {
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {
-		autoPageCharWeight: -0.4,
+		autoPageCharWeight: 0,//-0.4,
+		autoPageLineWeight: -1,
+		verbose: true, // DEBUG:
 	};
-	//objOpts.verbose = true;
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
 	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
