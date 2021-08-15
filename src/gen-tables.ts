@@ -81,32 +81,30 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 	})
 
 	// B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
-	inputLines1.forEach(line=>console.log(`line: ${JSON.stringify(line)}`))
-	//console.log(JSON.stringify(inputLines1))
-	//console.log(JSON.stringify(inputLines1, null, 2))
+	console.log('inputLines1:')
+	inputLines1.forEach(line => console.log(`line: ${JSON.stringify(line)}`))
+	console.log('==================================================\n')
 
 	inputLines1.forEach(line => {
 		line.forEach(cell => {
 			let lineCells: TableCell[] = []
 			let cellTextStr = cell.text + '' // force convert to string (compiled JS is better with this than a cast)
 			let lineWords = cellTextStr.split(' ')
+			let filteredWords = lineWords.filter(word => word)
 
-			lineWords
-				.filter(word => word)
-				.forEach((word, idx) => {
-					let cellProps = { ...cell.options }
-					// IMPORTANT: Handle `breakLine` prop - we cannot apply to each word - only apply to very last word!
-					//if (cellProps && cellProps.breakLine) console.log(`${idx} > ${word}`) // TODO:
-					if (cellProps && cellProps.breakLine) cellProps.breakLine = idx + 1 === lineWords.length
-					// DEBUG: console.log(`"${cellTextStr}" => [${idx}] > "${word}" - breakLine? (${idx + 1} === ${lineWords.length})? ${cellProps.breakLine ? 'Y' : 'n'}`) // TODO:
-					if (word) lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + ' ', options: cellProps })
-				})
+			filteredWords.forEach((word, idx) => {
+				let cellProps = { ...cell.options }
+				// IMPORTANT: Handle `breakLine` prop - we cannot apply to each word - only apply to very last word!
+				if (cellProps && cellProps.breakLine) cellProps.breakLine = idx + 1 === lineWords.length
+				if (word) lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < filteredWords.length ? ' ' : ''), options: cellProps })
+			})
 
 			inputLines2.push(lineCells)
 		})
 	})
-	//console.log('inputLines2')
-	//console.log(JSON.stringify(inputLines2, null, 4))
+	console.log('inputLines2')
+	inputLines2.forEach(line => console.log(`line: ${JSON.stringify(line)}`))
+	console.log('==================================================\n')
 
 	// B-3: Break lines on word character spaces consumed
 	let strCurrLine = ''
@@ -132,8 +130,9 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 			strCurrLine = ''
 		}
 	})
-
-	console.log('\n==================================================')
+	console.log('parsedLines:')
+	parsedLines.forEach(line => console.log(`line: ${JSON.stringify(line)}`))
+	console.log('==================================================\n')
 	//console.log('inputLines')
 	//console.log(JSON.stringify(inputLines))
 
@@ -166,6 +165,8 @@ function parseTextToLines(cell: TableCell, colWidth: number): TableCell[][] {
 	// B: Done
 	//console.log('parsedLines:')
 	//console.log(JSON.stringify(parsedLines)) // TODO: WIP:
+	// WIP: ORIG: return parsedLines
+	// NOPE: NO WORK: return JSON.parse(JSON.stringify(parsedLines))
 	return parsedLines
 
 	// OLD BELOW ***********************
@@ -394,12 +395,20 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				totalColW = tabOpts.colW.filter((_cell, idx) => idx >= iCell && idx < idx + cell.options.colspan).reduce((prev, curr) => prev + curr)
 			}
 
-			// FIXME: TODO: CURRENT: DEBUG: WHY IS THE CELL TEXT ALREADY FUCKED UP??? ITS OTKENIZE WITH PSACES HERE??!
-			console.log(JSON.stringify(cell.text));//TODO:
-			newCell._lines = [] // DEBUG: IS THIS MUTATING??? parseTextToLines(cell, totalColW / ONEPT)
+			// FIXME: TODO: CURRENT: DEBUG: WHY IS THE CELL TEXT ALREADY FUCKED UP??? ITS TOKENIZE WITH SPACES HERE??!
+			//console.log('cell.text:')
+			//console.log(JSON.stringify(cell.text)) //TODO:
+			// ORIG: WIP: newCell._lines = [] // DEBUG: IS THIS MUTATING??? parseTextToLines(cell, totalColW / ONEPT)
 			// FIXME: FIXME: FIXME: THIS CALL IS MUTATING OUR DATA !!!!! (cell.text is *perfect* until line above!!!!)
 			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT)
 			// NOPE!!! still mutates // newCell._lines = parseTextToLines(JSON.parse(JSON.stringify(cell)), totalColW / ONEPT)
+			// NOPE!!! still mutates // newCell._lines = JSON.parse(JSON.stringify(parseTextToLines(JSON.parse(JSON.stringify(cell)), totalColW / ONEPT)))
+			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT)
+			console.log('parseTextToLines:')
+			//let TEMP = parseTextToLines(cell, totalColW / ONEPT);
+			//if (TEMP) TEMP.forEach(line => console.log(line));
+			parseTextToLines(cell, totalColW / ONEPT).forEach(line => console.log(JSON.stringify(line))) // DEBUG:
+			newCell._lines = parseTextToLines(cell, totalColW / ONEPT)
 
 			/*
 			if (newCell._lines[0]) {
@@ -430,77 +439,78 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		 */
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 		// NEW!!!!!!!!
-		rowCellLines.forEach((cell, cellIdx) => {
-			cell._lines.forEach(line => {
-				// A: create a new slide if there is insufficient room for the current row
-				if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
+		if (rowCellLines)
+			rowCellLines.forEach((cell, cellIdx) => {
+				cell._lines.forEach(line => {
+					// A: create a new slide if there is insufficient room for the current row
+					if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
+						if (tabOpts.verbose) {
+							console.log(
+								`** NEW SLIDE CREATED *****************************************` +
+									` (why?): ${(emuTabCurrH / EMU).toFixed(2)}+${(maxLineHeightEmu / EMU).toFixed(2)} > ${emuSlideTabH / EMU}`
+							)
+						}
+
+						// 1: Add a new slide
+						tableRowSlides.push({ rows: [] as TableRow[] })
+
+						// 2: Reset current table height for new Slide
+						emuTabCurrH = 0 // This row's emuRowH w/b added below
+
+						// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
+						if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
+							// A: Add remaining cell lines
+							let newRowSlide: TableRow = []
+							rowCellLines.forEach(cell => {
+								newRowSlide.push({
+									_type: SLIDE_OBJECT_TYPES.tablecell,
+									text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
+									options: cell.options,
+								})
+							})
+							tableRows.unshift(newRowSlide)
+
+							// B: Add header row(s)
+							let tableHeadRows: TableCell[][] = []
+							tabOpts._arrObjTabHeadRows.forEach(row => {
+								let newHeadRow = []
+								row.forEach(cell => newHeadRow.push(cell))
+								tableHeadRows.push(newHeadRow)
+							})
+							tableRows = [...tableHeadRows, ...tableRows]
+
+							// C:
+							// FIXME: TODO: break
+						} else {
+							// A: Add new row to new slide
+							let newRowSlide: TableRow = []
+							row.forEach(cell => {
+								newRowSlide.push({
+									_type: SLIDE_OBJECT_TYPES.tablecell,
+									text: [],
+									options: cell.options,
+								})
+							})
+							currSlide.rows.push(newRowSlide)
+						}
+					}
+					// A: get current cell on this `tableRow`
+					//currSlide = tableRowSlides[tableRowSlides.length - 1]
+					let currCell = currSlide.rows[currSlide.rows.length - 1][cellIdx]
+
+					// B: create new line (add all words)
+					if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
+
+					// C: increase current table row height
+					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
+
+					//  Increase table height by the max height from above
+					emuTabCurrH += maxLineHeightEmu
 					if (tabOpts.verbose) {
-						console.log(
-							`** NEW SLIDE CREATED *****************************************` +
-								` (why?): ${(emuTabCurrH / EMU).toFixed(2)}+${(maxLineHeightEmu / EMU).toFixed(2)} > ${emuSlideTabH / EMU}`
-						)
+						console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: CELL [${cellIdx}]: one line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)}`)
 					}
-
-					// 1: Add a new slide
-					tableRowSlides.push({ rows: [] as TableRow[] })
-
-					// 2: Reset current table height for new Slide
-					emuTabCurrH = 0 // This row's emuRowH w/b added below
-
-					// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
-					if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
-						// A: Add remaining cell lines
-						let newRowSlide: TableRow = []
-						rowCellLines.forEach(cell => {
-							newRowSlide.push({
-								_type: SLIDE_OBJECT_TYPES.tablecell,
-								text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
-								options: cell.options,
-							})
-						})
-						tableRows.unshift(newRowSlide)
-
-						// B: Add header row(s)
-						let tableHeadRows: TableCell[][] = []
-						tabOpts._arrObjTabHeadRows.forEach(row => {
-							let newHeadRow = []
-							row.forEach(cell => newHeadRow.push(cell))
-							tableHeadRows.push(newHeadRow)
-						})
-						tableRows = [...tableHeadRows, ...tableRows]
-
-						// C:
-						// FIXME: TODO: break
-					} else {
-						// A: Add new row to new slide
-						let newRowSlide: TableRow = []
-						row.forEach(cell => {
-							newRowSlide.push({
-								_type: SLIDE_OBJECT_TYPES.tablecell,
-								text: [],
-								options: cell.options,
-							})
-						})
-						currSlide.rows.push(newRowSlide)
-					}
-				}
-				// A: get current cell on this `tableRow`
-				//currSlide = tableRowSlides[tableRowSlides.length - 1]
-				let currCell = currSlide.rows[currSlide.rows.length - 1][cellIdx]
-
-				// B: create new line (add all words)
-				if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
-
-				// C: increase current table row height
-				if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
-
-				//  Increase table height by the max height from above
-				emuTabCurrH += maxLineHeightEmu
-				if (tabOpts.verbose) {
-					console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: CELL [${cellIdx}]: one line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)}`)
-				}
+				})
 			})
-		})
 		// TODO: ABOVE replaces BELOW WIP:
 
 		/*
