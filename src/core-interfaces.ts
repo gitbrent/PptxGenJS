@@ -852,7 +852,7 @@ export interface TableCell {
 	_rowContinue?: number
 	_optImp?: any
 
-	text?: string | TableCell[]
+	text?: string | TableCell[] // TODO: FUTURE: 20210815: ONly allow `TableCell[]` dealing with string|TableCell[] *SUCKS*
 	options?: TableCellProps
 }
 export interface TableRowSlide {

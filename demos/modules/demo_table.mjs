@@ -803,10 +803,10 @@ function genSlideDebugCalc(pptx) {
 		{ text: "TH2", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		{ text: "TH3", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 	]);
-	for (let rowIdx = 0; rowIdx < 10; rowIdx++) {
+	for (let rowIdx = 0; rowIdx < 9; rowIdx++) {
 		let col3Lines = [{ text: "Complex-Title", options: { bold: true, color: "FF0000", breakLine: true } }];
-		for (let lineIdx = 0; lineIdx < 9; lineIdx++) {
-			col3Lines.push({ text: `ROW#:${rowIdx + 1} LNE#:${lineIdx + 1}`, options: { breakLine: true } });
+		for (let lineIdx = 0; lineIdx < 19; lineIdx++) {
+			col3Lines.push({ text: `This is ROW#:${rowIdx + 1} LNE#:${lineIdx + 1}`, options: { breakLine: true } });
 		}
 		arrRows.push([{ text: "" }, { text: "" }, { text: col3Lines }]);
 	}
@@ -818,6 +818,6 @@ function genSlideDebugCalc(pptx) {
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageRepeatHeader: true,
-		//verbose: true,
+		verbose: true,
 	});
 }
