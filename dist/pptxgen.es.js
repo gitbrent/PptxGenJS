@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-16T03:15:49.450Z */
+/* PptxGenJS 3.7.1 @ 2021-08-19T05:14:03.253Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -861,6 +861,11 @@ function parseTextToLines(cell, colWidth, verbose) {
     else if (Array.isArray(cell.text)) {
         inputCells = cell.text;
     }
+    if (verbose) {
+        console.log('inputCells');
+        inputCells.forEach(function (cell, idx) { return console.log("[" + (idx + 1) + "] cell: " + JSON.stringify(cell)); });
+        console.log('...............................................\n\n');
+    }
     // B: Group table cells into lines
     // B-1: Break on "\n" or `breakLine` prop
     /**
@@ -896,12 +901,15 @@ function parseTextToLines(cell, colWidth, verbose) {
                 newLine = [];
             }
         }
+        // Flush buffer
+        if (newLine.length > 0)
+            inputLines1.push(newLine);
     });
     // B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
     if (verbose) {
-        console.log('inputLines1:');
+        console.log('inputLines1');
         inputLines1.forEach(function (line, idx) { return console.log("[" + (idx + 1) + "] line: " + JSON.stringify(line)); });
-        console.log('==================================================\n\n');
+        console.log('...............................................\n\n');
     }
     inputLines1.forEach(function (line) {
         line.forEach(function (cell) {
@@ -923,7 +931,7 @@ function parseTextToLines(cell, colWidth, verbose) {
     if (verbose) {
         console.log('inputLines2');
         inputLines2.forEach(function (line) { return console.log("line: " + JSON.stringify(line)); });
-        console.log('==================================================\n\n');
+        console.log('...............................................\n\n');
     }
     // B-3: Break lines on word character spaces consumed
     var strCurrLine = '';
@@ -949,16 +957,11 @@ function parseTextToLines(cell, colWidth, verbose) {
         }
     });
     if (verbose) {
-        console.log('parsedLines:');
-        parsedLines.forEach(function (line, idx) { return console.log("[" + (idx + 1) + "] line: " + JSON.stringify(line)); });
-        console.log('==================================================\n');
-    }
-    // Done:
-    if (verbose) {
         console.log('parsedLines');
         parsedLines.forEach(function (line, idx) { return console.log("[" + (idx + 1) + "] line: " + JSON.stringify(line)); });
-        console.log('==================================================\n\n');
+        console.log('...............................................\n\n');
     }
+    // Done:
     return parsedLines;
 }
 /**
@@ -973,7 +976,6 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
     if (tableRows === void 0) { tableRows = []; }
     if (tabOpts === void 0) { tabOpts = {}; }
     var arrInchMargins = DEF_SLIDE_MARGIN_IN, emuTabCurrH = 0, emuSlideTabW = EMU * 1, emuSlideTabH = EMU * 1, numCols = 0;
-    // ORIG: WIP: let tableRowSlides = [{ rows: [] as TableRow[] }]
     var tableRowSlides = [];
     if (tabOpts.verbose) {
         console.log('[[VERBOSE MODE]]');
@@ -1067,9 +1069,9 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         var maxCellMarBtmEmu = 0;
         var maxLineHeightEmu = 0;
         // B: Create new row in data model
-        var newRowSlide = [];
+        var currTableRow = [];
         row.forEach(function (cell) {
-            newRowSlide.push({
+            currTableRow.push({
                 _type: SLIDE_OBJECT_TYPES.tablecell,
                 text: [],
                 options: cell.options,
@@ -1132,7 +1134,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 totalColW = tabOpts.colW.filter(function (_cell, idx) { return idx >= iCell && idx < idx + cell.options.colspan; }).reduce(function (prev, curr) { return prev + curr; });
             }
             // 4: Create lines based upon available column width
-            newCell._lines = parseTextToLines(cell, totalColW / ONEPT);
+            newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false);
             // 5: Add cell to array
             rowCellLines.push(newCell);
         });
@@ -1144,32 +1146,52 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
         // G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
         if (emuTabCurrH + maxLineHeightEmu <= emuSlideTabH)
-            newTableRowSlide.rows.push(newRowSlide);
-        /** H: **PAGE DATA SET**
+            newTableRowSlide.rows.push(currTableRow);
+        /** H: --==[[ PAGE DATA SET ]]==--
          * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
-         * Design: Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line.
-         * Therefore, build the whole row, 1-line-at-a-time, spanning all columns.
-         * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
+         * Design:
+         * - Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line
+         * - Therefore, build the whole row, one-line-at-a-time, across each table columns
+         * - Then, when the vertical size limit is hit is by any of the cells, make a new slide and continue adding any remaining lines
          */
         if (tabOpts.verbose)
             console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
         // WIP: NEW!!!!!!!!
+        /**
+         * `rowCellLines` is an array of cells
+         * - each cell contains an array of lines
+         * EX:
+         * {
+         *    _lines: [{ text:'cell 1' }, { text:'line 2' }],
+         *    _lines: [{ text:'cell 2' }, { text:'line 2' }],
+         *    _lines: [{ text:'cell 3' }, { text:'line 2' }, { text:'line 3' }, { text:'line 4' }],
+         * }
+         */
         if (rowCellLines) {
             rowCellLines.forEach(function (cell, cellIdx) {
                 cell._lines.forEach(function (line) {
                     // A: create a new slide if there is insufficient room for the current row
                     if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
                         if (tabOpts.verbose) {
-                            console.log("** NEW SLIDE CREATED *****************************************" +
-                                (" (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeightEmu / EMU).toFixed(2) + " > " + emuSlideTabH / EMU));
+                            console.log("** NEW SLIDE CREATED *****************************************");
+                            console.log("** (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeightEmu / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
                         }
-                        // 1: Add a new slide, reset
+                        // 1: add current slide to Slides array
                         tableRowSlides.push(newTableRowSlide);
+                        // 2: reset working/curr slide to hold rows as they're created
                         newTableRowSlide = { rows: [] };
-                        newTableRowSlide.rows.push(newRowSlide);
-                        // 2: Reset current table height for new Slide
-                        emuTabCurrH = 0; // This row's emuRowH w/b added below
-                        // 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
+                        // 4: reset working/curr row
+                        currTableRow = [];
+                        row.forEach(function (cell) {
+                            currTableRow.push({
+                                _type: SLIDE_OBJECT_TYPES.tablecell,
+                                text: [],
+                                options: cell.options,
+                            });
+                        });
+                        // 5: reset current table height for this new Slide
+                        emuTabCurrH = 0;
+                        // 6: handle repeat headers option /or/ Add new empty row to continue current lines into
                         if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
                             var tableHeadRows_1 = [];
                             tabOpts._arrObjTabHeadRows.forEach(function (row) {
@@ -1181,14 +1203,14 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                         }
                     }
                     // B: get current cell on this `tableRow`
-                    var currCell = newTableRowSlide.rows[newTableRowSlide.rows.length - 1][cellIdx];
+                    var currCell = currTableRow[cellIdx];
                     // C: create new line (add all words)
                     if (Array.isArray(currCell.text))
                         currCell.text = currCell.text.concat(line);
                     // C: increase current table row height
                     if (cell._lineHeight > maxLineHeightEmu)
                         maxLineHeightEmu = cell._lineHeight;
-                    //  Increase table height by the max height from above
+                    // D: Increase table height by the max height from above
                     emuTabCurrH += maxLineHeightEmu;
                     if (tabOpts.verbose) {
                         console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: CELL [" + cellIdx + "]: one line added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
@@ -1196,6 +1218,11 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 });
             });
         }
+        // Flush rows (???)
+        if (currTableRow.length > 0)
+            newTableRowSlide.rows.push(currTableRow);
+        // FIXME: WIP: ^^^ works for final row, but creates DUPLICATES other times
+        // CURRENT: WIP: 20210819 - fix this are we're REALLY CLOSE!!
         // TODO: ABOVE replaces BELOW WIP:
         /*
         // ORIG: TODO: WIP:
@@ -1217,15 +1244,15 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 // 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
                 if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
                     // A: Add remaining cell lines
-                    let newRowSlide: TableRow = []
+                    let currTableRow: TableRow = []
                     rowCellLines.forEach(cell => {
-                        newRowSlide.push({
+                        currTableRow.push({
                             _type: SLIDE_OBJECT_TYPES.tablecell,
                             text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
                             options: cell.options,
                         })
                     })
-                    tableRows.unshift(newRowSlide)
+                    tableRows.unshift(currTableRow)
 
                     // B: Add header row(s)
                     let tableHeadRows: TableCell[][] = []
@@ -1241,15 +1268,15 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 } else {
                     // A: Add new row to new slide
                     let currSlide = tableRowSlides[tableRowSlides.length - 1]
-                    let newRowSlide: TableRow = []
+                    let currTableRow: TableRow = []
                     row.forEach(cell => {
-                        newRowSlide.push({
+                        currTableRow.push({
                             _type: SLIDE_OBJECT_TYPES.tablecell,
                             text: [],
                             options: cell.options,
                         })
                     })
-                    currSlide.rows.push(newRowSlide)
+                    currSlide.rows.push(currTableRow)
                 }
             }
 

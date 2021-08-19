@@ -782,6 +782,8 @@ function genSlide08(pptx) {
 	});
 }
 
+// TODO: 20210818: other demos are fine, but using com,plex/formatted text => "NEEDS REPAIR", so com eup with a simple case and compare "repaired" version to see WTF
+
 function genSlideDebugCalc(pptx) {
 	let slide = null;
 	let arrRows = [];
