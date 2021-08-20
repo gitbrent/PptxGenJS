@@ -173,13 +173,13 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 
 	if (tabOpts.verbose) {
 		console.log('[[VERBOSE MODE]]')
-		console.log('|-- TABLE PROPS -----------------------------------|')
+		console.log('|-- TABLE PROPS -----------------------------------------------------|')
 		console.log(`| presLayout.height ......... = ${presLayout.height / EMU}`)
 		console.log(`| tabOpts.h ................. = ${tabOpts.h}`)
 		console.log(`| tabOpts.w ................. = ${tabOpts.w}`)
 		console.log(`| tabOpts.colW .............. = ${tabOpts.colW}`)
 		console.log(`| tabOpts.slideMargin ....... = ${tabOpts.slideMargin || ''}`)
-		console.log('|-- CALCULATIONS ----------------------------------|')
+		console.log('|-- CALCULATIONS ----------------------------------------------------|')
 	}
 
 	// STEP 1: Calculate margins
@@ -283,10 +283,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			tabOpts.h && typeof tabOpts.h === 'number'
 				? tabOpts.h
 				: presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0)
-		if (tabOpts.verbose) {
-			console.log('| emuSlideTabH (in) ......... = ' + (emuSlideTabH / EMU).toFixed(1))
-			console.log('|--------------------------------------------------|\n')
-		}
 
 		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
@@ -300,9 +296,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			if (typeof tabOpts.h === 'number' && emuSlideTabH < tabOpts.h) emuSlideTabH = tabOpts.h
 		} else if (typeof tabOpts.h === 'number' && typeof tabOpts.y === 'number')
 			emuSlideTabH = tabOpts.h ? tabOpts.h : presLayout.height - inch2Emu((tabOpts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
-		//if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: emuSlideTabH .. = ${(emuSlideTabH / EMU).toFixed(1)}`)
 
-		// E: **BUILD DATA SET** | Iterate over cells: split text into lines[], set `lineHeight`
+		// E: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
 		row.forEach((cell, iCell) => {
 			let newCell: TableCell = {
 				_type: SLIDE_OBJECT_TYPES.tablecell,
@@ -315,7 +310,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				text: [],
 				options: cell.options,
 			}
-			//if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(2)}`)
 
 			// 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (newCell.options.rowspan) newCell._lineHeight = 0
@@ -335,27 +329,20 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			// 5: Add cell to array
 			rowCellLines.push(newCell)
 		})
-		//console.log('rowCellLines') // TODO: WIP:
-		//rowCellLines.forEach((line,idx) => console.log(`CELL-[${idx+1}]: _lines: ${JSON.stringify(line._lines)}`))
 
 		// F: Start row height with margins
-		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
 		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
+		//if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
 
-		// G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
-		if (emuTabCurrH + maxLineHeightEmu <= emuSlideTabH) newTableRowSlide.rows.push(currTableRow)
-
-		/** H: --==[[ PAGE DATA SET ]]==--
+		/** G: --==[[ PAGE DATA SET ]]==--
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
+		 *
 		 * Design:
 		 * - Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line
 		 * - Therefore, build the whole row, one-line-at-a-time, across each table columns
 		 * - Then, when the vertical size limit is hit is by any of the cells, make a new slide and continue adding any remaining lines
-		 */
-		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
-
-		// WIP: NEW!!!!!!!!
-		/**
+		 *
+		 * Implementation:
 		 * `rowCellLines` is an array of cells
 		 * - each cell contains an array of lines
 		 * EX:
@@ -366,20 +353,31 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		 * }
 		 */
 		if (rowCellLines) {
+			if (tabOpts.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
+
 			rowCellLines.forEach((cell, cellIdx) => {
-				cell._lines.forEach(line => {
+				cell._lines.forEach((line, lineIdx) => {
 					// A: create a new slide if there is insufficient room for the current row
 					if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
 						if (tabOpts.verbose) {
-							console.log(`** NEW SLIDE CREATED *****************************************`)
-							console.log(`** (why?): ${(emuTabCurrH / EMU).toFixed(2)}+${(maxLineHeightEmu / EMU).toFixed(2)} > ${emuSlideTabH / EMU}`)
+							console.log('\n|--------------------------------------------------------------------|')
+							console.log(
+								`|-- NEW SLIDE CREATED (b/c: currH + newRowH > maxH) => ${(emuTabCurrH / EMU).toFixed(2)} + ${(maxLineHeightEmu / EMU).toFixed(2)} > ${
+									emuSlideTabH / EMU
+								}`
+							)
+							console.log('|--------------------------------------------------------------------|\n\n')
 						}
 
-						// 1: add current slide to Slides array
+						// 1: add current row slide or it will be lost
+						newTableRowSlide.rows.push(currTableRow)
+
+						// 2: add current slide to Slides array
 						tableRowSlides.push(newTableRowSlide)
 
-						// 2: reset working/curr slide to hold rows as they're created
-						newTableRowSlide = { rows: [] as TableRow[] }
+						// 3: reset working/curr slide to hold rows as they're created
+						let newRows: TableRow[] = []
+						newTableRowSlide = { rows: newRows }
 
 						// 4: reset working/curr row
 						currTableRow = []
@@ -406,108 +404,30 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 						}
 					}
 
-					// B: get current cell on this `tableRow`
+					// B: get current cell on `currTableRow`
 					let currCell = currTableRow[cellIdx]
 
 					// C: create new line (add all words)
 					if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
 
-					// C: increase current table row height
+					// D: increase current table row height
 					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
 
-					// D: Increase table height by the max height from above
+					// E: increase table height by the max height from above
 					emuTabCurrH += maxLineHeightEmu
+
+					// DONE
 					if (tabOpts.verbose) {
-						console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: CELL [${cellIdx}]: one line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)}`)
+						console.log(
+							`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: CELL [${cellIdx}]: LINE [${lineIdx}] added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)}`
+						)
 					}
 				})
 			})
 		}
-		// Flush rows (???)
+
+		// 7: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
-		// FIXME: WIP: ^^^ works for final row, but creates DUPLICATES other times
-		// CURRENT: WIP: 20210819 - fix this are we're REALLY CLOSE!!
-
-		// TODO: ABOVE replaces BELOW WIP:
-		/*
-		// ORIG: TODO: WIP:
-		while (rowCellLines.filter(cell => cell._lines.length > 0).length > 0) {
-			// A: Add new Slide if there is no more space to fix 1 new line
-			if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
-				if (tabOpts.verbose)
-					console.log(
-						`** NEW SLIDE CREATED *****************************************` +
-							` (why?): ${(emuTabCurrH / EMU).toFixed(2)}+${(maxLineHeightEmu / EMU).toFixed(2)} > ${emuSlideTabH / EMU}`
-					)
-
-				// 1: Add a new slide
-				tableRowSlides.push({ rows: [] as TableRow[] })
-
-				// 2: Reset current table height for new Slide
-				emuTabCurrH = 0 // This row's emuRowH w/b added below
-
-				// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
-				if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
-					// A: Add remaining cell lines
-					let currTableRow: TableRow = []
-					rowCellLines.forEach(cell => {
-						currTableRow.push({
-							_type: SLIDE_OBJECT_TYPES.tablecell,
-							text: cell && cell._lines && cell._lines.length > 0 ? cell._lines.reduce((prev, next) => [].concat(prev, next)) : ' ',
-							options: cell.options,
-						})
-					})
-					tableRows.unshift(currTableRow)
-
-					// B: Add header row(s)
-					let tableHeadRows: TableCell[][] = []
-					tabOpts._arrObjTabHeadRows.forEach(row => {
-						let newHeadRow = []
-						row.forEach(cell => newHeadRow.push(cell))
-						tableHeadRows.push(newHeadRow)
-					})
-					tableRows = [...tableHeadRows, ...tableRows]
-
-					// C:
-					break
-				} else {
-					// A: Add new row to new slide
-					let currSlide = tableRowSlides[tableRowSlides.length - 1]
-					let currTableRow: TableRow = []
-					row.forEach(cell => {
-						currTableRow.push({
-							_type: SLIDE_OBJECT_TYPES.tablecell,
-							text: [],
-							options: cell.options,
-						})
-					})
-					currSlide.rows.push(currTableRow)
-				}
-			}
-
-			// B: Add a line of text to 1-N cells that still have `lines`
-			rowCellLines.forEach((cell, idxR) => {
-				if (cell._lines.length > 0) {
-					// 1
-					let currSlide = tableRowSlides[tableRowSlides.length - 1]
-					// NOTE: TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always string b/c we craft it, hence this TS workaround
-					let rowCell = currSlide.rows[currSlide.rows.length - 1][idxR] as TableCell
-					// ORIG: let currText = rowCell.text.toString()
-					// ORIG: WIP: rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift()
-					if (Array.isArray(rowCell.text)) rowCell.text = rowCell.text.concat(cell._lines.shift())
-
-					// 2
-					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
-				}
-			})
-
-			// C: Increase table height by one line height as 1-N cells below are
-			emuTabCurrH += maxLineHeightEmu
-			if (tabOpts.verbose) {
-				console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: one line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)}`)
-			}
-		}
-		*/
 
 		if (tabOpts.verbose)
 			console.log(

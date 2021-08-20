@@ -30,7 +30,7 @@ export function genSlides_Table(pptx) {
 		genSlide06(pptx);
 		genSlide07(pptx);
 	*/
-	//genSlide08(pptx);
+	genSlide08(pptx);
 	genSlideDebugCalc(pptx);
 }
 
