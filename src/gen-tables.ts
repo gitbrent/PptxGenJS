@@ -172,11 +172,11 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 	if (tabOpts.verbose) {
 		console.log('[[VERBOSE MODE]]')
 		console.log('|-- TABLE PROPS -----------------------------------------------------|')
-		console.log(`| presLayout.height ......... = ${presLayout.height / EMU}`)
-		console.log(`| tabOpts.h ................. = ${tabOpts.h}`)
-		console.log(`| tabOpts.w ................. = ${tabOpts.w}`)
-		console.log(`| tabOpts.colW .............. = ${tabOpts.colW}`)
-		console.log(`| tabOpts.slideMargin ....... = ${tabOpts.slideMargin || ''}`)
+		console.log(`| presLayout.height ......................... = ${presLayout.height / EMU}`)
+		console.log(`| tabOpts.h ................................. = ${tabOpts.h}`)
+		console.log(`| tabOpts.w ................................. = ${tabOpts.w}`)
+		console.log(`| tabOpts.colW .............................. = ${tabOpts.colW}`)
+		console.log(`| tabOpts.slideMargin ....................... = ${tabOpts.slideMargin || ''}`)
 		console.log('|-- CALCULATIONS ----------------------------------------------------|')
 	}
 
@@ -194,7 +194,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			else if (!isNaN(tabOpts.slideMargin)) arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin]
 		}
 
-		if (tabOpts.verbose) console.log('| arrInchMargins ............ = ' + arrInchMargins.toString())
+		if (tabOpts.verbose) console.log('| arrInchMargins ............................ = ' + arrInchMargins.toString())
 	}
 
 	// STEP 2: Calculate number of columns
@@ -208,7 +208,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1)
 		})
 
-		if (tabOpts.verbose) console.log('| numCols ................... = ' + numCols)
+		if (tabOpts.verbose) console.log('| numCols ................................... = ' + numCols)
 	}
 
 	// STEP 3: Calculate tabOpts.w if tabOpts.colW was provided
@@ -229,7 +229,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 				? inch2Emu(tabOpts.w)
 				: presLayout.width - inch2Emu((typeof tabOpts.x === 'number' ? tabOpts.x : arrInchMargins[1]) + arrInchMargins[3])
 
-		if (tabOpts.verbose) console.log('| emuSlideTabW (in) ......... = ' + (emuSlideTabW / EMU).toFixed(1))
+		if (tabOpts.verbose) console.log('| emuSlideTabW (in) ......................... = ' + (emuSlideTabW / EMU).toFixed(1))
 	}
 
 	// STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
@@ -280,9 +280,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		let tableM = inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0)
 		emuSlideTabH = tableH - tableM
 		if (tabOpts.verbose) {
-			console.log('| tableH (in) ............... = ' + (tableH / EMU).toFixed(1))
-			console.log('| tableM (in) ............... = ' + (tableM / EMU).toFixed(1))
-			console.log('| emuSlideTabH (in) ......... = ' + (emuSlideTabH / EMU).toFixed(1))
+			console.log('| tableH (tabOpts.h || presLayout.height) ... = ' + (tableH / EMU).toFixed(1))
+			console.log('| tableM (table margin.top + margin.btm) .... = ' + (tableM / EMU).toFixed(1))
+			console.log('| emuSlideTabH (in) ......................... = ' + (emuSlideTabH / EMU).toFixed(1))
 			console.log('|--------------------------------------------------------------------|')
 		}
 
