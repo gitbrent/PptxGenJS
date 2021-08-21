@@ -173,8 +173,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		console.log('[[VERBOSE MODE]]')
 		console.log('|-- TABLE PROPS -----------------------------------------------------|')
 		console.log(`| presLayout.height ......................... = ${presLayout.height / EMU}`)
-		console.log(`| tabOpts.h ................................. = ${tabOpts.h}`)
-		console.log(`| tabOpts.w ................................. = ${tabOpts.w}`)
+		console.log(`| tabOpts.y ................................. = ${typeof tabOpts.y === 'number' ? (tabOpts.y / EMU).toFixed(1) : tabOpts.y}`)
+		console.log(`| tabOpts.h ................................. = ${typeof tabOpts.h === 'number' ? (tabOpts.h / EMU).toFixed(1) : tabOpts.h}`)
+		console.log(`| tabOpts.w ................................. = ${typeof tabOpts.w === 'number' ? (tabOpts.w / EMU).toFixed(1) : tabOpts.w}`)
 		console.log(`| tabOpts.colW .............................. = ${tabOpts.colW}`)
 		console.log(`| tabOpts.slideMargin ....................... = ${tabOpts.slideMargin || ''}`)
 		console.log('|-- CALCULATIONS ----------------------------------------------------|')
@@ -276,13 +277,18 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-		let tableH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height
-		let tableM = inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0)
-		emuSlideTabH = tableH - tableM
-		if (tabOpts.verbose) {
-			console.log('| tableH (tabOpts.h || presLayout.height) ... = ' + (tableH / EMU).toFixed(1))
-			console.log('| tableM (table margin.top + margin.btm) .... = ' + (tableM / EMU).toFixed(1))
-			console.log('| emuSlideTabH (in) ......................... = ' + (emuSlideTabH / EMU).toFixed(1))
+		let tableHeight = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height
+		let tableMargnY = inch2Emu(arrInchMargins[0] + arrInchMargins[2])
+		let tableStartY = tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0
+		emuSlideTabH = tableHeight - tableMargnY - tableStartY
+		if (tabOpts.verbose && iRow === 0) {
+			console.log(`| tableH (tabOpts.h || presLayout.height) ... = ${(tableHeight / EMU).toFixed(1)}`)
+			console.log(`| tableM (table margin.top + margin.btm) .... = ${(tableMargnY / EMU).toFixed(1)} (${arrInchMargins[0]} + ${arrInchMargins[2]})`)
+			console.log(`| tableS (tabOpts.y || 0) ................... = ${(tableStartY / EMU).toFixed(1)}`)
+			console.log(
+				`| emuSlideTabH (in) ......................... = ${(emuSlideTabH / EMU).toFixed(1)} ` +
+					`(${(tableHeight / EMU).toFixed(1)} - ${(tableMargnY / EMU).toFixed(1)} - ${(tableStartY / EMU).toFixed(1)})`
+			)
 			console.log('|--------------------------------------------------------------------|')
 		}
 
