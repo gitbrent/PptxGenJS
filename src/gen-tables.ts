@@ -259,7 +259,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		let rowCellLines: TableCell[] = []
 		let maxCellMarTopEmu = 0
 		let maxCellMarBtmEmu = 0
-		let maxLineHeightEmu = 0
 
 		// B: Create new row in data model
 		let currTableRow: TableRow = []
@@ -364,11 +363,11 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			rowCellLines.forEach((cell, cellIdx) => {
 				cell._lines.forEach((line, lineIdx) => {
 					// A: create a new slide if there is insufficient room for the current row
-					if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
+					if (emuTabCurrH + cell._lineHeight > emuSlideTabH) {
 						if (tabOpts.verbose) {
 							console.log('\n|--------------------------------------------------------------------|')
 							console.log(
-								`|-- NEW SLIDE CREATED (b/c: currH + newRowH > maxH) => ${(emuTabCurrH / EMU).toFixed(2)} + ${(maxLineHeightEmu / EMU).toFixed(2)} > ${
+								`|-- NEW SLIDE CREATED (b/c: currTabH + currLineH > maxH) => ${(emuTabCurrH / EMU).toFixed(2)} + ${(cell._lineHeight / EMU).toFixed(2)} > ${
 									emuSlideTabH / EMU
 								}`
 							)
@@ -376,7 +375,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 						}
 
 						// 1: add current row slide or it will be lost
-						newTableRowSlide.rows.push(currTableRow)
+						if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
 
 						// 2: add current slide to Slides array
 						tableRowSlides.push(newTableRowSlide)
@@ -417,11 +416,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					// C: create new line (add all words)
 					if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
 
-					// D: increase current table row height
-					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
-
-					// E: increase table height by the max height from above
-					if (cellIdx === maxLineHeightCellIdx) emuTabCurrH += maxLineHeightEmu
+					// D: increase table height by the curr line height (if this is tallest cell)
+					if (cellIdx === maxLineHeightCellIdx) emuTabCurrH += cell._lineHeight
 
 					// DONE
 					if (tabOpts.verbose) {
