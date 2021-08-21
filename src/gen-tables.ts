@@ -129,8 +129,8 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 			if (strCurrLine.length + word.text.length > CPL) {
 				//if (verbose) console.log(`STEP 4: New line added: (${strCurrLine.length} + ${word.text.length} > ${CPL})`);
 				parsedLines.push(lineCells)
-				lineCells = [word]
-				strCurrLine = word.text.toString()
+				lineCells = []
+				strCurrLine = ''
 			}
 
 			// B: add current word to line cells
@@ -322,8 +322,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			}
 
 			// 4: Create lines based upon available column width
-			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
-			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // FIXME: HTML and Slide7Demo are CRAP
+			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
+			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // FIXME: still not quite right
 
 			// 5: Add cell to array
 			rowCellLines.push(newCell)
@@ -346,9 +346,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		 * - each cell contains an array of lines
 		 * EX:
 		 * {
-		 *    _lines: [{ text:'cell 1' }, { text:'line 2' }],
-		 *    _lines: [{ text:'cell 2' }, { text:'line 2' }],
-		 *    _lines: [{ text:'cell 3' }, { text:'line 2' }, { text:'line 3' }, { text:'line 4' }],
+		 *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line 2' }],															// TOTAL-CELL-HEIGHT = 2
+		 *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line 2' }],															// TOTAL-CELL-HEIGHT = 2
+		 *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line 2' }, { text:'cell-3,line 3' }, { text:'cell-3,line 4' }],		// TOTAL-CELL-HEIGHT = 4
 		 * }
 		 */
 		if (rowCellLines) {
@@ -410,11 +410,20 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					// C: create new line (add all words)
 					if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
 
+					// FIXME: **DO NOT** increate total height for diff cells!!!
+					/**
+					 * - SLIDE [0]: ROW [2]: CELL [0]: LINE [0] added ... emuTabCurrH = 5.66
+					 * - SLIDE [0]: ROW [2]: CELL [1]: LINE [0] added ... emuTabCurrH = 5.87
+					 * - SLIDE [0]: ROW [2]: CELL [2]: LINE [0] added ... emuTabCurrH = 6.09
+					 * - SLIDE [0]: ROW [2]: CELL [3]: LINE [0] added ... emuTabCurrH = 6.31
+					 */
+
 					// D: increase current table row height
 					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
 
 					// E: increase table height by the max height from above
-					emuTabCurrH += maxLineHeightEmu
+					//emuTabCurrH += maxLineHeightEmu
+					emuTabCurrH += cell._lineHeight
 
 					// DONE
 					if (tabOpts.verbose) {
