@@ -346,13 +346,20 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		 * - each cell contains an array of lines
 		 * EX:
 		 * {
-		 *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line 2' }],															// TOTAL-CELL-HEIGHT = 2
-		 *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line 2' }],															// TOTAL-CELL-HEIGHT = 2
-		 *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line 2' }, { text:'cell-3,line 3' }, { text:'cell-3,line 4' }],		// TOTAL-CELL-HEIGHT = 4
+		 *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line-2' }],															// TOTAL-CELL-HEIGHT = 2
+		 *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line-2' }],															// TOTAL-CELL-HEIGHT = 2
+		 *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line-2' }, { text:'cell-3,line-3' }, { text:'cell-3,line-4' }],		// TOTAL-CELL-HEIGHT = 4
 		 * }
 		 */
 		if (rowCellLines) {
 			if (tabOpts.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
+
+			// Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
+			let maxLineHeightCellIdx = 0
+			rowCellLines.forEach((cell, cellIdx) => {
+				if (cell._lines.length > rowCellLines[maxLineHeightCellIdx]._lines.length) maxLineHeightCellIdx = cellIdx
+			})
+			// TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
 
 			rowCellLines.forEach((cell, cellIdx) => {
 				cell._lines.forEach((line, lineIdx) => {
@@ -410,20 +417,11 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 					// C: create new line (add all words)
 					if (Array.isArray(currCell.text)) currCell.text = currCell.text.concat(line)
 
-					// FIXME: **DO NOT** increate total height for diff cells!!!
-					/**
-					 * - SLIDE [0]: ROW [2]: CELL [0]: LINE [0] added ... emuTabCurrH = 5.66
-					 * - SLIDE [0]: ROW [2]: CELL [1]: LINE [0] added ... emuTabCurrH = 5.87
-					 * - SLIDE [0]: ROW [2]: CELL [2]: LINE [0] added ... emuTabCurrH = 6.09
-					 * - SLIDE [0]: ROW [2]: CELL [3]: LINE [0] added ... emuTabCurrH = 6.31
-					 */
-
 					// D: increase current table row height
 					if (cell._lineHeight > maxLineHeightEmu) maxLineHeightEmu = cell._lineHeight
 
 					// E: increase table height by the max height from above
-					//emuTabCurrH += maxLineHeightEmu
-					emuTabCurrH += cell._lineHeight
+					if (cellIdx === maxLineHeightCellIdx) emuTabCurrH += maxLineHeightEmu
 
 					// DONE
 					if (tabOpts.verbose) {
