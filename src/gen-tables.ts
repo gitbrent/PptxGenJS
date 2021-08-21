@@ -37,7 +37,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	 * - object[]..: [{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]
 	 */
 
-	// A: Ensure inputCells is an array of TableCells
+	// STEP 1: Ensure inputCells is an array of TableCells
 	if (cell.text && cell.text.toString().trim().length === 0) {
 		// Allow a single space/whitespace as cell text (user-requested feature)
 		inputCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' })
@@ -52,8 +52,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 		console.log('...............................................\n\n')
 	}
 
-	// B: Group table cells into lines
-	// B-1: Break on "\n" or `breakLine` prop
+	// STEP 2: Group table cells into lines based on "\n" or `breakLine` prop
 	/**
 	 * - EX: `[{ text:"Input Output" }, { text:"Extra" }]`							== 1 line
 	 * - EX: `[{ text:"Input" }, { text:"Output", options:{ breakLine:true } }]`	== 1 line
@@ -90,14 +89,13 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 		// Flush buffer
 		if (newLine.length > 0) inputLines1.push(newLine)
 	})
-
-	// B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
 	if (verbose) {
 		console.log(`[2/4] inputLines1 (${inputLines1.length})`)
 		inputLines1.forEach((line, idx) => console.log(`[${idx + 1}] line: ${JSON.stringify(line)}`))
 		console.log('...............................................\n\n')
 	}
 
+	// STEP 3: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text, add its `options`, etc.)
 	inputLines1.forEach(line => {
 		line.forEach(cell => {
 			let lineCells: TableCell[] = []
@@ -121,26 +119,29 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 		console.log('...............................................\n\n')
 	}
 
-	// B-3: Break lines on word character spaces consumed
-	let strCurrLine = ''
+	// STEP 4: Group cells/words into lines based upon space consumed by word letters
 	inputLines2.forEach(line => {
 		let lineCells: TableCell[] = []
-		strCurrLine = ''
+		let strCurrLine = ''
 
 		line.forEach(word => {
+			// A: create new line when horizontal space is exhausted
 			if (strCurrLine.length + word.text.length > CPL) {
+				//if (verbose) console.log(`STEP 4: New line added: (${strCurrLine.length} + ${word.text.length} > ${CPL})`);
 				parsedLines.push(lineCells)
 				lineCells = [word]
-			} else {
-				lineCells.push(word)
+				strCurrLine = word.text.toString()
 			}
-			strCurrLine += word.text
+
+			// B: add current word to line cells
+			lineCells.push(word)
+
+			// C: add current word to `strCurrLine` which we use to keep track of line's char length
+			strCurrLine += word.text.toString()
 		})
 
-		// FLush buffer: All words for this line have been exhausted
-		if (strCurrLine) {
-			parsedLines.push(lineCells)
-		}
+		// Flush buffer: Only create a line when there's text to avoid empty row
+		if (lineCells.length > 0) parsedLines.push(lineCells)
 	})
 	if (verbose) {
 		console.log(`[4/4] parsedLines (${parsedLines.length})`)
