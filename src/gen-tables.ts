@@ -47,7 +47,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 		inputCells = cell.text
 	}
 	if (verbose) {
-		console.log('inputCells')
+		console.log('[1/4] inputCells')
 		inputCells.forEach((cell, idx) => console.log(`[${idx + 1}] cell: ${JSON.stringify(cell)}`))
 		console.log('...............................................\n\n')
 	}
@@ -93,7 +93,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 
 	// B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
 	if (verbose) {
-		console.log('inputLines1')
+		console.log(`[2/4] inputLines1 (${inputLines1.length})`)
 		inputLines1.forEach((line, idx) => console.log(`[${idx + 1}] line: ${JSON.stringify(line)}`))
 		console.log('...............................................\n\n')
 	}
@@ -116,7 +116,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 		})
 	})
 	if (verbose) {
-		console.log('inputLines2')
+		console.log(`[3/4] inputLines2 (${inputLines2.length})`)
 		inputLines2.forEach(line => console.log(`line: ${JSON.stringify(line)}`))
 		console.log('...............................................\n\n')
 	}
@@ -125,6 +125,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	let strCurrLine = ''
 	inputLines2.forEach(line => {
 		let lineCells: TableCell[] = []
+		strCurrLine = ''
 
 		line.forEach(word => {
 			if (strCurrLine.length + word.text.length > CPL) {
@@ -136,17 +137,13 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 			strCurrLine += word.text
 		})
 
-		// All words for this line have been exhausted, flush buffer
+		// FLush buffer: All words for this line have been exhausted
 		if (strCurrLine) {
-			// Remove trailing space // TODO: FIXME: not working
-			let lastText = lineCells[lineCells.length - 1].text as string
-			lastText = lastText.trim()
 			parsedLines.push(lineCells)
-			strCurrLine = ''
 		}
 	})
 	if (verbose) {
-		console.log('parsedLines')
+		console.log(`[4/4] parsedLines (${parsedLines.length})`)
 		parsedLines.forEach((line, idx) => console.log(`[${idx + 1}] line: ${JSON.stringify(line)}`))
 		console.log('...............................................\n\n')
 	}
@@ -324,7 +321,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			}
 
 			// 4: Create lines based upon available column width
-			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
+			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
+			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // FIXME: HTML and Slide7Demo are CRAP
 
 			// 5: Add cell to array
 			rowCellLines.push(newCell)
@@ -392,6 +390,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 						// 5: reset current table height for this new Slide
 						emuTabCurrH = 0
 
+						// FIXME: this isnt working on HTML-slides demo!!! 202010821
 						// 6: handle repeat headers option /or/ Add new empty row to continue current lines into
 						if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
 							let tableHeadRows: TableCell[][] = []
