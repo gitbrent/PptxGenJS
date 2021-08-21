@@ -276,10 +276,15 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-		emuSlideTabH =
-			tabOpts.h && typeof tabOpts.h === 'number'
-				? tabOpts.h
-				: presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0)
+		let tableH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height
+		let tableM = inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0)
+		emuSlideTabH = tableH - tableM
+		if (tabOpts.verbose) {
+			console.log('| tableH (in) ............... = ' + (tableH / EMU).toFixed(1))
+			console.log('| tableM (in) ............... = ' + (tableM / EMU).toFixed(1))
+			console.log('| emuSlideTabH (in) ......... = ' + (emuSlideTabH / EMU).toFixed(1))
+			console.log('|--------------------------------------------------------------------|')
+		}
 
 		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
@@ -291,8 +296,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 			emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
 			// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
 			if (typeof tabOpts.h === 'number' && emuSlideTabH < tabOpts.h) emuSlideTabH = tabOpts.h
-		} else if (typeof tabOpts.h === 'number' && typeof tabOpts.y === 'number')
+		} else if (typeof tabOpts.h === 'number' && typeof tabOpts.y === 'number') {
 			emuSlideTabH = tabOpts.h ? tabOpts.h : presLayout.height - inch2Emu((tabOpts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
+		}
 
 		// E: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
 		row.forEach((cell, iCell) => {
@@ -330,7 +336,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 
 		// F: Start row height with margins
 		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
-		//if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
 
 		/** G: --==[[ PAGE DATA SET ]]==--
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
