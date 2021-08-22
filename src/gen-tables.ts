@@ -177,8 +177,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 	if (tableProps.verbose) {
 		console.log('[[VERBOSE MODE]]')
 		console.log('|-- TABLE PROPS --------------------------------------------------------|')
-		console.log(`| presLayout.width ................................ = ${presLayout.width / EMU}`)
-		console.log(`| presLayout.height ............................... = ${presLayout.height / EMU}`)
+		console.log(`| presLayout.width ................................ = ${(presLayout.width / EMU).toFixed(1)}`)
+		console.log(`| presLayout.height ............................... = ${(presLayout.height / EMU).toFixed(1)}`)
 		console.log(`| tableProps.x .................................... = ${typeof tableProps.x === 'number' ? (tableProps.x / EMU).toFixed(1) : tableProps.x}`)
 		console.log(`| tableProps.y .................................... = ${typeof tableProps.y === 'number' ? (tableProps.y / EMU).toFixed(1) : tableProps.y}`)
 		console.log(`| tableProps.w .................................... = ${typeof tableProps.w === 'number' ? (tableProps.w / EMU).toFixed(1) : tableProps.w}`)
@@ -323,7 +323,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 
 			// 4: Create lines based upon available column width
 			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
-			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // FIXME: still not quite right
 
 			// 5: Add cell to array
 			rowCellLines.push(newCell)
@@ -353,13 +352,14 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		if (rowCellLines) {
 			if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 
-			// Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
+			// 1: Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
 			let maxLineHeightCellIdx = 0
 			rowCellLines.forEach((cell, cellIdx) => {
 				if (cell._lines.length > rowCellLines[maxLineHeightCellIdx]._lines.length) maxLineHeightCellIdx = cellIdx
 			})
 			// TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
 
+			// 2: build lines inside cells
 			rowCellLines.forEach((cell, cellIdx) => {
 				cell._lines.forEach((line, lineIdx) => {
 					// A: create a new slide if there is insufficient room for the current row
@@ -374,8 +374,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 							console.log('|--------------------------------------------------------------------|\n\n')
 						}
 
-						// 1: add current row slide or it will be lost
-						if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
+						// 1: add current row slide or it will be lost (only if it has rows and text)
+						if (currTableRow.length > 0 && currTableRow.map(cell => cell.text.length).reduce((p, n) => p + n) > 0) newTableRowSlide.rows.push(currTableRow)
 
 						// 2: add current slide to Slides array
 						tableRowSlides.push(newTableRowSlide)
@@ -399,6 +399,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 
 						// FIXME: this isnt working on HTML-slides demo!!! 202010821
 						// 6: handle repeat headers option /or/ Add new empty row to continue current lines into
+						if (tableProps.autoPageRepeatHeader) console.log(tableProps._arrObjTabHeadRows) // FIXME:
 						if ((tableProps.addHeaderToEach || tableProps.autoPageRepeatHeader) && tableProps._arrObjTabHeadRows) {
 							let tableHeadRows: TableCell[][] = []
 							tableProps._arrObjTabHeadRows.forEach(row => {
@@ -428,6 +429,10 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 				})
 			})
 		}
+
+		// TODO: FIXME: still "needs repair"
+		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 line shtta have a `<br/>`
+		// TODO: FIXME: "autoPageRepeatHeader" doesnt work
 
 		// 7: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
@@ -487,11 +492,15 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 	}
 	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
 
-	if (opts.verbose) console.log('-- VERBOSE MODE ----------------------------------')
-	if (opts.verbose) console.log(`opts.h ................. = ${opts.h}`)
-	if (opts.verbose) console.log(`opts.w ................. = ${opts.w}`)
-	if (opts.verbose) console.log(`pptx.presLayout.width .. = ${pptx.presLayout.width / EMU}`)
-	if (opts.verbose) console.log(`emuSlideTabW (in)....... = ${emuSlideTabW / EMU}`)
+	if (opts.verbose) {
+		console.log('[[VERBOSE MODE]]')
+		console.log('|-- `tableToSlides` ----------------------------------------------------|')
+		console.log(`| tableProps.h .................................... = ${opts.h}`)
+		console.log(`| tableProps.w .................................... = ${opts.w}`)
+		console.log(`| pptx.presLayout.width ........................... = ${(pptx.presLayout.width / EMU).toFixed(1)}`)
+		console.log(`| pptx.presLayout.height .......................... = ${(pptx.presLayout.height / EMU).toFixed(1)}`)
+		console.log(`| emuSlideTabW .................................... = ${(emuSlideTabW / EMU).toFixed(1)}`)
+	}
 
 	// STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
 	let firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child th`)
@@ -522,12 +531,11 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 		if (colSelectorSet) intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'))
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
-	if (opts.verbose) {
-		console.log(`arrColW ................ = ${arrColW.toString()}`)
-	}
+	if (opts.verbose)
+		console.log(`| arrColW ......................................... = [${arrColW.join(', ')}]`)
 
-	// STEP 4: Iterate over each table element and create data arrays (text and opts)
-	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
+		// STEP 4: Iterate over each table element and create data arrays (text and opts)
+		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
 	;['thead', 'tbody', 'tfoot'].forEach(part => {
 		document.querySelectorAll(`#${tabEleId} ${part} tr`).forEach((row: HTMLTableRowElement) => {
 			let arrObjTabCells: TableCell[] = []
