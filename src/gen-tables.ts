@@ -49,7 +49,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	if (verbose) {
 		console.log('[1/4] inputCells')
 		inputCells.forEach((cell, idx) => console.log(`[${idx + 1}] cell: ${JSON.stringify(cell)}`))
-		console.log('...............................................\n\n')
+		//console.log('...............................................\n\n')
 	}
 
 	// STEP 2: Group table cells into lines based on "\n" or `breakLine` prop
@@ -92,7 +92,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	if (verbose) {
 		console.log(`[2/4] inputLines1 (${inputLines1.length})`)
 		inputLines1.forEach((line, idx) => console.log(`[${idx + 1}] line: ${JSON.stringify(line)}`))
-		console.log('...............................................\n\n')
+		//console.log('...............................................\n\n')
 	}
 
 	// STEP 3: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text, add its `options`, etc.)
@@ -116,7 +116,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	if (verbose) {
 		console.log(`[3/4] inputLines2 (${inputLines2.length})`)
 		inputLines2.forEach(line => console.log(`line: ${JSON.stringify(line)}`))
-		console.log('...............................................\n\n')
+		//console.log('...............................................\n\n')
 	}
 
 	// STEP 4: Group cells/words into lines based upon space consumed by word letters
@@ -323,6 +323,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 
 			// 4: Create lines based upon available column width
 			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
+			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // DEBUG: TODO:
 
 			// 5: Add cell to array
 			rowCellLines.push(newCell)
@@ -353,11 +354,12 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 
 			// 1: Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
+			// TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
 			let maxLineHeightCellIdx = 0
 			rowCellLines.forEach((cell, cellIdx) => {
-				if (cell._lines.length > rowCellLines[maxLineHeightCellIdx]._lines.length) maxLineHeightCellIdx = cellIdx
+				// NOTE: Use ">=" because we want to use largest index possible - if all cols are H=1, then we want last index ot be the one we select
+				if (cell._lines.length >= rowCellLines[maxLineHeightCellIdx]._lines.length) maxLineHeightCellIdx = cellIdx
 			})
-			// TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
 
 			// 2: build lines inside cells
 			rowCellLines.forEach((cell, cellIdx) => {
@@ -431,8 +433,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			})
 		}
 
-		// TODO: FIXME: still "needs repair"
-		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 line shtta have a `<br/>`
+		// TODO: FIXME: still "needs repair" (mostly fixed, still occurs on table demo)
+		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 lines that have a `<br/>`
+		// TODO: FIXME: "HTML to PPTX" - rowspan/colspan table styles are gone
 
 		// 7: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
@@ -449,9 +452,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 	tableRowSlides.push(newTableRowSlide)
 
 	if (tableProps.verbose) {
-		console.log(`\n|================================================|\n| FINAL: tableRowSlides.length = ${tableRowSlides.length}`)
-		console.log(tableRowSlides)
-		//console.log(JSON.stringify(tableRowSlides,null,2))
+		console.log(`\n|================================================|`)
+		console.log(`| FINAL: tableRowSlides.length = ${tableRowSlides.length}`)
+		tableRowSlides.forEach(slide => console.log(slide))
 		console.log(`|================================================|\n\n`)
 	}
 
