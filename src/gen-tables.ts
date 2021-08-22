@@ -3,7 +3,7 @@
  */
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
-import { PresLayout, SlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps, ISlideObject } from './core-interfaces'
+import { PresLayout, SlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu, rgbToHex, valToPts } from './gen-utils'
 import PptxGenJS from './pptxgen'
 
@@ -48,7 +48,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	}
 	if (verbose) {
 		console.log('[1/4] inputCells')
-		inputCells.forEach((cell, idx) => console.log(`[${idx + 1}] cell: ${JSON.stringify(cell)}`))
+		inputCells.forEach((cell, idx) => console.log(`[1/4] [${idx + 1}] cell: ${JSON.stringify(cell)}`))
 		//console.log('...............................................\n\n')
 	}
 
@@ -91,7 +91,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	})
 	if (verbose) {
 		console.log(`[2/4] inputLines1 (${inputLines1.length})`)
-		inputLines1.forEach((line, idx) => console.log(`[${idx + 1}] line: ${JSON.stringify(line)}`))
+		inputLines1.forEach((line, idx) => console.log(`[2/4] [${idx + 1}] line: ${JSON.stringify(line)}`))
 		//console.log('...............................................\n\n')
 	}
 
@@ -101,13 +101,12 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 			let lineCells: TableCell[] = []
 			let cellTextStr = cell.text + '' // force convert to string (compiled JS is better with this than a cast)
 			let lineWords = cellTextStr.split(' ')
-			let filteredWords = lineWords.filter(word => word)
 
-			filteredWords.forEach((word, idx) => {
+			lineWords.forEach((word, idx) => {
 				let cellProps = { ...cell.options }
 				// IMPORTANT: Handle `breakLine` prop - we cannot apply to each word - only apply to very last word!
 				if (cellProps && cellProps.breakLine) cellProps.breakLine = idx + 1 === lineWords.length
-				if (word) lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < filteredWords.length ? ' ' : ''), options: cellProps })
+				lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < lineWords.length ? ' ' : ''), options: cellProps })
 			})
 
 			inputLines2.push(lineCells)
@@ -115,7 +114,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	})
 	if (verbose) {
 		console.log(`[3/4] inputLines2 (${inputLines2.length})`)
-		inputLines2.forEach(line => console.log(`line: ${JSON.stringify(line)}`))
+		inputLines2.forEach(line => console.log(`[3/4] line: ${JSON.stringify(line)}`))
 		//console.log('...............................................\n\n')
 	}
 
@@ -145,7 +144,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 	})
 	if (verbose) {
 		console.log(`[4/4] parsedLines (${parsedLines.length})`)
-		parsedLines.forEach((line, idx) => console.log(`[${idx + 1}] line: ${JSON.stringify(line)}`))
+		parsedLines.forEach((line, idx) => console.log(`[4/4] [Line ${idx + 1}]:\n${JSON.stringify(line)}`))
 		console.log('...............................................\n\n')
 	}
 
@@ -309,23 +308,23 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 				options: cell.options,
 			}
 
-			// 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
+			// E-1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (newCell.options.rowspan) newCell._lineHeight = 0
 
-			// 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
+			// E-2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
 			newCell.options.autoPageCharWeight = tableProps.autoPageCharWeight ? tableProps.autoPageCharWeight : null
 
-			// 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
+			// E-3: **MAIN** Parse cell contents into lines based upon col width, font, etc
 			let totalColW = tableProps.colW[iCell]
 			if (cell.options.colspan && Array.isArray(tableProps.colW)) {
 				totalColW = tableProps.colW.filter((_cell, idx) => idx >= iCell && idx < idx + cell.options.colspan).reduce((prev, curr) => prev + curr)
 			}
 
-			// 4: Create lines based upon available column width
+			// E-4: Create lines based upon available column width
 			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
 			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // DEBUG: TODO:
 
-			// 5: Add cell to array
+			// E-5: Add cell to array
 			rowCellLines.push(newCell)
 		})
 
@@ -354,11 +353,11 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 
 			// 1: Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
-			// TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
 			let maxLineHeightCellIdx = 0
 			rowCellLines.forEach((cell, cellIdx) => {
 				// NOTE: Use ">=" because we want to use largest index possible - if all cols are H=1, then we want last index ot be the one we select
 				if (cell._lines.length >= rowCellLines[maxLineHeightCellIdx]._lines.length) maxLineHeightCellIdx = cellIdx
+				// TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
 			})
 
 			// 2: build lines inside cells
@@ -423,6 +422,24 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 					// D: increase table height by the curr line height (if this is tallest cell)
 					if (cellIdx === maxLineHeightCellIdx) emuTabCurrH += cell._lineHeight
 
+					/** E: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
+					 * - In this case, `rowCellLines` has no content for cell 0 and cell 1
+					 * - so we need to add a { text: "" } or PPTX will be corrupted! (as each row needs the same amount of cells)
+					 *
+					 * SLIDE 1:
+					 * |--------|--------|--------|
+					 * | line-1 | line-1 | line-1 |
+					 * |--------|--------|--------|
+					 *
+					 * SLIDE 2:
+					 * |--------|--------|--------|
+					 * |        |        | line-2 |
+					 * |--------|--------|--------|
+					 */
+					currTableRow.forEach((cell, idx) => {
+						if (idx < cellIdx && Array.isArray(cell.text) && cell.text.length === 0) cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' })
+					})
+
 					// DONE
 					if (tableProps.verbose) {
 						console.log(
@@ -433,7 +450,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			})
 		}
 
-		// TODO: FIXME: still "needs repair" (mostly fixed, still occurs on table demo)
 		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 lines that have a `<br/>`
 		// TODO: FIXME: "HTML to PPTX" - rowspan/colspan table styles are gone
 
