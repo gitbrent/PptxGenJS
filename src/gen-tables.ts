@@ -162,24 +162,35 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
  * @return {TableRowSlide[]} array of table rows
  */
 export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps: TableToSlidesProps = {}, presLayout: PresLayout, masterSlide?: SlideLayout): TableRowSlide[] {
-	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
-		emuTabCurrH = 0,
-		emuSlideTabW = EMU * 1,
-		emuSlideTabH = EMU * 1,
-		numCols = 0
+	let arrInchMargins = DEF_SLIDE_MARGIN_IN
+	let emuSlideTabW = EMU * 1
+	let emuSlideTabH = EMU * 1
+	let emuTabCurrH = 0 // TODO: rename `tableCalcH`
+	let numCols = 0
 	let tableRowSlides: TableRowSlide[] = []
-	let tablePropX = getSmartParseNumber(tableProps.w, 'X', presLayout)
+	let tablePropX = getSmartParseNumber(tableProps.x, 'X', presLayout)
+	let tablePropY = getSmartParseNumber(tableProps.y, 'Y', presLayout)
+	let tablePropW = getSmartParseNumber(tableProps.w, 'X', presLayout)
+	let tablePropH = getSmartParseNumber(tableProps.h, 'Y', presLayout)
+	let tableCalcW = tablePropW
 
 	if (tableProps.verbose) {
 		console.log('[[VERBOSE MODE]]')
-		console.log('|-- TABLE PROPS -----------------------------------------------------|')
+		console.log('|-- TABLE PROPS --------------------------------------------------------|')
+		console.log(`| presLayout.width ................................ = ${presLayout.width / EMU}`)
 		console.log(`| presLayout.height ............................... = ${presLayout.height / EMU}`)
-		console.log(`| tableProps.h .................................... = ${typeof tableProps.h === 'number' ? (tableProps.h / EMU).toFixed(1) : tableProps.h}`)
-		console.log(`| tableProps.w .................................... = ${typeof tableProps.w === 'number' ? (tableProps.w / EMU).toFixed(1) : tableProps.w}`)
+		console.log(`| tableProps.x .................................... = ${typeof tableProps.x === 'number' ? (tableProps.x / EMU).toFixed(1) : tableProps.x}`)
 		console.log(`| tableProps.y .................................... = ${typeof tableProps.y === 'number' ? (tableProps.y / EMU).toFixed(1) : tableProps.y}`)
+		console.log(`| tableProps.w .................................... = ${typeof tableProps.w === 'number' ? (tableProps.w / EMU).toFixed(1) : tableProps.w}`)
+		console.log(`| tableProps.h .................................... = ${typeof tableProps.h === 'number' ? (tableProps.h / EMU).toFixed(1) : tableProps.h}`)
 		console.log(`| tableProps.colW ................................. = ${tableProps.colW}`)
 		console.log(`| tableProps.slideMargin .......................... = ${tableProps.slideMargin || ''}`)
-		console.log('|-- CALCULATIONS ----------------------------------------------------|')
+		console.log('|-- CALCULATIONS -------------------------------------------------------|')
+		console.log(`| tablePropX ...................................... = ${tablePropX / EMU}`)
+		console.log(`| tablePropY ...................................... = ${tablePropY / EMU}`)
+		console.log(`| tablePropW ...................................... = ${tablePropW / EMU}`)
+		console.log(`| tablePropH ...................................... = ${tablePropH / EMU}`)
+		console.log(`| tableCalcW ...................................... = ${tableCalcW / EMU}`)
 	}
 
 	// STEP 1: Calculate margins
@@ -196,7 +207,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			else if (!isNaN(tableProps.slideMargin)) arrInchMargins = [tableProps.slideMargin, tableProps.slideMargin, tableProps.slideMargin, tableProps.slideMargin]
 		}
 
-		if (tableProps.verbose) console.log('| arrInchMargins .................................. = ' + arrInchMargins.toString())
+		if (tableProps.verbose) console.log(`| arrInchMargins .................................. = [${arrInchMargins.join(', ')}]`)
 	}
 
 	// STEP 2: Calculate number of columns
@@ -209,29 +220,19 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			let cellOpts = cell.options || null
 			numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1)
 		})
-
-		if (tableProps.verbose) console.log('| numCols ......................................... = ' + numCols)
+		if (tableProps.verbose) console.log(`| numCols ......................................... = ${numCols}`)
 	}
 
-	// STEP 3: Calculate tableProps.w if tableProps.colW was provided
-	if (!tableProps.w && tableProps.colW) {
-		if (Array.isArray(tableProps.colW))
-			tableProps.colW.forEach(val => {
-				typeof tableProps.w !== 'number' ? (tableProps.w = 0 + val) : (tableProps.w += val)
-			})
-		else {
-			tableProps.w = tableProps.colW * numCols
-		}
+	// STEP 3: Calculate width using tableProps.colW if possible
+	if (!tablePropW && tableProps.colW) {
+		tableCalcW = Array.isArray(tableProps.colW) ? tableProps.colW.reduce((p, n) => p + n) * EMU : tableProps.colW * numCols || 0
+		if (tableProps.verbose) console.log(`| tableCalcW ...................................... = ${tableCalcW / EMU}`)
 	}
 
 	// STEP 4: Calculate usable space/table size (now that total usable space is known)
 	{
-		emuSlideTabW =
-			typeof tableProps.w === 'number'
-				? inch2Emu(tableProps.w)
-				: presLayout.width - inch2Emu((typeof tableProps.x === 'number' ? tableProps.x : arrInchMargins[1]) + arrInchMargins[3])
-
-		if (tableProps.verbose) console.log('| emuSlideTabW (in) ............................... = ' + (emuSlideTabW / EMU).toFixed(1))
+		emuSlideTabW = tableCalcW ? tableCalcW : inch2Emu((tablePropX ? tablePropX / EMU : arrInchMargins[1]) + arrInchMargins[3])
+		if (tableProps.verbose) console.log(`| emuSlideTabW .................................... = ${(emuSlideTabW / EMU).toFixed(1)}`)
 	}
 
 	// STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
@@ -278,39 +279,21 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-		let tableStartY = tableProps.y && typeof tableProps.y === 'number' ? tableProps.y : inch2Emu(arrInchMargins[0])
-		//let tableHeight = tableProps.h tableStartY
-		let tableHeight = tableProps.h && typeof tableProps.h === 'number' ? tableProps.h : presLayout.height
-		let tableMargnY = inch2Emu(arrInchMargins[0] + arrInchMargins[2])
-		emuSlideTabH = tableHeight - tableMargnY - tableStartY
-		if (tableProps.verbose && iRow === 0) {
-			console.log(`| tableS (tableProps.y || table.margin.top) ....... = ${(tableStartY / EMU).toFixed(1)}`)
-			console.log(`| tableH (tableProps.h || presLayout.height) ...... = ${(tableHeight / EMU).toFixed(1)}`)
-
-			// FIXME: NOPE!! start is table.Y --OR-- top margin!!
-			// ALSO: `tableHeight` is slideSizeH - tableStartY
-
-			console.log(`| tableM ( + margin.btm) .... = ${(tableMargnY / EMU).toFixed(1)} (${arrInchMargins[0]} + ${arrInchMargins[2]})`)
-			console.log(
-				`| emuSlideTabH (in) ..................................... = ${(emuSlideTabH / EMU).toFixed(1)} ` +
-					`(${(tableHeight / EMU).toFixed(1)} - ${(tableMargnY / EMU).toFixed(1)} - ${(tableStartY / EMU).toFixed(1)})`
-			)
-			console.log('|--------------------------------------------------------------------|')
+		emuSlideTabH = (tablePropH || presLayout.height) - (tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])) - inch2Emu(arrInchMargins[2])
+		if (tableRowSlides.length > 1) {
+			// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
+			if (typeof tableProps.autoPageSlideStartY === 'number') {
+				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2])
+			} else if (typeof tableProps.newSlideStartY === 'number') {
+				// @deprecated v3.3.0
+				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2])
+			} else if (tablePropY) {
+				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu((tablePropY / EMU < arrInchMargins[0] ? tablePropY / EMU : arrInchMargins[0]) + arrInchMargins[2])
+				// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding Y on paging is to *increase* usable space)
+				if (emuSlideTabH < tablePropH) emuSlideTabH = tablePropH
+			}
 		}
-
-		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
-		if (tableRowSlides.length > 1 && typeof tableProps.autoPageSlideStartY === 'number') {
-			emuSlideTabH = tableProps.h && typeof tableProps.h === 'number' ? tableProps.h : presLayout.height - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2])
-		} else if (tableRowSlides.length > 1 && typeof tableProps.newSlideStartY === 'number') {
-			// @deprecated v3.3.0
-			emuSlideTabH = tableProps.h && typeof tableProps.h === 'number' ? tableProps.h : presLayout.height - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2])
-		} else if (tableRowSlides.length > 1 && typeof tableProps.y === 'number') {
-			emuSlideTabH = presLayout.height - inch2Emu((tableProps.y / EMU < arrInchMargins[0] ? tableProps.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
-			// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
-			if (typeof tableProps.h === 'number' && emuSlideTabH < tableProps.h) emuSlideTabH = tableProps.h
-		} else if (typeof tableProps.h === 'number' && typeof tableProps.y === 'number') {
-			emuSlideTabH = tableProps.h ? tableProps.h : presLayout.height - inch2Emu((tableProps.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
-		}
+		if (tableProps.verbose && iRow === 0) console.log(`| SLIDE [${tableRowSlides.length}]: emuSlideTabH ...... = ${(emuSlideTabH / EMU).toFixed(1)} `)
 
 		// E: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
 		row.forEach((cell, iCell) => {
