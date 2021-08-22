@@ -397,17 +397,18 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 						// 5: reset current table height for this new Slide
 						emuTabCurrH = 0
 
-						// FIXME: this isnt working on HTML-slides demo!!! 202010821
 						// 6: handle repeat headers option /or/ Add new empty row to continue current lines into
-						if (tableProps.autoPageRepeatHeader) console.log(tableProps._arrObjTabHeadRows) // FIXME:
 						if ((tableProps.addHeaderToEach || tableProps.autoPageRepeatHeader) && tableProps._arrObjTabHeadRows) {
-							let tableHeadRows: TableCell[][] = []
 							tableProps._arrObjTabHeadRows.forEach(row => {
-								let newHeadRow = []
-								row.forEach(cell => newHeadRow.push(cell))
-								tableHeadRows.push(newHeadRow)
+								let newHeadRow: TableRow = []
+								let maxLineHeight = 0
+								row.forEach(cell => {
+									newHeadRow.push(cell)
+									if (cell._lineHeight > maxLineHeight) maxLineHeight = cell._lineHeight
+								})
+								newTableRowSlide.rows.push(newHeadRow)
+								emuTabCurrH += maxLineHeight // TODO: what about margins? dont we need to include cell margin in line height?
 							})
-							tableRows = [...tableHeadRows, ...tableRows]
 						}
 					}
 
@@ -432,7 +433,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 
 		// TODO: FIXME: still "needs repair"
 		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 line shtta have a `<br/>`
-		// TODO: FIXME: "autoPageRepeatHeader" doesnt work
 
 		// 7: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
@@ -665,7 +665,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 		// B: DESIGN: Reset `y` to startY or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
 		if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
-		if (opts.verbose) console.log('opts.autoPageSlideStartY:' + opts.autoPageSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+		if (opts.verbose) console.log(`| opts.autoPageSlideStartY: ${opts.autoPageSlideStartY} / arrInchMargins[0]: ${arrInchMargins[0]} => opts.y = ${opts.y}`)
 
 		// C: Add table to Slide
 		newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
