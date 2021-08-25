@@ -21,17 +21,15 @@ import {
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
-	/*
-		genSlide01(pptx);
-		genSlide02(pptx);
-		genSlide03(pptx);
-		genSlide04(pptx);
-		genSlide05(pptx);
-		genSlide06(pptx);
-		genSlide07(pptx);
-	*/
+	genSlide01(pptx);
+	genSlide02(pptx);
+	genSlide03(pptx);
+	genSlide04(pptx);
+	genSlide05(pptx);
+	genSlide06(pptx);
+	genSlide07(pptx);
 	genSlide08(pptx);
-	genSlideDebugCalc(pptx);
+	genSlideDebugCalc(pptx); // DEBUG: TODO: comment-put before final checkin
 }
 
 /**
@@ -767,7 +765,7 @@ function genSlide08(pptx) {
 		arrRows.push([
 			{ text: idx.toString(), options: { align: "center" } },
 			{ text: name },
-			{ text: [{ text: "Title", options: { bold: true, color: "FF0000", breakLine: true } }, { text: strText }] },
+			{ text: [{ text: "Title", options: { bold: true, color: "FF0000", breakLine: true } }, { text: `>${strText}<` }] },
 		]);
 	});
 	slide.addTable(arrRows, {
@@ -782,7 +780,7 @@ function genSlide08(pptx) {
 	});
 }
 
-// TODO: 20210818: other demos are fine, but using com,plex/formatted text => "NEEDS REPAIR", so com eup with a simple case and compare "repaired" version to see WTF
+// TODO: 20210818: other demos are fine, but using com,plex/formatted text => "NEEDS REPAIR", so come up with a simple case and compare "repaired" version to see WTF
 
 function genSlideDebugCalc(pptx) {
 	let slide = null;
@@ -807,7 +805,7 @@ function genSlideDebugCalc(pptx) {
 	]);
 	for (let rowIdx = 0; rowIdx < 9; rowIdx++) {
 		let col3Lines = [{ text: "Complex-Title", options: { bold: true, color: "FF0000", breakLine: true } }];
-		for (let lineIdx = 0; lineIdx < 19; lineIdx++) {
+		for (let lineIdx = 0; lineIdx < 9; lineIdx++) {
 			col3Lines.push({ text: `This is ROW#:${rowIdx + 1} LNE#:${lineIdx + 1}`, options: { breakLine: true } });
 		}
 		arrRows.push([{ text: "" }, { text: "" }, { text: col3Lines }]);

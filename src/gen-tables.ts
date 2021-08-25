@@ -451,7 +451,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		}
 
 		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 lines that have a `<br/>`
-		// TODO: FIXME: "HTML to PPTX" - rowspan/colspan table styles are gone
 
 		// 7: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
@@ -521,7 +520,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 		console.log(`| emuSlideTabW .................................... = ${(emuSlideTabW / EMU).toFixed(1)}`)
 	}
 
-	// STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
+	// STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspans, who cares, we only need col widths from 1
 	let firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child th`)
 	if (firstRowCells.length === 0) firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child td`)
 	firstRowCells.forEach((cell: HTMLElement) => {
@@ -550,12 +549,14 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 		if (colSelectorSet) intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'))
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
-	if (opts.verbose)
+	if (opts.verbose) {
 		console.log(`| arrColW ......................................... = [${arrColW.join(', ')}]`)
+	}
 
-		// STEP 4: Iterate over each table element and create data arrays (text and opts)
-		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-	;['thead', 'tbody', 'tfoot'].forEach(part => {
+	// STEP 4: Iterate over each table element and create data arrays (text and opts)
+	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
+	let tableParts = ['thead', 'tbody', 'tfoot']
+	tableParts.forEach(part => {
 		document.querySelectorAll(`#${tabEleId} ${part} tr`).forEach((row: HTMLTableRowElement) => {
 			let arrObjTabCells: TableCell[] = []
 			Array.from(row.cells).forEach(cell => {
