@@ -68,7 +68,7 @@ function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean):
 					newLine.push({
 						_type: SLIDE_OBJECT_TYPES.tablecell,
 						text: textLine,
-						options: cell.options,
+						options: { ...cell.options, ...{ breakLine: true } },
 					})
 				})
 			} else {
@@ -322,7 +322,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 
 			// E-4: Create lines based upon available column width
 			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
-			//newCell._lines = parseTextToLines(cell, totalColW / ONEPT, true) // DEBUG: TODO:
 
 			// E-5: Add cell to array
 			rowCellLines.push(newCell)
@@ -449,8 +448,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 				})
 			})
 		}
-
-		// TODO: FIXME: HTLM2PPTX isnt line breaking between first 2 lines that have a `<br/>`
 
 		// 7: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
