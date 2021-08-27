@@ -21,6 +21,7 @@ import {
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
+	/*
 	genSlide01(pptx);
 	genSlide02(pptx);
 	genSlide03(pptx);
@@ -28,8 +29,9 @@ export function genSlides_Table(pptx) {
 	genSlide05(pptx);
 	genSlide06(pptx);
 	genSlide07(pptx);
+	*/
 	genSlide08(pptx);
-	genSlideDebugCalc(pptx); // DEBUG: TODO: comment-put before final checkin
+	genSlideDebugCalc(pptx); // DEBUG:
 }
 
 /**
@@ -93,7 +95,7 @@ function genSlide01(pptx) {
 		[
 			{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
 			{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
-			{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
+			{ text: "0.15 margin", options: { fill: { color: "6699CC" }, margin: 0.15 } },
 		],
 	];
 	slide.addTable(arrTabRows2, {
@@ -324,16 +326,16 @@ function genSlide04(pptx) {
 	slide.addText("Cell Margins:", optsSub);
 
 	slide.addTable([["margin:0"]], { x: 0.5, y: 1.1, margin: 0, w: 1.2, fill: "FFFCCC", border: { pt: 0 } });
-	slide.addTable([["margin:[0,0,0,20]"]], { x: 2.5, y: 1.1, margin: [0, 0, 0, 20], w: 2.0, fill: "FFFCCC", align: "right" });
-	slide.addTable([["margin:5"]], { x: 5.5, y: 1.1, margin: 5, w: 1.0, fill: pptx.SchemeColor.background2 });
-	slide.addTable([["margin:[40,5,5,20]"]], { x: 7.5, y: 1.1, margin: [40, 5, 5, 20], w: 2.2, fill: "F1F1F1" });
-	slide.addTable([["margin:[30,5,5,30]"]], { x: 10.5, y: 1.1, margin: [30, 5, 5, 30], w: 2.2, fill: "F1F1F1" });
+	slide.addTable([["margin:[0, 0, 0, 0.3]"]], { x: 2.5, y: 1.1, margin: [0, 0, 0, 0.3], w: 2.0, fill: "FFFCCC", align: "right" });
+	slide.addTable([["margin:0.05"]], { x: 5.5, y: 1.1, margin: 0.05, w: 1.0, fill: pptx.SchemeColor.background2 });
+	slide.addTable([["margin:[0.6, 0.05, 0.05, 0.3]"]], { x: 7.1, y: 1.1, margin: [0.6, 0.05, 0.05, 0.3], w: 2.6, fill: "F1F1F1" });
+	slide.addTable([["margin:[0.45, 0.05, 0.05, 0.45]"]], { x: 10.1, y: 1.1, margin: [0.45, 0.05, 0.05, 0.45], w: 2.6, fill: "F1F1F1" });
 
 	slide.addTable(
 		[
 			[
-				{ text: "no border and number zero", options: { margin: 5 } },
-				{ text: 0, options: { margin: 5 } },
+				{ text: "no border and number zero", options: { margin: 0.05 } },
+				{ text: 0, options: { margin: 0.05 } },
 			],
 		],
 		{ x: 0.5, y: 1.9, fill: { color: "f2f9fc" }, border: { type: "none" }, colW: [2.5, 0.5] }
@@ -349,7 +351,7 @@ function genSlide04(pptx) {
 			{ text: 3, options: { color: "0088CC", align: "left" } },
 		],
 	];
-	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 7, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } });
+	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 8, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } }); // DEPRECATED: `margin` in points
 
 	// Complex/Compound border
 	optsSub.y = 3.9;
@@ -531,7 +533,7 @@ function genSlide07(pptx) {
 	]);
 	TABLE_NAMES_F.forEach((name, idx) => {
 		let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
-		arrRows.push([idx, name, strText]);
+		arrRows.push([idx + 1, name, strText]);
 		arrText.push([strText]);
 	});
 
@@ -544,6 +546,7 @@ function genSlide07(pptx) {
 		if (idx < 6) arrRowsHead2.push(row);
 	});
 
+	// EX-1: "Auto-Paging Example"
 	pptx.addSection({ title: "Tables: Auto-Paging" });
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
@@ -554,9 +557,9 @@ function genSlide07(pptx) {
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
-	slide.addTable(arrRows, { x: 0.5, y: 0.6, colW: [0.75, 1.75, 10], margin: 2, border: { color: "CFCFCF" }, autoPage: true });
-	//slide.addTable(arrRows, { x: 0.5, y: 0.6, colW: [0.75, 1.75, 10], margin: 2, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
+	slide.addTable(arrRows, { x: 0.5, y: 0.5, colW: [0.75, 1.75, 10], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
 
+	// EX-2: "Smaller Table Area"
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
@@ -565,23 +568,25 @@ function genSlide07(pptx) {
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
-	slide.addTable(arrRows, { x: 3.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, autoPage: true });
+	slide.addTable(arrRows, { x: 3.0, y: 0.5, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, verbose: false });
 
+	// EX-3: "Correct starting Y location upon paging"
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Test: Correct starting Y location upon paging", options: DEMO_TITLE_OPTS },
+			{ text: "Correct starting Y location upon paging", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
-	slide.addTable(arrRows, { x: 3.0, y: 4.0, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, fontFace: "Arial", autoPage: true });
+	slide.addTable(arrRows, { x: 3.0, y: 4.0, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, fontFace: "Arial", autoPage: true });
 
+	// EX-4: "Demo: `{ autoPageSlideStartY: 1.5 }`"
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Test: `{ autoPageSlideStartY: 1.5 }`", options: DEMO_TITLE_OPTS },
+			{ text: "Demo: `{ autoPageSlideStartY: 1.5 }`", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -589,7 +594,7 @@ function genSlide07(pptx) {
 		x: 3.0,
 		y: 4.0,
 		colW: [0.75, 1.75, 7],
-		margin: 5,
+		margin: 0.05,
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageSlideStartY: 1.5,
@@ -603,7 +608,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
-	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, autoPage: true });
+	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
 
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
@@ -613,7 +618,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
-	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" } }); // Negative-Test: no `autoPage:false`
+	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" } }); // Negative-Test: no `autoPage:false`
 
 	// `autoPageRepeatHeader` option demos
 	pptx.addSection({ title: "Tables: Auto-Paging Repeat Header" });
@@ -629,7 +634,7 @@ function genSlide07(pptx) {
 		x: 0.23,
 		y: 0.6,
 		colW: [0.5, 1.0, 2.5],
-		margin: 5,
+		margin: 0.05,
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageRepeatHeader: true,
@@ -647,7 +652,7 @@ function genSlide07(pptx) {
 		x: 4.75,
 		y: 0.6,
 		colW: [0.5, 1.0, 2.5],
-		margin: 5,
+		margin: 0.05,
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageRepeatHeader: true,
@@ -666,7 +671,7 @@ function genSlide07(pptx) {
 		x: 9.1,
 		y: 0.6,
 		colW: [0.5, 1.0, 2.5],
-		margin: 5,
+		margin: 0.05,
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageRepeatHeader: true,
@@ -684,7 +689,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
 	);
-	slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.0 });
+	slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.0 });
 
 	slide.addText(
 		[
@@ -693,7 +698,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
 	);
-	slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.5 });
+	slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.5 });
 
 	slide.addText(
 		[
@@ -702,7 +707,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
 	);
-	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: -0.5 });
+	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: -0.5 });
 
 	// autoPageCharWeight option demos
 	pptx.addSection({ title: "Tables: Auto-Paging CharWeight" });
@@ -714,7 +719,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
 	);
-	slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.0 });
+	slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.0 });
 
 	slide.addText(
 		[
@@ -723,7 +728,7 @@ function genSlide07(pptx) {
 		],
 		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
 	);
-	slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.25 });
+	slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.25 });
 
 	slide.addText(
 		[
@@ -732,12 +737,13 @@ function genSlide07(pptx) {
 		],
 		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
 	);
-	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: -0.25 });
+	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: -0.25 });
 }
 
 /**
  * SLIDE 8[...]: Table auto-paging with complex text array (unsupported until 3.7.2/3.8.0)
  * @param {PptxGenJS} pptx
+ * @since 3.8.0
  */
 function genSlide08(pptx) {
 	let slide = null;
@@ -770,7 +776,7 @@ function genSlide08(pptx) {
 	});
 	slide.addTable(arrRows, {
 		x: 0.5,
-		y: 0.6,
+		y: 0.5,
 		w: 8,
 		colW: [1, 1, 6],
 		border: { color: "CFCFCF" },
@@ -780,8 +786,11 @@ function genSlide08(pptx) {
 	});
 }
 
-// TODO: 20210818: other demos are fine, but using com,plex/formatted text => "NEEDS REPAIR", so come up with a simple case and compare "repaired" version to see WTF
-
+/**
+ * SLIDE 9[...]: Tightly calculated/labels rows and cells for precision auto-paging dev & test
+ * @param {PptxGenJS} pptx
+ * @since 3.8.0
+ */
 function genSlideDebugCalc(pptx) {
 	let slide = null;
 	let arrRows = [];
@@ -812,7 +821,7 @@ function genSlideDebugCalc(pptx) {
 	}
 	slide.addTable(arrRows, {
 		x: 0.5,
-		y: 0.6,
+		y: 0.75,
 		w: 8,
 		colW: [1, 1, 6],
 		border: { color: "CFCFCF" },

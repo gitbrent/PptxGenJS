@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-20T04:17:53.335Z */
+/* PptxGenJS 3.7.1 @ 2021-08-27T03:38:40.821Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -46,7 +46,7 @@ var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 var LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
 var DEF_BULLET_MARGIN = 27;
 var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
-var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
+var DEF_CELL_MARGIN_IN = [0.05, 0.1, 0.05, 0.1]; // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
 var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 };
 var DEF_FONT_COLOR = '000000';
 var DEF_FONT_SIZE = 12;
@@ -611,7 +611,11 @@ var IMG_PLAYBTN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAHCCAYAAAA
  * PptxGenJS: Utility Methods
  */
 /**
- * Convert string percentages to number relative to slide size
+ * Translates any type of `x`/`y`/`w`/`h` prop to EMU
+ * - guaranteed to return a result regardless of undefined, null, etc. (0)
+ * - {number} - 12800 (EMU)
+ * - {number} - 0.5 (inches)
+ * - {string} - "75%"
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
  * @param {'X' | 'Y'} xyDir - direction
  * @param {PresLayout} layout - presentation layout
@@ -626,7 +630,7 @@ function getSmartParseNumber(size, xyDir, layout) {
     if (typeof size === 'number' && size < 100)
         return inch2Emu(size);
     // CASE 2: Number is already converted to something other than inches
-    // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
+    // Assume any number greater than 100 sure isnt inches! Just return it (assume value is EMU already).
     if (typeof size === 'number' && size >= 100)
         return size;
     // CASE 3: Percentage (ex: '50%')
@@ -689,8 +693,8 @@ function encodeXmlEntities(xml) {
  * @returns {number} EMU value
  */
 function inch2Emu(inches) {
-    // FIRST: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
-    // Any value over 100 damn sure isnt inches, must be EMU already, so just return it
+    // NOTE: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
+    // Any value over 100 damn sure isnt inches, so lets assume its in EMU already, therefore, just return the same value
     if (typeof inches === 'number' && inches > 100)
         return inches;
     if (typeof inches === 'string')
@@ -826,12 +830,14 @@ function getNewRelId(target) {
 /**
  * Break cell text into lines based upon table column width (e.g.: Magic Happens Here(tm))
  * @param {TableCell} cell - table cell
- * @param {number} colWidth - table column width
+ * @param {number} colWidth - table column width (inches)
  * @return {TableRow[]} - cell's text objects grouped into lines
  */
 function parseTextToLines(cell, colWidth, verbose) {
-    var CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (An approximation of the Golden Ratio)
-    var CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
+    // FYI: CHAR: 2.3, colWidth: 10 => CPL=138, (actual chars per line in PPT)=145
+    // FYI: CHAR: 2.3, colWidth: 7 => CPL=96.6, (actual chars per line in PPT)=100
+    var CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (approximation of the Golden Ratio)
+    var CPL = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
     var parsedLines = [];
     var inputCells = [];
     var inputLines1 = [];
@@ -850,7 +856,7 @@ function parseTextToLines(cell, colWidth, verbose) {
      * - object[]..: [{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]
      * - object[]..: [{ text:"Account Name", options:{ breakLine:true } }, { text:"Input" }]
      */
-    // A: Ensure inputCells is an array of TableCells
+    // STEP 1: Ensure inputCells is an array of TableCells
     if (cell.text && cell.text.toString().trim().length === 0) {
         // Allow a single space/whitespace as cell text (user-requested feature)
         inputCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' });
@@ -862,12 +868,11 @@ function parseTextToLines(cell, colWidth, verbose) {
         inputCells = cell.text;
     }
     if (verbose) {
-        console.log('inputCells');
-        inputCells.forEach(function (cell, idx) { return console.log("[" + (idx + 1) + "] cell: " + JSON.stringify(cell)); });
-        console.log('...............................................\n\n');
+        console.log('[1/4] inputCells');
+        inputCells.forEach(function (cell, idx) { return console.log("[1/4] [" + (idx + 1) + "] cell: " + JSON.stringify(cell)); });
+        //console.log('...............................................\n\n')
     }
-    // B: Group table cells into lines
-    // B-1: Break on "\n" or `breakLine` prop
+    // STEP 2: Group table cells into lines based on "\n" or `breakLine` prop
     /**
      * - EX: `[{ text:"Input Output" }, { text:"Extra" }]`							== 1 line
      * - EX: `[{ text:"Input" }, { text:"Output", options:{ breakLine:true } }]`	== 1 line
@@ -883,7 +888,7 @@ function parseTextToLines(cell, colWidth, verbose) {
                     newLine.push({
                         _type: SLIDE_OBJECT_TYPES.tablecell,
                         text: textLine,
-                        options: cell.options,
+                        options: __assign(__assign({}, cell.options), { breakLine: true }),
                     });
                 });
             }
@@ -905,60 +910,56 @@ function parseTextToLines(cell, colWidth, verbose) {
         if (newLine.length > 0)
             inputLines1.push(newLine);
     });
-    // B-2: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text add its `options`, etc.)
     if (verbose) {
-        console.log('inputLines1');
-        inputLines1.forEach(function (line, idx) { return console.log("[" + (idx + 1) + "] line: " + JSON.stringify(line)); });
-        console.log('...............................................\n\n');
+        console.log("[2/4] inputLines1 (" + inputLines1.length + ")");
+        inputLines1.forEach(function (line, idx) { return console.log("[2/4] [" + (idx + 1) + "] line: " + JSON.stringify(line)); });
+        //console.log('...............................................\n\n')
     }
+    // STEP 3: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text, add its `options`, etc.)
     inputLines1.forEach(function (line) {
         line.forEach(function (cell) {
             var lineCells = [];
             var cellTextStr = cell.text + ''; // force convert to string (compiled JS is better with this than a cast)
             var lineWords = cellTextStr.split(' ');
-            var filteredWords = lineWords.filter(function (word) { return word; });
-            filteredWords.forEach(function (word, idx) {
+            lineWords.forEach(function (word, idx) {
                 var cellProps = __assign({}, cell.options);
                 // IMPORTANT: Handle `breakLine` prop - we cannot apply to each word - only apply to very last word!
                 if (cellProps && cellProps.breakLine)
                     cellProps.breakLine = idx + 1 === lineWords.length;
-                if (word)
-                    lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < filteredWords.length ? ' ' : ''), options: cellProps });
+                lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < lineWords.length ? ' ' : ''), options: cellProps });
             });
             inputLines2.push(lineCells);
         });
     });
     if (verbose) {
-        console.log('inputLines2');
-        inputLines2.forEach(function (line) { return console.log("line: " + JSON.stringify(line)); });
-        console.log('...............................................\n\n');
+        console.log("[3/4] inputLines2 (" + inputLines2.length + ")");
+        inputLines2.forEach(function (line) { return console.log("[3/4] line: " + JSON.stringify(line)); });
+        //console.log('...............................................\n\n')
     }
-    // B-3: Break lines on word character spaces consumed
-    var strCurrLine = '';
+    // STEP 4: Group cells/words into lines based upon space consumed by word letters
     inputLines2.forEach(function (line) {
         var lineCells = [];
+        var strCurrLine = '';
         line.forEach(function (word) {
+            // A: create new line when horizontal space is exhausted
             if (strCurrLine.length + word.text.length > CPL) {
+                //if (verbose) console.log(`STEP 4: New line added: (${strCurrLine.length} + ${word.text.length} > ${CPL})`);
                 parsedLines.push(lineCells);
-                lineCells = [word];
+                lineCells = [];
+                strCurrLine = '';
             }
-            else {
-                lineCells.push(word);
-            }
-            strCurrLine += word.text;
+            // B: add current word to line cells
+            lineCells.push(word);
+            // C: add current word to `strCurrLine` which we use to keep track of line's char length
+            strCurrLine += word.text.toString();
         });
-        // All words for this line have been exhausted, flush buffer
-        if (strCurrLine) {
-            // Remove trailing space // TODO: FIXME: not working
-            var lastText = lineCells[lineCells.length - 1].text;
-            lastText = lastText.trim();
+        // Flush buffer: Only create a line when there's text to avoid empty row
+        if (lineCells.length > 0)
             parsedLines.push(lineCells);
-            strCurrLine = '';
-        }
     });
     if (verbose) {
-        console.log('parsedLines');
-        parsedLines.forEach(function (line, idx) { return console.log("[" + (idx + 1) + "] line: " + JSON.stringify(line)); });
+        console.log("[4/4] parsedLines (" + parsedLines.length + ")");
+        parsedLines.forEach(function (line, idx) { return console.log("[4/4] [Line " + (idx + 1) + "]:\n" + JSON.stringify(line)); });
         console.log('...............................................\n\n');
     }
     // Done:
@@ -966,46 +967,65 @@ function parseTextToLines(cell, colWidth, verbose) {
 }
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {TableCell[][]} tableRows - HTMLElementID of the table
- * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
- * @param {PresLayout} presLayout - Presentation layout
- * @param {SlideLayout} masterSlide - master slide (if any)
+ * @param {TableCell[][]} tableRows - table rows
+ * @param {TableToSlidesProps} tableProps - table2slides properties
+ * @param {PresLayout} presLayout - presentation layout
+ * @param {SlideLayout} masterSlide - master slide
  * @return {TableRowSlide[]} array of table rows
  */
-function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
+function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
     if (tableRows === void 0) { tableRows = []; }
-    if (tabOpts === void 0) { tabOpts = {}; }
-    var arrInchMargins = DEF_SLIDE_MARGIN_IN, emuTabCurrH = 0, emuSlideTabW = EMU * 1, emuSlideTabH = EMU * 1, numCols = 0;
+    if (tableProps === void 0) { tableProps = {}; }
+    var arrInchMargins = DEF_SLIDE_MARGIN_IN;
+    var emuSlideTabW = EMU * 1;
+    var emuSlideTabH = EMU * 1;
+    var emuTabCurrH = 0; // TODO: rename `emuTableCalcH`
+    var numCols = 0;
     var tableRowSlides = [];
-    if (tabOpts.verbose) {
+    var tablePropX = getSmartParseNumber(tableProps.x, 'X', presLayout);
+    var tablePropY = getSmartParseNumber(tableProps.y, 'Y', presLayout);
+    var tablePropW = getSmartParseNumber(tableProps.w, 'X', presLayout);
+    var tablePropH = getSmartParseNumber(tableProps.h, 'Y', presLayout);
+    var tableCalcW = tablePropW;
+    if (tableProps.verbose) {
         console.log('[[VERBOSE MODE]]');
-        console.log('|-- TABLE PROPS -----------------------------------------------------|');
-        console.log("| presLayout.height ......... = " + presLayout.height / EMU);
-        console.log("| tabOpts.h ................. = " + tabOpts.h);
-        console.log("| tabOpts.w ................. = " + tabOpts.w);
-        console.log("| tabOpts.colW .............. = " + tabOpts.colW);
-        console.log("| tabOpts.slideMargin ....... = " + (tabOpts.slideMargin || ''));
-        console.log('|-- CALCULATIONS ----------------------------------------------------|');
+        console.log('|-- TABLE PROPS --------------------------------------------------------|');
+        console.log("| presLayout.width ................................ = " + (presLayout.width / EMU).toFixed(1));
+        console.log("| presLayout.height ............................... = " + (presLayout.height / EMU).toFixed(1));
+        console.log("| tableProps.x .................................... = " + (typeof tableProps.x === 'number' ? (tableProps.x / EMU).toFixed(1) : tableProps.x));
+        console.log("| tableProps.y .................................... = " + (typeof tableProps.y === 'number' ? (tableProps.y / EMU).toFixed(1) : tableProps.y));
+        console.log("| tableProps.w .................................... = " + (typeof tableProps.w === 'number' ? (tableProps.w / EMU).toFixed(1) : tableProps.w));
+        console.log("| tableProps.h .................................... = " + (typeof tableProps.h === 'number' ? (tableProps.h / EMU).toFixed(1) : tableProps.h));
+        console.log("| tableProps.slideMargin .......................... = " + (tableProps.slideMargin || ''));
+        console.log("| tableProps.margin ............................... = " + tableProps.margin);
+        console.log("| tableProps.colW ................................. = " + tableProps.colW);
+        console.log("| tableProps.autoPageSlideStartY .................. = " + tableProps.autoPageSlideStartY);
+        console.log('|-- CALCULATIONS -------------------------------------------------------|');
+        console.log("| tablePropX ...................................... = " + tablePropX / EMU);
+        console.log("| tablePropY ...................................... = " + tablePropY / EMU);
+        console.log("| tablePropW ...................................... = " + tablePropW / EMU);
+        console.log("| tablePropH ...................................... = " + tablePropH / EMU);
+        console.log("| tableCalcW ...................................... = " + tableCalcW / EMU);
     }
     // STEP 1: Calculate margins
     {
         // Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
-        if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0)
-            tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0];
+        if (!tableProps.slideMargin && tableProps.slideMargin !== 0)
+            tableProps.slideMargin = DEF_SLIDE_MARGIN_IN[0];
         if (masterSlide && typeof masterSlide._margin !== 'undefined') {
             if (Array.isArray(masterSlide._margin))
                 arrInchMargins = masterSlide._margin;
             else if (!isNaN(Number(masterSlide._margin)))
                 arrInchMargins = [Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin)];
         }
-        else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
-            if (Array.isArray(tabOpts.slideMargin))
-                arrInchMargins = tabOpts.slideMargin;
-            else if (!isNaN(tabOpts.slideMargin))
-                arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin];
+        else if (tableProps.slideMargin || tableProps.slideMargin === 0) {
+            if (Array.isArray(tableProps.slideMargin))
+                arrInchMargins = tableProps.slideMargin;
+            else if (!isNaN(tableProps.slideMargin))
+                arrInchMargins = [tableProps.slideMargin, tableProps.slideMargin, tableProps.slideMargin, tableProps.slideMargin];
         }
-        if (tabOpts.verbose)
-            console.log('| arrInchMargins ............ = ' + arrInchMargins.toString());
+        if (tableProps.verbose)
+            console.log("| arrInchMargins .................................. = [" + arrInchMargins.join(', ') + "]");
     }
     // STEP 2: Calculate number of columns
     {
@@ -1018,45 +1038,38 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             var cellOpts = cell.options || null;
             numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1);
         });
-        if (tabOpts.verbose)
-            console.log('| numCols ................... = ' + numCols);
+        if (tableProps.verbose)
+            console.log("| numCols ......................................... = " + numCols);
     }
-    // STEP 3: Calculate tabOpts.w if tabOpts.colW was provided
-    if (!tabOpts.w && tabOpts.colW) {
-        if (Array.isArray(tabOpts.colW))
-            tabOpts.colW.forEach(function (val) {
-                typeof tabOpts.w !== 'number' ? (tabOpts.w = 0 + val) : (tabOpts.w += val);
-            });
-        else {
-            tabOpts.w = tabOpts.colW * numCols;
-        }
+    // STEP 3: Calculate width using tableProps.colW if possible
+    if (!tablePropW && tableProps.colW) {
+        tableCalcW = Array.isArray(tableProps.colW) ? tableProps.colW.reduce(function (p, n) { return p + n; }) * EMU : tableProps.colW * numCols || 0;
+        if (tableProps.verbose)
+            console.log("| tableCalcW ...................................... = " + tableCalcW / EMU);
     }
     // STEP 4: Calculate usable space/table size (now that total usable space is known)
     {
-        emuSlideTabW =
-            typeof tabOpts.w === 'number'
-                ? inch2Emu(tabOpts.w)
-                : presLayout.width - inch2Emu((typeof tabOpts.x === 'number' ? tabOpts.x : arrInchMargins[1]) + arrInchMargins[3]);
-        if (tabOpts.verbose)
-            console.log('| emuSlideTabW (in) ......... = ' + (emuSlideTabW / EMU).toFixed(1));
+        emuSlideTabW = tableCalcW ? tableCalcW : inch2Emu((tablePropX ? tablePropX / EMU : arrInchMargins[1]) + arrInchMargins[3]);
+        if (tableProps.verbose)
+            console.log("| emuSlideTabW .................................... = " + (emuSlideTabW / EMU).toFixed(1));
     }
     // STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
-    if (!tabOpts.colW || !Array.isArray(tabOpts.colW)) {
-        if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
+    if (!tableProps.colW || !Array.isArray(tableProps.colW)) {
+        if (tableProps.colW && !isNaN(Number(tableProps.colW))) {
             var arrColW_1 = [];
             var firstRow = tableRows[0] || [];
-            firstRow.forEach(function () { return arrColW_1.push(tabOpts.colW); });
-            tabOpts.colW = [];
+            firstRow.forEach(function () { return arrColW_1.push(tableProps.colW); });
+            tableProps.colW = [];
             arrColW_1.forEach(function (val) {
-                if (Array.isArray(tabOpts.colW))
-                    tabOpts.colW.push(val);
+                if (Array.isArray(tableProps.colW))
+                    tableProps.colW.push(val);
             });
         }
         // No column widths provided? Then distribute cols.
         else {
-            tabOpts.colW = [];
+            tableProps.colW = [];
             for (var iCol = 0; iCol < numCols; iCol++) {
-                tabOpts.colW.push(emuSlideTabW / EMU / numCols);
+                tableProps.colW.push(emuSlideTabW / EMU / numCols);
             }
         }
     }
@@ -1067,7 +1080,6 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         var rowCellLines = [];
         var maxCellMarTopEmu = 0;
         var maxCellMarBtmEmu = 0;
-        var maxLineHeightEmu = 0;
         // B: Create new row in data model
         var currTableRow = [];
         row.forEach(function (cell) {
@@ -1076,65 +1088,85 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 text: [],
                 options: cell.options,
             });
-            if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu)
-                maxCellMarTopEmu = valToPts(cell.options.margin[0]);
-            else if (tabOpts.margin && tabOpts.margin[0] && valToPts(tabOpts.margin[0]) > maxCellMarTopEmu)
-                maxCellMarTopEmu = valToPts(tabOpts.margin[0]);
-            if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu)
-                maxCellMarBtmEmu = valToPts(cell.options.margin[2]);
-            else if (tabOpts.margin && tabOpts.margin[2] && valToPts(tabOpts.margin[2]) > maxCellMarBtmEmu)
-                maxCellMarBtmEmu = valToPts(tabOpts.margin[2]);
+            /** FUTURE: DEPRECATED:
+             * - Backwards-Compat: Oops! Discovered we were still using points for cell margin before v3.8.0 (UGH!)
+             * - We cant introduce a breaking change before v4.0, so...
+             */
+            if (cell.options.margin && cell.options.margin[0] >= 1) {
+                if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu)
+                    maxCellMarTopEmu = valToPts(cell.options.margin[0]);
+                else if (tableProps.margin && tableProps.margin[0] && valToPts(tableProps.margin[0]) > maxCellMarTopEmu)
+                    maxCellMarTopEmu = valToPts(tableProps.margin[0]);
+                if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu)
+                    maxCellMarBtmEmu = valToPts(cell.options.margin[2]);
+                else if (tableProps.margin && tableProps.margin[2] && valToPts(tableProps.margin[2]) > maxCellMarBtmEmu)
+                    maxCellMarBtmEmu = valToPts(tableProps.margin[2]);
+            }
+            else {
+                if (cell.options.margin && cell.options.margin[0] && inch2Emu(cell.options.margin[0]) > maxCellMarTopEmu)
+                    maxCellMarTopEmu = inch2Emu(cell.options.margin[0]);
+                else if (tableProps.margin && tableProps.margin[0] && inch2Emu(tableProps.margin[0]) > maxCellMarTopEmu)
+                    maxCellMarTopEmu = inch2Emu(tableProps.margin[0]);
+                if (cell.options.margin && cell.options.margin[2] && inch2Emu(cell.options.margin[2]) > maxCellMarBtmEmu)
+                    maxCellMarBtmEmu = inch2Emu(cell.options.margin[2]);
+                else if (tableProps.margin && tableProps.margin[2] && inch2Emu(tableProps.margin[2]) > maxCellMarBtmEmu)
+                    maxCellMarBtmEmu = inch2Emu(tableProps.margin[2]);
+            }
         });
         // C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-        emuSlideTabH =
-            tabOpts.h && typeof tabOpts.h === 'number'
-                ? tabOpts.h
-                : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0);
-        // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
-        if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
-            emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.autoPageSlideStartY + arrInchMargins[2]);
+        emuSlideTabH = (tablePropH || presLayout.height) - (tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])) - inch2Emu(arrInchMargins[2]);
+        if (tableRowSlides.length > 1) {
+            // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
+            if (typeof tableProps.autoPageSlideStartY === 'number') {
+                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2]);
+            }
+            else if (typeof tableProps.newSlideStartY === 'number') {
+                // @deprecated v3.3.0
+                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2]);
+            }
+            else if (tablePropY) {
+                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu((tablePropY / EMU < arrInchMargins[0] ? tablePropY / EMU : arrInchMargins[0]) + arrInchMargins[2]);
+                // Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding Y on paging is to *increase* usable space)
+                if (emuSlideTabH < tablePropH)
+                    emuSlideTabH = tablePropH;
+            }
         }
-        else if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
-            // @deprecated v3.3.0
-            emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2]);
-        }
-        else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
-            emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2]);
-            // Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
-            if (typeof tabOpts.h === 'number' && emuSlideTabH < tabOpts.h)
-                emuSlideTabH = tabOpts.h;
-        }
-        else if (typeof tabOpts.h === 'number' && typeof tabOpts.y === 'number')
-            emuSlideTabH = tabOpts.h ? tabOpts.h : presLayout.height - inch2Emu((tabOpts.y / EMU || arrInchMargins[0]) + arrInchMargins[2]);
+        if (tableProps.verbose && iRow === 0)
+            console.log("| SLIDE [" + tableRowSlides.length + "]: emuSlideTabH ...... = " + (emuSlideTabH / EMU).toFixed(1) + " ");
         // E: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
         row.forEach(function (cell, iCell) {
             var newCell = {
                 _type: SLIDE_OBJECT_TYPES.tablecell,
                 _lines: null,
-                _lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
-                    (LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
+                _lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tableProps.fontSize ? tableProps.fontSize : DEF_FONT_SIZE) *
+                    (LINEH_MODIFIER + (tableProps.autoPageLineWeight ? tableProps.autoPageLineWeight : 0))) /
                     100),
                 text: [],
                 options: cell.options,
             };
-            // 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
+            // E-1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
             if (newCell.options.rowspan)
                 newCell._lineHeight = 0;
-            // 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
-            newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null;
-            // 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
-            var totalColW = tabOpts.colW[iCell];
-            if (cell.options.colspan && Array.isArray(tabOpts.colW)) {
-                totalColW = tabOpts.colW.filter(function (_cell, idx) { return idx >= iCell && idx < idx + cell.options.colspan; }).reduce(function (prev, curr) { return prev + curr; });
+            // E-2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
+            newCell.options.autoPageCharWeight = tableProps.autoPageCharWeight ? tableProps.autoPageCharWeight : null;
+            // E-3: **MAIN** Parse cell contents into lines based upon col width, font, etc
+            var totalColW = tableProps.colW[iCell];
+            if (cell.options.colspan && Array.isArray(tableProps.colW)) {
+                totalColW = tableProps.colW.filter(function (_cell, idx) { return idx >= iCell && idx < idx + cell.options.colspan; }).reduce(function (prev, curr) { return prev + curr; });
             }
-            // 4: Create lines based upon available column width
-            newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false);
-            // 5: Add cell to array
+            // E-4: Create lines based upon available column width
+            newCell._lines = parseTextToLines(cell, totalColW, false);
+            // E-5: Add cell to array
             rowCellLines.push(newCell);
         });
         // F: Start row height with margins
         emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
-        //if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
+        // FIXME: When we start at y:3, then subsequent slides start at Y, we'r enot calcing availbe H correctly!!!
+        // FIXME: "Correct starting Y location upon paging"
+        /* FIX?:
+            if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
+            if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
+        */
         /** G: --==[[ PAGE DATA SET ]]==--
          * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
          *
@@ -1148,25 +1180,35 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
          * - each cell contains an array of lines
          * EX:
          * {
-         *    _lines: [{ text:'cell 1' }, { text:'line 2' }],
-         *    _lines: [{ text:'cell 2' }, { text:'line 2' }],
-         *    _lines: [{ text:'cell 3' }, { text:'line 2' }, { text:'line 3' }, { text:'line 4' }],
+         *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line-2' }],															// TOTAL-CELL-HEIGHT = 2
+         *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line-2' }],															// TOTAL-CELL-HEIGHT = 2
+         *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line-2' }, { text:'cell-3,line-3' }, { text:'cell-3,line-4' }],		// TOTAL-CELL-HEIGHT = 4
          * }
          */
         if (rowCellLines) {
-            if (tabOpts.verbose)
+            if (tableProps.verbose)
                 console.log("\n| SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
+            // 1: Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
+            var maxLineHeightCellIdx_1 = 0;
+            rowCellLines.forEach(function (cell, cellIdx) {
+                // NOTE: Use ">=" because we want to use largest index possible - if all cols are H=1, then we want last index ot be the one we select
+                if (cell._lines.length >= rowCellLines[maxLineHeightCellIdx_1]._lines.length)
+                    maxLineHeightCellIdx_1 = cellIdx;
+                // TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
+            });
+            // 2: build lines inside cells
             rowCellLines.forEach(function (cell, cellIdx) {
                 cell._lines.forEach(function (line, lineIdx) {
                     // A: create a new slide if there is insufficient room for the current row
-                    if (emuTabCurrH + maxLineHeightEmu > emuSlideTabH) {
-                        if (tabOpts.verbose) {
+                    if (emuTabCurrH + cell._lineHeight > emuSlideTabH) {
+                        if (tableProps.verbose) {
                             console.log('\n|--------------------------------------------------------------------|');
-                            console.log("|-- NEW SLIDE CREATED (b/c: currH + newRowH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (maxLineHeightEmu / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
+                            console.log("|-- NEW SLIDE CREATED (b/c: currTabH + currLineH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (cell._lineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
                             console.log('|--------------------------------------------------------------------|\n\n');
                         }
-                        // 1: add current row slide or it will be lost
-                        newTableRowSlide.rows.push(currTableRow);
+                        // 1: add current row slide or it will be lost (only if it has rows and text)
+                        if (currTableRow.length > 0 && currTableRow.map(function (cell) { return cell.text.length; }).reduce(function (p, n) { return p + n; }) > 0)
+                            newTableRowSlide.rows.push(currTableRow);
                         // 2: add current slide to Slides array
                         tableRowSlides.push(newTableRowSlide);
                         // 3: reset working/curr slide to hold rows as they're created
@@ -1184,14 +1226,18 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                         // 5: reset current table height for this new Slide
                         emuTabCurrH = 0;
                         // 6: handle repeat headers option /or/ Add new empty row to continue current lines into
-                        if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
-                            var tableHeadRows_1 = [];
-                            tabOpts._arrObjTabHeadRows.forEach(function (row) {
+                        if ((tableProps.addHeaderToEach || tableProps.autoPageRepeatHeader) && tableProps._arrObjTabHeadRows) {
+                            tableProps._arrObjTabHeadRows.forEach(function (row) {
                                 var newHeadRow = [];
-                                row.forEach(function (cell) { return newHeadRow.push(cell); });
-                                tableHeadRows_1.push(newHeadRow);
+                                var maxLineHeight = 0;
+                                row.forEach(function (cell) {
+                                    newHeadRow.push(cell);
+                                    if (cell._lineHeight > maxLineHeight)
+                                        maxLineHeight = cell._lineHeight;
+                                });
+                                newTableRowSlide.rows.push(newHeadRow);
+                                emuTabCurrH += maxLineHeight; // TODO: what about margins? dont we need to include cell margin in line height?
                             });
-                            tableRows = __spreadArray(__spreadArray([], tableHeadRows_1), tableRows);
                         }
                     }
                     // B: get current cell on `currTableRow`
@@ -1199,13 +1245,29 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     // C: create new line (add all words)
                     if (Array.isArray(currCell.text))
                         currCell.text = currCell.text.concat(line);
-                    // D: increase current table row height
-                    if (cell._lineHeight > maxLineHeightEmu)
-                        maxLineHeightEmu = cell._lineHeight;
-                    // E: increase table height by the max height from above
-                    emuTabCurrH += maxLineHeightEmu;
+                    // D: increase table height by the curr line height (if this is tallest cell)
+                    if (cellIdx === maxLineHeightCellIdx_1)
+                        emuTabCurrH += cell._lineHeight;
+                    /** E: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
+                     * - In this case, `rowCellLines` has no content for cell 0 and cell 1
+                     * - so we need to add a { text: "" } or PPTX will be corrupted! (as each row needs the same amount of cells)
+                     *
+                     * SLIDE 1:
+                     * |--------|--------|--------|
+                     * | line-1 | line-1 | line-1 |
+                     * |--------|--------|--------|
+                     *
+                     * SLIDE 2:
+                     * |--------|--------|--------|
+                     * |        |        | line-2 |
+                     * |--------|--------|--------|
+                     */
+                    currTableRow.forEach(function (cell, idx) {
+                        if (idx < cellIdx && Array.isArray(cell.text) && cell.text.length === 0)
+                            cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' });
+                    });
                     // DONE
-                    if (tabOpts.verbose) {
+                    if (tableProps.verbose) {
                         console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: CELL [" + cellIdx + "]: LINE [" + lineIdx + "] added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
                     }
                 });
@@ -1214,15 +1276,15 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         // 7: Flush/capture row buffer before it resets at the top of this loop
         if (currTableRow.length > 0)
             newTableRowSlide.rows.push(currTableRow);
-        if (tabOpts.verbose)
+        if (tableProps.verbose)
             console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: ...COMPLETE ...... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2) + " ( emuSlideTabH = " + (emuSlideTabH / EMU).toFixed(2) + " )");
     });
     // STEP 7: Flush buffer / add final slide
     tableRowSlides.push(newTableRowSlide);
-    if (tabOpts.verbose) {
-        console.log("\n|================================================|\n| FINAL: tableRowSlides.length = " + tableRowSlides.length);
-        console.log(tableRowSlides);
-        //console.log(JSON.stringify(tableRowSlides,null,2))
+    if (tableProps.verbose) {
+        console.log("\n|================================================|");
+        console.log("| FINAL: tableRowSlides.length = " + tableRowSlides.length);
+        tableRowSlides.forEach(function (slide) { return console.log(slide); });
         console.log("|================================================|\n\n");
     }
     // LAST:
@@ -1265,17 +1327,16 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
             arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin];
     }
     emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3]);
-    if (opts.verbose)
-        console.log('-- VERBOSE MODE ----------------------------------');
-    if (opts.verbose)
-        console.log("opts.h ................. = " + opts.h);
-    if (opts.verbose)
-        console.log("opts.w ................. = " + opts.w);
-    if (opts.verbose)
-        console.log("pptx.presLayout.width .. = " + pptx.presLayout.width / EMU);
-    if (opts.verbose)
-        console.log("emuSlideTabW (in)....... = " + emuSlideTabW / EMU);
-    // STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
+    if (opts.verbose) {
+        console.log('[[VERBOSE MODE]]');
+        console.log('|-- `tableToSlides` ----------------------------------------------------|');
+        console.log("| tableProps.h .................................... = " + opts.h);
+        console.log("| tableProps.w .................................... = " + opts.w);
+        console.log("| pptx.presLayout.width ........................... = " + (pptx.presLayout.width / EMU).toFixed(1));
+        console.log("| pptx.presLayout.height .......................... = " + (pptx.presLayout.height / EMU).toFixed(1));
+        console.log("| emuSlideTabW .................................... = " + (emuSlideTabW / EMU).toFixed(1));
+    }
+    // STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspans, who cares, we only need col widths from 1
     var firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child th");
     if (firstRowCells.length === 0)
         firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child td");
@@ -1307,9 +1368,12 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         arrColW.push(intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
     });
     if (opts.verbose) {
-        console.log("arrColW ................ = " + arrColW.toString());
+        console.log("| arrColW ......................................... = [" + arrColW.join(', ') + "]");
     }
-    ['thead', 'tbody', 'tfoot'].forEach(function (part) {
+    // STEP 4: Iterate over each table element and create data arrays (text and opts)
+    // NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
+    var tableParts = ['thead', 'tbody', 'tfoot'];
+    tableParts.forEach(function (part) {
         document.querySelectorAll("#" + tabEleId + " " + part + " tr").forEach(function (row) {
             var arrObjTabCells = [];
             Array.from(row.cells).forEach(function (cell) {
@@ -1425,7 +1489,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         if (idxTr > 0)
             opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0];
         if (opts.verbose)
-            console.log('opts.autoPageSlideStartY:' + opts.autoPageSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y);
+            console.log("| opts.autoPageSlideStartY: " + opts.autoPageSlideStartY + " / arrInchMargins[0]: " + arrInchMargins[0] + " => opts.y = " + opts.y);
         // C: Add table to Slide
         newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false });
         // D: Add any additional objects
@@ -1695,10 +1759,20 @@ function slideObjectToXml(slide) {
                         fillColor =
                             fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
                         var cellFill = fillColor ? "<a:solidFill>" + createColorElement(fillColor) + "</a:solidFill>" : '';
-                        var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
+                        var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
-                        var cellMarginXml = " marL=\"" + valToPts(cellMargin[3]) + "\" marR=\"" + valToPts(cellMargin[1]) + "\" marT=\"" + valToPts(cellMargin[0]) + "\" marB=\"" + valToPts(cellMargin[2]) + "\"";
+                        /** FUTURE: DEPRECATED:
+                         * - Backwards-Compat: Oops! Discovered we were still using points for cell margin before v3.8.0 (UGH!)
+                         * - We cant introduce a breaking change before v4.0, so...
+                         */
+                        var cellMarginXml = '';
+                        if (cellMargin[0] >= 1) {
+                            cellMarginXml = " marL=\"" + valToPts(cellMargin[3]) + "\" marR=\"" + valToPts(cellMargin[1]) + "\" marT=\"" + valToPts(cellMargin[0]) + "\" marB=\"" + valToPts(cellMargin[2]) + "\"";
+                        }
+                        else {
+                            cellMarginXml = " marL=\"" + inch2Emu(cellMargin[3]) + "\" marR=\"" + inch2Emu(cellMargin[1]) + "\" marT=\"" + inch2Emu(cellMargin[0]) + "\" marB=\"" + inch2Emu(cellMargin[2]) + "\"";
+                        }
                         // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 4: Set CELL content and properties ==================================
                         strXml_1 += "<a:tc" + cellSpanAttrStr + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
@@ -3836,7 +3910,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     if (opt.h)
         opt.h = getSmartParseNumber(opt.h, 'Y', presLayout); // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
     opt.fontSize = opt.fontSize || DEF_FONT_SIZE;
-    opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT;
+    opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN;
     if (typeof opt.margin === 'number')
         opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)];
     if (!opt.color)
@@ -6296,7 +6370,7 @@ function createSvgPngPreview(rel) {
  *  SOFTWARE.
  */
 //const VERSION = '3.8.0-beta-20210808-1338'
-var VERSION = "3.8.0-beta-fork-20210815-1431";
+var VERSION = "3.8.0-beta-fork-20210826-2031";
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
