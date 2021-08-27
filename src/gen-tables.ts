@@ -2,7 +2,7 @@
  * PptxGenJS: Table Generation
  */
 
-import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
+import { DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import { PresLayout, SlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu, rgbToHex, valToPts } from './gen-utils'
 import PptxGenJS from './pptxgen'
@@ -10,12 +10,14 @@ import PptxGenJS from './pptxgen'
 /**
  * Break cell text into lines based upon table column width (e.g.: Magic Happens Here(tm))
  * @param {TableCell} cell - table cell
- * @param {number} colWidth - table column width
+ * @param {number} colWidth - table column width (inches)
  * @return {TableRow[]} - cell's text objects grouped into lines
  */
 function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean): TableCell[][] {
-	const CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	const CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	// FYI: CHAR: 2.3, colWidth: 10 => CPL=138, (actual chars per line in PPT)=145
+	// FYI: CHAR: 2.3, colWidth: 7 => CPL=96.6, (actual chars per line in PPT)=100
+	const CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the Golden Ratio)
+	const CPL = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let parsedLines: TableCell[][] = []
 	let inputCells: TableCell[] = []
 	let inputLines1: TableCell[][] = []
@@ -164,7 +166,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN
 	let emuSlideTabW = EMU * 1
 	let emuSlideTabH = EMU * 1
-	let emuTabCurrH = 0 // TODO: rename `tableCalcH`
+	let emuTabCurrH = 0 // TODO: rename `emuTableCalcH`
 	let numCols = 0
 	let tableRowSlides: TableRowSlide[] = []
 	let tablePropX = getSmartParseNumber(tableProps.x, 'X', presLayout)
@@ -182,8 +184,10 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		console.log(`| tableProps.y .................................... = ${typeof tableProps.y === 'number' ? (tableProps.y / EMU).toFixed(1) : tableProps.y}`)
 		console.log(`| tableProps.w .................................... = ${typeof tableProps.w === 'number' ? (tableProps.w / EMU).toFixed(1) : tableProps.w}`)
 		console.log(`| tableProps.h .................................... = ${typeof tableProps.h === 'number' ? (tableProps.h / EMU).toFixed(1) : tableProps.h}`)
-		console.log(`| tableProps.colW ................................. = ${tableProps.colW}`)
 		console.log(`| tableProps.slideMargin .......................... = ${tableProps.slideMargin || ''}`)
+		console.log(`| tableProps.margin ............................... = ${tableProps.margin}`)
+		console.log(`| tableProps.colW ................................. = ${tableProps.colW}`)
+		console.log(`| tableProps.autoPageSlideStartY .................. = ${tableProps.autoPageSlideStartY}`)
 		console.log('|-- CALCULATIONS -------------------------------------------------------|')
 		console.log(`| tablePropX ...................................... = ${tablePropX / EMU}`)
 		console.log(`| tablePropY ...................................... = ${tablePropY / EMU}`)
@@ -271,10 +275,21 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 				options: cell.options,
 			})
 
-			if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = valToPts(cell.options.margin[0])
-			else if (tableProps.margin && tableProps.margin[0] && valToPts(tableProps.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = valToPts(tableProps.margin[0])
-			if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = valToPts(cell.options.margin[2])
-			else if (tableProps.margin && tableProps.margin[2] && valToPts(tableProps.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = valToPts(tableProps.margin[2])
+			/** FUTURE: DEPRECATED:
+			 * - Backwards-Compat: Oops! Discovered we were still using points for cell margin before v3.8.0 (UGH!)
+			 * - We cant introduce a breaking change before v4.0, so...
+			 */
+			if (cell.options.margin && cell.options.margin[0] >= 1) {
+				if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = valToPts(cell.options.margin[0])
+				else if (tableProps.margin && tableProps.margin[0] && valToPts(tableProps.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = valToPts(tableProps.margin[0])
+				if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = valToPts(cell.options.margin[2])
+				else if (tableProps.margin && tableProps.margin[2] && valToPts(tableProps.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = valToPts(tableProps.margin[2])
+			} else {
+				if (cell.options.margin && cell.options.margin[0] && inch2Emu(cell.options.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = inch2Emu(cell.options.margin[0])
+				else if (tableProps.margin && tableProps.margin[0] && inch2Emu(tableProps.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = inch2Emu(tableProps.margin[0])
+				if (cell.options.margin && cell.options.margin[2] && inch2Emu(cell.options.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = inch2Emu(cell.options.margin[2])
+				else if (tableProps.margin && tableProps.margin[2] && inch2Emu(tableProps.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = inch2Emu(tableProps.margin[2])
+			}
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
@@ -321,7 +336,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			}
 
 			// E-4: Create lines based upon available column width
-			newCell._lines = parseTextToLines(cell, totalColW / ONEPT, false)
+			newCell._lines = parseTextToLines(cell, totalColW, false)
 
 			// E-5: Add cell to array
 			rowCellLines.push(newCell)
@@ -329,6 +344,13 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 
 		// F: Start row height with margins
 		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
+
+		// FIXME: When we start at y:3, then subsequent slides start at Y, we'r enot calcing availbe H correctly!!!
+		// FIXME: "Correct starting Y location upon paging"
+		/* FIX?:
+			if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
+			if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
+		*/
 
 		/** G: --==[[ PAGE DATA SET ]]==--
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit

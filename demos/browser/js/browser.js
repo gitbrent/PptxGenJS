@@ -122,7 +122,7 @@ export function doAppStart() {
 	}
 
 	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
+	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3300));
 	for (let idx = 0; idx < 30; idx++) {
 		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
 	}
@@ -214,9 +214,9 @@ export function table2slides1() {
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {
-		autoPageCharWeight: 0,//-0.4,
-		autoPageLineWeight: -1,
-		verbose: true, // DEBUG:
+		autoPageCharWeight: 0,
+		autoPageLineWeight: 0,
+		verbose: true, // TODO: DEBUG:
 	};
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());

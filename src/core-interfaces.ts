@@ -739,7 +739,7 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	fill?: ShapeFillProps
 	/**
-	 * Cell margin
+	 * Cell margin (inches)
 	 * @default 0
 	 */
 	margin?: Margin
@@ -802,7 +802,7 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	 */
 	border?: BorderProps | [BorderProps, BorderProps, BorderProps, BorderProps]
 	/**
-	 * Width of table columns
+	 * Width of table columns (inches)
 	 * - single value is applied to every column equally based upon `w`
 	 * - array of values in applied to each column in order
 	 * @default columns of equal width based upon `w`
@@ -816,12 +816,12 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	 */
 	fill?: ShapeFillProps
 	/**
-	 * Cell margin
+	 * Cell margin (inches)
 	 * - affects all table cells, is superceded by cell options
 	 */
 	margin?: Margin
 	/**
-	 * Height of table rows
+	 * Height of table rows (inches)
 	 * - single value is applied to every row equally based upon `h`
 	 * - array of values in applied to each row in order
 	 * @default rows of equal height based upon `h`
@@ -1438,6 +1438,10 @@ export interface PresLayout {
 	height: number
 }
 export interface SlideNumberProps extends PositionProps, TextBaseProps {
+	/**
+	 * margin (points)
+	 * TODO: convert to inches in 4.0 (valid values are 0-22)
+	 */
 	margin?: Margin
 }
 export interface SlideMasterProps {
