@@ -16,12 +16,22 @@ import PptxGenJS from './pptxgen'
 function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean): TableCell[][] {
 	// FYI: CHAR: 2.3, colWidth: 10 => CPL=138, (actual chars per line in PPT)=145
 	// FYI: CHAR: 2.3, colWidth: 7 => CPL=96.6, (actual chars per line in PPT)=100
-	const CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the Golden Ratio)
+	const CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the "Golden Ratio")
 	const CPL = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let parsedLines: TableCell[][] = []
 	let inputCells: TableCell[] = []
 	let inputLines1: TableCell[][] = []
 	let inputLines2: TableCell[][] = []
+	/*
+		if (cell.options && cell.options.autoPageCharWeight) {
+			let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the "Golden Ratio")
+			let CPL1 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR1) // Chars-Per-Line
+			console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`);
+			let CHR2 = 2.3 + 0
+			let CPL2 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR2) // Chars-Per-Line
+			console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`);
+		}
+	*/
 
 	/**
 	 * EX INPUTS: `cell.text`
@@ -188,6 +198,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		console.log(`| tableProps.margin ............................... = ${tableProps.margin}`)
 		console.log(`| tableProps.colW ................................. = ${tableProps.colW}`)
 		console.log(`| tableProps.autoPageSlideStartY .................. = ${tableProps.autoPageSlideStartY}`)
+		console.log(`| tableProps.autoPageCharWeight ................... = ${tableProps.autoPageCharWeight}`)
 		console.log('|-- CALCULATIONS -------------------------------------------------------|')
 		console.log(`| tablePropX ...................................... = ${tablePropX / EMU}`)
 		console.log(`| tablePropY ...................................... = ${tablePropY / EMU}`)
@@ -293,7 +304,12 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-		emuSlideTabH = (tablePropH || presLayout.height) - (tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])) - inch2Emu(arrInchMargins[2])
+		let emuStartY = 0
+		if (tableRowSlides.length === 0) emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])
+		if (tableRowSlides.length > 0) emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0])
+		emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2])
+		//console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
+		//console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
 		if (tableRowSlides.length > 1) {
 			// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
 			if (typeof tableProps.autoPageSlideStartY === 'number') {
@@ -345,13 +361,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		// F: Start row height with margins
 		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
 
-		// FIXME: When we start at y:3, then subsequent slides start at Y, we'r enot calcing availbe H correctly!!!
-		// FIXME: "Correct starting Y location upon paging"
-		/* FIX?:
-			if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
-			if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
-		*/
-
 		/** G: --==[[ PAGE DATA SET ]]==--
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
 		 *
@@ -389,7 +398,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 						if (tableProps.verbose) {
 							console.log('\n|--------------------------------------------------------------------|')
 							console.log(
-								`|-- NEW SLIDE CREATED (b/c: currTabH + currLineH > maxH) => ${(emuTabCurrH / EMU).toFixed(2)} + ${(cell._lineHeight / EMU).toFixed(2)} > ${
+								`|-- NEW SLIDE CREATED (currTabH+currLineH > maxH) => ${(emuTabCurrH / EMU).toFixed(2)} + ${(cell._lineHeight / EMU).toFixed(2)} > ${
 									emuSlideTabH / EMU
 								}`
 							)
