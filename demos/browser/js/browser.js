@@ -216,12 +216,11 @@ export function table2slides1() {
 	let objOpts = {
 		autoPageCharWeight: 0,
 		autoPageLineWeight: 0,
-		verbose: true, // TODO: DEBUG:
+		verbose: true,
 	};
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
 	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
-	//console.log(JSON.stringify(objOpts));
 
 	// STEP 3: Pass table to tableToSlides function to produce 1-N slides
 	pptx.tableToSlides("tabAutoPaging", objOpts);
