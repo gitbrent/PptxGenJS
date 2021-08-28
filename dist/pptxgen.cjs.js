@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-27T03:38:40.813Z */
+/* PptxGenJS 3.7.1 @ 2021-08-28T21:22:33.766Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -842,12 +842,22 @@ function getNewRelId(target) {
 function parseTextToLines(cell, colWidth, verbose) {
     // FYI: CHAR: 2.3, colWidth: 10 => CPL=138, (actual chars per line in PPT)=145
     // FYI: CHAR: 2.3, colWidth: 7 => CPL=96.6, (actual chars per line in PPT)=100
-    var CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (approximation of the Golden Ratio)
+    var CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (approximation of the "Golden Ratio")
     var CPL = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
     var parsedLines = [];
     var inputCells = [];
     var inputLines1 = [];
     var inputLines2 = [];
+    /*
+        if (cell.options && cell.options.autoPageCharWeight) {
+            let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the "Golden Ratio")
+            let CPL1 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR1) // Chars-Per-Line
+            console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`);
+            let CHR2 = 2.3 + 0
+            let CPL2 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR2) // Chars-Per-Line
+            console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`);
+        }
+    */
     /**
      * EX INPUTS: `cell.text`
      * - string....: "Account Name Column"
@@ -1006,6 +1016,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         console.log("| tableProps.margin ............................... = " + tableProps.margin);
         console.log("| tableProps.colW ................................. = " + tableProps.colW);
         console.log("| tableProps.autoPageSlideStartY .................. = " + tableProps.autoPageSlideStartY);
+        console.log("| tableProps.autoPageCharWeight ................... = " + tableProps.autoPageCharWeight);
         console.log('|-- CALCULATIONS -------------------------------------------------------|');
         console.log("| tablePropX ...................................... = " + tablePropX / EMU);
         console.log("| tablePropY ...................................... = " + tablePropY / EMU);
@@ -1120,7 +1131,14 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
             }
         });
         // C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-        emuSlideTabH = (tablePropH || presLayout.height) - (tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])) - inch2Emu(arrInchMargins[2]);
+        var emuStartY = 0;
+        if (tableRowSlides.length === 0)
+            emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0]);
+        if (tableRowSlides.length > 0)
+            emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0]);
+        emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2]);
+        //console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
+        //console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
         if (tableRowSlides.length > 1) {
             // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
             if (typeof tableProps.autoPageSlideStartY === 'number') {
@@ -1167,12 +1185,6 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         });
         // F: Start row height with margins
         emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
-        // FIXME: When we start at y:3, then subsequent slides start at Y, we'r enot calcing availbe H correctly!!!
-        // FIXME: "Correct starting Y location upon paging"
-        /* FIX?:
-            if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
-            if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
-        */
         /** G: --==[[ PAGE DATA SET ]]==--
          * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
          *
@@ -1209,7 +1221,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
                     if (emuTabCurrH + cell._lineHeight > emuSlideTabH) {
                         if (tableProps.verbose) {
                             console.log('\n|--------------------------------------------------------------------|');
-                            console.log("|-- NEW SLIDE CREATED (b/c: currTabH + currLineH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (cell._lineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
+                            console.log("|-- NEW SLIDE CREATED (currTabH+currLineH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (cell._lineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
                             console.log('|--------------------------------------------------------------------|\n\n');
                         }
                         // 1: add current row slide or it will be lost (only if it has rows and text)
@@ -6376,7 +6388,7 @@ function createSvgPngPreview(rel) {
  *  SOFTWARE.
  */
 //const VERSION = '3.8.0-beta-20210808-1338'
-var VERSION = "3.8.0-beta-fork-20210826-2031";
+var VERSION = "3.8.0-beta-fork-20210828-1335";
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
