@@ -14,22 +14,25 @@ import PptxGenJS from './pptxgen'
  * @return {TableRow[]} - cell's text objects grouped into lines
  */
 function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean): TableCell[][] {
-	// FYI: CHAR: 2.3, colWidth: 10 => CPL=138, (actual chars per line in PPT)=145
-	// FYI: CHAR: 2.3, colWidth: 7 => CPL=96.6, (actual chars per line in PPT)=100
-	const CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the "Golden Ratio")
-	const CPL = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	// FYI: CPL = Width / (font-size / font-constant)
+	// FYI: CHAR:2.3, colWidth:10, fontSize:12 => CPL=138, (actual chars per line in PPT)=145 [14.5 CPI]
+	// FYI: CHAR:2.3, colWidth:7 , fontSize:12 => CPL= 97, (actual chars per line in PPT)=100 [14.3 CPI]
+	// FYI: CHAR:2.3, colWidth:9 , fontSize:16 => CPL= 96, (actual chars per line in PPT)=84  [ 9.3 CPI]
+	const FOCO = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant
+	const CPL = Math.floor((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / FOCO) // Chars-Per-Line
+
 	let parsedLines: TableCell[][] = []
 	let inputCells: TableCell[] = []
 	let inputLines1: TableCell[][] = []
 	let inputLines2: TableCell[][] = []
 	/*
 		if (cell.options && cell.options.autoPageCharWeight) {
-			let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the "Golden Ratio")
+			let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant
 			let CPL1 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR1) // Chars-Per-Line
-			console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`);
+			console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`)
 			let CHR2 = 2.3 + 0
 			let CPL2 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR2) // Chars-Per-Line
-			console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`);
+			console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`)
 		}
 	*/
 
@@ -176,7 +179,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN
 	let emuSlideTabW = EMU * 1
 	let emuSlideTabH = EMU * 1
-	let emuTabCurrH = 0 // TODO: rename `emuTableCalcH`
+	let emuTabCurrH = 0
 	let numCols = 0
 	let tableRowSlides: TableRowSlide[] = []
 	let tablePropX = getSmartParseNumber(tableProps.x, 'X', presLayout)
@@ -396,13 +399,13 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 					// A: create a new slide if there is insufficient room for the current row
 					if (emuTabCurrH + cell._lineHeight > emuSlideTabH) {
 						if (tableProps.verbose) {
-							console.log('\n|--------------------------------------------------------------------|')
+							console.log('\n|-----------------------------------------------------------------------|')
 							console.log(
 								`|-- NEW SLIDE CREATED (currTabH+currLineH > maxH) => ${(emuTabCurrH / EMU).toFixed(2)} + ${(cell._lineHeight / EMU).toFixed(2)} > ${
 									emuSlideTabH / EMU
 								}`
 							)
-							console.log('|--------------------------------------------------------------------|\n\n')
+							console.log('|-----------------------------------------------------------------------|\n\n')
 						}
 
 						// 1: add current row slide or it will be lost (only if it has rows and text)
