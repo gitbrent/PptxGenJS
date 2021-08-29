@@ -214,7 +214,7 @@ export function table2slides1() {
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {
-		autoPageCharWeight: 0,
+		autoPageCharWeight: -0.2,
 		autoPageLineWeight: 0,
 		verbose: false,
 	};
