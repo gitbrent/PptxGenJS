@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-28T21:22:33.771Z */
+/* PptxGenJS 3.7.1 @ 2021-08-29T21:20:51.247Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -834,22 +834,24 @@ function getNewRelId(target) {
  * @return {TableRow[]} - cell's text objects grouped into lines
  */
 function parseTextToLines(cell, colWidth, verbose) {
-    // FYI: CHAR: 2.3, colWidth: 10 => CPL=138, (actual chars per line in PPT)=145
-    // FYI: CHAR: 2.3, colWidth: 7 => CPL=96.6, (actual chars per line in PPT)=100
-    var CHAR = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (approximation of the "Golden Ratio")
-    var CPL = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
+    // FYI: CPL = Width / (font-size / font-constant)
+    // FYI: CHAR:2.3, colWidth:10, fontSize:12 => CPL=138, (actual chars per line in PPT)=145 [14.5 CPI]
+    // FYI: CHAR:2.3, colWidth:7 , fontSize:12 => CPL= 97, (actual chars per line in PPT)=100 [14.3 CPI]
+    // FYI: CHAR:2.3, colWidth:9 , fontSize:16 => CPL= 96, (actual chars per line in PPT)=84  [ 9.3 CPI]
+    var FOCO = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant
+    var CPL = Math.floor((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / FOCO); // Chars-Per-Line
     var parsedLines = [];
     var inputCells = [];
     var inputLines1 = [];
     var inputLines2 = [];
     /*
         if (cell.options && cell.options.autoPageCharWeight) {
-            let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (approximation of the "Golden Ratio")
+            let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant
             let CPL1 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR1) // Chars-Per-Line
-            console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`);
+            console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`)
             let CHR2 = 2.3 + 0
             let CPL2 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR2) // Chars-Per-Line
-            console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`);
+            console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`)
         }
     */
     /**
@@ -989,7 +991,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
     var arrInchMargins = DEF_SLIDE_MARGIN_IN;
     var emuSlideTabW = EMU * 1;
     var emuSlideTabH = EMU * 1;
-    var emuTabCurrH = 0; // TODO: rename `emuTableCalcH`
+    var emuTabCurrH = 0;
     var numCols = 0;
     var tableRowSlides = [];
     var tablePropX = getSmartParseNumber(tableProps.x, 'X', presLayout);
@@ -1214,9 +1216,9 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
                     // A: create a new slide if there is insufficient room for the current row
                     if (emuTabCurrH + cell._lineHeight > emuSlideTabH) {
                         if (tableProps.verbose) {
-                            console.log('\n|--------------------------------------------------------------------|');
+                            console.log('\n|-----------------------------------------------------------------------|');
                             console.log("|-- NEW SLIDE CREATED (currTabH+currLineH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (cell._lineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
-                            console.log('|--------------------------------------------------------------------|\n\n');
+                            console.log('|-----------------------------------------------------------------------|\n\n');
                         }
                         // 1: add current row slide or it will be lost (only if it has rows and text)
                         if (currTableRow.length > 0 && currTableRow.map(function (cell) { return cell.text.length; }).reduce(function (p, n) { return p + n; }) > 0)
@@ -6382,7 +6384,8 @@ function createSvgPngPreview(rel) {
  *  SOFTWARE.
  */
 //const VERSION = '3.8.0-beta-20210808-1338'
-var VERSION = "3.8.0-beta-fork-20210828-1335";
+var VERSION = "3.8.0-beta-fork-20210829-1420";
+// TODO: FIXME: `autoPageSlideStartY` on HTML-2-PPTX doesnt work
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
