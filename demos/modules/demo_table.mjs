@@ -34,8 +34,10 @@ export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
 	genSlide08(pptx);
 
-	//pptx.addSection({ title: "Tables: Auto-Paging-Calc DEBUG:" });
-	//genSlideDebugCalc(pptx);
+	if (window.location.href.indexOf("http://localhost:8000/") > -1) {
+		pptx.addSection({ title: "Tables: Auto-Paging-Calc" });
+		genSlideDebugCalc(pptx);
+	}
 }
 
 /**
@@ -203,12 +205,13 @@ function genSlide02(pptx) {
 	];
 	slide.addTable(arrTabRows2, tabOpts2);
 
+	// BTM-LEFT
 	let tabOpts3 = {
 		x: 0.5,
 		y: 5.15,
 		w: 6.25,
 		h: 2,
-		margin: 0.25,
+		margin: 0.05,
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
@@ -226,6 +229,7 @@ function genSlide02(pptx) {
 	];
 	slide.addTable(arrTabRows3, tabOpts3);
 
+	// BTM-RIGHT
 	let tabOpts4 = {
 		x: 7.4,
 		y: 5.15,
@@ -838,7 +842,7 @@ function genSlideDebugCalc(pptx) {
 	let slide = null;
 	let arrRows = [];
 
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging-Calc DEBUG:" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging-Calc" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addText([{ text: "Table Examples: Auto-Paging Calculations", options: DEMO_TITLE_TEXTBK }], {
 		x: 0.23,
