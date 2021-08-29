@@ -234,8 +234,8 @@ export function table2slides2() {
 	let pptx = new PptxGenJS();
 
 	// STEP 1: Add Master Slide defs / Set slide size/layout
-	addMasterDefs(pptx);
 	pptx.layout = "LAYOUT_WIDE";
+	addMasterDefs(pptx);
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {};
@@ -305,7 +305,7 @@ function addMasterDefs(pptx) {
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
 		background: { fill: "F1F1F1" },
-		slideNumber: { x: 1.0, y: 7.0, color: "FFFFFF" },
+		slideNumber: { x: 1.0, y: "50%", color: "FFFFFF" },
 		margin: [0.5, 0.25, 1.25, 0.25],
 		objects: [
 			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },

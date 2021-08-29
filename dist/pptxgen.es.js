@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.1 @ 2021-08-29T21:20:51.247Z */
+/* PptxGenJS 3.7.1 @ 2021-08-29T21:21:26.483Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -6384,8 +6384,7 @@ function createSvgPngPreview(rel) {
  *  SOFTWARE.
  */
 //const VERSION = '3.8.0-beta-20210808-1338'
-var VERSION = "3.8.0-beta-fork-20210829-1420";
-// TODO: FIXME: `autoPageSlideStartY` on HTML-2-PPTX doesnt work
+var VERSION = "3.8.0-beta-fork-20210829-1620";
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
