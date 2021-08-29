@@ -216,7 +216,7 @@ export function table2slides1() {
 	let objOpts = {
 		autoPageCharWeight: 0,
 		autoPageLineWeight: 0,
-		verbose: true,
+		verbose: false,
 	};
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
