@@ -7,7 +7,7 @@ import {
 	BULLET_TYPES,
 	CRLF,
 	DEF_BULLET_MARGIN,
-	DEF_CELL_MARGIN_PT,
+	DEF_CELL_MARGIN_IN,
 	DEF_PRES_LAYOUT_NAME,
 	DEF_TEXT_GLOW,
 	DEF_TEXT_SHADOW,
@@ -317,11 +317,22 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						fillColor =
 							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
 						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
-						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
+						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
-						let cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
-							cellMargin[2]
-						)}"`
+						/** FUTURE: DEPRECATED:
+						 * - Backwards-Compat: Oops! Discovered we were still using points for cell margin before v3.8.0 (UGH!)
+						 * - We cant introduce a breaking change before v4.0, so...
+						 */
+						let cellMarginXml = ''
+						if (cellMargin[0] >= 1) {
+							cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
+								cellMargin[2]
+							)}"`
+						} else {
+							cellMarginXml = ` marL="${inch2Emu(cellMargin[3])}" marR="${inch2Emu(cellMargin[1])}" marT="${inch2Emu(cellMargin[0])}" marB="${inch2Emu(
+								cellMargin[2]
+							)}"`
+						}
 
 						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 

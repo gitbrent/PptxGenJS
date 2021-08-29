@@ -136,6 +136,7 @@ function testMethod_Table(pptx: pptxgen) {
 			fontSize: 14,
 			color: "363636",
 			border: { pt: 1, color: "BBCCDD" },
+			verbose: true,
 		});
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
@@ -303,6 +304,25 @@ function testMethod_Table(pptx: pptxgen) {
 			[{ text: "A3 -> B3", options: { colspan: 2, fill: { color: "99FFCC" } } }],
 		];
 		slide.addTable(arrTabRows4, tabOpts4);
+	}
+
+	// SLIDE 3:
+	{
+		let slide = pptx.addSlide({ sectionTitle: "Tables" });
+		let arrRows: pptxgen.TableRow[] = [];
+		arrRows.push([
+			{ text: "ID#", options: { fill: { color: "0088cc" }, color: "ffffff", valign: "middle" } },
+			{ text: "First Name", options: { fill: { color: "0088cc" }, color: "ffffff", valign: "middle" } },
+			{ text: "Lorum Ipsum", options: { fill: { color: "0088cc" }, color: "ffffff", valign: "middle" } },
+		]);
+		arrRows.push([
+			{ text: "1", options: { align: "center" } },
+			{ text: "Test" },
+			{
+				text: [{ text: "Title", options: { bold: true, breakLine: true } }, { text: "some desc..." }],
+			},
+		]);
+		slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 3, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
 	}
 }
 /*

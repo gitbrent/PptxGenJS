@@ -122,7 +122,7 @@ export function doAppStart() {
 	}
 
 	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
+	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3300));
 	for (let idx = 0; idx < 30; idx++) {
 		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
 	}
@@ -214,13 +214,13 @@ export function table2slides1() {
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {
-		autoPageCharWeight: -0.4,
+		autoPageCharWeight: -0.2,
+		autoPageLineWeight: 0,
+		verbose: false,
 	};
-	//objOpts.verbose = true;
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
 	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
-	//console.log(JSON.stringify(objOpts));
 
 	// STEP 3: Pass table to tableToSlides function to produce 1-N slides
 	pptx.tableToSlides("tabAutoPaging", objOpts);
@@ -234,8 +234,8 @@ export function table2slides2() {
 	let pptx = new PptxGenJS();
 
 	// STEP 1: Add Master Slide defs / Set slide size/layout
-	addMasterDefs(pptx);
 	pptx.layout = "LAYOUT_WIDE";
+	addMasterDefs(pptx);
 
 	// STEP 2: Set generated Slide options
 	let objOpts = {};
@@ -305,7 +305,7 @@ function addMasterDefs(pptx) {
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
 		background: { fill: "F1F1F1" },
-		slideNumber: { x: 1.0, y: 7.0, color: "FFFFFF" },
+		slideNumber: { x: 1.0, y: "50%", color: "FFFFFF" },
 		margin: [0.5, 0.25, 1.25, 0.25],
 		objects: [
 			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },

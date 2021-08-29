@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.7.2">
-	<meta name="updated" content="2021-08-07">
+	<meta name="updated" content="2021-08-24">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -59,13 +59,13 @@
 		$('#numTab2SlideRows').change(() => buildDataTable());
 		$('#table2slides1').click(() => table2slides1());
 		$('#table2slides2').click(() => table2slides2());
-		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle'));
-		$('#tab2slides_tabInheritStyle').click(() => table2slidesDemoForTab('tabInheritStyle'));
+		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle', { fill: { color: 'f1f1f1' } }));
+		$('#tab2slides_tabInheritStyle').click(() => table2slidesDemoForTab('tabInheritStyle', { fill: { color: 'f1f1f1' } }));
 		$('#tab2slides_tabColspan').click(() => table2slidesDemoForTab('tabColspan'));
 		$('#tab2slides_tabRowspan').click(() => table2slidesDemoForTab('tabRowspan'));
 		$('#tab2slides_tabRowColspan').click(() => table2slidesDemoForTab('tabRowColspan'));
-		$('#tab2slides_tabLotsOfLines').click(() => table2slidesDemoForTab('tabLotsOfLines', { verbose: true }));
-		$('#tab2slides_tabLargeCellText').click(() => table2slidesDemoForTab('tabLargeCellText'));
+		$('#tab2slides_tabLotsOfLines').click(() => table2slidesDemoForTab('tabLotsOfLines', { verbose: false }));
+		$('#tab2slides_tabLargeCellText').click(() => table2slidesDemoForTab('tabLargeCellText', { verbose: false }));
 
 		$(document).ready(() => { doAppStart() });
 	</script>
@@ -308,9 +308,13 @@
 						</thead>
 						<tbody></tbody>
 					</table>
-					<div class="text-center p-3">
-						<button id="table2slides1" type="button" class="btn btn-success w-25 mr-3">Demo Table Above</button>
-						<button id="table2slides2" type="button" class="btn btn-outline-success w-25">Demo Table Above (add dynamic text)</button>
+					<div class="row justify-content-center">
+						<div class="col-auto text-center p-3">
+							<button id="table2slides1" type="button" class="btn btn-success px-5">Demo Table (options above)</button>
+						</div>
+						<div class="col-auto text-center p-3">
+							<button id="table2slides2" type="button" class="btn btn-outline-success">Demo Table (plus dynamic-text)</button>
+						</div>
 					</div>
 				</div>
 				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
@@ -319,11 +323,11 @@
 				</h5>
 				<div class="container-fluid m-0 p-2" style="display:none;">
 					<div class="row">
-						<div class="col-6">
-							<div class="card">
+						<div class="col">
+							<div class="card h-100">
 								<h6 class="card-header">Plain/Unstyled Table</h6>
 								<div class="card-body">
-									<table id="tabNoStyle" class="w-100">
+									<table id="tabNoStyle" class="mb-0 w-100">
 										<thead>
 											<tr>
 												<th>Company</th>
@@ -349,25 +353,25 @@
 											</tr>
 										</tbody>
 									</table>
-									<div class="mt-5 text-center">
-										<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success w-25">Unstyled Demo</button>
-									</div>
+								</div>
+								<div class="card-footer text-center">
+									<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success w-50">Unstyled Demo</button>
 								</div>
 							</div>
 						</div>
-						<div class="col-6">
+						<div class="col">
 							<div class="card">
-								<h6 class="card-header">CSS via <code>&lt;style&gt;</code></h6>
+								<h6 class="card-header">Table Style via class</h6>
 								<div class="card-body">
-									<table id="tabInheritStyle" class="tabHtmlToPpt w-100">
-										<thead class="table-light">
+									<table id="tabInheritStyle" class="tabHtmlToPpt table mb-0 w-100">
+										<thead class="thead-dark">
 											<tr>
 												<th>Company</th>
 												<th>Contact</th>
 												<th>Feedback</th>
 											</tr>
 										</thead>
-										<tbody>
+										<tbody class="text-muted">
 											<tr>
 												<td>Tesla &amp; SpaceX</td>
 												<td>elon@tesla.com</td>
@@ -385,9 +389,9 @@
 											</tr>
 										</tbody>
 									</table>
-									<div class="mt-3 text-center">
-										<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-success w-25">Stylesheet Demo</button>
-									</div>
+								</div>
+								<div class="card-footer text-center">
+									<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-success w-50">Stylesheet Demo</button>
 								</div>
 							</div>
 						</div>
@@ -506,7 +510,7 @@
 					Demo: Single Lines, Large Cell Text
 				</h5>
 				<div class="card-deck m-0 p-2" style="display:none;">
-					<div class="card mb-4">
+					<div class="card h-100 mb-4">
 						<h6 class="card-header">Example: Lots of Single-Line Rows</h6>
 						<div class="card-body">
 							<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
@@ -520,12 +524,12 @@
 								<tbody>
 								</tbody>
 							</table>
-							<div class="mt-3 text-center">
-								<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-success w-50">Single-Line Rows Demo</button>
-							</div>
+						</div>
+						<div class="card-footer">
+							<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-success w-100">Single-Line Rows Demo</button>
 						</div>
 					</div>
-					<div class="card mb-4">
+					<div class="card h-100 mb-4">
 						<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
 						<div class="card-body">
 							<table id="tabLargeCellText" class="tabHtmlToPpt">
@@ -540,9 +544,9 @@
 									</tr>
 								</tbody>
 							</table>
-							<div class="mt-3 text-center">
-								<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-success w-50">Large Cell Text Demo</button>
-							</div>
+						</div>
+						<div class="card-footer">
+							<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-success w-100">Large Cell Text Demo</button>
 						</div>
 					</div>
 				</div>
@@ -842,12 +846,13 @@
 						<h6 class="card-header">Table Auto-Paging</h6>
 						<div class="card-body">
 							<div>Slide 7+</div>
-							<div>- Test basic functionality</div>
-							<div>- Test with small table dimensions</div>
-							<div>- Test with correct starting <code>{ y:4.0 }</code></div>
-							<div>- Test with <code>{ autoPageSlideStartY:1.5 }</code></div>
-							<div>- Test with <code>{ autoPage:false }</code></div>
-							<div>- Test with <code>{ autoPageRepeatHeader:true }</code></div>
+							<div>- Basic auto-paging example</div>
+							<div>- Pagins with smaller table dimensions</div>
+							<div>- Start at <code>{ y: 4.0 }</code>, subsequent start at top margin</div>
+							<div>- Start at <code>{ y: 4.0 }</code>, subsequent start at <code>{ autoPageSlideStartY: 1.5 }</code></div>
+							<div>- Auto-paging with a Master Page</code></div>
+							<div>- Disabled auto-paging <code>{ autoPage: false }</code></div>
+							<div>- Tables with various <code>{ autoPageRepeatHeader: true }</code></div>
 							<div>- Tables with various <code>autoPageLineWeight</code> values</div>
 							<div>- Tables with various <code>autoPageCharWeight</code> values</div>
 						</div>

@@ -6,7 +6,11 @@ import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS
 import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
- * Convert string percentages to number relative to slide size
+ * Translates any type of `x`/`y`/`w`/`h` prop to EMU
+ * - guaranteed to return a result regardless of undefined, null, etc. (0)
+ * - {number} - 12800 (EMU)
+ * - {number} - 0.5 (inches)
+ * - {string} - "75%"
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
  * @param {'X' | 'Y'} xyDir - direction
  * @param {PresLayout} layout - presentation layout
@@ -21,7 +25,7 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
 	if (typeof size === 'number' && size < 100) return inch2Emu(size)
 
 	// CASE 2: Number is already converted to something other than inches
-	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
+	// Assume any number greater than 100 sure isnt inches! Just return it (assume value is EMU already).
 	if (typeof size === 'number' && size >= 100) return size
 
 	// CASE 3: Percentage (ex: '50%')
@@ -84,8 +88,8 @@ export function encodeXmlEntities(xml: string): string {
  * @returns {number} EMU value
  */
 export function inch2Emu(inches: number | string): number {
-	// FIRST: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
-	// Any value over 100 damn sure isnt inches, must be EMU already, so just return it
+	// NOTE: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
+	// Any value over 100 damn sure isnt inches, so lets assume its in EMU already, therefore, just return the same value
 	if (typeof inches === 'number' && inches > 100) return inches
 	if (typeof inches === 'string') inches = Number(inches.replace(/in*/gi, ''))
 	return Math.round(EMU * inches)
