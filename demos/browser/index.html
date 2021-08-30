@@ -10,7 +10,7 @@
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
-	<title>PptxGenJS Examples/Demo Page</title>
+	<title>PptxGenJS Feature Demos</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/cyborg/bootstrap.min.css"
 		integrity="sha512-b34ZfRIn0Blhmq0epietqXEPLX9y2iWMqh4gWBrS07ZXddJfCTR7MldF7VaYufO/Vu636aTDMLREmizDqkganw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/yeti/bootstrap.min.css"
@@ -197,134 +197,168 @@
 				</div>
 			</div>
 			<div class="tab-pane p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
-				<h4 class="text-primary">HTML to PowerPoint</h4>
-				<div class="alert alert-light" role="alert">
-					<ul class="mb-0">
-						<li>Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code
-								class="language-javascript p-1">pptx.tableToSlides('tableId');</code></li>
-						<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint" target="_blank">HTML to PowerPoint documentation</a> for full details
-							and
-							examples</li>
-					</ul>
-				</div>
+				<h4 class="text-primary mb-3">HTML to PowerPoint</h4>
 
-				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-					<div class="arrow"></div>
-					Usage Notes &amp; Tips
-				</h5>
-				<div class="mb-4" style="display:none">
-					Usage:
-					<ul>
-						<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
-						<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
-					</ul>
-					Tips:
-					<ul>
-						<li>If you need to modify your table before creating the Presentation, use jQuery to clone() it and do the modifications on that table</li>
-						<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
-						<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
-					</ul>
-				</div>
-				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-					<div class="arrow active"></div>
-					Demo: tableToSlides Options
-				</h5>
-				<div class="m-0 p-2">
-					<div class="row mb-3">
-						<div class="col-3">
-							<div class="card h-100">
-								<h6 class="card-header">Table Setup</h6>
-								<div class="card-body">
-									<div class="row align-items-start">
-										<div class="col">
-											<label for="numTab2SlideRows">Table Rows</label>
-											<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4">
-										</div>
-										<div class="col">
-											<label for="numTab2Padding">Cell Padding</label>
-											<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
-												onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
-											<!--<small class="text-info">(points)</small>-->
-										</div>
-									</div>
-								</div>
+				<div class="accordion" id="accordionExample">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="headingOne">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
+								aria-controls="collapseOne">
+								About, Usage, and Tips
+							</button>
+						</h2>
+						<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+							<div class="accordion-body">
+								<h5 class="text-dark">About</h5>
+								<ul>
+									<li>Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code
+											class="language-javascript p-1">pptx.tableToSlides('tableId');</code></li>
+									<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint" target="_blank">HTML to PowerPoint documentation</a> for
+										full details and examples</li>
+								</ul>
+								<h5 class="text-dark">Usage</h5>
+								<ul>
+									<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
+									<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
+								</ul>
+								<h5 class="text-dark">Tips</h5>
+								<ul class="mb-0">
+									<li>If you need to modify your table before creating the Presentation, use jQuery to clone() it and do the modifications on that table</li>
+									<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
+									<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
+								</ul>
 							</div>
 						</div>
-						<div class="col-6">
-							<div class="card">
-								<h6 class="card-header">Paging Options</h6>
-								<div class="card-body">
-									<div class="row">
-										<div class="col">
-											<label>Repeat Table Head on each Slide</label>
-											<div class="form-control">
-												<div class="form-check form-check-inline">
-													<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
-													<label class="form-check-label" for="radioHeadY">Yes</label>
-												</div>
-												<div class="form-check form-check-inline">
-													<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
-													<label class="form-check-label" for="radioHeadN">No</label>
-												</div>
-											</div>
-											<code>autoPageRepeatHeader</code>
-										</div>
-										<div class="col">
-											<label>Starting top location (<code>y</code>) after first slide</label>
-											<div class="form-check form-check-inline w-100">
-												<div class="col px-0 text-nowrap">
-													<div class="form-control">
-														<input class="form-check-input" type="checkbox" id="checkStartY"
-															onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
-														<label class="form-check-label" for="checkStartY">Enable?</label>
+					</div>
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="headingTwo">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+								aria-controls="collapseTwo">
+								Demo: tableToSlides Options
+							</button>
+						</h2>
+						<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+							<div class="accordion-body">
+								<div class="m-0 p-2">
+									<div class="row mb-3">
+										<div class="col-3">
+											<div class="card h-100">
+												<h6 class="card-header">Table Setup</h6>
+												<div class="card-body">
+													<div class="row align-items-start">
+														<div class="col">
+															<label for="numTab2SlideRows">Table Rows</label>
+															<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4">
+														</div>
+														<div class="col">
+															<label for="numTab2Padding">Cell Padding</label>
+															<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
+																onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+															<!--<small class="text-info">(points)</small>-->
+														</div>
 													</div>
 												</div>
-												<div class="col px-0">
-													<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="card">
+												<h6 class="card-header">Paging Options</h6>
+												<div class="card-body">
+													<div class="row">
+														<div class="col">
+															<label>Repeat Table Head on each Slide</label>
+															<div class="form-control">
+																<div class="form-check form-check-inline">
+																	<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
+																	<label class="form-check-label" for="radioHeadY">Yes</label>
+																</div>
+																<div class="form-check form-check-inline">
+																	<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
+																	<label class="form-check-label" for="radioHeadN">No</label>
+																</div>
+															</div>
+															<code>autoPageRepeatHeader</code>
+														</div>
+														<div class="col">
+															<label>Starting top location (<code>y</code>) after first slide</label>
+															<div class="form-check form-check-inline w-100">
+																<div class="col px-0 text-nowrap">
+																	<div class="form-control">
+																		<input class="form-check-input" type="checkbox" id="checkStartY"
+																			onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
+																		<label class="form-check-label" for="checkStartY">Enable?</label>
+																	</div>
+																</div>
+																<div class="col px-0">
+																	<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5"
+																		disabled>
+																</div>
+															</div>
+															<code>autoPageSlideStartY</code>
+														</div>
+													</div>
 												</div>
 											</div>
-											<code>autoPageSlideStartY</code>
+										</div>
+										<div class="col-3">
+											<div class="card h-100">
+												<h6 class="card-header">Master Slide</h6>
+												<div class="card-body">
+													<div class="row align-items-start">
+														<div class="col">
+															<label>Select a Master Slide</label>
+															<select id="selSlideMaster" class="form-control">
+																<option value="" selected="selected">(None)</option>
+															</select>
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-3">
-							<div class="card h-100">
-								<h6 class="card-header">Master Slide</h6>
-								<div class="card-body">
-									<div class="row align-items-start">
-										<div class="col">
-											<label>Select a Master Slide</label>
-											<select id="selSlideMaster" class="form-control">
-												<option value="" selected="selected">(None)</option>
-											</select>
+									<table id="tabAutoPaging" class="table table-sm mb-0 tabDemo">
+										<thead>
+											<tr style="font-family:Courier">
+												<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
+												<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+												<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+												<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+									<div class="row justify-content-center">
+										<div class="col-auto text-center p-3">
+											<button id="table2slides1" type="button" class="btn btn-success px-5">Demo Table (options above)</button>
+										</div>
+										<div class="col-auto text-center p-3">
+											<button id="table2slides2" type="button" class="btn btn-outline-success">Demo Table (plus dynamic-text)</button>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<table id="tabAutoPaging" class="table table-sm mb-0 tabDemo">
-						<thead>
-							<tr style="font-family:Courier">
-								<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
-								<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
-								<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-								<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-					</table>
-					<div class="row justify-content-center">
-						<div class="col-auto text-center p-3">
-							<button id="table2slides1" type="button" class="btn btn-success px-5">Demo Table (options above)</button>
-						</div>
-						<div class="col-auto text-center p-3">
-							<button id="table2slides2" type="button" class="btn btn-outline-success">Demo Table (plus dynamic-text)</button>
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="headingThree">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false"
+								aria-controls="collapseThree">
+								Accordion Item #3
+							</button>
+						</h2>
+						<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
+							<div class="accordion-body">
+								<strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we
+								use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any
+								of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the
+								<code>.accordion-body</code>, though the transition does limit overflow.
+							</div>
 						</div>
 					</div>
 				</div>
+
+
+
 				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
 					<div class="arrow"></div>
 					Demo: Misc Table Styles
