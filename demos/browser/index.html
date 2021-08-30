@@ -20,10 +20,12 @@
 		integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="./css/style.css">
 
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"
 		integrity="sha512-axJX7DJduStuBB8ePC8ryGzacZPr3rdLaIDZitiEgWWk2gsXxEFlm4UW0iNzj2h3wp5mOylgHAzBzM4nRSvTZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+		crossorigin="anonymous"></script>
 
 	<!-- RELEASE (CDN)
 		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
@@ -134,37 +136,37 @@
 
 		<ul class="nav nav-pills nav-justified text-nowrap" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase active" id="introduction-tab" data-bs-toggle="tab" data-bs-target="#introduction" type="button" role="tab"
-					aria-controls="introduction" aria-selected="true">Introduction</button>
+				<button class="nav-link text-uppercase active" id="nav-introduction" data-bs-toggle="tab" data-bs-target="#tab-introduction" type="button" role="tab"
+					aria-controls="itab-ntroduction" aria-selected="true" onclick="location.href='#introduction'">Introduction</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase" id="html2pptx-tab" data-bs-toggle="tab" data-bs-target="#html2pptx" type="button" role="tab" aria-controls="html2pptx"
-					aria-selected="false">HTML to PPTX</button>
+				<button class="nav-link text-uppercase" id="nav-html2pptx" data-bs-toggle="tab" data-bs-target="#tab-html2pptx" type="button" role="tab"
+					aria-controls="tab-html2pptx" aria-selected="false" onclick="location.href='#html2pptx'">HTML to PPTX</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase" id="charts-tab" data-bs-toggle="tab" data-bs-target="#charts" type="button" role="tab" aria-controls="charts"
-					aria-selected="false">Charts</button>
+				<button class="nav-link text-uppercase" id="nav-charts" data-bs-toggle="tab" data-bs-target="#tab-charts" type="button" role="tab" aria-controls="tab-charts"
+					aria-selected="false" onclick="location.href='#charts'">Charts</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase" id="images-tab" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab" aria-controls="images"
-					aria-selected="false">Images &amp; Media</button>
+				<button class="nav-link text-uppercase" id="nav-images" data-bs-toggle="tab" data-bs-target="#tab-images" type="button" role="tab" aria-controls="tab-images"
+					aria-selected="false" onclick="location.href='#images'">Images &amp; Media</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase" id="shapes-tab" data-bs-toggle="tab" href="#shapes" type="button" role="tab" aria-controls="shapes"
-					aria-selected="false">Shapes
+				<button class="nav-link text-uppercase" id="nav-shapes" data-bs-toggle="tab" data-bs-target="#tab-shapes" type="button" role="tab" aria-controls="tab-shapes"
+					aria-selected="false" onclick="location.href='#shapes'">Shapes
 					&amp; Text</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase" id="tables-tab" data-bs-toggle="tab" href="#tables" type="button" role="tab" aria-controls="tables"
-					aria-selected="false">Tables</button>
+				<button class="nav-link text-uppercase" id="nav-tables" data-bs-toggle="tab" data-bs-target="#tab-tables" type="button" role="tab" aria-controls="tab-tables"
+					aria-selected="false" onclick="location.href='#tables'">Tables</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link text-uppercase" id="templates-tab" data-bs-toggle="tab" href="#templates" type="button" role="tab" aria-controls="templates"
-					aria-selected="false">Templates</button>
+				<button class="nav-link text-uppercase" id="nav-templates" data-bs-toggle="tab" data-bs-target="#tab-templates" type="button" role="tab"
+					aria-controls="tab-templates" aria-selected="false" onclick="location.href='#templates'">Templates</button>
 			</li>
 		</ul>
 		<main class="tab-content mb-4">
-			<div class="tab-pane p-4 active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
+			<div class="tab-pane p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
 				<h4 class="text-primary">Library Information</h4>
 				<div class="mb-4">
 					<div id="infoBar" class="row align-items-center">
@@ -194,13 +196,18 @@
 					<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="html2pptx" role="tabpanel" aria-labelledby="html2pptx-tab">
+			<div class="tab-pane p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
 				<h4 class="text-primary">HTML to PowerPoint</h4>
-				<p>
-					Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code class="language-javascript p-1">pptx.tableToSlides('tableId');</code><br>
-					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint" target="_blank">HTML to PowerPoint documentation</a> for full details and
-					examples
-				</p>
+				<div class="alert alert-light" role="alert">
+					<ul class="mb-0">
+						<li>Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code
+								class="language-javascript p-1">pptx.tableToSlides('tableId');</code></li>
+						<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint" target="_blank">HTML to PowerPoint documentation</a> for full details
+							and
+							examples</li>
+					</ul>
+				</div>
+
 				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
 					<div class="arrow"></div>
 					Usage Notes &amp; Tips
@@ -552,7 +559,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="charts" role="tabpanel" aria-labelledby="charts-tab">
+			<div class="tab-pane p-4" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
 				<h4 class="text-primary">Chart Demos</h4>
 				<p>
 					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-charts" target="_blank">chart documentation</a> for full details and examples
@@ -637,7 +644,7 @@
 					<button id="btnGenFunc_Chart" type="button" class="btn btn-success w-25">Generate Chart Demo</button>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="images" role="tabpanel" aria-labelledby="images-tab">
+			<div class="tab-pane p-4" id="tab-images" role="tabpanel" aria-labelledby="nav-images">
 				<h4 class="text-primary">Image Demos</h4>
 				<p>
 					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-images" target="_blank">image documentation</a> for full details and examples
@@ -718,7 +725,7 @@
 					<button id="btnGenFunc_Media" type="button" class="btn btn-success w-25">Media Demo</button>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="shapes" role="tabpanel" aria-labelledby="shapes-tab">
+			<div class="tab-pane p-4" id="tab-shapes" role="tabpanel" aria-labelledby="nav-shapes">
 				<h4 class="text-primary">Shape Demos</h4>
 				<p>
 					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes" target="_blank">shape documentation</a> for full details and examples
@@ -811,7 +818,7 @@
 					<button id="btnGenFunc_Text" type="button" class="btn btn-success w-25">Text Demo</button>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="tables" role="tabpanel" aria-labelledby="tables-tab">
+			<div class="tab-pane p-4" id="tab-tables" role="tabpanel" aria-labelledby="nav-tables">
 				<h4 class="text-primary">Table Demos</h4>
 				<p>
 					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-table" target="_blank">table documentation</a> for full details and examples
@@ -863,7 +870,7 @@
 					<button id="btnGenFunc_Table" type="button" class="btn btn-success w-25">Table Demo</button>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+			<div class="tab-pane p-4" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">
 				<h4 class="text-primary">Slide Masters / Templates / Layouts</h4>
 				<p>
 					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/masters" target="_blank">masters documentation</a> for full details and examples
@@ -893,7 +900,5 @@
 			</div>
 		</main>
 	</div>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
-		crossorigin="anonymous"></script>
 </body>
 </html>

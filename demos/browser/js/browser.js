@@ -266,7 +266,18 @@ export function table2slides2() {
 // ==================================================================================================================
 
 function doNavRestore() {
-	$('.nav a[href="' + window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 5) + '"]').tab("show");
+	var triggerTabList = [].slice.call(document.querySelectorAll("#myTab button"));
+	triggerTabList.forEach(function (triggerEl) {
+		var tabTrigger = new bootstrap.Tab(triggerEl);
+		triggerEl.addEventListener("click", function (event) {
+			event.preventDefault();
+			tabTrigger.show();
+		});
+	});
+
+	let tabTarget = window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 6);
+	let triggerEl = document.querySelector(`#myTab button[data-bs-target="#tab-${tabTarget}"]`);
+	bootstrap.Tab.getInstance(triggerEl).show();
 }
 
 function getTimestamp() {
