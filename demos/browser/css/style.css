@@ -82,6 +82,20 @@ pre {
 	.tab-pane {
 		background-color: var(--bs-white);
 	}
+	/* 20210829: cyborg comes first in stylehseet order, but the way its written (diff from yeti?), it overrides these colors to white, which sucks */
+	.nav-pills .nav-link,
+	.nav-tabs .nav-link {
+		color: var(--bs-primary) !important;
+	}
+	.nav-pills .nav-link.active,
+	.nav-pills .show > .nav-link {
+		color: white !important;
+	}
+	.nav-pills .nav-link:hover,
+	.nav-tabs .nav-link:hover {
+		background-color: var(--bs-primary) !important;
+		color: var(--bs-white) !important;
+	}
 }
 
 /* ------------------------------------------------------------------------- */
