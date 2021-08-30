@@ -6,6 +6,11 @@ import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.mjs";
 import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.mjs";
 import { BKGD_STARLABS, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.mjs";
 
+const SVG_CHECK_CIRCLE =
+	'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/></svg>';
+const SVG_CHECK_CIRCLE_FILL =
+	'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>';
+
 // ==================================================================================================================
 
 export function doAppStart() {
@@ -27,30 +32,28 @@ export function doAppStart() {
 	// STEP 2: Show library info
 	{
 		if (typeof Promise !== "function") {
-			$("header").after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
+			$("header").after(
+				'<div class="alert alert-danger mb-4"><h5>IE11 IS NO LONGER SUPPORTED!</h5>Promise is undefined! (IE11 requires promise.min.js)</div>'
+			);
 		} else {
 			let pptx = new PptxGenJS();
+			$("#infoBar").append(`<div class="col text-primary">${SVG_CHECK_CIRCLE_FILL} Version: <span>${pptx.version}</span></div>`);
 			$("#infoBar").append(
-				'<div class="col px-0 text-primary"><div class="iconSvg size24 info"></div>Version: <span>' + pptx.version + "</span></div>"
+				`<div class='col-auto text-success text-nowrap'>` +
+					`<span style='cursor:help' title='${Object.keys(pptx.ChartType).join(" | ")}'>` +
+					`${SVG_CHECK_CIRCLE_FILL} pptx.ChartType = ${Object.keys(pptx.ChartType).length}` +
+					`</span></div>`
 			);
 			$("#infoBar").append(
-				"<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='" +
-					Object.keys(pptx.ChartType).join(" | ") +
-					"'><div class='iconSvg size24 circle check'></div>pptx.ChartType = " +
-					Object.keys(pptx.ChartType).length +
-					"</span></div>"
+				`<div class='col-auto text-success text-nowrap'>` +
+					`<span style='cursor:help' title='${Object.keys(pptx.SchemeColor).join(" | ")}'>` +
+					`${SVG_CHECK_CIRCLE_FILL} pptx.SchemeColor = ${Object.keys(pptx.SchemeColor).length}` +
+					`</span></div>`
 			);
 			$("#infoBar").append(
-				"<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='" +
-					Object.keys(pptx.SchemeColor).join(" | ") +
-					"'><div class='iconSvg size24 circle check'></div>pptx.SchemeColor = " +
-					Object.keys(pptx.SchemeColor).length +
-					"</span></div>"
-			);
-			$("#infoBar").append(
-				'<div class="col-auto text-success text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.ShapeType = ' +
-					Object.keys(pptx.ShapeType).length +
-					"</span></div>"
+				`<div class="col-auto text-success text-nowrap">` +
+					`<span>${SVG_CHECK_CIRCLE_FILL} pptx.ShapeType = ${Object.keys(pptx.ShapeType).length}` +
+					`</span></div>`
 			);
 		}
 	}
