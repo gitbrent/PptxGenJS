@@ -199,15 +199,15 @@
 			<div class="tab-pane p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
 				<h4 class="text-primary mb-3">HTML to PowerPoint</h4>
 
-				<div class="accordion" id="accordionExample">
-					<div class="accordion-item">
-						<h2 class="accordion-header" id="headingOne">
-							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
-								aria-controls="collapseOne">
-								About, Usage, and Tips
+				<div class="accordion" id="accordionDemoTable">
+					<div class="accordion-item" data-desc="collapse01">
+						<h2 id="heading01" class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse01" aria-expanded="false"
+								aria-controls="collapse01">
+								Docs: About, Usage, and Tips
 							</button>
 						</h2>
-						<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+						<div id="collapse01" class="accordion-collapse collapse" aria-labelledby="heading01" data-bs-parent="#accordionDemoTable">
 							<div class="accordion-body">
 								<h5 class="text-dark">About</h5>
 								<ul>
@@ -230,368 +230,372 @@
 							</div>
 						</div>
 					</div>
-					<div class="accordion-item">
-						<h2 class="accordion-header" id="headingTwo">
-							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
-								aria-controls="collapseTwo">
-								Demo: tableToSlides Options
+					<div class="accordion-item" data-desc="collapse02">
+						<h2 id="heading02" class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse02" aria-expanded="false"
+								aria-controls="collapse01">
+								Demo: Dynamic Table with Paging and Master Options
 							</button>
 						</h2>
-						<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
-							<div class="accordion-body">
-								<div class="m-0 p-2">
-									<div class="row mb-3">
-										<div class="col-3">
-											<div class="card h-100">
-												<h6 class="card-header">Table Setup</h6>
-												<div class="card-body">
-													<div class="row align-items-start">
-														<div class="col">
-															<label for="numTab2SlideRows">Table Rows</label>
-															<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4">
-														</div>
-														<div class="col">
-															<label for="numTab2Padding">Cell Padding</label>
-															<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
-																onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
-															<!--<small class="text-info">(points)</small>-->
-														</div>
-													</div>
+						<div id="collapse02" class="accordion-collapse collapse p-4" aria-labelledby="heading02" data-bs-parent="#accordionDemoTable">
+							<div class="row mb-3">
+								<div class="col-3">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Table Setup</div>
+										<div class="card-body">
+											<div class="row align-items-start">
+												<div class="col">
+													<label for="numTab2SlideRows">Table Rows</label>
+													<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4">
+												</div>
+												<div class="col">
+													<label for="numTab2Padding">Cell Padding</label>
+													<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
+														onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+													<!--<small class="text-info">(points)</small>-->
 												</div>
 											</div>
 										</div>
-										<div class="col-6">
-											<div class="card">
-												<h6 class="card-header">Paging Options</h6>
-												<div class="card-body">
-													<div class="row">
-														<div class="col">
-															<label>Repeat Table Head on each Slide</label>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Paging Options</div>
+										<div class="card-body">
+											<div class="row">
+												<div class="col">
+													<label>Repeat Table Head on each Slide</label>
+													<div class="form-control">
+														<div class="form-check form-check-inline">
+															<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
+															<label class="form-check-label" for="radioHeadY">Yes</label>
+														</div>
+														<div class="form-check form-check-inline">
+															<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
+															<label class="form-check-label" for="radioHeadN">No</label>
+														</div>
+													</div>
+													<code>autoPageRepeatHeader</code>
+												</div>
+												<div class="col">
+													<label>Starting top location (<code>y</code>) after first slide</label>
+													<div class="form-check form-check-inline w-100">
+														<div class="col px-0 text-nowrap">
 															<div class="form-control">
-																<div class="form-check form-check-inline">
-																	<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
-																	<label class="form-check-label" for="radioHeadY">Yes</label>
-																</div>
-																<div class="form-check form-check-inline">
-																	<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
-																	<label class="form-check-label" for="radioHeadN">No</label>
-																</div>
+																<input class="form-check-input" type="checkbox" id="checkStartY"
+																	onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
+																<label class="form-check-label" for="checkStartY">Enable?</label>
 															</div>
-															<code>autoPageRepeatHeader</code>
 														</div>
-														<div class="col">
-															<label>Starting top location (<code>y</code>) after first slide</label>
-															<div class="form-check form-check-inline w-100">
-																<div class="col px-0 text-nowrap">
-																	<div class="form-control">
-																		<input class="form-check-input" type="checkbox" id="checkStartY"
-																			onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
-																		<label class="form-check-label" for="checkStartY">Enable?</label>
-																	</div>
-																</div>
-																<div class="col px-0">
-																	<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5"
-																		disabled>
-																</div>
-															</div>
-															<code>autoPageSlideStartY</code>
+														<div class="col px-0">
+															<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
 														</div>
 													</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="card h-100">
-												<h6 class="card-header">Master Slide</h6>
-												<div class="card-body">
-													<div class="row align-items-start">
-														<div class="col">
-															<label>Select a Master Slide</label>
-															<select id="selSlideMaster" class="form-control">
-																<option value="" selected="selected">(None)</option>
-															</select>
-														</div>
-													</div>
+													<code>autoPageSlideStartY</code>
 												</div>
 											</div>
 										</div>
 									</div>
-									<table id="tabAutoPaging" class="table table-sm mb-0 tabDemo">
-										<thead>
-											<tr style="font-family:Courier">
-												<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
-												<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
-												<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-												<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
-											</tr>
-										</thead>
-										<tbody></tbody>
-									</table>
-									<div class="row justify-content-center">
-										<div class="col-auto text-center p-3">
-											<button id="table2slides1" type="button" class="btn btn-success px-5">Demo Table (options above)</button>
-										</div>
-										<div class="col-auto text-center p-3">
-											<button id="table2slides2" type="button" class="btn btn-outline-success">Demo Table (plus dynamic-text)</button>
+								</div>
+								<div class="col-3">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Master Slide</div>
+										<div class="card-body">
+											<div class="row align-items-start">
+												<div class="col">
+													<label>Select a Master Slide</label>
+													<select id="selSlideMaster" class="form-control">
+														<option value="" selected="selected">(None)</option>
+													</select>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+							<table id="tabAutoPaging" class="table table-sm mb-0 tabDemo">
+								<thead>
+									<tr style="font-family:Courier">
+										<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
+										<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+										<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+										<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+							<div class="row justify-content-center">
+								<div class="col-auto text-center p-3">
+									<button id="table2slides1" type="button" class="btn btn-success px-5">Demo Table (options above)</button>
+								</div>
+								<div class="col-auto text-center p-3">
+									<button id="table2slides2" type="button" class="btn btn-outline-success">Demo Table (plus dynamic-text)</button>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="accordion-item">
-						<h2 class="accordion-header" id="headingThree">
-							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false"
-								aria-controls="collapseThree">
-								Accordion Item #3
+					<div class="accordion-item" data-desc="collapse03">
+						<h2 id="heading03" class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse03" aria-expanded="false"
+								aria-controls="collapse03">
+								Demo: Unstyled and Stylesheet
 							</button>
 						</h2>
-						<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
-							<div class="accordion-body">
-								<strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we
-								use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any
-								of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the
-								<code>.accordion-body</code>, though the transition does limit overflow.
+						<div id="collapse03" class="accordion-collapse collapse p-4" aria-labelledby="heading03" data-bs-parent="#accordionDemoTable">
+							<div class="row row-cols-2 gx-4">
+								<div class="col">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Plain/Unstyled Table</div>
+										<div class="card-body">
+											<table id="tabNoStyle" class="mb-0 w-100">
+												<thead>
+													<tr>
+														<th>Company</th>
+														<th>Contact</th>
+														<th>Feedback</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>Tesla &amp; SpaceX</td>
+														<td>elon@tesla.com</td>
+														<td>"PptxGenJS is as good as our rockets!" - Elon</td>
+													</tr>
+													<tr>
+														<td>Apple Inc.</td>
+														<td>tim@apple.com</td>
+														<td>"Keynote team needs to hire you ASAP!" - Tim</td>
+													</tr>
+													<tr>
+														<td>Microsoft Inc.</td>
+														<td>ceo@microsoft.com</td>
+														<td>"PowerPoint team needs to hire you!" - Satya</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabNoStyle" type="button" class="btn btn-outline-primary">Run Demo</button>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Styled via `class`</div>
+										<div class="card-body">
+											<table id="tabInheritStyle" class="tabHtmlToPpt table mb-0 w-100">
+												<thead class="table-dark">
+													<tr>
+														<th>Company</th>
+														<th>Contact</th>
+														<th>Feedback</th>
+													</tr>
+												</thead>
+												<tbody class="text-muted">
+													<tr>
+														<td>Tesla &amp; SpaceX</td>
+														<td>elon@tesla.com</td>
+														<td>"PptxGenJS is as good as our rockets!" - Elon</td>
+													</tr>
+													<tr>
+														<td>Apple Inc.</td>
+														<td>tim@apple.com</td>
+														<td>"Keynote team needs to hire you ASAP!" - Tim</td>
+													</tr>
+													<tr>
+														<td>Microsoft Inc.</td>
+														<td>ceo@microsoft.com</td>
+														<td>"PowerPoint team needs to hire you!" - Satya</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-outline-primary">Run Demo</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-item" data-desc="collapse04">
+						<h2 id="heading04" class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse04" aria-expanded="false"
+								aria-controls="collapse04">
+								Demo: Colspans, Rowspans, Colspans and Rowspans
+							</button>
+						</h2>
+						<div id="collapse04" class="accordion-collapse collapse p-4" aria-labelledby="heading04" data-bs-parent="#accordionDemoTable">
+							<div class="row row-cols-3 gx-4">
+								<div class="col">
+									<div class="card">
+										<div class="card-header h6 bg-primary">Colspan</div>
+										<div class="card-body">
+											<table id="tabColspan" class="tabHtmlToPpt w-100">
+												<thead class="table-light">
+													<tr>
+														<th class="tg-header">First Name</th>
+														<th class="tg-header">Last Name</th>
+														<th class="tg-header" colspan="2">Colspan TH</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>Jill</td>
+														<td>Smith</td>
+														<td>12</td>
+														<td>34</td>
+													</tr>
+													<tr>
+														<td>Eve</td>
+														<td>Pilgrim</td>
+														<td>56</td>
+														<td>67</td>
+													</tr>
+													<tr>
+														<td>Scott</td>
+														<td>Jackson</td>
+														<td>89</td>
+														<td>99</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabColspan" type="button" class="btn btn-outline-primary">Run Demo</button>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="card">
+										<div class="card-header h6 bg-primary">Rowspan</div>
+										<div class="card-body">
+											<table id="tabRowspan" class="tabHtmlToPpt w-100">
+												<thead class="table-light">
+													<tr>
+														<th class="tg-header">Last Name</th>
+														<th class="tg-header">First Name</th>
+														<th class="tg-header">Count</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td rowspan="3">Smith</td>
+														<td>Liz</td>
+														<td>50</td>
+													</tr>
+													<tr>
+														<td>Eve</td>
+														<td>94</td>
+													</tr>
+													<tr>
+														<td>Scott</td>
+														<td>101</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabRowspan" type="button" class="btn btn-outline-primary">Run Demo</button>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="card">
+										<div class="card-header h6 bg-primary">Colspan and Rowspan</div>
+										<div class="card-body">
+											<table id="tabRowColspan" class="tabHtmlToPpt w-100">
+												<thead class="table-light">
+													<tr>
+														<th class="tg-header" colspan="2">Name</th>
+														<th class="tg-header" rowspan="2">Count</th>
+													</tr>
+													<tr>
+														<th class="tg-header">Last</th>
+														<th class="tg-header">First</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>Smith</td>
+														<td>Liz</td>
+														<td>50</td>
+													</tr>
+													<tr>
+														<td>Eve</td>
+														<td>Williams</td>
+														<td>94</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabRowColspan" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-item" data-desc="collapse05">
+						<h2 id="heading05" class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse05" aria-expanded="false"
+								aria-controls="collapse05">
+								Demo: Lots of Rows, Giant Single Line
+							</button>
+						</h2>
+						<div id="collapse05" class="accordion-collapse collapse p-4" aria-labelledby="heading05" data-bs-parent="#accordionDemoTable">
+							<div class="row row-cols-2 gx-4">
+								<div class="col">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Example: Lots of Single-Line Rows</div>
+										<div class="card-body">
+											<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
+												<thead class="table-light">
+													<tr>
+														<th class="tg-header">A</th>
+														<th class="tg-header">B</th>
+														<th class="tg-header">C</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-outline-primary">Run Demo</button>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="card h-100">
+										<div class="card-header h6 bg-primary">Example: Paging needed due to cell with large amount of text</div>
+										<div class="card-body">
+											<table id="tabLargeCellText" class="tabHtmlToPpt">
+												<thead class="table-light">
+													<tr>
+														<th class="tg-header">Executive Status</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>?</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="card-footer text-center">
+											<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-outline-primary">Run Demo</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
 
-
-				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-					<div class="arrow"></div>
-					Demo: Misc Table Styles
-				</h5>
-				<div class="m-0 p-2" style="display:none;">
-					<div class="row">
-						<div class="col">
-							<div class="card h-100">
-								<h6 class="card-header">Plain/Unstyled Table</h6>
-								<div class="card-body">
-									<table id="tabNoStyle" class="mb-0 w-100">
-										<thead>
-											<tr>
-												<th>Company</th>
-												<th>Contact</th>
-												<th>Feedback</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tesla &amp; SpaceX</td>
-												<td>elon@tesla.com</td>
-												<td>"PptxGenJS is as good as our rockets!" - Elon</td>
-											</tr>
-											<tr>
-												<td>Apple Inc.</td>
-												<td>tim@apple.com</td>
-												<td>"Keynote team needs to hire you ASAP!" - Tim</td>
-											</tr>
-											<tr>
-												<td>Microsoft Inc.</td>
-												<td>ceo@microsoft.com</td>
-												<td>"PowerPoint team needs to hire you!" - Satya</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="card-footer text-center">
-									<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success w-50">Unstyled Demo</button>
-								</div>
-							</div>
-						</div>
-						<div class="col">
-							<div class="card">
-								<h6 class="card-header">Table Style via class</h6>
-								<div class="card-body">
-									<table id="tabInheritStyle" class="tabHtmlToPpt table mb-0 w-100">
-										<thead class="thead-dark">
-											<tr>
-												<th>Company</th>
-												<th>Contact</th>
-												<th>Feedback</th>
-											</tr>
-										</thead>
-										<tbody class="text-muted">
-											<tr>
-												<td>Tesla &amp; SpaceX</td>
-												<td>elon@tesla.com</td>
-												<td>"PptxGenJS is as good as our rockets!" - Elon</td>
-											</tr>
-											<tr>
-												<td>Apple Inc.</td>
-												<td>tim@apple.com</td>
-												<td>"Keynote team needs to hire you ASAP!" - Tim</td>
-											</tr>
-											<tr>
-												<td>Microsoft Inc.</td>
-												<td>ceo@microsoft.com</td>
-												<td>"PowerPoint team needs to hire you!" - Satya</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="card-footer text-center">
-									<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-success w-50">Stylesheet Demo</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-					<div class="arrow"></div>
-					Demo: Rowspans/Colspans
-				</h5>
-				<div class="card-deck m-0 p-2" style="display:none;">
-					<div class="card">
-						<h6 class="card-header">Colspan</h6>
-						<div class="card-body">
-							<table id="tabColspan" class="tabHtmlToPpt w-100">
-								<thead class="table-light">
-									<tr>
-										<th class="tg-header">First Name</th>
-										<th class="tg-header">Last Name</th>
-										<th class="tg-header" colspan="2">Colspan TH</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Jill</td>
-										<td>Smith</td>
-										<td>12</td>
-										<td>34</td>
-									</tr>
-									<tr>
-										<td>Eve</td>
-										<td>Pilgrim</td>
-										<td>56</td>
-										<td>67</td>
-									</tr>
-									<tr>
-										<td>Scott</td>
-										<td>Jackson</td>
-										<td>89</td>
-										<td>99</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="mt-3 text-center">
-								<button id="tab2slides_tabColspan" type="button" class="btn btn-success w-75">Colspan Demo</button>
-							</div>
-						</div>
-					</div>
-					<div class="card">
-						<h6 class="card-header">Rowspan</h6>
-						<div class="card-body">
-							<table id="tabRowspan" class="tabHtmlToPpt w-100">
-								<thead class="table-light">
-									<tr>
-										<th class="tg-header">Last Name</th>
-										<th class="tg-header">First Name</th>
-										<th class="tg-header">Count</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td rowspan="3">Smith</td>
-										<td>Liz</td>
-										<td>50</td>
-									</tr>
-									<tr>
-										<td>Eve</td>
-										<td>94</td>
-									</tr>
-									<tr>
-										<td>Scott</td>
-										<td>101</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="mt-3 text-center">
-								<button id="tab2slides_tabRowspan" type="button" class="btn btn-success w-75">Rowspan Demo</button>
-							</div>
-						</div>
-					</div>
-					<div class="card">
-						<h6 class="card-header">Rowspan and Colspan</h6>
-						<div class="card-body">
-							<table id="tabRowColspan" class="tabHtmlToPpt w-100">
-								<thead class="table-light">
-									<tr>
-										<th class="tg-header" colspan="2">Name</th>
-										<th class="tg-header" rowspan="2">Count</th>
-									</tr>
-									<tr>
-										<th class="tg-header">Last</th>
-										<th class="tg-header">First</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Smith</td>
-										<td>Liz</td>
-										<td>50</td>
-									</tr>
-									<tr>
-										<td>Eve</td>
-										<td>Williams</td>
-										<td>94</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="mt-3 text-center">
-								<button id="tab2slides_tabRowColspan" type="button" class="btn btn-success w-75">Rowspan/Colspan Demo</button>
-								<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
-							</div>
-						</div>
-					</div>
-				</div>
-				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-					<div class="arrow"></div>
-					Demo: Single Lines, Large Cell Text
-				</h5>
-				<div class="card-deck m-0 p-2" style="display:none;">
-					<div class="card h-100 mb-4">
-						<h6 class="card-header">Example: Lots of Single-Line Rows</h6>
-						<div class="card-body">
-							<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
-								<thead class="table-light">
-									<tr>
-										<th class="tg-header">A</th>
-										<th class="tg-header">B</th>
-										<th class="tg-header">C</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
-						<div class="card-footer">
-							<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-success w-100">Single-Line Rows Demo</button>
-						</div>
-					</div>
-					<div class="card h-100 mb-4">
-						<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
-						<div class="card-body">
-							<table id="tabLargeCellText" class="tabHtmlToPpt">
-								<thead class="table-light">
-									<tr>
-										<th class="tg-header">Executive Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>?</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div class="card-footer">
-							<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-success w-100">Large Cell Text Demo</button>
-						</div>
-					</div>
-				</div>
 			</div>
 			<div class="tab-pane p-4" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
 				<h4 class="text-primary">Chart Demos</h4>
