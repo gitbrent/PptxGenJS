@@ -123,8 +123,8 @@ export function doAppStart() {
 	}
 
 	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3300));
-	for (let idx = 0; idx < 30; idx++) {
+	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
+	for (let idx = 0; idx < 36; idx++) {
 		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
 	}
 
