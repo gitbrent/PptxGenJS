@@ -61,9 +61,7 @@ export function doAppStart() {
 	// STEP 3: Build UI elements
 	buildDataTable();
 	let pptx = new PptxGenJS();
-	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach(function (name, idx) {
-		$("#selSlideMaster").append('<option value="' + name + '">' + name + "</option>");
-	});
+	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => $("#selSlideMaster").append(`<option value="${name}">${name}</option>`));
 
 	// STEP 4: Populate code areas
 	{
@@ -221,8 +219,8 @@ export function table2slides1() {
 		autoPageLineWeight: 0,
 		verbose: false,
 	};
-	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
-	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
+	if ($("#repeatHeadRow").val() == "Y") objOpts.autoPageRepeatHeader = true;
+	if ($("#slideStartY").val()) objOpts.autoPageSlideStartY = Number($("#slideStartY").val());
 	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
 
 	// STEP 3: Pass table to tableToSlides function to produce 1-N slides
@@ -243,8 +241,8 @@ export function table2slides2() {
 	// STEP 2: Set generated Slide options
 	let objOpts = {};
 	//objOpts.verbose = true;
-	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
-	if ($("#checkStartY").prop("checked")) objOpts.newSlideStartY = Number($("#numTab2SlideStartY").val()); // TEST: DEPRECATED: `newSlideStartY`
+	if ($("#repeatHeadRow").val() == "Y") objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
+	if ($("#slideStartY").val()) objOpts.newSlideStartY = Number($("#slideStartY").val()); // TEST: DEPRECATED: `newSlideStartY`
 	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
 
 	// STEP 3: Add a custom shape (text in this case) to each Slide

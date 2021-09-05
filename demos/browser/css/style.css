@@ -11,6 +11,7 @@ pre {
 }
 
 /* -- brentstrap.css ---------- */
+
 .bde-arrow-cont {
 	cursor: pointer;
 	-webkit-user-select: none;
@@ -41,6 +42,12 @@ pre {
 .arrow.active {
 	transform: rotate(135deg);
 	margin-bottom: 3px;
+}
+
+/* -- HTML2PPTX ---------- */
+#tabAutoPaging thead tr th:first-child {
+	background-color: var(--bs-cyan);
+	color: var(--bs-white);
 }
 
 /* -- brentstrap.css ---------- */
@@ -77,6 +84,30 @@ pre {
 	.tab-pane {
 		background-color: #030303;
 	}
+
+	.form-label {
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		color: rgba(255, 255, 255, 0.6) !important;
+	}
+	.form-text {
+		font-size: 0.7rem;
+		color: rgba(255, 255, 255, 0.4) !important;
+	}
+	.form-control, .form-select {
+		color: var(--bs-dark);
+	}
+
+	.bg-gray-100 {
+		background-color: var(--bs-gray-900);
+	}
+
+	#tabAutoPaging tbody tr td {
+		background-color: #030303;
+	}
+	#tabAutoPaging tbody td:first-child {
+		background: var(--bs-gray-900);
+	}
 }
 @media (prefers-color-scheme: light) {
 	.tab-pane {
@@ -96,45 +127,22 @@ pre {
 		background-color: var(--bs-primary) !important;
 		color: var(--bs-white) !important;
 	}
-}
 
-/* ------------------------------------------------------------------------- */
-.tabDemo {
-	width: 100%;
-	border-collapse: collapse;
-}
+	.form-label {
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		color: var(--bs-gray);
+	}
+	.form-text {
+		font-size: 0.7rem;
+		color: rgba(0, 0, 0, 0.4) !important;
+	}
 
-.tabDemo thead th {
-	border: 1px solid var(--bs-white);
-	background: var(--bs-primary);
-	color: var(--bs-white);
-	padding: 10px;
-	margin: 0;
-}
+	.bg-gray-100 {
+		background-color: var(--bs-gray-100);
+	}
 
-.tabDemo tbody td:first-child {
-	background: var(--bs-secondary);
-}
-
-.tabDemo tbody td {
-	border: 1px solid var(--bs-secondary);
-	background: var(--bs-white);
-	padding: 10px;
-	margin: 0;
-	text-align: left;
-}
-
-.tabDemo tbody td:nth-child(1),
-.tabDemo tbody td:nth-child(2) {
-	white-space: nowrap;
-}
-
-.tabHtmlToPpt thead th {
-	font-weight: normal;
-}
-
-.tabHtmlToPpt th,
-.tabHtmlToPpt td {
-	border: 1px solid var(--bs-light);
-	padding: 4px 8px;
+	#tabAutoPaging tbody td:first-child {
+		background: var(--bs-gray-100);
+	}
 }

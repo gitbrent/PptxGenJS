@@ -198,7 +198,6 @@
 			</div>
 			<div class="tab-pane p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
 				<h4 class="text-primary mb-3">HTML to PowerPoint</h4>
-
 				<div class="accordion" id="accordionDemoTable">
 					<div class="accordion-item" data-desc="collapse01">
 						<h2 id="heading01" class="accordion-header">
@@ -209,19 +208,19 @@
 						</h2>
 						<div id="collapse01" class="accordion-collapse collapse" aria-labelledby="heading01" data-bs-parent="#accordionDemoTable">
 							<div class="accordion-body">
-								<h5 class="text-dark">About</h5>
+								<strong>About</strong>
 								<ul>
 									<li>Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code
 											class="language-javascript p-1">pptx.tableToSlides('tableId');</code></li>
 									<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint" target="_blank">HTML to PowerPoint documentation</a> for
 										full details and examples</li>
 								</ul>
-								<h5 class="text-dark">Usage</h5>
+								<strong>Usage</strong>
 								<ul>
 									<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
 									<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
 								</ul>
-								<h5 class="text-dark">Tips</h5>
+								<strong>Tips</strong>
 								<ul class="mb-0">
 									<li>If you need to modify your table before creating the Presentation, use jQuery to clone() it and do the modifications on that table</li>
 									<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
@@ -232,106 +231,71 @@
 					</div>
 					<div class="accordion-item" data-desc="collapse02">
 						<h2 id="heading02" class="accordion-header">
-							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse02" aria-expanded="false"
-								aria-controls="collapse01">
-								Demo: Dynamic Table with Paging and Master Options
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse02" aria-expanded="true" aria-controls="collapse01">
+								Demo: Dynamic Table Options
 							</button>
 						</h2>
-						<div id="collapse02" class="accordion-collapse collapse p-4" aria-labelledby="heading02" data-bs-parent="#accordionDemoTable">
-							<div class="row mb-3">
-								<div class="col-3">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Table Setup</div>
-										<div class="card-body">
-											<div class="row align-items-start">
-												<div class="col">
-													<label for="numTab2SlideRows">Table Rows</label>
-													<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4">
-												</div>
-												<div class="col">
-													<label for="numTab2Padding">Cell Padding</label>
-													<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
-														onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
-													<!--<small class="text-info">(points)</small>-->
-												</div>
-											</div>
-										</div>
+						<div id="collapse02" class="accordion-collapse collapse show p-4" aria-labelledby="heading02" data-bs-parent="#accordionDemoTable">
+							<section class="bg-gray-100 border p-3 mb-4">
+								<div class="row mb-3">
+									<div class="col">
+										<label for="numTab2SlideRows" class="form-label">Total Rows</label>
+										<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="18" value="6">
+										<div class="form-text">sets table rows</div>
+									</div>
+									<div class="col">
+										<label for="numTab2Padding" class="form-label">Padding (px/pt)</label>
+										<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
+											onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')" aria-lable="cell padding">
+										<div class="form-text">sets cell padding</div>
+									</div>
+									<div class="col">
+										<label for="repeatHeadRow" class="form-label">Repeat Header Row</label>
+										<select id="repeatHeadRow" class="form-select" aria-label="repeat header row">
+											<option value="Y">Yes</option>
+											<option value="N" selected>No</option>
+										</select>
+										<div class="form-text"><code>autoPageRepeatHeader</code></div>
+									</div>
+									<div class="col">
+										<label for="slideStartY" class="form-label">New slide y value</label>
+										<select id="slideStartY" class="form-select" aria-label="starting location (y) of table on new slides">
+											<option value="" selected>(default)</option>
+											<option value="1.5">1.5</option>
+											<option value="2.0">2.0</option>
+											<option value="2.5">2.5</option>
+											<option value="3.0">3.0</option>
+										</select>
+										<div class="form-text"><code>autoPageSlideStartY</code></div>
+									</div>
+									<div class="col">
+										<label for="selSlideMaster" class="form-label">Master Slide</label>
+										<select id="selSlideMaster" class="form-select" aria-label="slide master to use on demo">
+											<option value="" selected>(none)</option>
+										</select>
+										<div class="form-text"><code>masterSlideName</code></div>
 									</div>
 								</div>
-								<div class="col-6">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Paging Options</div>
-										<div class="card-body">
-											<div class="row">
-												<div class="col">
-													<label>Repeat Table Head on each Slide</label>
-													<div class="form-control">
-														<div class="form-check form-check-inline">
-															<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
-															<label class="form-check-label" for="radioHeadY">Yes</label>
-														</div>
-														<div class="form-check form-check-inline">
-															<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
-															<label class="form-check-label" for="radioHeadN">No</label>
-														</div>
-													</div>
-													<code>autoPageRepeatHeader</code>
-												</div>
-												<div class="col">
-													<label>Starting top location (<code>y</code>) after first slide</label>
-													<div class="form-check form-check-inline w-100">
-														<div class="col px-0 text-nowrap">
-															<div class="form-control">
-																<input class="form-check-input" type="checkbox" id="checkStartY"
-																	onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
-																<label class="form-check-label" for="checkStartY">Enable?</label>
-															</div>
-														</div>
-														<div class="col px-0">
-															<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
-														</div>
-													</div>
-													<code>autoPageSlideStartY</code>
-												</div>
-											</div>
-										</div>
+								<div class="row">
+									<div class="col">
+										<button id="table2slides1" type="button" class="btn btn-success w-100">Demo Table (as shown)</button>
+									</div>
+									<div class="col">
+										<button id="table2slides2" type="button" class="btn btn-outline-success w-100">Demo Table (add dynamic-text)</button>
 									</div>
 								</div>
-								<div class="col-3">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Master Slide</div>
-										<div class="card-body">
-											<div class="row align-items-start">
-												<div class="col">
-													<label>Select a Master Slide</label>
-													<select id="selSlideMaster" class="form-control">
-														<option value="" selected="selected">(None)</option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<table id="tabAutoPaging" class="table table-sm mb-0 tabDemo">
-								<thead>
+							</section>
+							<table id="tabAutoPaging" class="table table-sm mb-0">
+								<thead class="table-light">
 									<tr style="font-family:Courier">
-										<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
-										<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
-										<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-										<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
+										<th data-pptx-width="0.6" style="width:5%"><b>Row</b></th>
+										<th data-pptx-min-width="0.8" style="width:10%">Last</th>
+										<th data-pptx-min-width="0.8" style="width:10%">First</th>
+										<th style="width:75%">Description</th>
 									</tr>
 								</thead>
 								<tbody></tbody>
 							</table>
-							<div class="row justify-content-center">
-								<div class="col-auto text-center p-3">
-									<button id="table2slides1" type="button" class="btn btn-success px-5">Demo Table (options above)</button>
-								</div>
-								<div class="col-auto text-center p-3">
-									<button id="table2slides2" type="button" class="btn btn-outline-success">Demo Table (plus dynamic-text)</button>
-								</div>
-							</div>
 						</div>
 					</div>
 					<div class="accordion-item" data-desc="collapse03">
@@ -375,7 +339,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabNoStyle" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success">Run Demo</button>
 										</div>
 									</div>
 								</div>
@@ -411,7 +375,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-success">Run Demo</button>
 										</div>
 									</div>
 								</div>
@@ -462,7 +426,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabColspan" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabColspan" type="button" class="btn btn-success">Run Demo</button>
 										</div>
 									</div>
 								</div>
@@ -496,7 +460,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabRowspan" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabRowspan" type="button" class="btn btn-success">Run Demo</button>
 										</div>
 									</div>
 								</div>
@@ -530,7 +494,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabRowColspan" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabRowColspan" type="button" class="btn btn-success">Run Demo</button>
 											<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
 										</div>
 									</div>
@@ -564,7 +528,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-success">Run Demo</button>
 										</div>
 									</div>
 								</div>
@@ -586,7 +550,7 @@
 											</table>
 										</div>
 										<div class="card-footer text-center">
-											<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-outline-primary">Run Demo</button>
+											<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-success">Run Demo</button>
 										</div>
 									</div>
 								</div>
@@ -594,8 +558,6 @@
 						</div>
 					</div>
 				</div>
-
-
 			</div>
 			<div class="tab-pane p-4" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
 				<h4 class="text-primary">Chart Demos</h4>
