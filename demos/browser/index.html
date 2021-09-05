@@ -896,55 +896,122 @@
 				</div>
 			</div>
 			<div class="tab-pane p-4" id="tab-tables" role="tabpanel" aria-labelledby="nav-tables">
-				<h4 class="text-primary">Table Demos</h4>
-				<p>
-					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-table" target="_blank">table documentation</a> for full details and examples
-				</p>
-				<div class="card-deck mb-4">
-					<div class="card">
-						<h6 class="card-header">Table Layout/Format</h6>
-						<div class="card-body">
-							<div>Slide 1</div>
-							<div>- Text Alignment</div>
-							<div>- Cell Styles</div>
-							<div>- Row Height / Col Width</div>
-							<div class="mt-2">Slide 2</div>
-							<div>- Colspans/Rowspans</div>
-							<div class="mt-2">Slide 3</div>
-							<div>- Extreme Colspans/Rowspans</div>
+				<div class="card">
+					<div class="card-header bg-primary text-white">
+						<div class="row align-items-center">
+							<div class="col">
+								<div class="h5 mb-0">Tables</div>
+							</div>
+							<div class="col-auto">
+								<div class="text-sm text-white">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+										<path
+											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+									</svg>
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-table" title="API Documentation" target="_blank">API
+										Documentation</a>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Cell Formatting</h6>
-						<div class="card-body">
-							<div>Slide 4</div>
-							<div>- Cell Margins</div>
-							<div>- Complex Cell Borders</div>
-							<div>- Escaped Special Characters</div>
-							<div class="mt-2">Slide 5</div>
-							<div>- Cell Text Formatting Overview</div>
-							<div class="mt-2">Slide 6</div>
-							<div>- Cell Text Formatting Examples</div>
+					<div class="card-body">
+						<div class="row row-cols-auto row-cols-md-3 g-4 text-sm">
+							<div class="col">
+								<h6 class="text-primary">Table Layout/Format</h6>
+								<strong>Slide 1</strong>
+								<ul>
+									<li>text alignment</li>
+									<li>cell styles</li>
+									<li>row height</li>
+									<li>col width</li>
+								</ul>
+								<strong>Slide 2</strong>
+								<ul>
+									<li>colspans and rowspans</li>
+								</ul>
+								<strong>Slide 3</strong>
+								<ul class="mb-0">
+									<li>extreme colspans and rowspans</li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Cell Formatting</h6>
+								<strong>Slide 4</strong>
+								<ul>
+									<li>cell margins</li>
+									<li>complex cell borders</li>
+									<li>escaped special characters</li>
+								</ul>
+								<strong>Slide 5</strong>
+								<ul>
+									<li>cell text formatting overview</li>
+								</ul>
+								<strong>Slide 6</strong>
+								<ul class="mb-0">
+									<li>cell text formatting examples</li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Auto-Paging Examples</h6>
+								<strong>Slides 7-8</strong>
+								<ul>
+									<li>basic auto-paging example</li>
+								</ul>
+								<strong>Slides 9-12</strong>
+								<ul>
+									<li>paging with small table dimensions</li>
+								</ul>
+								<strong>Slides 13-15</strong>
+								<ul>
+									<li>auto-paging with a Master Page</li>
+								</ul>
+								<strong>Slide 16</strong>
+								<ul class="mb-0">
+									<li>auto-paging disabled <code>{autoPage:false}</code></li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Auto-Paging Props</h6>
+								<strong>Slides 17-19</strong>
+								<ul>
+									<li>start at <code>{y:4.0}</code>, subsequent start at top margin</li>
+								</ul>
+								<strong>Slides 20-22</strong>
+								<ul class="mb-0">
+									<li>start at <code>{y:4.0}</code>, subsequent start at <code>{autoPageSlideStartY:1.5}</code></li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Auto-Paging Props</h6>
+								<strong>Slides 23-24</strong>
+								<ul>
+									<li>various <code>autoPageRepeatHeader</code> thead configs</li>
+								</ul>
+								<strong>Slides 25-28</strong>
+								<ul>
+									<li>various <code>autoPageLineWeight</code> values</li>
+								</ul>
+								<strong>Slides 29-32</strong>
+								<ul class="mb-0">
+									<li>various <code>autoPageCharWeight</code> values</li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Auto-Paging Complex Cell Text</h6>
+								<strong>Slides 33-35</strong>
+								<ul>
+									<li>complex cell text</li>
+								</ul>
+								<strong>Slides 36-39</strong>
+								<ul class="mb-0">
+									<li>complex cell text with calculated lines</li>
+								</ul>
+							</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Table Auto-Paging</h6>
-						<div class="card-body">
-							<div>Slide 7+</div>
-							<div>- Basic auto-paging example</div>
-							<div>- Pagins with smaller table dimensions</div>
-							<div>- Start at <code>{ y: 4.0 }</code>, subsequent start at top margin</div>
-							<div>- Start at <code>{ y: 4.0 }</code>, subsequent start at <code>{ autoPageSlideStartY: 1.5 }</code></div>
-							<div>- Auto-paging with a Master Page</code></div>
-							<div>- Disabled auto-paging <code>{ autoPage: false }</code></div>
-							<div>- Tables with various <code>{ autoPageRepeatHeader: true }</code></div>
-							<div>- Tables with various <code>autoPageLineWeight</code> values</div>
-							<div>- Tables with various <code>autoPageCharWeight</code> values</div>
-						</div>
+					<div class="card-footer text-center">
+						<button id="btnGenFunc_Table" type="button" class="btn btn-success w-25">Table Demo</button>
 					</div>
-				</div>
-				<div class="text-center">
-					<button id="btnGenFunc_Table" type="button" class="btn btn-success w-25">Table Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane p-4" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">

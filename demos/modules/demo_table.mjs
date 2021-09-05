@@ -34,10 +34,8 @@ export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
 	genSlide08(pptx);
 
-	if (window.location.href.indexOf("http://localhost:8000/") > -1) {
-		pptx.addSection({ title: "Tables: Auto-Paging-Calc" });
-		genSlideDebugCalc(pptx);
-	}
+	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
+	genSlide09(pptx);
 }
 
 /**
@@ -591,7 +589,33 @@ function genSlide07(pptx) {
 		});
 	}
 
-	// EX-3: "Start at `{ y: 4.0 }`, subsequent slides start at slide top margin"
+	// EX-3: "Master Page with Auto-Paging"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Master Page with Auto-Paging", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.5, y: 0.13, w: "90%" }
+		);
+		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
+	}
+
+	// EX-4: "Auto-Paging Disabled"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Auto-Paging Disabled", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.5, y: 0.13, w: "90%" }
+		);
+		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" } }); // Negative-Test: no `autoPage:false`
+	}
+
+	// EX-5: "Start at `{ y: 4.0 }`, subsequent slides start at slide top margin"
 	{
 		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MARGIN_SLIDE" });
 		slide.addText(
@@ -613,7 +637,7 @@ function genSlide07(pptx) {
 		});
 	}
 
-	// EX-4: "Start at `{ y: 4.0 }`, subsequent slides start at `{ autoPageSlideStartY: 1.5 }`"
+	// EX-6: "Start at `{ y: 4.0 }`, subsequent slides start at `{ autoPageSlideStartY: 1.5 }`"
 	{
 		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MARGIN_SLIDE_STARTY15" });
 		slide.addText(
@@ -634,32 +658,6 @@ function genSlide07(pptx) {
 			autoPageCharWeight: 0.15,
 			verbose: false,
 		});
-	}
-
-	// EX-5: "Master Page with Auto-Paging"
-	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
-		slide.addText(
-			[
-				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-				{ text: "Master Page with Auto-Paging", options: DEMO_TITLE_OPTS },
-			],
-			{ x: 0.5, y: 0.13, w: "90%" }
-		);
-		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
-	}
-
-	// EX-6: "Auto-Paging Disabled"
-	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
-		slide.addText(
-			[
-				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-				{ text: "Auto-Paging Disabled", options: DEMO_TITLE_OPTS },
-			],
-			{ x: 0.5, y: 0.13, w: "90%" }
-		);
-		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" } }); // Negative-Test: no `autoPage:false`
 	}
 
 	// EX-7: `autoPageRepeatHeader` option demos
@@ -838,11 +836,11 @@ function genSlide08(pptx) {
  * @param {PptxGenJS} pptx
  * @since 3.8.0
  */
-function genSlideDebugCalc(pptx) {
+function genSlide09(pptx) {
 	let slide = null;
 	let arrRows = [];
 
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging-Calc" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Calc" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addText([{ text: "Table Examples: Auto-Paging Calculations", options: DEMO_TITLE_TEXTBK }], {
 		x: 0.23,
