@@ -32,7 +32,7 @@ export function doAppStart() {
 		document.getElementById("codeSandbox").classList.remove("d-none");
 	}
 
-	// STEP 2: Introduction tab: Librayr Info
+	// STEP 2: Introduction tab: Library Info
 	{
 		if (typeof Promise !== "function") {
 			$("header").after(

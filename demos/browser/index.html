@@ -1027,31 +1027,46 @@
 				</div>
 			</div>
 			<div class="tab-pane p-4" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">
-				<h4 class="text-primary">Slide Masters / Templates / Layouts</h4>
-				<p>
-					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/masters" target="_blank">masters documentation</a> for full details and examples
-				</p>
-				<div class="card-deck mb-4">
-					<div class="card" style="max-width:18%">
-						<h6 class="card-header">Misc Master Slides</h6>
-						<div class="card-body">
-							<div>Slide 1 - <span>TITLE_SLIDE</span></div>
-							<div>Slide 2 - <span>MASTER_SLIDE</span></div>
-							<div>Slide 3 - <span>MASTER_SLIDE</span></div>
-							<div>Slide 4 - <span>MASTER_SLIDE</span></div>
-							<div>Slide 5 - <span>MASTER_SLIDE</span></div>
-							<div>Slide 6 - <span>THANKS_SLIDE</span></div>
+				<div class="card">
+					<div class="card-header bg-primary text-white">
+						<div class="row align-items-center">
+							<div class="col">
+								<div class="h5 mb-0">Slide Masters / Templates / Layouts</div>
+							</div>
+							<div class="col-auto">
+								<div class="text-sm text-white">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+										<path
+											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+									</svg>
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/masters" title="API Documentation" target="_blank">API
+										Documentation</a>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Creating Slide Masters is easy!</h6>
-						<div class="card-body">
-							<pre class="mb-3"><code id="demo-master" class="language-javascript"></code></pre>
+					<div class="card-body">
+						<div class="row g-4">
+							<div class="col-auto">
+								<h6 class="text-primary">Demo Master Slides</h6>
+								<ul class="text-sm mb-0">
+									<li>Slide 1: TITLE_SLIDE</li>
+									<li>Slide 2: MASTER_SLIDE</li>
+									<li>Slide 3: MASTER_SLIDE</li>
+									<li>Slide 4: MASTER_SLIDE</li>
+									<li>Slide 5: MASTER_SLIDE</li>
+									<li>Slide 6: THANKS_SLIDE</li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Master Slide How-To</h6>
+								<pre><code id="demo-master" class="language-javascript"></code></pre>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="text-center">
-					<button id="btnGenFunc_Master" type="button" class="btn btn-success w-25">Master Demo</button>
+					<div class="card-footer text-center">
+						<button id="btnGenFunc_Master" type="button" class="btn btn-success px-5">Run Demo</button>
+					</div>
 				</div>
 			</div>
 		</main>

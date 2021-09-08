@@ -141,6 +141,14 @@ pre {
 	.border {
 		border: 1px solid var(--bs-gray-600) !important;
 	}
+
+	.card-body {
+		background-color: #131313;
+	}
+
+	pre[class*="language-"] {
+		background-color: #131313 !important;
+	}
 }
 @media (prefers-color-scheme: light) {
 	.tab-pane {
