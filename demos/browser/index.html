@@ -167,34 +167,46 @@
 		</ul>
 		<main class="tab-content mb-4">
 			<div class="tab-pane p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
-				<h4 class="text-primary">Library Information</h4>
-				<div class="mb-4">
-					<div id="infoBar" class="row align-items-center">
+				<section class="bg-gray-100 border px-4 py-3 mb-4">
+					<h4 class="text-primary">Library Information</h4>
+					<div class="row g-4">
+						<div class='col'>
+							<label id="infoLbl_PptxVers" class="form-label">Library Version</label>
+							<input id="infoBox_PptxVers" class="form-control form-control-sm" disabled value="-" />
+							<div class="form-text">pptx.version</div>
+						</div>
+						<div class='col'>
+							<label id="infoLbl_ChartType" class="form-label">Chart Types</label>
+							<input id="infoBox_ChartType" class="form-control form-control-sm" disabled value="-" />
+							<div class="form-text">Object.keys(pptx.ChartType)</div>
+						</div>
+						<div class='col'>
+							<label id="infoLbl_ShapeType" class="form-label">Shape Types</label>
+							<input id="infoBox_ShapeType" class="form-control form-control-sm" disabled value="-" />
+							<div class="form-text">Object.keys(pptx.ShapeType)</div>
+						</div>
+						<div class='col'>
+							<label id="infoLbl_SchemeColor" class="form-label">Scheme Colors</label>
+							<input id="infoBox_SchemeColor" class="form-control form-control-sm" disabled value="-" />
+							<div class="form-text">Object.keys(pptx.SchemeColor)</div>
+						</div>
 					</div>
-				</div>
-				<hr>
-				<h5 id="tab1sec1" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');"
-					title="Click to Show/Hide">
-					<div class="arrow active"></div>
-					Simple Presentation
-				</h5>
-				<div class="text-center">
-					<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
-					<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Basic Slide Demo</button>
-				</div>
-				<h5 id="tab1sec2" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');"
-					title="Click to Show/Hide">
-					<div class="arrow"></div>
-					Code Sandbox
-				</h5>
-				<div style="display:none">
-					<div class="alert alert-light rounded p-3 mb-3" role="alert" style="border-left: 5px solid var(--bs-primary);">
-						<h5 class="text-dark">Editable Code</h5>
-						<div class="text-muted">Use the area below to easily try out various library features.</div>
+				</section>
+				<section id="basicPres" class="bg-gray-100 border p-3">
+					<h4 class="text-primary">Basic Presentation</h4>
+					<div class="text-center">
+						<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
+						<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Run Basic Demo</button>
+					</div>
+				</section>
+				<section id="codeSandbox" class="bg-gray-100 border p-4 d-none">
+					<div class="alert alert-info mb-4" role="alert">
+						<h5>Editable Code</h5>
+						<div>Use the area below to easily try out various library features.</div>
 					</div>
 					<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
-					<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
-				</div>
+					<button type="button" class="btn btn-success w-50" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
+				</section>
 			</div>
 			<div class="tab-pane p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
 				<h4 class="text-primary mb-3">HTML to PowerPoint</h4>

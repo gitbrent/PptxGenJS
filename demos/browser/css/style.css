@@ -10,7 +10,7 @@ pre {
 	/*-webkit-focus-ring-color auto 5px;*/
 }
 
-/* Works, but is always black coloR (WTF) */
+/* Works, but is always black color (WTF) */
 .iconInfo24 {
 	width: 24px;
 	height: 24px;
@@ -24,6 +24,9 @@ pre {
 }
 .card-body-text-sm .card .card-body {
 	font-size: 0.8rem;
+}
+.cursor-help {
+	cursor: help;
 }
 
 .bde-arrow-cont {
