@@ -394,9 +394,9 @@ function genSlide04(pptx) {
 		valign: "middle",
 	});
 
-	// Invalid char check
+	// Special char check
 	optsSub.y = 6.1;
-	slide.addText("Escaped Invalid Chars:", optsSub);
+	slide.addText("Escaped Special Chars:", optsSub);
 	let arrTabRows3 = [["<", ">", '"', "'", "&", "plain"]];
 	slide.addTable(arrTabRows3, {
 		x: 0.5,
