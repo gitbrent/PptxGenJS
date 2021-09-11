@@ -10,6 +10,7 @@ dist/
 examples/
 libs/
 node_modules/
+node_modules_OLD/
 src/*
 
 website/.docusaurus

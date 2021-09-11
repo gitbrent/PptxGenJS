@@ -15,11 +15,11 @@
 		"gulp-string-replace": "^1.1.2"
 	},
 	"dependencies": {
-		"@docusaurus/core": "^2.0.0-beta.6",
-		"@docusaurus/plugin-client-redirects": "^2.0.0-beta.6",
-		"@docusaurus/preset-classic": "^2.0.0-beta.6",
-		"@docusaurus/theme-classic": "^2.0.0-beta.6",
-		"@docusaurus/theme-live-codeblock": "^2.0.0-beta.6",
+		"@docusaurus/core": "^2.0.0-alpha.72",
+		"@docusaurus/plugin-client-redirects": "^2.0.0-alpha.72",
+		"@docusaurus/preset-classic": "^2.0.0-alpha.72",
+		"@docusaurus/theme-classic": "^2.0.0-alpha.72",
+		"@docusaurus/theme-live-codeblock": "^2.0.0-alpha.72",
 		"clsx": "^1.1.1",
 		"pptxgenjs": "^3.7.1",
 		"purgecss": "^4.0.3",
