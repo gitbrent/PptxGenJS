@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "@theme/Layout";
-import useThemeContext from "@theme/hooks/useThemeContext";
 //import "../css/bootstrap-yeti.css";
 import "../css/purged.css";
 
@@ -12,14 +11,13 @@ const ADDRESS_DOGE = "DDJjv6fsfCwxsyyHPSZrSJMZC51LrUtav7";
 
 export default () => {
 	const PageHeader = () => {
-		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
 		return (
-			<section className="mb-5">
-				<div className={`card ${isDarkTheme ? "border-0" : ""}`}>
+			<section className="useTheme mb-5">
+				<div className="card border-0">
 					<div className="card-header bg-success text-white">
 						<h5 className="mb-0">Support this project by making a donation!</h5>
 					</div>
-					<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
+					<div className="card-body">
 						<p className="card-text">Are you building killer apps? Showcasing your amazing research? Selling products that include our library?</p>
 						<p className="card-text">Consider making a contribution to sponsor library development.</p>
 						<p className="card-text">❤️&nbsp; Thanks to all of our sponsors and contributors! ❤️</p>
@@ -30,14 +28,12 @@ export default () => {
 	};
 
 	const CryptoCards = () => {
-		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
-
 		// NOTE: 20210407: cant use `row-cols-12` yet as docusaurus core bootstrap is ruining `rows` style, use "col-12" etc on cols to supercede for now
 		return (
-			<section>
+			<section className="useTheme">
 				<div className="row g-5 mb-5">
 					<div className="col-12 col-md-3">
-						<div className={`text-center h-100 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+						<div className="bgTheme text-center h-100 p-4">
 							<h4 className="mb-4">Bitcoin (BTC)</h4>
 							<p>
 								<img src="/PptxGenJS/img/sponsor_btc.png" alt="bitcoin wallet address" />
@@ -60,7 +56,7 @@ export default () => {
 						</div>
 					</div>
 					<div className="col-12 col-md-3">
-						<div className={`text-center h-100 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+						<div className="bgTheme text-center h-100 p-4">
 							<h4 className="mb-4">Etherium (ETH)</h4>
 							<p>
 								<img src="/PptxGenJS/img/sponsor_eth.png" alt="etherium wallet address" />
@@ -83,7 +79,7 @@ export default () => {
 						</div>
 					</div>
 					<div className="col-12 col-md-3">
-						<div className={`text-center h-100 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+						<div className="bgTheme text-center h-100 p-4">
 							<h4 className="mb-4">Doge (DOGE)</h4>
 							<p>
 								<img src="/PptxGenJS/img/sponsor_doge.png" alt="doge wallet address" />
@@ -106,7 +102,7 @@ export default () => {
 						</div>
 					</div>
 					<div className="col-12 col-md-3">
-						<div className={`text-center h-100 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+						<div className="bgTheme text-center h-100 p-4">
 							<h4 className="mb-4">Crypto.com (CRO)</h4>
 							<p>
 								<img src="/PptxGenJS/img/sponsor_cro.png" alt="crypto.com wallet address" />

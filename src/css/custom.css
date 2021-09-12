@@ -21,10 +21,7 @@ html[data-theme="dark"] {
 	--ifm-background-color: var(--bs-gray-dark);
 }
 
-.bg-black {
-	background-color: #131313;
-}
-
+/* ----- LIGHT ---------- */
 [data-theme="light"] header {
 	/* @see https://cssgradient.io/ */
 	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
@@ -33,14 +30,55 @@ html[data-theme="dark"] {
 	backgroundrepeat: "repeat";
 	*/
 }
+html[data-theme="light"] header h1 {
+	color: var(--bs-primary);
+}
+html[data-theme="light"] header h1 {
+	color: var(--bs-primary);
+}
+html[data-theme="light"] header h3,
+html[data-theme="light"] header h6 {
+	color: rgba(0, 0, 0, 0.5) !important;
+}
 html[data-theme="light"] body {
 	background-color: var(--bs-light);
+}
+html[data-theme="light"] .useTheme .card-body {
+	background-color: var(--bs-white);
+}
+html[data-theme="light"] .useTheme .card-body ul {
+	color: rgba(0, 0, 0, 0.5) !important;
+}
+html[data-theme="light"] .bgTheme {
+	background-color: var(--bs-white);
+}
+
+/* ----- DARK ---------- */
+html[data-theme="dark"] .docusaurus-highlight-code-line {
+	background-color: rgba(0, 0, 0, 0.3);
 }
 html[data-theme="dark"] header {
 	background-color: var(--bs-dark);
 }
+html[data-theme="dark"] header h1 {
+	color: var(--bs-light);
+}
+html[data-theme="dark"] header h3,
+html[data-theme="dark"] header h6 {
+	color: hsla(0, 0%, 100%, 0.5) !important;
+}
 html[data-theme="dark"] body {
 	background-color: var(--bs-gray-dark);
+}
+html[data-theme="dark"] .useTheme .card-body {
+	background-color: #131313;
+	color: var(--bs-white);
+}
+html[data-theme="dark"] .useTheme .card-body ul {
+	color: hsla(0, 0%, 100%, 0.5) !important;
+}
+html[data-theme="dark"] .bgTheme {
+	background-color: #131313;
 }
 
 .icon-svg-coin {
@@ -58,13 +96,13 @@ html[data-theme="dark"] body {
 	color: green;
 }
 
+.bg-black {
+	background-color: #131313;
+}
+
 .docusaurus-highlight-code-line {
 	background-color: rgba(0, 0, 0, 0.1);
 	display: block;
 	margin: 0 calc(-1 * var(--ifm-pre-padding));
 	padding: 0 var(--ifm-pre-padding);
-}
-
-html[data-theme="dark"] .docusaurus-highlight-code-line {
-	background-color: rgba(0, 0, 0, 0.3);
 }
