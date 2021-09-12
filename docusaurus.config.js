@@ -144,7 +144,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 							},
 							{
 								label: "Demos",
-								href: "demo",
+								href: "/demos",
 							},
 						],
 					},
