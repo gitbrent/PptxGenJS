@@ -18,6 +18,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 		},
 		onBrokenLinks: "throw",
 		onBrokenMarkdownLinks: "warn",
+		trailingSlash: true,
 		favicon: "img/favicon.png",
 		presets: [
 			[
