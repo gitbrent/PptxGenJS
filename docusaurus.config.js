@@ -84,7 +84,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 						"aria-label": "installation",
 					},
 					{
-						to: "demo",
+						to: "demos",
 						label: "Demos",
 						position: "left",
 						"aria-label": "demos",

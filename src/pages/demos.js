@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "@theme/Layout";
-import useThemeContext from "@theme/hooks/useThemeContext";
 import pptxgen from "pptxgenjs";
 import Gist from "react-gist";
 //import "../css/bootstrap-yeti.css";
@@ -18,8 +17,8 @@ export default () => {
 
 		// FUTURE: read actual code from gist
 		/*
-		console.log(gistRef);
-		let gist = gistRef.current
+			console.log(gistRef);
+			let gist = gistRef.current
 			.querySelector("#file-pptxgenjs_demo-js")
 			.querySelectorAll(".blob-code")
 			.forEach((item) => console.log(item));
@@ -39,10 +38,8 @@ export default () => {
 	}
 
 	const LiveDemo = () => {
-		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
-
 		return (
-			<section className={`mb-5 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+			<section className="bgTheme mb-5 p-4">
 				<h4>Live Demo</h4>
 				<p>Creating a presentation really is this easy! Output can also be produced as base64, blob, stream and more.</p>
 				<Gist id="84acbcaab54be0eba83f5206ef6ddd95" ref={gistRef} />
@@ -63,14 +60,12 @@ export default () => {
 	};
 
 	const BothDemos = () => {
-		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
-
 		// NOTE: 20210407: cant use `row-cols-12` yet as docusaurus core bootstrap is ruining `rows` style, use "col-12" etc on cols to supercede for now
 		return (
 			<section>
 				<div className="row g-5 mb-5">
 					<div className="col-12 col-md-6">
-						<div className={`h-100 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+						<div className="bgTheme h-100 p-4">
 							<h4>Complete Library Demo</h4>
 							<p>
 								Function demos for every feature are available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/browser">browser demo</a>,
@@ -82,7 +77,7 @@ export default () => {
 						</div>
 					</div>
 					<div className="col-12 col-md-6">
-						<div className={`h-100 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+						<div className="bgTheme h-100 p-4">
 							<h4>React App Demo</h4>
 							<p>
 								There is a complete react application available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo">demos/react</a>{" "}
@@ -99,10 +94,8 @@ export default () => {
 	};
 
 	const BigImage = () => {
-		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
-
 		return (
-			<section className={`mb-5 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
+			<section className="bgTheme mb-5 p-4">
 				<h4>Demo Slides</h4>
 				<p>
 					The complete library demo above has 70+ slides worth of demo code that you can use to get started.
