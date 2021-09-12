@@ -7,7 +7,7 @@ import "../css/purged.css";
 export default () => {
 	const Header = () => {
 		return (
-			<header>
+			<header id="indexHeader">
 				<div className="container">
 					<div className="row justify-content-center">
 						<div className="col-auto">

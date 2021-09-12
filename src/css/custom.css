@@ -22,7 +22,7 @@ html[data-theme="dark"] {
 }
 
 /* ----- LIGHT ---------- */
-[data-theme="light"] header {
+[data-theme="light"] header#indexHeader {
 	/* @see https://cssgradient.io/ */
 	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
 	/*
@@ -30,14 +30,11 @@ html[data-theme="dark"] {
 	backgroundrepeat: "repeat";
 	*/
 }
-html[data-theme="light"] header h1 {
+html[data-theme="light"] header#indexHeader h1 {
 	color: var(--bs-primary);
 }
-html[data-theme="light"] header h1 {
-	color: var(--bs-primary);
-}
-html[data-theme="light"] header h3,
-html[data-theme="light"] header h6 {
+html[data-theme="light"] header#indexHeader h3,
+html[data-theme="light"] header#indexHeader h6 {
 	color: rgba(0, 0, 0, 0.5) !important;
 }
 html[data-theme="light"] body {
@@ -57,14 +54,14 @@ html[data-theme="light"] .bgTheme {
 html[data-theme="dark"] .docusaurus-highlight-code-line {
 	background-color: rgba(0, 0, 0, 0.3);
 }
-html[data-theme="dark"] header {
+html[data-theme="dark"] header#indexHeader {
 	background-color: var(--bs-dark);
 }
-html[data-theme="dark"] header h1 {
+html[data-theme="dark"] header#indexHeader h1 {
 	color: var(--bs-light);
 }
-html[data-theme="dark"] header h3,
-html[data-theme="dark"] header h6 {
+html[data-theme="dark"] header#indexHeader h3,
+html[data-theme="dark"] header#indexHeader h6 {
 	color: hsla(0, 0%, 100%, 0.5) !important;
 }
 html[data-theme="dark"] body {
