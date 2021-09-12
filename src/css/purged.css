@@ -363,6 +363,11 @@
 	 flex: 0 0 auto;
 	 width: 50%;
    }
+   .col-md-3 {
+	 -ms-flex: 0 0 auto;
+	 flex: 0 0 auto;
+	 width: 25%;
+   }
    .col-md-4 {
 	 -ms-flex: 0 0 auto;
 	 flex: 0 0 auto;
@@ -739,10 +744,6 @@
 
  .bg-success {
    background-color: #43ac6a !important;
- }
-
- .bg-light {
-   background-color: #eee !important;
  }
 
  .bg-white {
