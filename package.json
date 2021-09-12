@@ -1,0 +1,46 @@
+{
+	"name": "pptxgenjs-gh-pages",
+	"version": "1.2.0",
+	"private": true,
+	"scripts": {
+		"docusaurus": "docusaurus",
+		"start": "docusaurus start",
+		"build": "docusaurus build",
+		"swizzle": "docusaurus swizzle",
+		"deploy": "./node_modules/gulp/bin/gulp.js",
+		"ship=b+d": "docusaurus build && ./node_modules/gulp/bin/gulp.js",
+		"purgecss": "./purgecss.sh",
+		"clear": "docusaurus clear",
+		"serve": "docusaurus serve",
+		"write-translations": "docusaurus write-translations",
+		"write-heading-ids": "docusaurus write-heading-ids"
+	},
+	"dependencies": {
+		"@docusaurus/core": "2.0.0-beta.6",
+		"@docusaurus/preset-classic": "2.0.0-beta.6",
+		"@mdx-js/react": "^1.6.21",
+		"@svgr/webpack": "^5.5.0",
+		"clsx": "^1.1.1",
+		"file-loader": "^6.2.0",
+		"gulp": "^4.0.2",
+		"pptxgenjs": "^3.7.1",
+		"prism-react-renderer": "^1.2.1",
+		"purgecss": "^4.0.3",
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1",
+		"react-gist": "^1.2.2",
+		"url-loader": "^4.1.1"
+	},
+	"browserslist": {
+		"production": [
+			">0.5%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}
