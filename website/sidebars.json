@@ -1,9 +1,0 @@
-{
-	"docs": {
-		"Get Started": ["quick-start", "installation", "integration"],
-		"Usage": ["usage-pres-create", "usage-pres-options", "usage-add-slide", "usage-slide-options", "usage-saving"],
-		"Features": ["html-to-powerpoint", "masters", "sections", "shapes-and-schemes", "speaker-notes", "types"],
-		"API Reference": ["api-charts", "api-images", "api-media", "api-shapes", "api-tables", "api-text"],
-		"Misc": ["deprecated"]
-	}
-}

@@ -1,26 +1,20 @@
-.DS_Store
-.rpt2_cache
-.icloud
-*.icloud
-*.lock
+# Dependencies
+/node_modules
 
-demos
-docs/
-dist/
-examples/
-libs/
-node_modules/
-node_modules_OLD/
-src/*
-
-website/.docusaurus
-website/build
-website/node_modules
-website/yarn.lock
-/.docusaurus
+# Production
 /build
 
-!website/docs
-!website/gulpfile.js
-!website/package.json
-!website/i18n/en.json
+# Generated files
+.docusaurus
+.cache-loader
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
