@@ -10,11 +10,5 @@ npm-debug.log
 src/bld
 
 ### docusaurus
-./*.html
-*.html
-demo/
-demo/react/
-docs/
-img/
-privacy.html
-website/
+.docusaurus
+/build
