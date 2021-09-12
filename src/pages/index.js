@@ -10,7 +10,7 @@ export default () => {
 		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
 
 		return (
-			<header className={isDarkTheme ? "header-dark" : "header-light"}>
+			<header>
 				<div className="container">
 					<div className="row justify-content-center">
 						<div className="col-auto">
@@ -63,7 +63,7 @@ export default () => {
 	const Body = () => {
 		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
 		return (
-			<main className={`py-5 ${isDarkTheme ? "body-dark" : "bg-light"}`}>
+			<main className="py-5">
 				<div className="container">
 					<div className="row g-5 mb-0">
 						<div className="col-12 col-md-6">

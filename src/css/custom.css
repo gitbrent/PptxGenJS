@@ -25,7 +25,7 @@ html[data-theme="dark"] {
 	background-color: #131313;
 }
 
-.header-light {
+[data-theme="light"] header {
 	/* @see https://cssgradient.io/ */
 	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
 	/*
@@ -33,10 +33,13 @@ html[data-theme="dark"] {
 	backgroundrepeat: "repeat";
 	*/
 }
-.header-dark {
+html[data-theme="light"] body {
+	background-color: var(--bs-light);
+}
+html[data-theme="dark"] header {
 	background-color: var(--bs-dark);
 }
-.body-dark {
+html[data-theme="dark"] body {
 	background-color: var(--bs-gray-dark);
 }
 
