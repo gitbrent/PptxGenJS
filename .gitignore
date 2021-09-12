@@ -17,6 +17,8 @@ website/.docusaurus
 website/build
 website/node_modules
 website/yarn.lock
+/.docusaurus
+/build
 
 !website/docs
 !website/gulpfile.js
