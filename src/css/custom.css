@@ -67,15 +67,22 @@ html[data-theme="dark"] header#indexHeader h6 {
 html[data-theme="dark"] body {
 	background-color: var(--bs-gray-dark);
 }
+html[data-theme="dark"] .useTheme.card {
+	border-color: rgba(0, 0, 0, 0.8) !important;
+}
 html[data-theme="dark"] .useTheme .card-body {
-	background-color: #131313;
+	background-color: #111519;
 	color: var(--bs-white);
 }
 html[data-theme="dark"] .useTheme .card-body ul {
 	color: hsla(0, 0%, 100%, 0.5) !important;
 }
+html[data-theme="dark"] .useTheme .card-footer {
+	background-color: #212529; /* var(--bs-gray-900) */
+	color: var(--bs-white);
+}
 html[data-theme="dark"] .bgTheme {
-	background-color: #131313;
+	background-color: #111519;
 }
 
 .icon-svg-coin {
@@ -91,10 +98,6 @@ html[data-theme="dark"] .bgTheme {
 .navbar-sponsor {
 	margin-left: 1rem;
 	color: green;
-}
-
-.bg-black {
-	background-color: #131313;
 }
 
 .docusaurus-highlight-code-line {
