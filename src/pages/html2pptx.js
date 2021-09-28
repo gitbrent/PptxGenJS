@@ -7,20 +7,24 @@ import "../css/purged.css";
 export default () => {
 	const Header = () => {
 		return (
-			<div className="card useTheme mb-5">
-				<div className="card-header h4 bg-primary text-white">About</div>
+			<div className="card useTheme">
 				<div className="card-body">
-					<p>Create a presentation from an HTML table with a single line of code.</p>
+					<h3 className="mb-3">About HTML-to-PPTX</h3>
 					<p>
-						The <code>tableToSlides</code> method clones the table including CSS style and creates slides as needed (auto-paging).
+						The <code>tableToSlides</code> method generates a presentation from an HTML table element id.
 					</p>
-					<div className="row align-items-center my-3">
+					<ul>
+						<li>Many options are available including repeating header, start location on subsequnet slides, character and line weight</li>
+						<li>Additional slides are automatically created as needed (auto-paging)</li>
+						<li>The table's style (CSS) is copied into the PowerPoint table</li>
+					</ul>
+					<div className="d-none d-md-flex row align-items-center justify-content-center my-3">
 						<div className="col-auto">
 							<img
 								className="d-none d-md-none d-lg-block border border-light"
 								alt="input: html table"
 								src="/PptxGenJS/img/ex-html-to-powerpoint-1.png"
-								height="500"
+								height="400"
 							/>
 							<img
 								className="d-none d-md-block d-lg-none border border-light"
@@ -35,7 +39,7 @@ export default () => {
 								height="200"
 							/>
 						</div>
-						<div className="col-auto col-md text-center">
+						<div className="col-auto">
 							<h1 className="mb-0">→</h1>
 						</div>
 						<div className="col-auto">
@@ -43,7 +47,7 @@ export default () => {
 								className="d-none d-md-none d-lg-block border border-light"
 								alt="output: powerpoint slides"
 								src="/PptxGenJS/img/ex-html-to-powerpoint-2.png"
-								height="500"
+								height="400"
 							/>
 							<img
 								className="d-none d-md-block d-lg-none border border-light"
@@ -59,10 +63,6 @@ export default () => {
 							/>
 						</div>
 					</div>
-					<p className="mb-0">
-						Refer to the HTML-to-PowerPoint docs for a complete list of options like repeating header, start location on subsequnet slides, character and line weight,
-						etc.
-					</p>
 				</div>
 				<div className="card-footer">
 					<button
@@ -81,9 +81,9 @@ export default () => {
 	const Body = () => {
 		// NOTE: 20210407: cant use `row-cols-12` yet as docusaurus core bootstrap is ruining `rows` style, use "col-12" etc on cols to supercede for now
 		return (
-			<div className="card useTheme mb-5">
-				<div className="card-header h4 bg-primary text-white">Code</div>
+			<div className="card useTheme">
 				<div className="card-body">
+					<h3 className="mb-3">Sample Code</h3>
 					<p>These 3 lines of code were all it took to produce the slides shown above!</p>
 					<Gist id="494850b6775dd5c8ce314672a1846208" />
 				</div>
@@ -103,10 +103,10 @@ export default () => {
 
 	const Footer = () => {
 		return (
-			<div className="card useTheme mb-5">
-				<div className="card-header h4 bg-primary text-white">Demo</div>
+			<div className="card useTheme">
 				<div className="card-body">
-					<p>Try it for yourself! The demo below has an interactive table plus various options to test drive.</p>
+					<h3 className="mb-3">Sample Output</h3>
+					<p>Try the live demo for yourself.</p>
 					<div className="text-center">
 						<img alt="HTML Table" src="/PptxGenJS/img/ex-html-to-powerpoint-3.png" height="500" className="border border-light" />
 					</div>
@@ -129,9 +129,17 @@ export default () => {
 		<Layout title="HTML-to-PowerPoint">
 			<div className="container my-4">
 				<h1 className="mb-4">HTML to PowerPoint</h1>
-				<Header />
-				<Body />
-				<Footer />
+				<div className="row g-5">
+					<div className="col-12">
+						<Header />
+					</div>
+					<div className="col">
+						<Body />
+					</div>
+					<div className="col">
+						<Footer />
+					</div>
+				</div>
 			</div>
 		</Layout>
 	);
