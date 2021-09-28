@@ -14,7 +14,7 @@ export default () => {
 						The <code>tableToSlides</code> method generates a presentation from an HTML table element id.
 					</p>
 					<ul>
-						<li>Many options are available including repeating header, start location on subsequnet slides, character and line weight</li>
+						<li>Many options are available including repeating header, start location on subsequent slides, character and line weight</li>
 						<li>Additional slides are automatically created as needed (auto-paging)</li>
 						<li>The table's style (CSS) is copied into the PowerPoint table</li>
 					</ul>
