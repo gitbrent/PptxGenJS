@@ -90,7 +90,7 @@ export default () => {
 									<h4 className="text-primary mb-4">Simple And Powerful</h4>
 									<ul className="mb-0">
 										<li>The absolute easiest PowerPoint library to use</li>
-										<li>Learn as you code will full typescript definitions included</li>
+										<li>Learn as you code using the built-in typescript definitions</li>
 										<li>Tons of sample code comes included (75+ slides of demos)</li>
 									</ul>
 								</div>
