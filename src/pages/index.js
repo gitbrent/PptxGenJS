@@ -14,7 +14,7 @@ export default () => {
 							<div className="my-5">
 								<h1 className="display-1 mb-3">PptxGenJS</h1>
 								<h3 className="fw-light mb-4">Create PowerPoint presentations with JavaScript</h3>
-								<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with over 1,000 stars on GitHub</h6>
+								<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with over 1,100 stars on GitHub</h6>
 								<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
 									<div className="col-12 col-md-4">
 										<button
@@ -67,7 +67,7 @@ export default () => {
 									<ul className="mb-0">
 										<li>Every modern desktop and mobile browser is supported</li>
 										<li>Integrates with Node, Angular, React and Electron</li>
-										<li>Compatible with PowerPoint, Keynote, and more</li>
+										<li>Compatible with Microsoft PowerPoint, Apple Keynote, and many others</li>
 									</ul>
 								</div>
 							</div>
@@ -77,8 +77,8 @@ export default () => {
 								<div className="card-body border-top border-2 border-primary p-4 border-0">
 									<h4 className="text-primary mb-4">Full Featured</h4>
 									<ul className="mb-0">
-										<li>All major object types are available (charts, shapes, tables, etc.)</li>
-										<li>Master Slides for academic/corporate branding</li>
+										<li>All major objects are available (charts, shapes, tables, etc)</li>
+										<li>Master Slide support for academic/corporate branding</li>
 										<li>SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts</li>
 									</ul>
 								</div>
@@ -91,7 +91,7 @@ export default () => {
 									<ul className="mb-0">
 										<li>The absolute easiest PowerPoint library to use</li>
 										<li>Learn as you code will full typescript definitions included</li>
-										<li>Tons of demo code comes included (over 70 slides of features)</li>
+										<li>Tons of sample code comes included (75+ slides of demos)</li>
 									</ul>
 								</div>
 							</div>
