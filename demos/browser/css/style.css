@@ -149,6 +149,11 @@ pre {
 	pre[class*="language-"] {
 		background-color: #131313 !important;
 	}
+
+	.form-control:disabled,
+	.form-control[readonly] {
+		background-color: #131313 !important;
+	}
 }
 @media (prefers-color-scheme: light) {
 	.tab-pane {
