@@ -32,14 +32,14 @@
     "path": false
   },
   "dependencies": {
-    "@types/node": "^16.4.13",
+    "@types/node": "^16.10.1",
     "https": "^1.0.0",
     "image-size": "^1.0.0",
     "jszip": "^3.7.1"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^19.0.2",
-    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.5",
     "doctoc": "^2.0.1",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
@@ -49,10 +49,10 @@
     "gulp-insert": "^0.5.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-uglify": "^3.0.2",
-    "rollup": "^2.56.0",
+    "rollup": "^2.57.0",
     "rollup-plugin-typescript2": "^0.30.0",
-    "tslib": "^2.3.0",
-    "typescript": "^4.3.5"
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3"
   },
   "repository": {
     "type": "git",
