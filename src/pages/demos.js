@@ -40,7 +40,7 @@ export default () => {
 	const LiveDemo = () => {
 		return (
 			<section className="bgTheme mb-5 p-4">
-				<h4>Live Demo</h4>
+				<h3 className="mb-3">Live Demo</h3>
 				<p>Creating a presentation really is this easy! Output can also be produced as base64, blob, stream and more.</p>
 				<Gist id="84acbcaab54be0eba83f5206ef6ddd95" ref={gistRef} />
 				<div className="row justify-content-between">
@@ -66,7 +66,7 @@ export default () => {
 				<div className="row g-5 mb-5">
 					<div className="col-12 col-md-6">
 						<div className="bgTheme h-100 p-4">
-							<h4>Complete Library Demo</h4>
+							<h3 className="mb-3">Complete Library Demo</h3>
 							<p>
 								Function demos for every feature are available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/browser">browser demo</a>,
 								which is hosted online below. Over 70 slides worth of various PowerPoint objects can be produced.
@@ -96,7 +96,7 @@ export default () => {
 	const BigImage = () => {
 		return (
 			<section className="bgTheme mb-5 p-4">
-				<h4>Demo Slides</h4>
+				<h3 className="mb-3">Demo Slides</h3>
 				<p>
 					The complete library demo above has 70+ slides worth of demo code that you can use to get started.
 					<br />
