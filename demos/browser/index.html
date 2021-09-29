@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.8.0">
+	<meta name="version" content="3.9.0">
 	<meta name="updated" content="2021-09-28">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
@@ -28,9 +28,9 @@
 		crossorigin="anonymous"></script>
 
 	<!-- RELEASE (CDN)
+		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js type="module""></script>
 	-->
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js type="module""></script>
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/dist/pptxgen.bundle.js"></script>
@@ -39,9 +39,9 @@
 	<!-- LOCAL TESTING:
 	<script src="../../libs/jszip.min.js"></script>
 	<script src="../../dist/pptxgen.min.js"></script>
+	-->
 	<script src="./js/pptxgen.bundle.js"></script>
 	<script src="../modules/demos.mjs" type="module"></script>
-	-->
 
 	<script type="module">
 		import { buildDataTable, doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab } from './js/browser.js';
@@ -102,7 +102,7 @@
 			<div class="collapse navbar-collapse" id="navbarColor01">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item active">
-						<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/demo/index.html">
+						<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/demo/browser/index.html">
 							Demo Home <span class="sr-only">(current)</span>
 						</a>
 					</li>
@@ -114,7 +114,7 @@
 					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
 						GitHub Project
 					</button>
-					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation')">
+					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation/')">
 						API Documentation
 					</button>
 				</form>
@@ -585,7 +585,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-charts" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-charts/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
@@ -686,7 +686,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-images" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-images/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
@@ -747,7 +747,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-media" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-media/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
@@ -800,7 +800,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
@@ -844,7 +844,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-text" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-text/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
@@ -920,7 +920,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-tables" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-tables/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
@@ -1039,7 +1039,7 @@
 										<path
 											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
 									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/masters" title="API Documentation" target="_blank">API
+									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/masters/" title="API Documentation" target="_blank">API
 										Documentation</a>
 								</div>
 							</div>
