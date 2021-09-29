@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.7.2
+// Type definitions for pptxgenjs 3.8.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -1392,8 +1392,8 @@ declare namespace PptxGenJS {
 		points?: Array<
 			| { x: Coord; y: Coord; moveTo?: boolean }
 			| { x: Coord; y: Coord; curve: { type: 'arc'; hR: Coord; wR: Coord; stAng: number; swAng: number } }
-			| { x: Coord; y: Coord; curve: { type: 'quadratic'; x1: Coord; y1: Coord } }
 			| { x: Coord; y: Coord; curve: { type: 'cubic'; x1: Coord; y1: Coord; x2: Coord; y2: Coord } }
+			| { x: Coord; y: Coord; curve: { type: 'quadratic'; x1: Coord; y1: Coord } }
 			| { close: true }
 		>
 		/**
@@ -1558,7 +1558,7 @@ declare namespace PptxGenJS {
 		 */
 		fill?: ShapeFillProps
 		/**
-		 * Cell margin
+		 * Cell margin (inches)
 		 * @default 0
 		 */
 		margin?: Margin
@@ -1621,7 +1621,7 @@ declare namespace PptxGenJS {
 		 */
 		border?: BorderProps | [BorderProps, BorderProps, BorderProps, BorderProps]
 		/**
-		 * Width of table columns
+		 * Width of table columns (inches)
 		 * - single value is applied to every column equally based upon `w`
 		 * - array of values in applied to each column in order
 		 * @default columns of equal width based upon `w`
@@ -1635,12 +1635,12 @@ declare namespace PptxGenJS {
 		 */
 		fill?: ShapeFillProps
 		/**
-		 * Cell margin
+		 * Cell margin (inches)
 		 * - affects all table cells, is superceded by cell options
 		 */
 		margin?: Margin
 		/**
-		 * Height of table rows
+		 * Height of table rows (inches)
 		 * - single value is applied to every row equally based upon `h`
 		 * - array of values in applied to each row in order
 		 * @default rows of equal height based upon `h`
