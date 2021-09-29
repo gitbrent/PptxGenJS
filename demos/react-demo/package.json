@@ -1,6 +1,6 @@
 {
 	"name": "pptxgenjs-react-demo",
-	"version": "3.7.0",
+	"version": "3.8.0",
 	"private": true,
 	"dependencies": {
 		"pptxgenjs": "^3.7.0",
