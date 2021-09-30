@@ -1080,7 +1080,7 @@ export interface IChartPropsBase {
 	dataBorder?: BorderProps
 	displayBlanksAs?: string
 	fill?: HexColor
-	invertedColors?: string
+	invertedColors?: HexColor[]
 	lang?: string
 	layout?: PositionProps
 	shadow?: ShadowProps
