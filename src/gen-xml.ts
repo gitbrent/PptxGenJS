@@ -2,7 +2,6 @@
  * PptxGenJS: XML Generation
  */
 
-import { IImage } from 'image-size/dist/types/interface'
 import {
 	BULLET_TYPES,
 	CRLF,
@@ -743,6 +742,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			strSlideXml += ` tIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
 			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
 			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+		}
+		if (slide._slideNumberProps.valign) {
+			strSlideXml += ` anchor="${slide._slideNumberProps.valign.replace('top', 't').replace('middle', 'ctr').replace('bottom', 'b')}"`
 		}
 		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
