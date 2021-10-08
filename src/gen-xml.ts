@@ -6,7 +6,7 @@ import {
 	BULLET_TYPES,
 	CRLF,
 	DEF_BULLET_MARGIN,
-	DEF_CELL_MARGIN_PT,
+	DEF_CELL_MARGIN_IN,
 	DEF_PRES_LAYOUT_NAME,
 	DEF_TEXT_GLOW,
 	DEF_TEXT_SHADOW,
@@ -17,6 +17,8 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
+	IChartOpts,
+	ImageProps,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -86,35 +88,23 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	let strSlideXml: string = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>'
 	let intTableNum: number = 1
 
-	// STEP 1: Add background
-	if (slide.bkgd) {
-		strSlideXml += genXmlColorSelection(null, slide.bkgd)
+	// STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
+	if (slide._bkgdImgRid) {
+		strSlideXml += `<p:bg><p:bgPr><a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${slide._bkgdImgRid}"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>`
+	} else if (slide.background && slide.background.color) {
+		strSlideXml += `<p:bg><p:bgPr>${genXmlColorSelection(slide.background)}</p:bgPr></p:bg>`
 	} else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
-		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
+		strSlideXml += `<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>`
 	}
 
-	// STEP 2: Add background image (using Strech) (if any)
-	if (slide._bkgdImgRid) {
-		// FIXME: We should be doing this in the slideLayout...
-		strSlideXml +=
-			'<p:bg>' +
-			'<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
-			'<a:blip r:embed="rId' +
-			slide._bkgdImgRid +
-			'"><a:lum/></a:blip>' +
-			'<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
-			'<a:effectLst/></p:bgPr>' +
-			'</p:bg>'
-	}
-
-	// STEP 3: Continue slide by starting spTree node
+	// STEP 2: Continue slide by starting spTree node
 	strSlideXml += '<p:spTree>'
 	strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>'
 	strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>'
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
-	// STEP 4: Loop over all Slide.data objects and add them to this slide
+	// STEP 3: Loop over all Slide.data objects and add them to this slide
 	slide._slideObjects.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
@@ -173,33 +163,15 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 				// STEP 1: Start Table XML
 				// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-				let strXml =
-					'<p:graphicFrame>' +
-					'  <p:nvGraphicFramePr>' +
-					'    <p:cNvPr id="' +
-					(intTableNum * slide._slideNum + 1) +
-					'" name="Table ' +
-					intTableNum * slide._slideNum +
-					'"/>' +
-					'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
-					'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
-					'  </p:nvGraphicFramePr>' +
-					'  <p:xfrm>' +
-					'    <a:off x="' +
-					(x || (x === 0 ? 0 : EMU)) +
-					'" y="' +
-					(y || (y === 0 ? 0 : EMU)) +
-					'"/>' +
-					'    <a:ext cx="' +
-					(cx || (cx === 0 ? 0 : EMU)) +
-					'" cy="' +
-					(cy || EMU) +
-					'"/>' +
-					'  </p:xfrm>' +
-					'  <a:graphic>' +
-					'    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">' +
-					'      <a:tbl>' +
-					'        <a:tblPr/>'
+				let strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="Table ${intTableNum * slide._slideNum}"/>`
+				strXml +=
+					'<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
+					'  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
+					'</p:nvGraphicFramePr>'
+				strXml += `<p:xfrm><a:off x="${x || (x === 0 ? 0 : EMU)}" y="${y || (y === 0 ? 0 : EMU)}"/><a:ext cx="${cx || (cx === 0 ? 0 : EMU)}" cy="${
+					cy || EMU
+				}"/></p:xfrm>`
+				strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>'
 				// + '        <a:tblPr bandRow="1"/>';
 				// TODO: Support banded rows, first/last row, etc.
 				// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
@@ -344,11 +316,22 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						fillColor =
 							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
 						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
-						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
+						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
-						let cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
-							cellMargin[2]
-						)}"`
+						/** FUTURE: DEPRECATED:
+						 * - Backwards-Compat: Oops! Discovered we were still using points for cell margin before v3.8.0 (UGH!)
+						 * - We cant introduce a breaking change before v4.0, so...
+						 */
+						let cellMarginXml = ''
+						if (cellMargin[0] >= 1) {
+							cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
+								cellMargin[2]
+							)}"`
+						} else {
+							cellMarginXml = ` marL="${inch2Emu(cellMargin[3])}" marR="${inch2Emu(cellMargin[1])}" marT="${inch2Emu(cellMargin[0])}" marB="${inch2Emu(
+								cellMargin[2]
+							)}"`
+						}
 
 						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
@@ -455,20 +438,80 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += `<a:off x="${x}" y="${y}"/>`
 				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
 
-				strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>'
-				if (slideItemObj.options.rectRadius) {
-					strSlideXml += `<a:gd name="adj" fmla="val ${Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy))}"/>`
-				} else if (slideItemObj.options.angleRange) {
-					for (let i = 0; i < 2; i++) {
-						const angle = slideItemObj.options.angleRange[i]
-						strSlideXml += `<a:gd name="adj${i + 1}" fmla="val ${convertRotationDegrees(angle)}" />`
-					}
+				if (slideItemObj.shape === 'custGeom') {
+					strSlideXml += '<a:custGeom><a:avLst />'
+					strSlideXml += '<a:gdLst>'
+					strSlideXml += '</a:gdLst>'
+					strSlideXml += '<a:ahLst />'
+					strSlideXml += '<a:cxnLst>'
+					strSlideXml += '</a:cxnLst>'
+					strSlideXml += '<a:rect l="l" t="t" r="r" b="b" />'
 
-					if (slideItemObj.options.arcThicknessRatio) {
-						strSlideXml += `<a:gd name="adj3" fmla="val ${Math.round(slideItemObj.options.arcThicknessRatio * 50000)}" />`
+					strSlideXml += '<a:pathLst>'
+					strSlideXml += `<a:path w="${cx}" h="${cy}">`
+
+					slideItemObj.options.points?.map((point, i) => {
+						if ('curve' in point) {
+							switch (point.curve.type) {
+								case 'arc':
+									strSlideXml += `<a:arcTo hR="${getSmartParseNumber(point.curve.hR, 'Y', slide._presLayout)}" wR="${getSmartParseNumber(
+										point.curve.wR,
+										'X',
+										slide._presLayout
+									)}" stAng="${convertRotationDegrees(point.curve.stAng)}" swAng="${convertRotationDegrees(point.curve.swAng)}" />`
+									break
+								case 'cubic':
+									strSlideXml += `<a:cubicBezTo>
+									<a:pt x="${getSmartParseNumber(point.curve.x1, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout)}" />
+									<a:pt x="${getSmartParseNumber(point.curve.x2, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y2, 'Y', slide._presLayout)}" />
+									<a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.y, 'Y', slide._presLayout)}" />
+									</a:cubicBezTo>`
+									break
+								case 'quadratic':
+									strSlideXml += `<a:quadBezTo>
+									<a:pt x="${getSmartParseNumber(point.curve.x1, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout)}" />
+									<a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.y, 'Y', slide._presLayout)}" />
+									</a:quadBezTo>`
+									break
+								default:
+									break
+							}
+						} else if ('close' in point) {
+							strSlideXml += `<a:close />`
+						} else if (point.moveTo || i === 0) {
+							strSlideXml += `<a:moveTo><a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(
+								point.y,
+								'Y',
+								slide._presLayout
+							)}" /></a:moveTo>`
+						} else {
+							strSlideXml += `<a:lnTo><a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(
+								point.y,
+								'Y',
+								slide._presLayout
+							)}" /></a:lnTo>`
+						}
+					})
+
+					strSlideXml += '</a:path>'
+					strSlideXml += '</a:pathLst>'
+					strSlideXml += '</a:custGeom>'
+				} else {
+					strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>'
+					if (slideItemObj.options.rectRadius) {
+						strSlideXml += `<a:gd name="adj" fmla="val ${Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy))}"/>`
+					} else if (slideItemObj.options.angleRange) {
+						for (let i = 0; i < 2; i++) {
+							const angle = slideItemObj.options.angleRange[i]
+							strSlideXml += `<a:gd name="adj${i + 1}" fmla="val ${convertRotationDegrees(angle)}" />`
+						}
+
+						if (slideItemObj.options.arcThicknessRatio) {
+							strSlideXml += `<a:gd name="adj3" fmla="val ${Math.round(slideItemObj.options.arcThicknessRatio * 50000)}" />`
+						}
 					}
+					strSlideXml += '</a:avLst></a:prstGeom>'
 				}
-				strSlideXml += '</a:avLst></a:prstGeom>'
 
 				// Option: FILL
 				strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>'
@@ -476,7 +519,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
 					strSlideXml += slideItemObj.options.line.width ? `<a:ln w="${valToPts(slideItemObj.options.line.width)}">` : '<a:ln>'
-					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
+					if (slideItemObj.options.line.color) strSlideXml += genXmlColorSelection(slideItemObj.options.line)
 					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
 					if (slideItemObj.options.line.beginArrowType) strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`
 					if (slideItemObj.options.line.endArrowType) strSlideXml += `<a:tailEnd type="${slideItemObj.options.line.endArrowType}"/>`
@@ -525,28 +568,23 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.image:
-				let sizing = slideItemObj.options.sizing,
-					rounding = slideItemObj.options.rounding,
+				let imageOpts = slideItemObj.options as ImageProps
+				let sizing = imageOpts.sizing,
+					rounding = imageOpts.rounding,
 					width = cx,
 					height = cy
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">'
+				strSlideXml += `<p:cNvPr id="${idx + 2}" name="Object ${idx + 1}" descr="${encodeXmlEntities(imageOpts.altText || slideItemObj.image)}">`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink._rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'"/>'
+					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+					}"/>`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink._rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'" action="ppaction://hlinksldjump"/>'
+					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+					}" action="ppaction://hlinksldjump"/>`
 				strSlideXml += '    </p:cNvPr>'
 				strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 				strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
@@ -644,19 +682,17 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
+				let chartOpts = slideItemObj.options as IChartOpts
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + '"/>'
+				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
-				strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
+				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += ' </p:nvGraphicFramePr>'
-				strSlideXml += ' <p:xfrm>'
-				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
-				strSlideXml += ' </p:xfrm>'
+				strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
 				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
 				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-				strSlideXml += '   <c:chart r:id="rId' + slideItemObj.chartRid + '" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>'
+				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
 				strSlideXml += '  </a:graphicData>'
 				strSlideXml += ' </a:graphic>'
 				strSlideXml += '</p:graphicFrame>'
@@ -668,8 +704,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 	})
 
-	// STEP 5: Add slide numbers (if any) last
+	// STEP 4: Add slide numbers (if any) last
 	if (slide._slideNumberProps) {
+		// Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
+		if (!slide._slideNumberProps.align) slide._slideNumberProps.align = 'left'
+
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
@@ -706,6 +745,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
 			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
 		}
+		if (slide._slideNumberProps.valign) {
+			strSlideXml += ` anchor="${slide._slideNumberProps.valign.replace('top', 't').replace('middle', 'ctr').replace('bottom', 'b')}"`
+		}
 		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
@@ -717,12 +759,15 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
 		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
-		if (slide._slideNumberProps.align) strSlideXml += `<a:pPr algn="${slide._slideNumberProps.align.substring(0, 1)}"/>`
+		if (slide._slideNumberProps.align.startsWith('l')) strSlideXml += '<a:pPr algn="l"/>'
+		else if (slide._slideNumberProps.align.startsWith('c')) strSlideXml += '<a:pPr algn="ctr"/>'
+		else if (slide._slideNumberProps.align.startsWith('r')) strSlideXml += '<a:pPr algn="r"/>'
+		else strSlideXml += `<a:pPr algn="l"/>`
 		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 
-	// STEP 6: Close spTree and finalize slide XML
+	// STEP 5: Close spTree and finalize slide XML
 	strSlideXml += '</p:spTree>'
 	strSlideXml += '</p:cSld>'
 
@@ -822,7 +867,8 @@ function slideObjectRelationsToXml(slide: PresSlide | SlideLayout, defaultRels: 
 function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault: boolean): string {
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
-		strXmlParaSpc = ''
+		strXmlParaSpc = '',
+		strXmlTabStops = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
 	let bulletMarL = valToPts(DEF_BULLET_MARGIN)
 
@@ -929,16 +975,17 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 			strXmlBullet = '<a:buNone/>'
 		}
 
+		// OPTION: tabStops
+		if (textObj.options.tabStops && Array.isArray(textObj.options.tabStops)) {
+			let tabStopsXml = textObj.options.tabStops.map(stop => `<a:tab pos="${inch2Emu(stop.position || 1)}" algn="${stop.alignment || 'l'}"/>`).join('')
+			strXmlTabStops = `<a:tabLst>${tabStopsXml}</a:tabLst>`
+		}
+
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
-		if (childPropXml) {
-			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
-		} else {
-			// self-close when no child props
-			paragraphPropXml += '/>'
-		}
+		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet + strXmlTabStops
+		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
+		paragraphPropXml += '</' + tag + '>'
 	}
 
 	return paragraphPropXml
@@ -959,17 +1006,33 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize*100) + '"' : '' // NOTE: Use round so sizes like '8.2' wont cause corrupt pres. ( some values like 8.2*100 = 819.999999 (Floating point precision))
 	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
-	runProps += opts.hasOwnProperty('strike') ? ` strike="${opts.strike ? 'sngStrike' : 'noStrike'}"` : ''
-	runProps += opts.hasOwnProperty('underline') || opts.hyperlink ? ` u="${opts.underline || opts.hyperlink ? 'sng' : 'none'}"` : ''
-	runProps += opts.subscript ? ' baseline="-40000"' : opts.superscript ? ' baseline="30000"' : ''
+
+	runProps += opts.hasOwnProperty('strike') ? ` strike="${typeof opts.strike === 'string' ? opts.strike : 'sngStrike'}"` : ''
+	if (typeof opts.underline === 'object' && opts.underline?.style) {
+		runProps += ` u="${opts.underline.style}"`
+	} else if (typeof opts.underline === 'string') {
+		// DEPRECATED: opts.underline is an object in v3.5.0
+		runProps += ` u="${opts.underline}"`
+	} else if (opts.hyperlink) {
+		runProps += ' u="sng"'
+	}
+	if (opts.baseline) {
+		runProps += ` baseline="${Math.round(opts.baseline * 50)}"`
+	} else if (opts.subscript) {
+		runProps += ' baseline="-40000"'
+	} else if (opts.superscript) {
+		runProps += ' baseline="30000"'
+	}
 	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
-	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
-	if (opts.color || opts.fontFace || opts.outline) {
+	// Color / Font / Highlight / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
+	if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
+		if (opts.highlight) runProps += `<a:highlight>${createColorElement(opts.highlight)}</a:highlight>`
+		if (typeof opts.underline === 'object' && opts.underline.color) runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
@@ -1167,7 +1230,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
 		// Handle cases 1,2
 		tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} })
-	} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) {
+	} else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).indexOf('text') > -1) {
+		//} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
 		// Handle case 3
 		tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} })
 	} else if (Array.isArray(slideObj.text)) {
@@ -1565,7 +1629,7 @@ export function getNotesFromSlide(slide: PresSlide): string {
 	let notesText = ''
 
 	slide._slideObjects.forEach(data => {
-		if (data._type === 'notes') notesText += data.text
+		if (data._type === SLIDE_OBJECT_TYPES.notes) notesText += data.text && data.text[0] ? data.text[0].text : ''
 	})
 
 	return notesText.replace(/\r*\n/g, CRLF)
