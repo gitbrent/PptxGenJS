@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
+import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
 // ==========
@@ -65,10 +65,10 @@ export type DataOrPathProps = {
 	 */
 	data?: string
 }
-export interface BackgroundProps extends DataOrPathProps {
+export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	/**
 	 * Color (hex format)
-	 * @example 'FF3399'
+	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
 }
@@ -82,6 +82,7 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -121,7 +122,7 @@ export interface HyperlinkProps {
 }
 export interface PlaceholderProps {
 	name: string
-	type: PLACEHOLDER_TYPES
+	type: PLACEHOLDER_TYPE
 	x: Coord
 	y: Coord
 	w: Coord
@@ -178,17 +179,17 @@ export interface ShapeFillProps {
 	 * @default 0
 	 */
 	transparency?: number
+	/**
+	 * Fill type
+	 * @default 'solid'
+	 */
+	type?: 'none' | 'solid'
 
 	/**
 	 * Transparency (percent)
 	 * @deprecated v3.3.0 - use `transparency`
 	 */
 	alpha?: number
-	/**
-	 * Fill type
-	 * - 'solid' @deprecated v3.3.0
-	 */
-	type?: 'none' | 'solid'
 }
 export interface ShapeLineProps extends ShapeFillProps {
 	/**
@@ -360,6 +361,11 @@ export interface TextBaseProps {
 	 */
 	fontSize?: number
 	/**
+	 * Text highlight color (hex format)
+	 * @example 'FFFF00' // yellow
+	 */
+	highlight?: HexColor
+	/**
 	 * italic style
 	 * @default false
 	 */
@@ -372,10 +378,37 @@ export interface TextBaseProps {
 	 */
 	lang?: string
 	/**
-	 * underline style
-	 * @default false
+	 * tab stops
+	 * - PowerPoint: Paragraph > Tabs > Tab stop position
+	 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
 	 */
-	underline?: boolean
+	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+	/**
+	 * underline properties
+	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+	 * @default (none)
+	 */
+	underline?: {
+		style?:
+			| 'dash'
+			| 'dashHeavy'
+			| 'dashLong'
+			| 'dashLongHeavy'
+			| 'dbl'
+			| 'dotDash'
+			| 'dotDashHeave'
+			| 'dotDotDash'
+			| 'dotDotDashHeavy'
+			| 'dotted'
+			| 'dottedHeavy'
+			| 'heavy'
+			| 'none'
+			| 'sng'
+			| 'wavy'
+			| 'wavyDbl'
+			| 'wavyHeavy'
+		color?: Color
+	}
 	/**
 	 * vertical alignment
 	 * @default 'top'
@@ -387,8 +420,29 @@ export interface TextBaseProps {
 export type MediaType = 'audio' | 'online' | 'video'
 
 export interface ImageProps extends PositionProps, DataOrPathProps {
+	/**
+	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
+	 */
+	altText?: string
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 	hyperlink?: HyperlinkProps
-	placeholder?: string // 'body' | 'title' | etc.
+	/**
+	 * Placeholder type
+	 * - values: 'body' | 'header' | 'footer' | 'title' | et. al.
+	 * @example 'body'
+	 * @see https://docs.microsoft.com/en-us/office/vba/api/powerpoint.ppplaceholdertype
+	 */
+	placeholder?: string
 	/**
 	 * Image rotation (degrees)
 	 * - range: -360 to 360
@@ -437,16 +491,6 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 */
 		y?: number
 	}
-	/**
-	 * Flip horizontally?
-	 * @default false
-	 */
-	flipH?: boolean
-	/**
-	 * Flip vertical?
-	 * @default false
-	 */
-	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
@@ -524,16 +568,33 @@ export interface ShapeProps extends PositionProps {
 	 */
 	line?: ShapeLineProps
 	/**
-	 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
-	 * - values: 0-180(TODO:values?)
+	 * Points (only for pptx.shapes.CUSTOM_GEOMETRY)
+	 * - type: 'arc'
+	 * - `hR` Shape Arc Height Radius
+	 * - `wR` Shape Arc Width Radius
+	 * - `stAng` Shape Arc Start Angle
+	 * - `swAng` Shape Arc Swing Angle
+	 * @see http://www.datypic.com/sc/ooxml/e-a_arcTo-1.html
+	 * @example [{ x: 0, y: 0 }, { x: 10, y: 10 }] // draw a line between those two points
+	 */
+	points?: Array<
+		| { x: Coord; y: Coord; moveTo?: boolean }
+		| { x: Coord; y: Coord; curve: { type: 'arc'; hR: Coord; wR: Coord; stAng: number; swAng: number } }
+		| { x: Coord; y: Coord; curve: { type: 'cubic'; x1: Coord; y1: Coord; x2: Coord; y2: Coord } }
+		| { x: Coord; y: Coord; curve: { type: 'quadratic'; x1: Coord; y1: Coord } }
+		| { close: true }
+	>
+	/**
+	 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+	 * - values: 0.0 to 1.0
 	 * @default 0
 	 */
 	rectRadius?: number
 	/**
-	 * Image rotation (degrees)
+	 * Rotation (degrees)
 	 * - range: -360 to 360
 	 * @default 0
-	 * @example 180 // rotate image 180 degrees
+	 * @example 180 // rotate 180 degrees
 	 */
 	rotate?: number
 	/**
@@ -639,12 +700,6 @@ export interface TableToSlidesProps extends TableProps {
 	 * - this margin will be across all slides created by auto-paging
 	 */
 	slideMargin?: Margin
-	/**
-	 * DEV TOOL: Verbose Mode (to console)
-	 * - tell the library to provide an almost ridiculous amount of detail during auto-paging calculations
-	 * @default false // obviously
-	 */
-	verbose?: boolean // Undocumented; shows verbose output
 
 	/**
 	 * @deprecated v3.3.0 - use `autoPageRepeatHeader`
@@ -691,7 +746,7 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	fill?: ShapeFillProps
 	/**
-	 * Cell margin
+	 * Cell margin (inches)
 	 * @default 0
 	 */
 	margin?: Margin
@@ -758,7 +813,7 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	 */
 	border?: BorderProps | [BorderProps, BorderProps, BorderProps, BorderProps]
 	/**
-	 * Width of table columns
+	 * Width of table columns (inches)
 	 * - single value is applied to every column equally based upon `w`
 	 * - array of values in applied to each column in order
 	 * @default columns of equal width based upon `w`
@@ -772,17 +827,23 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	 */
 	fill?: ShapeFillProps
 	/**
-	 * Cell margin
+	 * Cell margin (inches)
 	 * - affects all table cells, is superceded by cell options
 	 */
 	margin?: Margin
 	/**
-	 * Height of table rows
+	 * Height of table rows (inches)
 	 * - single value is applied to every row equally based upon `h`
 	 * - array of values in applied to each row in order
 	 * @default rows of equal height based upon `h`
 	 */
 	rowH?: number | number[]
+	/**
+	 * DEV TOOL: Verbose Mode (to console)
+	 * - tell the library to provide an almost ridiculous amount of detail during auto-paging calculations
+	 * @default false // obviously
+	 */
+	verbose?: boolean // Undocumented; shows verbose output
 
 	/**
 	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
@@ -791,14 +852,18 @@ export interface TableProps extends PositionProps, TextBaseProps {
 }
 export interface TableCell {
 	_type: SLIDE_OBJECT_TYPES.tablecell
-	_lines?: string[]
+	/** lines in this cell (autoPage) */
+	_lines?: TableCell[][]
+	/** `text` prop but guaranteed to hold "TableCell[]" */
+	_tableCells?: TableCell[]
+	/** height in EMU */
 	_lineHeight?: number
 	_hmerge?: boolean
 	_vmerge?: boolean
 	_rowContinue?: number
 	_optImp?: any
 
-	text?: string | TableCell[]
+	text?: string | TableCell[] // TODO: FUTURE: 20210815: ONly allow `TableCell[]` dealing with string|TableCell[] *SUCKS*
 	options?: TableCellProps
 }
 export interface TableRowSlide {
@@ -840,6 +905,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	}
 	_lineIdx?: number
 
+	baseline?: number
 	/**
 	 * Character spacing
 	 */
@@ -902,7 +968,19 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
-	rotate?: number // (degree * 60,000)
+	/**
+	 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+	 * - values: 0.0 to 1.0
+	 * @default 0
+	 */
+	rectRadius?: number
+	/**
+	 * Rotation (degrees)
+	 * - range: -360 to 360
+	 * @default 0
+	 * @example 180 // rotate 180 degrees
+	 */
+	rotate?: number
 	/**
 	 * Whether to enable right-to-left mode
 	 * @default false
@@ -910,10 +988,9 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	rtlMode?: boolean
 	shadow?: ShadowProps
 	shape?: SHAPE_NAME
-	strike?: boolean
+	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
 	superscript?: boolean
-	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
@@ -1044,6 +1121,7 @@ export interface IChartPropsAxisCat {
 	catAxisLabelColor?: string
 	catAxisLabelFontBold?: boolean
 	catAxisLabelFontFace?: string
+	catAxisLabelFontItalic?: boolean
 	catAxisLabelFontSize?: number
 	catAxisLabelFrequency?: string
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
@@ -1079,10 +1157,13 @@ export interface IChartPropsAxisSer {
 	serAxisBaseTimeUnit?: string
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
+	serAxisLabelFontBold?: boolean
 	serAxisLabelFontFace?: string
+	serAxisLabelFontItalic?: boolean
 	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+	serAxisLineColor?: string
 	serAxisLineShow?: boolean
 	serAxisMajorTimeUnit?: string
 	serAxisMajorUnit?: number
@@ -1116,6 +1197,7 @@ export interface IChartPropsAxisVal {
 	valAxisLabelColor?: string
 	valAxisLabelFontBold?: boolean
 	valAxisLabelFontFace?: string
+	valAxisLabelFontItalic?: boolean
 	valAxisLabelFontSize?: number
 	valAxisLabelFormatCode?: string
 	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
@@ -1191,6 +1273,7 @@ export interface IChartPropsDataLabel {
 	dataLabelColor?: string
 	dataLabelFontBold?: boolean
 	dataLabelFontFace?: string
+	dataLabelFontItalic?: boolean
 	dataLabelFontSize?: number
 	/**
 	 * Data label format code
@@ -1249,7 +1332,13 @@ export interface IChartOpts
 		IChartPropsLegend,
 		IChartPropsTitle,
 		OptsChartGridLine,
-		PositionProps {}
+		PositionProps {
+	/**
+	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
+	 */
+	altText?: string
+}
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
 }
@@ -1257,6 +1346,7 @@ export interface ISlideRelChart extends OptsChartData {
 	type: CHART_NAME | IChartMulti[]
 	opts: IChartOptsLib
 	data: OptsChartData[]
+	// internal below
 	rId: number
 	Target: string
 	globalId: number
@@ -1293,7 +1383,7 @@ export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
 	options?: ObjectOptions
 	// text
-	text?: string | TextProps[]
+	text?: TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart
@@ -1360,6 +1450,10 @@ export interface PresLayout {
 	height: number
 }
 export interface SlideNumberProps extends PositionProps, TextBaseProps {
+	/**
+	 * margin (points)
+	 * TODO: convert to inches in 4.0 (valid values are 0-22)
+	 */
 	margin?: Margin
 }
 export interface SlideMasterProps {
@@ -1369,7 +1463,23 @@ export interface SlideMasterProps {
 	title: string
 	margin?: Margin
 	background?: BackgroundProps
-	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+	objects?: (
+		| { chart: {} }
+		| { image: {} }
+		| { line: {} }
+		| { rect: {} }
+		| { text: TextProps }
+		| {
+				placeholder: {
+					options: PlaceholderProps
+					/**
+					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+					 */
+					text?: string
+				}
+		  }
+	)[]
 	slideNumber?: SlideNumberProps
 
 	/**
@@ -1379,7 +1489,7 @@ export interface SlideMasterProps {
 }
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
 	_placeholderIdx?: number
-	_placeholderType?: PLACEHOLDER_TYPES
+	_placeholderType?: PLACEHOLDER_TYPE
 
 	cx?: Coord
 	cy?: Coord
@@ -1403,7 +1513,7 @@ export interface SlideBaseProps {
 	/**
 	 * @deprecated v3.3.0 - use `background`
 	 */
-	bkgd?: string
+	bkgd?: string | BackgroundProps
 }
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {
@@ -1427,8 +1537,9 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Background color or image (`fill` | `path` | `data`)
-	 * @example {fill: 'FF3399'} - hex fill color
+	 * Background color or image (`Color` | `path` | `data`)
+	 * @example {color: 'FF3399'} - hex fill color
+	 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

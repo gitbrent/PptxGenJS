@@ -1,0 +1,194 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap);
+
+pre {
+	font-size: 0.8rem !important;
+}
+
+#demo-sandbox:focus {
+	/* Chrome draws a super-annoying outline around *each line* in the <code> tag, so NOPE! */
+	outline: none;
+	/*-webkit-focus-ring-color auto 5px;*/
+}
+
+/* Works, but is always black color (WTF) */
+.iconInfo24 {
+	width: 24px;
+	height: 24px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='currentColor' viewBox='0 0 16 16'%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z' /%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+}
+
+/* -- brentstrap.css ---------- */
+.text-sm {
+	font-size: 0.8rem;
+}
+.card-body-text-sm .card .card-body {
+	font-size: 0.8rem;
+}
+.cursor-help {
+	cursor: help;
+}
+
+.bde-arrow-cont {
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.bde-arrow-cont span {
+	font-size: 50% !important;
+	color: #b9c9d9 !important;
+	text-transform: none !important;
+	margin-left: 4px;
+}
+
+.arrow {
+	display: inline-block;
+	height: 12px;
+	width: 12px;
+	border-top: 3px solid var(--bs-primary);
+	border-right: 3px solid var(--bs-primary);
+	margin-right: 10px;
+	cursor: pointer;
+	transition: all 0.25s ease;
+	transform: rotate(45deg);
+}
+
+.arrow.active {
+	transform: rotate(135deg);
+	margin-bottom: 3px;
+}
+
+/* -- HTML2PPTX ---------- */
+#tabAutoPaging thead tr th:first-child {
+	background-color: var(--bs-cyan);
+	color: var(--bs-white);
+}
+
+/* -- brentstrap.css ---------- */
+/* OLD:
+	body {
+		background-color: var(--bs-light) !important;
+	}
+	.tab-pane {
+		background-color: var(--bs-white) !important;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--bs-white: black;
+			--bs-secondary: #232323;
+			--bs-light: #363636;
+		}
+	}
+*/
+@media (prefers-color-scheme: dark) {
+	.h1,
+	.h2,
+	.h3,
+	.h4,
+	.h5,
+	.h6,
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-weight: 300 !important;
+	}
+	.tab-pane {
+		background-color: #030303;
+	}
+
+	.form-label {
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		color: rgba(255, 255, 255, 0.6) !important;
+	}
+	.form-text {
+		font-size: 0.7rem;
+		color: rgba(255, 255, 255, 0.4) !important;
+	}
+	.form-control,
+	.form-select {
+		color: var(--bs-dark);
+	}
+
+	.bg-gray-100 {
+		background-color: var(--bs-gray-900);
+	}
+
+	#tabAutoPaging tbody tr td {
+		background-color: #030303;
+	}
+	#tabAutoPaging tbody td:first-child {
+		background: var(--bs-gray-900);
+	}
+
+	.accordion-button {
+		background-color: var(--bs-gray-700);
+	}
+	.accordion-button:not(.collapsed) {
+		background-color: var(--bs-gray-400);
+		color: var(--bs-gray-700);
+	}
+	.accordion-item {
+		border: 1px solid var(--bs-gray-700);
+	}
+
+	.border {
+		border: 1px solid var(--bs-gray-600) !important;
+	}
+
+	.card-body {
+		background-color: #131313;
+	}
+
+	pre[class*="language-"] {
+		background-color: #131313 !important;
+	}
+
+	.form-control:disabled,
+	.form-control[readonly] {
+		background-color: #131313 !important;
+	}
+}
+@media (prefers-color-scheme: light) {
+	.tab-pane {
+		background-color: var(--bs-white);
+	}
+	/* 20210829: cyborg comes first in stylehseet order, but the way its written (diff from yeti?), it overrides these colors to white, which sucks */
+	.nav-pills .nav-link,
+	.nav-tabs .nav-link {
+		color: var(--bs-primary) !important;
+	}
+	.nav-pills .nav-link.active,
+	.nav-pills .show > .nav-link {
+		color: white !important;
+	}
+	.nav-pills .nav-link:hover,
+	.nav-tabs .nav-link:hover {
+		background-color: var(--bs-primary) !important;
+		color: var(--bs-white) !important;
+	}
+
+	.form-label {
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		color: var(--bs-gray);
+	}
+	.form-text {
+		font-size: 0.7rem;
+		color: rgba(0, 0, 0, 0.4) !important;
+	}
+
+	.bg-gray-100 {
+		background-color: var(--bs-gray-100);
+	}
+
+	#tabAutoPaging tbody td:first-child {
+		background: var(--bs-gray-100);
+	}
+}

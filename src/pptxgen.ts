@@ -70,7 +70,6 @@ import {
 	DEF_PRES_LAYOUT_NAME,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
-	JSZIP_OUTPUT_TYPE,
 	OutputType,
 	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
@@ -98,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.5.0-beta-20210225-2144'
+const VERSION = '3.9.0-beta-20210930-2159'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -423,21 +422,8 @@ export default class PptxGenJS implements IPresentationProps {
 		document.body.appendChild(eleLink)
 
 		// STEP 2: Download file to browser
-		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
-		if (window.navigator.msSaveOrOpenBlob) {
-			// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-			let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
-			eleLink.onclick = function () {
-				window.navigator.msSaveOrOpenBlob(blob, exportName)
-			}
-			eleLink.click()
-
-			// Clean-up
-			document.body.removeChild(eleLink)
-
-			// Done
-			return Promise.resolve(exportName)
-		} else if (window.URL.createObjectURL) {
+		// DESIGN: Use `createObjectURL()` to D/L files in client browsers (FYI: synchronously executed)
+		if (window.URL.createObjectURL) {
 			let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
 			eleLink.href = url
 			eleLink.download = exportName
@@ -553,9 +539,11 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
-	stream(props: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+	stream(props?: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+
 		return this.exportPresentation({
-			compression: props.compression || false,
+			compression: propsCompress,
 			outputType: 'STREAM',
 		})
 	}
@@ -567,12 +555,12 @@ export default class PptxGenJS implements IPresentationProps {
 	 */
 	write(props?: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
 		// DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
-		const propsOutType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
+		const propsOutpType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
 		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
 
 		return this.exportPresentation({
 			compression: propsCompress,
-			outputType: propsOutType,
+			outputType: propsOutpType,
 		})
 	}
 
@@ -721,7 +709,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {SlideMasterProps} props - layout properties
 	 */
 	defineSlideMaster(props: SlideMasterProps) {
-		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+		if (!props.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: SlideLayout = {
 			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
@@ -734,27 +722,20 @@ export default class PptxGenJS implements IPresentationProps {
 			_slideNum: 1000 + this.slideLayouts.length + 1,
 			_slideNumberProps: props.slideNumber || null,
 			_slideObjects: [],
-		}
-
-		// DEPRECATED:
-		if (props.bkgd && !props.background) {
-			props.background = {}
-			if (typeof props.bkgd === 'string') props.background.fill = props.bkgd
-			else {
-				if (props.bkgd.data) props.background.data = props.bkgd.data
-				if (props.bkgd.path) props.background.path = props.bkgd.path
-				if (props.bkgd['src']) props.background.path = props.bkgd['src'] // @deprecated (drop in 4.x)
-			}
-			delete props.bkgd
+			background: props.background || null,
+			bkgd: props.bkgd || null,
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(props, newLayout)
+		genObj.createSlideMaster(props, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
 
-		// STEP 3: Add slideNumber to master slide (if any)
+		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (props.background || props.bkgd) genObj.addBackgroundDefinition(props.background, newLayout)
+
+		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 	}
 

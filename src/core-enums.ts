@@ -15,7 +15,8 @@ export const LINEH_MODIFIER = 1.67 // AKA: Golden Ratio Typography
 
 export const DEF_BULLET_MARGIN = 27
 export const DEF_CELL_BORDER: BorderProps = { type: 'solid', color: '666666', pt: 1 }
-export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style
+export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style // DEPRECATED 3.8.0
+export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.1, 0.05, 0.1] // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
 export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'
 export const DEF_FONT_SIZE: number = 12
@@ -163,6 +164,7 @@ export enum ShapeType {
 	'curvedLeftArrow' = 'curvedLeftArrow',
 	'curvedRightArrow' = 'curvedRightArrow',
 	'curvedUpArrow' = 'curvedUpArrow',
+	'custGeom' = 'custGeom',
 	'decagon' = 'decagon',
 	'diagStripe' = 'diagStripe',
 	'diamond' = 'diamond',
@@ -357,6 +359,7 @@ export enum SHAPE_TYPE {
 	CURVED_RIGHT_ARROW = 'curvedRightArrow',
 	CURVED_UP_ARROW = 'curvedUpArrow',
 	CURVED_UP_RIBBON = 'ellipseRibbon2',
+	CUSTOM_GEOMETRY = 'custGeom',
 	DECAGON = 'decagon',
 	DIAGONAL_STRIPE = 'diagStripe',
 	DIAMOND = 'diamond',
@@ -552,6 +555,7 @@ export type SHAPE_NAME =
 	| 'curvedLeftArrow'
 	| 'curvedRightArrow'
 	| 'curvedUpArrow'
+	| 'custGeom'
 	| 'decagon'
 	| 'diagStripe'
 	| 'diamond'
@@ -738,6 +742,7 @@ export enum PLACEHOLDER_TYPES {
 	'table' = 'tbl',
 	'media' = 'media',
 }
+export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
 
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
