@@ -319,10 +319,11 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
 	options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero'
 
-	if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.LINE)
+	if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.LINE) {
 		options.catAxisMultiLevelLabels = !!options.catAxisMultiLevelLabels
-	else
+	} else {
 		delete options.catAxisMultiLevelLabels
+	}
 
 	// STEP 4: Set props
 	resultObject._type = 'chart'

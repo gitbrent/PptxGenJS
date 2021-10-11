@@ -378,7 +378,8 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 				// B: Add data row(s) for each category
 				data[0].labels[0].forEach((_cat, idx) => {
-					strSheetXml += `<row r="${(idx + 2)}" spans="1:${data.length + data[0].labels.length}">`
+					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + data[0].labels.length) + '">'
+					// Leading cols are reserved for the label groups
 					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
 						strSheetXml += '<c r="' + getExcelColName(data[0].labels.length - 1 - idx2) + '' + idx + 2 + '" t="s">'
 						strSheetXml += '<v>' + (data.length + idx + (idx2 * (data[0].labels[0].length)) + 1) + '</v>'
@@ -689,12 +690,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				data: [
 				 {
 				   name: 'Region 1',
-				   labels: ['April', 'May', 'June', 'July'],
+				   labels: [['April', 'May', 'June', 'July']],
 				   values: [17, 26, 53, 96]
 				 },
 				 {
 				   name: 'Region 2',
-				   labels: ['April', 'May', 'June', 'July'],
+				   labels: [['April', 'May', 'June', 'July']],
 				   values: [55, 43, 70, 58]
 				 }
 				]
