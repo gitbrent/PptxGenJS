@@ -370,7 +370,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				})
 				for (let idx = 1; idx <= data.length; idx++) {
 					// FIXME: Max cols is 52
-					strSheetXml += '<c r="' + getExcelColName(idx + data[0].labels.length) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+					strSheetXml += '<c r="' + getExcelColName(idx + data[0].labels.length - 1) + '1" t="s">' // NOTE: use `t="s"` for label cols!
 					strSheetXml += '<v>' + idx + '</v>'
 					strSheetXml += '</c>'
 				}
@@ -381,7 +381,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + data[0].labels.length) + '">'
 					// Leading cols are reserved for the label groups
 					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
-						strSheetXml += '<c r="' + getExcelColName(data[0].labels.length - 1 - idx2) + '' + idx + 2 + '" t="s">'
+						strSheetXml += '<c r="' + getExcelColName(data[0].labels.length - 1 - idx2) + '' + (idx + 2) + '" t="s">'
 						strSheetXml += '<v>' + (data.length + idx + (idx2 * (data[0].labels[0].length)) + 1) + '</v>'
 						strSheetXml += '</c>'
 					}
