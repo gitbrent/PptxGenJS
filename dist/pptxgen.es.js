@@ -1,4 +1,4 @@
-/* PptxGenJS 3.8.0 @ 2021-09-29T02:06:56.543Z */
+/* PptxGenJS 3.9.0-beta @ 2021-10-01T03:13:35.870Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -2145,6 +2145,9 @@ function slideObjectToXml(slide) {
             strSlideXml += " tIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
             strSlideXml += " rIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
             strSlideXml += " bIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
+        }
+        if (slide._slideNumberProps.valign) {
+            strSlideXml += " anchor=\"" + slide._slideNumberProps.valign.replace('top', 't').replace('middle', 'ctr').replace('bottom', 'b') + "\"";
         }
         strSlideXml += '/>';
         strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
@@ -6383,7 +6386,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.8.0';
+var VERSION = '3.9.0-beta-20210930-2159';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
