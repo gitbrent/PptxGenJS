@@ -19,7 +19,7 @@ import {
 	LETTERS,
 	ONEPT,
 } from './core-enums'
-import { IChartOptsLib, ISlideRelChart, ShadowProps, OptsChartData, IChartPropsTitle, OptsChartGridLine } from './core-interfaces'
+import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
 import JSZip from 'jszip'
 
@@ -657,7 +657,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
  * @example '<c:lineChart>'
  * @return {string} XML
  */
-function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
+function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let strXml: string = ''
