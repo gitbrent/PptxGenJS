@@ -166,6 +166,11 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	}
 	tmpData.forEach((item, i) => {
 		item.index = i
+
+		// Converts the 'labels' array from string[] to string[][] (or the respective primitive type), if needed
+		if (item.labels !== undefined && !Array.isArray(item.labels[0])) {
+			item.labels = [item.labels as string[]]
+		}
 	})
 	options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {}
 
@@ -313,6 +318,11 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
 	options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero'
+
+	if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.LINE)
+		options.catAxisMultiLevelLabels = !!options.catAxisMultiLevelLabels
+	else
+		delete options.catAxisMultiLevelLabels
 
 	// STEP 4: Set props
 	resultObject._type = 'chart'

@@ -1035,7 +1035,7 @@ export interface OptsDataLabelPosition {
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 export interface OptsChartData {
 	index?: number
-	labels?: string[]
+	labels?: string[][]
 	name?: string
 	sizes?: number[]
 	values?: number[]
@@ -1127,6 +1127,7 @@ export interface IChartPropsAxisCat {
 	catAxisMinorTimeUnit?: string
 	catAxisMinorUnit?: string
 	catAxisMinVal?: number
+	catAxisMultiLevelLabels?: boolean
 	catAxisOrientation?: 'minMax'
 	catAxisTitle?: string
 	catAxisTitleColor?: string
