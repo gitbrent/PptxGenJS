@@ -899,7 +899,7 @@ export function addTableDefinition(
 			if (!getSlide(target._slideNum + idx)) slides.push(addSlide(slideLayout ? slideLayout._name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])
+			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || opt.y || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			{

@@ -715,7 +715,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 
 		// B: DESIGN: Reset `y` to startY or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
-		if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
+		if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || opts.y || arrInchMargins[0]
 		if (opts.verbose) console.log(`| opts.autoPageSlideStartY: ${opts.autoPageSlideStartY} / arrInchMargins[0]: ${arrInchMargins[0]} => opts.y = ${opts.y}`)
 
 		// C: Add table to Slide
