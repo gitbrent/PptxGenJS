@@ -343,6 +343,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
 export function addImageDefinition(target: PresSlide, opt: ImageProps) {
+	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 	let newObject: ISlideObject = {
 		_type: null,
 		text: null,
@@ -421,6 +422,20 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		// SVG files consume *TWO* rId's: (a png version and the svg image)
 		// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 		// <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
+
+		if(opt.fill && strImagePath)
+		{
+			
+			strImageData = fs.readFileSync(strImagePath, 'utf8')
+			const pattern = /"#[0-9a-fA-F]{3,6}"/g; // Find hex color
+			if(pattern.test(strImageData))
+				strImageData = strImageData.replace(pattern, '"#'+opt.fill?.color+'"');
+			else
+				strImageData = strImageData.replace(/<path/g, '<path fill="#'+opt.fill?.color+'"');
+
+			strImageData = 'image/svg+xml;base64,'+Buffer.from(strImageData).toString('base64');
+		}
+
 		target._relsMedia.push({
 			path: strImagePath || strImageData + 'png',
 			type: 'image/png',
@@ -429,6 +444,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 			rId: imageRelId,
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 			isSvgPng: true,
+			fill: opt.fill || null,
 			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
 		})
 		newObject.imageRid = imageRelId

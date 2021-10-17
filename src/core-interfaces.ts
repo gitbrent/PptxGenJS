@@ -456,6 +456,13 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 	 */
 	rounding?: boolean
 	/**
+	 * Shape fill color properties
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 */
+	fill?: ShapeFillProps
+	/**
 	 * Image sizing options
 	 */
 	sizing?: {
@@ -747,6 +754,10 @@ export interface TableCellProps extends TextBaseProps {
 	 * Cell rowspan
 	 */
 	rowspan?: number
+	/**
+	 * Text Direction
+	 */
+	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 }
 export interface TableProps extends PositionProps, TextBaseProps {
 	_arrObjTabHeadRows?: TableRow[]
@@ -1363,6 +1374,7 @@ export interface ISlideRelMedia {
 	extn?: string
 	data?: string | ArrayBuffer
 	isSvgPng?: boolean
+	fill?: ShapeFillProps
 	svgSize?: { w: number; h: number }
 	rId: number
 	Target: string

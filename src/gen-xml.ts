@@ -335,8 +335,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
+						const cellTextDir = cellOpts.vert ? ' vert="'+cellOpts.vert+'"' : '';
+
 						// 4: Set CELL content and properties ==================================
-						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
+						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
 						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
 						// FIXME: 20200525: ^^^
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -749,7 +751,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12) * 100)}">`
+			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12 * 100))}">`
 			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
 			if (slide._slideNumberProps.fontFace)
 				strSlideXml += `<a:latin typeface="${slide._slideNumberProps.fontFace}"/><a:ea typeface="${slide._slideNumberProps.fontFace}"/><a:cs typeface="${slide._slideNumberProps.fontFace}"/>`
@@ -1001,7 +1003,7 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 
 	// BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
 	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '')
-	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize*100) + '"' : '' // NOTE: Use round so sizes like '8.2' wont cause corrupt pres. ( some values like 8.2*100 = 819.999999 (Floating point precision))
 	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
 
@@ -1255,9 +1257,12 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
 		// NOTE: Filter for trailing lineBreak prevents the creation of an empty textObj as the last item
 		if (itext.text.indexOf(CRLF) > -1 && itext.text.match(/\n$/g) === null) {
-			itext.text.split(CRLF).forEach(line => {
-				itext.options.breakLine = true
-				arrTextObjects.push({ text: line, options: itext.options })
+			const lines = itext.text.split(CRLF)
+			lines.forEach((line, index) => {
+				if(index == lines.length -1)
+					arrTextObjects.push({ text: line, options: itext.options })
+				else
+					arrTextObjects.push({ text: line, options: { ...itext.options, breakLine: true} })
 			})
 		} else {
 			arrTextObjects.push(itext)

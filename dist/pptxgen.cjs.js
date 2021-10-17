@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-10-01T03:13:35.864Z */
+/* PptxGenJS 3.9.0-beta @ 2021-10-08T11:42:27.327Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1794,8 +1794,9 @@ function slideObjectToXml(slide) {
                             cellMarginXml = " marL=\"" + inch2Emu(cellMargin[3]) + "\" marR=\"" + inch2Emu(cellMargin[1]) + "\" marT=\"" + inch2Emu(cellMargin[0]) + "\" marB=\"" + inch2Emu(cellMargin[2]) + "\"";
                         }
                         // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+                        var cellTextDir = cellOpts.vert ? ' vert="' + cellOpts.vert + '"' : '';
                         // 4: Set CELL content and properties ==================================
-                        strXml_1 += "<a:tc" + cellSpanAttrStr + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
+                        strXml_1 += "<a:tc" + cellSpanAttrStr + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + cellTextDir + ">";
                         //strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
                         // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -2158,7 +2159,7 @@ function slideObjectToXml(slide) {
         strSlideXml += '/>';
         strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
         if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-            strSlideXml += "<a:defRPr sz=\"" + Math.round((slide._slideNumberProps.fontSize || 12) * 100) + "\">";
+            strSlideXml += "<a:defRPr sz=\"" + Math.round((slide._slideNumberProps.fontSize || 12 * 100)) + "\">";
             if (slide._slideNumberProps.color)
                 strSlideXml += genXmlColorSelection(slide._slideNumberProps.color);
             if (slide._slideNumberProps.fontFace)
@@ -2391,7 +2392,7 @@ function genXmlTextRunProperties(opts, isDefault) {
     var runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr';
     // BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
     runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '');
-    runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : ''; // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+    runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // NOTE: Use round so sizes like '8.2' wont cause corrupt pres. ( some values like 8.2*100 = 819.999999 (Floating point precision))
     runProps += opts.hasOwnProperty('bold') ? " b=\"" + (opts.bold ? 1 : 0) + "\"" : '';
     runProps += opts.hasOwnProperty('italic') ? " i=\"" + (opts.italic ? 1 : 0) + "\"" : '';
     runProps += opts.hasOwnProperty('strike') ? " strike=\"" + (typeof opts.strike === 'string' ? opts.strike : 'sngStrike') + "\"" : '';
@@ -2645,9 +2646,12 @@ function genXmlTextBody(slideObj) {
         // C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
         // NOTE: Filter for trailing lineBreak prevents the creation of an empty textObj as the last item
         if (itext.text.indexOf(CRLF) > -1 && itext.text.match(/\n$/g) === null) {
-            itext.text.split(CRLF).forEach(function (line) {
-                itext.options.breakLine = true;
-                arrTextObjects.push({ text: line, options: itext.options });
+            var lines_1 = itext.text.split(CRLF);
+            lines_1.forEach(function (line, index) {
+                if (index == lines_1.length - 1)
+                    arrTextObjects.push({ text: line, options: itext.options });
+                else
+                    arrTextObjects.push({ text: line, options: __assign(__assign({}, itext.options), { breakLine: true }) });
             });
         }
         else {
@@ -3542,6 +3546,8 @@ function addChartDefinition(target, type, data, opt) {
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
 function addImageDefinition(target, opt) {
+    var _a, _b;
+    var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
     var newObject = {
         _type: null,
         text: null,
@@ -3617,6 +3623,15 @@ function addImageDefinition(target, opt) {
         // SVG files consume *TWO* rId's: (a png version and the svg image)
         // <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
         // <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
+        if (opt.fill && strImagePath) {
+            strImageData = fs.readFileSync(strImagePath, 'utf8');
+            var pattern = /"#[0-9a-fA-F]{3,6}"/g; // Find hex color
+            if (pattern.test(strImageData))
+                strImageData = strImageData.replace(pattern, '"#' + ((_a = opt.fill) === null || _a === void 0 ? void 0 : _a.color) + '"');
+            else
+                strImageData = strImageData.replace(/<path/g, '<path fill="#' + ((_b = opt.fill) === null || _b === void 0 ? void 0 : _b.color) + '"');
+            strImageData = 'image/svg+xml;base64,' + Buffer.from(strImageData).toString('base64');
+        }
         target._relsMedia.push({
             path: strImagePath || strImageData + 'png',
             type: 'image/png',
@@ -3625,6 +3640,7 @@ function addImageDefinition(target, opt) {
             rId: imageRelId,
             Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
             isSvgPng: true,
+            fill: opt.fill || null,
             svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
         });
         newObject.imageRid = imageRelId;
