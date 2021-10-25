@@ -1400,7 +1400,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 			// 1: Start Chart
 			strXml += '<c:' + chartType + 'Chart>'
-			strXml += '  <c:varyColors val="0"/>'
+			strXml += '  <c:varyColors val="1"/>'
 			strXml += '<c:ser>'
 			strXml += '  <c:idx val="0"/>'
 			strXml += '  <c:order val="0"/>'
