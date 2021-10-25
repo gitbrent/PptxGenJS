@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-10-14T12:21:16.793Z */
+/* PptxGenJS 3.9.0-beta @ 2021-10-25T07:13:08.679Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -2702,7 +2702,7 @@ function genXmlTextBody(slideObj) {
             textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore;
             textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter;
             paragraphPropXml = genXmlParagraphProperties(textObj, false);
-            strSlideXml += paragraphPropXml;
+            strSlideXml += paragraphPropXml.replace('<a:pPr></a:pPr>', ''); // IMPORTANT: Empty "pPr" blocks will generate needs-repair/corrupt msg
             // C: Inherit any main options (color, fontSize, etc.)
             // NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
             // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
@@ -6434,7 +6434,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20210930-2159';
+var VERSION = '3.9.0-beta-20211024-1302';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
