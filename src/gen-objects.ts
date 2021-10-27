@@ -414,6 +414,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		rotate: opt.rotate || 0,
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
+		objectName: opt.objectName || ''
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -491,6 +492,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strPath = opt.path || ''
 	let strType = opt.type || 'audio'
 	let strExtn = 'mp3'
+	let objectName = opt.objectName || ''
 	let slideData: ISlideObject = {
 		_type: SLIDE_OBJECT_TYPES.media,
 	}
@@ -520,6 +522,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	slideData.options.y = intPosY
 	slideData.options.w = intSizeX
 	slideData.options.h = intSizeY
+	slideData.options.objectName = objectName
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!

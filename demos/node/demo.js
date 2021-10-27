@@ -41,8 +41,25 @@ if (process.argv.length > 2) {
 } else {
 	// B: Omit an arg to run only these below
 	let slide = pptx.addSlide();
-	slide.addText("New Node Presentation", { x: 1.5, y: 1.5, w: 6, h: 2, margin: 0.1, fill: "FFFCCC" });
-	slide.addShape(pptx.shapes.OVAL_CALLOUT, { x: 6, y: 2, w: 3, h: 2, fill: "00FF00", line: "000000", lineSize: 1 }); // Test shapes availablity
+	slide.addChart(pptx.ChartType.bar3d, [
+			{
+				name: 'Income',
+				labels: ['2005', '2006', '2007', '2008', '2009'],
+				values: [23.5, 26.2, 30.1, 29.5, 24.6]
+			},
+			{
+				name: 'Expense',
+				labels: ['2005', '2006', '2007', '2008', '2009'],
+				values: [18.1, 22.8, 23.9, 25.1, 25]
+			}
+		], {x: 1, y: 3, w: 4, h: 3, objectName: "Demo Chart Name"});
+			 
+	slide.addImage({path: "assets/image.png", objectName: "Demo Image Name", x:1, y:1});
+	//slide.addMedia({type: "video", path: "assets/video.mp4", objectName: "Demo Video Name"});
+	slide.addTable([["A1", "B1", "C1"], ["A2", "B2", "C2"], ["A3", "B3", "C3"]], { align: "left", fontFace: "Arial", objectName: "Demo Table Name" });
+	slide.addShape(pptx.shapes.OVAL_CALLOUT, { x: 6, y: 2, w: 3, h: 2, fill: "00FF00", line: "000000", lineSize: 1, objectName: "Demo Shape Name" }); // Test shapes availablity
+	slide.addText("New Node Presentation", { x: 1.5, y: 1.5, w: 6, h: 2, margin: 0.1, fill: "FFFCCC", objectName: "Demo Text Name" });
+
 
 	// EXAMPLE 1: Saves output file to the local directory where this process is running
 	pptx.writeFile({ fileName: exportName })
