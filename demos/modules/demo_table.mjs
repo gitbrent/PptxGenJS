@@ -20,6 +20,7 @@ import {
 } from "./enums.mjs";
 
 export function genSlides_Table(pptx) {
+/*
 	pptx.addSection({ title: "Tables" });
 	genSlide01(pptx);
 	genSlide02(pptx);
@@ -27,18 +28,18 @@ export function genSlides_Table(pptx) {
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
-
+*/
 	pptx.addSection({ title: "Tables: Auto-Paging" });
 	genSlide07(pptx);
-
+/*
 	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
 	genSlide08(pptx);
 
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
-
+*/
 	pptx.addSection({ title: "Tables: QA" });
-	//genSlide10(pptx);
+	genSlide10(pptx);
 }
 
 /**

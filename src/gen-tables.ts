@@ -188,6 +188,28 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 	let tablePropH = getSmartParseNumber(tableProps.h, 'Y', presLayout)
 	let tableCalcW = tablePropW
 
+	function calcSlideTabH() {
+		let emuStartY = 0
+		if (tableRowSlides.length === 0) emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])
+		if (tableRowSlides.length > 0) emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0])
+		emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2])
+		//console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
+		//console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
+		if (tableRowSlides.length > 1) {
+			// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
+			if (typeof tableProps.autoPageSlideStartY === 'number') {
+				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2])
+			} else if (typeof tableProps.newSlideStartY === 'number') {
+				// @deprecated v3.3.0
+				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2])
+			} else if (tablePropY) {
+				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu((tablePropY / EMU < arrInchMargins[0] ? tablePropY / EMU : arrInchMargins[0]) + arrInchMargins[2])
+				// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding Y on paging is to *increase* usable space)
+				if (emuSlideTabH < tablePropH) emuSlideTabH = tablePropH
+			}
+		}
+	}
+
 	if (tableProps.verbose) {
 		console.log('[[VERBOSE MODE]]')
 		console.log('|-- TABLE PROPS --------------------------------------------------------|')
@@ -246,7 +268,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		if (tableProps.verbose) console.log(`| tableCalcW ...................................... = ${tableCalcW / EMU}`)
 	}
 
-	// STEP 4: Calculate usable space/table size (now that total usable space is known)
+	// STEP 4: Calculate usable width now that total usable space is known (`emuSlideTabW`)
 	{
 		emuSlideTabW = tableCalcW ? tableCalcW : inch2Emu((tablePropX ? tablePropX / EMU : arrInchMargins[1]) + arrInchMargins[3])
 		if (tableProps.verbose) console.log(`| emuSlideTabW .................................... = ${(emuSlideTabW / EMU).toFixed(1)}`)
@@ -280,7 +302,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		let maxCellMarTopEmu = 0
 		let maxCellMarBtmEmu = 0
 
-		// B: Create new row in data model
+		// B: Create new row in data model, calc `maxCellMar*`
 		let currTableRow: TableRow = []
 		row.forEach(cell => {
 			currTableRow.push({
@@ -307,28 +329,11 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-		let emuStartY = 0
-		if (tableRowSlides.length === 0) emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0])
-		if (tableRowSlides.length > 0) emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0])
-		emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2])
-		//console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
-		//console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
-		if (tableRowSlides.length > 1) {
-			// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
-			if (typeof tableProps.autoPageSlideStartY === 'number') {
-				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2])
-			} else if (typeof tableProps.newSlideStartY === 'number') {
-				// @deprecated v3.3.0
-				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2])
-			} else if (tablePropY) {
-				emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu((tablePropY / EMU < arrInchMargins[0] ? tablePropY / EMU : arrInchMargins[0]) + arrInchMargins[2])
-				// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding Y on paging is to *increase* usable space)
-				if (emuSlideTabH < tablePropH) emuSlideTabH = tablePropH
-			}
-		}
+		calcSlideTabH()
+		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu // Start row height with margins
 		if (tableProps.verbose && iRow === 0) console.log(`| SLIDE [${tableRowSlides.length}]: emuSlideTabH ...... = ${(emuSlideTabH / EMU).toFixed(1)} `)
 
-		// E: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
+		// D: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
 		row.forEach((cell, iCell) => {
 			let newCell: TableCell = {
 				_type: SLIDE_OBJECT_TYPES.tablecell,
@@ -361,10 +366,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			rowCellLines.push(newCell)
 		})
 
-		// F: Start row height with margins
-		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
-
-		/** G: --==[[ PAGE DATA SET ]]==--
+		/** E: --==[[ PAGE DATA SET ]]==--
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
 		 *
 		 * Design:
@@ -373,7 +375,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		 * - Then, when the vertical size limit is hit is by any of the cells, make a new slide and continue adding any remaining lines
 		 *
 		 * Implementation:
-		 * `rowCellLines` is an array of cells
+		 * - `rowCellLines` is an array of cells
 		 * - each cell contains an array of lines
 		 * EX:
 		 * {
@@ -408,30 +410,66 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 							console.log('|-----------------------------------------------------------------------|\n\n')
 						}
 
-						// 1: add current row slide or it will be lost (only if it has rows and text)
+						// TODO: include traliing cells content
+						/** 1: Include trailing cells content when cell overflows.
+						 * - EX: Cell-0 has a mile of text, which causes overflow to be triggered (this if block), but there is additional text content in trailing cells
+						 * - In this case, we dont want to just create a new slide and insert current row - it doesnt have the traling cell text yet!
+						 *
+						 * SLIDE 1:
+						 * |--------|--------|--------|--------|
+						 * | line-1 | line-1 | line-1 | line-1 | <-- Add this text to [cell-3] before setting this row+creating a new slide
+						 * |--------|--------|--------|--------|
+						 *
+						 * SLIDE 2:
+						 * |--------|--------|--------|--------|
+						 * |        |        | line-2 |        |
+						 * |--------|--------|--------|--------|
+						 */
+						// TODO: uh...
+
+						/** 1: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
+						 * - In this case, `rowCellLines` has no content for [cell 0], [cell 1], [cell 3]
+						 * - so we need to add a { text: "" } or PPTX will be corrupted/needs-repair! (as each row needs the same amount of cells)
+						 *
+						 * SLIDE 1:
+						 * |--------|--------|--------|--------|
+						 * | line-1 | line-1 | line-1 | line-1 |
+						 * |--------|--------|--------|--------|
+						 *
+						 * SLIDE 2:
+						 * |--------|--------|--------|--------|
+						 * |        |        | line-2 |        |
+						 * |--------|--------|--------|--------|
+						 */
+						currTableRow.forEach(cell => {
+							if (Array.isArray(cell.text) && cell.text.length === 0) cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: '' })
+						})
+						// WIP: FIXME: 20211024: above prevents "needs repair" on Slide 10/QA, but causes extra rows in some existing table tests!
+						// @example: "Table Examples: Start at `{ y:4.0 }`, subsequent slides start at slide top margin" - extra row on first slide!
+
+						// 2: add current row slide or it will be lost (only if it has rows and text)
 						if (currTableRow.length > 0 && currTableRow.map(cell => cell.text.length).reduce((p, n) => p + n) > 0) newTableRowSlide.rows.push(currTableRow)
 
-						// 2: add current slide to Slides array
+						// 3: add current slide to Slides array
 						tableRowSlides.push(newTableRowSlide)
 
-						// 3: reset working/curr slide to hold rows as they're created
+						// 4: reset working/curr slide to hold rows as they're created
 						let newRows: TableRow[] = []
 						newTableRowSlide = { rows: newRows }
 
-						// 4: reset working/curr row
+						// 5: reset working/curr row
 						currTableRow = []
-						row.forEach(cell => {
-							currTableRow.push({
-								_type: SLIDE_OBJECT_TYPES.tablecell,
-								text: [],
-								options: cell.options,
-							})
-						})
+						row.forEach(cell => currTableRow.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: [], options: cell.options }))
 
-						// 5: reset current table height for this new Slide
+						// 6: Calc usable vertical space/table height now as we may still be in the same row and code above ("C: Calc usable vertical space/table height.") calc may now be invalid
+						calcSlideTabH()
+						emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu // Start row height with margins
+						if (tableProps.verbose) console.log(`| SLIDE [${tableRowSlides.length}]: emuSlideTabH ...... = ${(emuSlideTabH / EMU).toFixed(1)} `)
+
+						// 7: reset current table height for this new Slide
 						emuTabCurrH = 0
 
-						// 6: handle repeat headers option /or/ Add new empty row to continue current lines into
+						// 8: handle repeat headers option /or/ Add new empty row to continue current lines into
 						if ((tableProps.addHeaderToEach || tableProps.autoPageRepeatHeader) && tableProps._arrObjTabHeadRows) {
 							tableProps._arrObjTabHeadRows.forEach(row => {
 								let newHeadRow: TableRow = []
@@ -456,8 +494,8 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 					if (cellIdx === maxLineHeightCellIdx) emuTabCurrH += cell._lineHeight
 
 					/** E: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
-					 * - In this case, `rowCellLines` has no content for cell 0 and cell 1
-					 * - so we need to add a { text: "" } or PPTX will be corrupted! (as each row needs the same amount of cells)
+					 * - In this case, `rowCellLines` has no content for [cell 0] and [cell 1]
+					 * - so we need to add a { text: "" } or PPTX will be corrupted/needs-repair! (as each row needs the same amount of cells)
 					 *
 					 * SLIDE 1:
 					 * |--------|--------|--------|
@@ -470,7 +508,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 					 * |--------|--------|--------|
 					 */
 					currTableRow.forEach((cell, idx) => {
-						if (idx < cellIdx && Array.isArray(cell.text) && cell.text.length === 0) cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' })
+						if (idx < cellIdx && Array.isArray(cell.text) && cell.text.length === 0) cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: '' })
 					})
 
 					// DONE
@@ -483,7 +521,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			})
 		}
 
-		// 7: Flush/capture row buffer before it resets at the top of this loop
+		// F: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
 
 		if (tableProps.verbose)
