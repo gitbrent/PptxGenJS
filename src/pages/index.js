@@ -14,14 +14,14 @@ export default () => {
 							<div className="my-5">
 								<h1 className="display-1 mb-3">PptxGenJS</h1>
 								<h3 className="fw-light mb-4">Create PowerPoint presentations with JavaScript</h3>
-								<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with over 1,100 stars on GitHub</h6>
+								<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with over 1,200 stars on GitHub</h6>
 								<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
 									<div className="col-12 col-md-4">
 										<button
 											type="button"
 											aria-label="Get Started"
 											className="w-100 fw-bold btn py-3 btn-primary"
-											onClick={() => (window.location.href = "/PptxGenJS/docs/quick-start")}
+											onClick={() => (window.location.href = "/PptxGenJS/docs/quick-start/")}
 										>
 											Get Started
 										</button>
@@ -31,7 +31,7 @@ export default () => {
 											type="button"
 											aria-label="View Demos"
 											className="w-100 fw-bold btn py-3 btn-outline-primary"
-											onClick={() => (window.location.href = "/PptxGenJS/demos")}
+											onClick={() => (window.location.href = "/PptxGenJS/demos/")}
 										>
 											Demos
 										</button>
@@ -41,7 +41,7 @@ export default () => {
 											type="button"
 											aria-label="Learn about HTML to PowerPoint"
 											className="w-100 fw-bold btn py-3 btn-outline-primary"
-											onClick={() => (window.location.href = "/PptxGenJS/html2pptx")}
+											onClick={() => (window.location.href = "/PptxGenJS/html2pptx/")}
 										>
 											HTML to PPTX
 										</button>
