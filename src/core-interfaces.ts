@@ -426,6 +426,11 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 	 */
 	altText?: string
 	/**
+	 * Alt Text Title value ("A title can be read to a person with a disability to determine if they they wish to hear the description of the content.")
+	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
+	 */
+	altTitle?: string
+	 /**
 	 * Flip horizontally?
 	 * @default false
 	 */
@@ -1327,7 +1332,12 @@ export interface IChartOpts
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
 	 */
 	altText?: string
-}
+	/**
+	 * Alt Text Title value ("A title can be read to a person with a disability to determine if they they wish to hear the description of the content.")
+	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
+	 */
+	 altTitle?: string
+	}
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
 }
@@ -1572,6 +1582,13 @@ export interface PresentationProps {
 	rtlMode: boolean
 	subject: string
 	title: string
+}
+export interface EncodingProps {
+	/**
+	 * Whether newlines should be encoded
+	 * @default false
+	 */
+    newlines?: boolean
 }
 // PRIVATE interface
 export interface IPresentationProps extends PresentationProps {

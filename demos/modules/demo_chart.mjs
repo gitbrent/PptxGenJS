@@ -110,6 +110,7 @@ function genSlide01(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		altTitle: "alt text title",
 		altText: "this is the alt text content",
 
 		barDir: "bar",

@@ -87,6 +87,8 @@ let imageSizingXml = {
 function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	let strSlideXml: string = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>'
 	let intTableNum: number = 1
+	let descrText: string
+	let titleText: string
 
 	// STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
 	if (slide._bkgdImgRid) {
@@ -572,9 +574,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					width = cx,
 					height = cy
 
+				descrText = encodeXmlEntities(imageOpts.altText || slideItemObj.image, { newlines: true })
+				titleText = encodeXmlEntities(imageOpts.altTitle || '')
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += `<p:cNvPr id="${idx + 2}" name="Object ${idx + 1}" descr="${encodeXmlEntities(imageOpts.altText || slideItemObj.image)}">`
+				strSlideXml += `<p:cNvPr id="${idx + 2}" name="Object ${idx + 1}" descr="${descrText}" title="${titleText}">`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
 					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
 						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
@@ -681,9 +685,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 			case SLIDE_OBJECT_TYPES.chart:
 				let chartOpts = slideItemObj.options as IChartOpts
+				descrText = encodeXmlEntities(chartOpts.altText || '', { newlines: true })
+				titleText = encodeXmlEntities(chartOpts.altTitle || '')
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
+				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${descrText}" title="${titleText}"/>`
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
 				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += ' </p:nvGraphicFramePr>'

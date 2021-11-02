@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, EncodingProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -74,12 +74,17 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 /**
  * Replace special XML characters with HTML-encoded strings
  * @param {string} xml - XML string to encode
+ * @param {EncodingProps} encodeOpts - encoding options
  * @returns {string} escaped XML
  */
-export function encodeXmlEntities(xml: string): string {
+export function encodeXmlEntities(xml: string, encodeOpts?: EncodingProps): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof xml === 'undefined' || xml == null) return ''
-	return xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+	let res = xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+	if (encodeOpts?.newlines) {
+		res = res.replace(/\r\n/g, '&#10;').replace(/\r/g, '&#10;').replace(/\n/g, '&#10;')
+	}
+	return res
 }
 
 /**
