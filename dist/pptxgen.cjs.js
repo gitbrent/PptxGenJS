@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-10-24T18:38:23.042Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-04T02:52:38.028Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3683,7 +3683,8 @@ function addMediaDefinition(target, opt) {
     var strLink = opt.link || '';
     var strPath = opt.path || '';
     var strType = opt.type || 'audio';
-    var strExtn = 'mp3';
+    var strExtn = opt.ext || ''; // file extension name: mp4
+    var cover = opt.cover || IMG_PLAYBTN; // cover base64 string
     var slideData = {
         _type: SLIDE_OBJECT_TYPES.media,
     };
@@ -3700,7 +3701,7 @@ function addMediaDefinition(target, opt) {
     }
     // FIXME: 20190707
     //strType = strData ? strData.split(';')[0].split('/')[0] : strType
-    strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop();
+    strExtn = strExtn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop());
     // STEP 2: Set type, media
     slideData.mtype = strType;
     slideData.media = strPath || 'preencoded.mov';
@@ -3726,7 +3727,7 @@ function addMediaDefinition(target, opt) {
         // B: Add preview/overlay image
         target._relsMedia.push({
             path: 'preencoded.png',
-            data: IMG_PLAYBTN,
+            data: cover,
             type: 'image/png',
             extn: 'png',
             rId: intRels + 2,
@@ -3759,7 +3760,7 @@ function addMediaDefinition(target, opt) {
         });
         // C: Add preview/overlay image
         target._relsMedia.push({
-            data: IMG_PLAYBTN,
+            data: cover,
             path: 'preencoded.png',
             type: 'image/png',
             extn: 'png',

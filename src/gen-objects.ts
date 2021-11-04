@@ -490,7 +490,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strLink = opt.link || ''
 	let strPath = opt.path || ''
 	let strType = opt.type || 'audio'
-	let strExtn = 'mp3'
+	let strExtn = opt.ext || '' // file extension name: mp4
+	let cover = opt.cover || IMG_PLAYBTN // cover base64 string
 	let slideData: ISlideObject = {
 		_type: SLIDE_OBJECT_TYPES.media,
 	}
@@ -508,7 +509,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 	// FIXME: 20190707
 	//strType = strData ? strData.split(';')[0].split('/')[0] : strType
-	strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()
+	strExtn = strExtn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop())
 
 	// STEP 2: Set type, media
 	slideData.mtype = strType
@@ -538,7 +539,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		// B: Add preview/overlay image
 		target._relsMedia.push({
 			path: 'preencoded.png',
-			data: IMG_PLAYBTN,
+			data: cover,
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
@@ -573,7 +574,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 		// C: Add preview/overlay image
 		target._relsMedia.push({
-			data: IMG_PLAYBTN,
+			data: cover,
 			path: 'preencoded.png',
 			type: 'image/png',
 			extn: 'png',

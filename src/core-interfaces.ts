@@ -490,6 +490,8 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
  * @requires either `link` or `path`
  */
 export interface MediaProps extends PositionProps, DataOrPathProps {
+	cover: string;
+	ext: string;
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
