@@ -1,3 +1,22 @@
+# Modified from [PptxGenJS](https://github.com/gitbrent/PptxGenJS/)
+
+- addMediaDefinition ext and cover
+
+```js
+slide.addMedia({
+	x: 1.0,
+	y: 2.2,
+	w: imgWidth,
+	h: imgHeight,
+	type: 'video',
+	path: videoUrl,
+	ext: 'mp4',
+	cover: imgData.base64
+})
+```
+
+---
+
 <h1 align="center">PptxGenJS</h1>
 <h5 align="center">
   Create JavaScript PowerPoint Presentations
