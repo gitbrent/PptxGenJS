@@ -21,7 +21,8 @@
     "ship": "gulp ship",
     "defs": "gulp reactTestDefs",
     "watch": "rollup -cw",
-    "doctoc": "./node_modules/doctoc/doctoc.js README.md"
+    "doctoc": "./node_modules/doctoc/doctoc.js README.md",
+    "pub": "npm run build && npm publish --registry=https://registry.npmjs.org/ --access public && git push"
   },
   "browser": {
     "express": false,
