@@ -18,12 +18,20 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
 	layout._relsMedia
 		.filter(rel => rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)))
-		.forEach(rel => {
+		.forEach((rel, index) => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
-					if (fs && rel.path.indexOf('http') !== 0) {
+					if (rel.isDuplicate) {
+						return resolve('done')
+					}
+					if (rel.isFsPath) {
+						// console.log(`>>> isFsPath ${index}:`, rel.path)
+						rel.data = fs.readFileSync(rel.path)
+						resolve('done')
+					} else if (fs && rel.path.indexOf('http') !== 0) {
 						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 						try {
+							// console.log(`>>> path ${index}:`, rel.path)
 							let bitmap = fs.readFileSync(rel.path)
 							rel.data = Buffer.from(bitmap).toString('base64')
 							resolve('done')

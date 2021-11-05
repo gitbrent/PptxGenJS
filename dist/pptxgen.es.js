@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-04T02:52:38.034Z */
+/* PptxGenJS 3.9.1-beta @ 2021-11-05T04:32:33.736Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -3679,6 +3679,7 @@ function addMediaDefinition(target, opt) {
     var strType = opt.type || 'audio';
     var strExtn = opt.ext || ''; // file extension name: mp4
     var cover = opt.cover || IMG_PLAYBTN; // cover base64 string
+    var isFsPath = opt.isFsPath || false; // 让 node.js 直接读取文件，而不是转换成 base64
     var slideData = {
         _type: SLIDE_OBJECT_TYPES.media,
     };
@@ -3739,6 +3740,7 @@ function addMediaDefinition(target, opt) {
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
+            isFsPath: isFsPath || false,
             rId: intRels + 0,
             Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
         });
@@ -3749,6 +3751,7 @@ function addMediaDefinition(target, opt) {
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
+            isDuplicate: true,
             rId: intRels + 1,
             Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
         });
@@ -6237,11 +6240,20 @@ function encodeSlideMediaRels(layout) {
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
     layout._relsMedia
         .filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); })
-        .forEach(function (rel) {
+        .forEach(function (rel, index) {
         imageProms.push(new Promise(function (resolve, reject) {
-            if (fs && rel.path.indexOf('http') !== 0) {
+            if (rel.isDuplicate) {
+                return resolve('done');
+            }
+            if (rel.isFsPath) {
+                // console.log(`>>> isFsPath ${index}:`, rel.path)
+                rel.data = fs.readFileSync(rel.path);
+                resolve('done');
+            }
+            else if (fs && rel.path.indexOf('http') !== 0) {
                 // DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
                 try {
+                    // console.log(`>>> path ${index}:`, rel.path)
                     var bitmap = fs.readFileSync(rel.path);
                     rel.data = Buffer.from(bitmap).toString('base64');
                     resolve('done');
@@ -6450,22 +6462,34 @@ var PptxGenJS = /** @class */ (function () {
          * @param {PresSlide | SlideLayout} slide - slide with rels
          * @param {JSZip} zip - JSZip instance
          * @param {Promise<any>[]} chartPromises - promise array
+         * @param flag
          */
         this.createChartMediaRels = function (slide, zip, chartPromises) {
             slide._relsChart.forEach(function (rel) { return chartPromises.push(createExcelWorksheet(rel, zip)); });
-            slide._relsMedia.forEach(function (rel) {
+            slide._relsMedia.forEach(function (rel, index) {
                 if (rel.type !== 'online' && rel.type !== 'hyperlink') {
-                    // A: Loop vars
-                    var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
-                    // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-                    if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
-                        data = 'image/png;base64,' + data;
-                    else if (data.indexOf(',') === -1)
-                        data = 'image/png;base64,' + data;
-                    else if (data.indexOf(';') === -1)
-                        data = 'image/png;' + data;
-                    // C: Add media
-                    zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
+                    if (rel.isDuplicate) {
+                        return;
+                    }
+                    var zipPath = rel.Target.replace('..', 'ppt');
+                    if (rel.isFsPath) {
+                        // console.log(`>>> zip add bin ${index}:`, zipPath)
+                        zip.file(zipPath, rel.data, {});
+                    }
+                    else {
+                        // A: Loop vars
+                        var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
+                        // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+                        if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
+                            data = 'image/png;base64,' + data;
+                        else if (data.indexOf(',') === -1)
+                            data = 'image/png;base64,' + data;
+                        else if (data.indexOf(';') === -1)
+                            data = 'image/png;' + data;
+                        // C: Add media
+                        // console.log(`>>> zip add base64 ${index}:`, zipPath)
+                        zip.file(zipPath, data.split(',').pop(), { base64: true });
+                    }
                 }
             });
         };
@@ -6569,10 +6593,13 @@ var PptxGenJS = /** @class */ (function () {
                 });
                 _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
                 // E: Wait for Promises (if any) then generate the PPTX file
+                // @ts-ignore
                 return Promise.all(arrChartPromises).then(function () {
                     if (props.outputType === 'STREAM') {
                         // A: stream file
-                        return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' });
+                        // return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
+                        // 直接使用 createWriteStream 输出
+                        return zip.generateNodeStream({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles: true });
                     }
                     else if (props.outputType) {
                         // B: Node [fs]: Output type user option or default

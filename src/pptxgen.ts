@@ -389,21 +389,32 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {PresSlide | SlideLayout} slide - slide with rels
 	 * @param {JSZip} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
+	 * @param flag
 	 */
 	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide._relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
-		slide._relsMedia.forEach(rel => {
+		slide._relsMedia.forEach((rel, index) => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
-				// A: Loop vars
-				let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
+				if (rel.isDuplicate) {
+					return
+				}
+				const zipPath = rel.Target.replace('..', 'ppt')
+				if (rel.isFsPath) {
+					// console.log(`>>> zip add bin ${index}:`, zipPath)
+					zip.file(zipPath, rel.data, {})
+				} else {
+					// A: Loop vars
+					let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
 
-				// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-				if (data.indexOf(',') === -1 && data.indexOf(';') === -1) data = 'image/png;base64,' + data
-				else if (data.indexOf(',') === -1) data = 'image/png;base64,' + data
-				else if (data.indexOf(';') === -1) data = 'image/png;' + data
+					// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+					if (data.indexOf(',') === -1 && data.indexOf(';') === -1) data = 'image/png;base64,' + data
+					else if (data.indexOf(',') === -1) data = 'image/png;base64,' + data
+					else if (data.indexOf(';') === -1) data = 'image/png;' + data
 
-				// C: Add media
-				zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true })
+					// C: Add media
+					// console.log(`>>> zip add base64 ${index}:`, zipPath)
+					zip.file(zipPath, data.split(',').pop(), { base64: true })
+				}
 			}
 		})
 	}
@@ -517,10 +528,14 @@ export default class PptxGenJS implements IPresentationProps {
 			this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 
 			// E: Wait for Promises (if any) then generate the PPTX file
+			// @ts-ignore
 			return Promise.all(arrChartPromises).then(() => {
 				if (props.outputType === 'STREAM') {
 					// A: stream file
-					return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
+					// return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
+
+					// 直接使用 createWriteStream 输出
+					return zip.generateNodeStream({type:'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles:true})
 				} else if (props.outputType) {
 					// B: Node [fs]: Output type user option or default
 					return zip.generateAsync({ type: props.outputType })

@@ -490,6 +490,7 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
  * @requires either `link` or `path`
  */
 export interface MediaProps extends PositionProps, DataOrPathProps {
+	isFsPath: boolean;
 	cover: string;
 	ext: string;
 	/**
@@ -1364,6 +1365,8 @@ export interface ISlideRelMedia {
 	path?: string
 	extn?: string
 	data?: string | ArrayBuffer
+	isFsPath?: boolean
+	isDuplicate?: boolean
 	isSvgPng?: boolean
 	svgSize?: { w: number; h: number }
 	rId: number

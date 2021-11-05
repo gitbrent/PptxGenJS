@@ -1,6 +1,7 @@
 # Modified from [PptxGenJS](https://github.com/gitbrent/PptxGenJS/)
 
-- addMediaDefinition ext and cover
+- Fix: addMediaDefinition ext and cover
+- Support big video files: [demo](./test/big_file.js)
 
 ```js
 slide.addMedia({
@@ -10,9 +11,22 @@ slide.addMedia({
 	h: imgHeight,
 	type: 'video',
 	path: videoUrl,
-	ext: 'mp4',
-	cover: imgData.base64
+	ext: 'mp4', // fix file extension name: mp4
+	cover: imgData.base64, // cover base64 string
+	isFsPath: true, // Let node.js read the file directly instead of converting to base64
 })
+```
+```js
+// Use stream output directly
+const fileData = await pptx.stream({
+	compression: false,
+})
+console.log('createWriteStream...')
+const out = fs.createWriteStream(savePath)
+fileData.pipe(out)
+		.on('finish', function() {
+			console.log('Success!')
+		});
 ```
 
 ---

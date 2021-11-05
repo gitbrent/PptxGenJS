@@ -492,6 +492,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strType = opt.type || 'audio'
 	let strExtn = opt.ext || '' // file extension name: mp4
 	let cover = opt.cover || IMG_PLAYBTN // cover base64 string
+	let isFsPath = opt.isFsPath || false // 让 node.js 直接读取文件，而不是转换成 base64
 	let slideData: ISlideObject = {
 		_type: SLIDE_OBJECT_TYPES.media,
 	}
@@ -557,6 +558,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
+			isFsPath: isFsPath || false,
 			rId: intRels + 0,
 			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
 		})
@@ -568,6 +570,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
+			isDuplicate: true, // Fix：重复读写文件
 			rId: intRels + 1,
 			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
 		})

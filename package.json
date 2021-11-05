@@ -1,6 +1,6 @@
 {
   "name": "@canwdev/pptxgenjs",
-  "version": "3.9.0-beta",
+  "version": "3.9.1-beta",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -22,7 +22,7 @@
     "defs": "gulp reactTestDefs",
     "watch": "rollup -cw",
     "doctoc": "./node_modules/doctoc/doctoc.js README.md",
-    "pub": "npm run build && npm publish --registry=https://registry.npmjs.org/ --access public && git push"
+    "pub": "npm publish --registry=https://registry.npmjs.org/ --access public && git push"
   },
   "browser": {
     "express": false,
