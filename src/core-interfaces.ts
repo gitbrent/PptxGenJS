@@ -283,12 +283,19 @@ export interface TextBaseProps {
 				 */
 				characterCode?: string
 				/**
-				 * Indentation (space between bullet and text) (points)
+				 * Indentation (space between block side and text) (points)
 				 * @since v3.3.0
 				 * @default 27 // DEF_BULLET_MARGIN
 				 * @example 10 // Indents text 10 points from bullet
 				 */
 				indent?: number
+				/**
+				 * Bulle cancelling (space between bullet and text) (points)
+				 * @since v3.10.0
+				 * @default 27 // set to indent value
+				 * @example 10 // Indents text 10 points from bullet
+				 */
+				cancelling?: number
 				/**
 				 * Number type
 				 * @since v3.3.0
