@@ -267,7 +267,7 @@ export function table2slides2() {
 // ==================================================================================================================
 
 function doNavRestore() {
-	var triggerTabList = [].slice.call(document.querySelectorAll("#myTab button"));
+	const triggerTabList = [].slice.call(document.querySelectorAll("#myTab button"));
 	triggerTabList.forEach(function (triggerEl) {
 		var tabTrigger = new bootstrap.Tab(triggerEl);
 		triggerEl.addEventListener("click", function (event) {
@@ -276,9 +276,10 @@ function doNavRestore() {
 		});
 	});
 
-	let tabTarget = window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 6);
-	let triggerEl = document.querySelector(`#myTab button[data-bs-target="#tab-${tabTarget}"]`);
-	bootstrap.Tab.getInstance(triggerEl).show();
+	const tabTarget = window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 6);
+	const triggerEl = document.querySelector(`#myTab button[data-bs-target="#tab-${tabTarget}"]`);
+	const triggerIn = bootstrap.Tab.getInstance(triggerEl);
+	if (triggerIn) triggerIn.show();
 }
 
 function getTimestamp() {
