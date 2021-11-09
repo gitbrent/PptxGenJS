@@ -11,8 +11,8 @@ import { PresSlide, SlideLayout, ISlideRelMedia } from './core-interfaces'
  * @return {Promise} promise
  */
 export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<string>[] {
-	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-	const https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null // NodeJS
+	const fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null // NodeJS
+	const https = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('https') : null // NodeJS
 	let imageProms: Promise<string>[] = []
 
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)

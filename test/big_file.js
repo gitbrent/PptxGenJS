@@ -1,7 +1,6 @@
 const pptxgen = require("../dist/pptxgen.cjs");
 const fs = require("fs-extra")
 const Path = require('path');
-const { type } = require("os");
 
 const VIDEO_FILES_PATH = 'D:\\temp\\TANK.BD720P.mp4_Slice_20211104_144423'
 
@@ -10,7 +9,7 @@ async function genPPT() {
   const Pptxgen = pptxgen;
   const pptx = new Pptxgen();
 
-  const list = await fs.readdirSync(VIDEO_FILES_PATH)
+  const list = await fs.readdir(VIDEO_FILES_PATH)
 
   pptx.layout = "LAYOUT_WIDE";
 

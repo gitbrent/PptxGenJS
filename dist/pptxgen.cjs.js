@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.1-beta @ 2021-11-05T04:32:33.729Z */
+/* PptxGenJS 3.9.2-beta @ 2021-11-09T09:49:22.570Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6240,8 +6240,8 @@ function createGridLineElement(glOpts) {
  * @return {Promise} promise
  */
 function encodeSlideMediaRels(layout) {
-    var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
-    var https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null; // NodeJS
+    var fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null; // NodeJS
+    var https = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
     layout._relsMedia
@@ -6895,7 +6895,7 @@ var PptxGenJS = /** @class */ (function () {
      */
     PptxGenJS.prototype.writeFile = function (props) {
         var _this = this;
-        var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
+        var fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null; // NodeJS
         // DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
         if (typeof props === 'string')
             console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');

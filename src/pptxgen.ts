@@ -585,7 +585,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(props?: WriteFileProps | string): Promise<string> {
-		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
+		const fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
 		const propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : ''
