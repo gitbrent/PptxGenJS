@@ -20,7 +20,7 @@ import {
 } from "./enums.mjs";
 
 export function genSlides_Table(pptx) {
-/*
+	/*
 	pptx.addSection({ title: "Tables" });
 	genSlide01(pptx);
 	genSlide02(pptx);
@@ -28,7 +28,7 @@ export function genSlides_Table(pptx) {
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
-*/
+	*/
 	pptx.addSection({ title: "Tables: Auto-Paging" });
 	genSlide07(pptx);
 /*
