@@ -572,8 +572,7 @@ function genSlide05(pptx) {
 		[
 			[
 				{
-					text:
-						"Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisDisplayUnit`, `valAxisMajorUnit`, `valAxisLabelFormatCode`",
+					text: "Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisDisplayUnit`, `valAxisMajorUnit`, `valAxisLabelFormatCode`",
 					options: BASE_TEXT_OPTS_L,
 				},
 				BASE_TEXT_OPTS_R,
@@ -738,14 +737,15 @@ function genSlide06(pptx) {
 		barDir: "bar",
 		fill: "F1F1F1",
 
-		catAxisLabelColor: "CC0000",
+		catAxisLabelColor: pptx.colors.ACCENT2,
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
 		catAxisOrientation: "maxMin",
 
-		serAxisLabelColor: "00EE00",
+		serAxisLabelColor: pptx.colors.ACCENT4,
 		serAxisLabelFontFace: "Arial",
 		serAxisLabelFontSize: 10,
+		serAxisLineColor: pptx.colors.ACCENT6,
 	};
 	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar1);
 
@@ -953,8 +953,8 @@ function genSlide09(pptx) {
 
 	opts_lineDataSymbol.forEach(function (opt, idx) {
 		slide.addChart(pptx.charts.LINE, arrDataLineStat, {
-			x: idx < 3 ? idx * intWgap : idx < 6 ? (idx - 3) * intWgap : (idx - 6) * intWgap,
-			y: idx < 3 ? 0.5 : idx < 6 ? 2.75 : 5,
+			x: (idx < 3 ? idx * intWgap : idx < 6 ? (idx - 3) * intWgap : (idx - 6) * intWgap) + 0.3,
+			y: idx < 3 ? 0.5 : idx < 6 ? 2.85 : 5.1,
 			w: 4.25,
 			h: 2.25,
 			lineDataSymbol: opt,
