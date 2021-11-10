@@ -375,15 +375,73 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		 * - Then, when the vertical size limit is hit is by any of the cells, make a new slide and continue adding any remaining lines
 		 *
 		 * Implementation:
-		 * - `rowCellLines` is an array of cells
-		 * - each cell contains an array of lines
-		 * EX:
+		 * - `rowCellLines` is an array of cells, one for each column in the table, with each cell containing an array of lines
+		 *
+		 * Example:
+		 * - `rowCellLines` ..: [ TableCell, TableCell, TableCell ]
+		 * - `TableCell` .....: { _type: 'tablecell', _lines: TableCell[], _lineHeight: 10 }
+		 * - `_lines` ........: [ {_type: 'tablecell', text: 'cell-1,line-1', options: {…}}, {_type: 'tablecell', text: 'cell-1,line-2', options: {…}} }
+		 * - `_lines` is TableCell[] (the 1-N words in the line)
 		 * {
 		 *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line-2' }],															// TOTAL-CELL-HEIGHT = 2
 		 *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line-2' }],															// TOTAL-CELL-HEIGHT = 2
 		 *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line-2' }, { text:'cell-3,line-3' }, { text:'cell-3,line-4' }],		// TOTAL-CELL-HEIGHT = 4
 		 * }
 		 */
+		// TODO: include traliing cells content
+		/** EX: 2 rows, first overflows
+		 *
+		 * SLIDE 1:
+		 *  |--------|--------|--------|--------|
+		 *  | line-1 | line-1 | line-1 | line-1 |
+		 *  |        |        | line-2 |        |
+		 *  |        |        | line-3 |        |
+		 *  |--------|--------|--------|--------|
+		 *
+		 * SLIDE 2:
+		 *  |--------|--------|--------|--------|
+		 *  |        |        | line-4 |        |
+		 *  |--------|--------|--------|--------|
+		 *  | line-1 | line-1 | line-1 | line-1 |
+		 *  |--------|--------|--------|--------|
+		 */
+		let currCellIdx = 0
+		let currLineMaxH = 0
+		let isDone = false
+		while (!isDone) {
+			if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
+
+			let srcCell: TableCell = rowCellLines[currCellIdx]
+			let tgtCell: TableCell = currTableRow[currCellIdx]
+
+			// 1: calc currLineMaxH
+			rowCellLines.forEach(cell => {
+				if (cell._lines.length > 0 && cell._lines[0][0]._lineHeight >= currLineMaxH) currLineMaxH = cell._lines[0][0]._lineHeight
+			})
+
+			// 2: set array of words that comprise this line
+			let currLine: TableCell[] = srcCell._lines.shift()
+
+			// 3: create a new slide if there is insufficient room for the current row
+			{
+				// TODO: copy below
+			}
+
+			// 4: create new line by adding all words from curr line
+			if (currLine && Array.isArray(tgtCell.text)) tgtCell.text = tgtCell.text.concat(currLine)
+
+			// 5: increase table height by the curr line height (if we're on the last col)
+			if (currCellIdx === rowCellLines.length - 1) emuTabCurrH += currLineMaxH
+
+			// 6: advance column/cell index (or circle back to first one to continue adding lines)
+			currCellIdx = currCellIdx < rowCellLines.length - 1 ? currCellIdx + 1 : 0
+
+			// 7: done?
+			let brent = rowCellLines.map(cell => cell._lines.length).reduce((prev, next) => prev + next)
+			if (brent === 0) isDone = true
+		}
+
+		/* OLD
 		if (rowCellLines) {
 			if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 
@@ -410,37 +468,6 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 							console.log('|-----------------------------------------------------------------------|\n\n')
 						}
 
-						// TODO: include traliing cells content
-						/** 1: Include trailing cells content when cell overflows.
-						 * - EX: Cell-0 has a mile of text, which causes overflow to be triggered (this if block), but there is additional text content in trailing cells
-						 * - In this case, we dont want to just create a new slide and insert current row - it doesnt have the traling cell text yet!
-						 *
-						 * SLIDE 1:
-						 * |--------|--------|--------|--------|
-						 * | line-1 | line-1 | line-1 | line-1 | <-- Add this text to [cell-3] before setting this row+creating a new slide
-						 * |--------|--------|--------|--------|
-						 *
-						 * SLIDE 2:
-						 * |--------|--------|--------|--------|
-						 * |        |        | line-2 |        |
-						 * |--------|--------|--------|--------|
-						 */
-						// TODO: uh...
-
-						/** 1: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
-						 * - In this case, `rowCellLines` has no content for [cell 0], [cell 1], [cell 3]
-						 * - so we need to add a { text: "" } or PPTX will be corrupted/needs-repair! (as each row needs the same amount of cells)
-						 *
-						 * SLIDE 1:
-						 * |--------|--------|--------|--------|
-						 * | line-1 | line-1 | line-1 | line-1 |
-						 * |--------|--------|--------|--------|
-						 *
-						 * SLIDE 2:
-						 * |--------|--------|--------|--------|
-						 * |        |        | line-2 |        |
-						 * |--------|--------|--------|--------|
-						 */
 						currTableRow.forEach(cell => {
 							if (Array.isArray(cell.text) && cell.text.length === 0) cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: '' })
 						})
@@ -493,20 +520,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 					// D: increase table height by the curr line height (if this is tallest cell)
 					if (cellIdx === maxLineHeightCellIdx) emuTabCurrH += cell._lineHeight
 
-					/** E: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
-					 * - In this case, `rowCellLines` has no content for [cell 0] and [cell 1]
-					 * - so we need to add a { text: "" } or PPTX will be corrupted/needs-repair! (as each row needs the same amount of cells)
-					 *
-					 * SLIDE 1:
-					 * |--------|--------|--------|
-					 * | line-1 | line-1 | line-1 |
-					 * |--------|--------|--------|
-					 *
-					 * SLIDE 2:
-					 * |--------|--------|--------|
-					 * |        |        | line-2 |
-					 * |--------|--------|--------|
-					 */
+					// E: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
 					currTableRow.forEach((cell, idx) => {
 						if (idx < cellIdx && Array.isArray(cell.text) && cell.text.length === 0) cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: '' })
 					})
@@ -520,6 +534,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 				})
 			})
 		}
+		*/
 
 		// F: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
