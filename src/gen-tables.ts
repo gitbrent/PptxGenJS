@@ -403,15 +403,13 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 		 *  | line-1 | line-1 | line-1 | line-1 |
 		 *  |--------|--------|--------|--------|
 		 */
+		if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 		let currCellIdx = 0
 		let emuLineMaxH = 0
 		let isDone = false
 		while (!isDone) {
 			let srcCell: TableCell = rowCellLines[currCellIdx]
 			let tgtCell: TableCell = currTableRow[currCellIdx] // NOTE: may be redefined below (a new row may be created, thus changing this value)
-
-			// 0: logging
-			if (tableProps.verbose) console.log(`\n| SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 
 			// 1: calc emuLineMaxH
 			rowCellLines.forEach(cell => {
