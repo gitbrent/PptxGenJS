@@ -1229,6 +1229,7 @@ export interface IChartPropsChartBar {
 	barGapDepthPct?: number
 	barGapWidthPct?: number
 	barGrouping?: string
+	barOverlapPct?: number
 }
 export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean
