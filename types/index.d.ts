@@ -898,7 +898,39 @@ declare namespace PptxGenJS {
 	 */
 	export type HexColor = string
 	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
-	export type Color = HexColor | ThemeColor
+	export interface ModifiedThemeColor {
+		baseColor: HexColor | ThemeColor
+
+		alpha?: number
+		alphaMod?: number
+		alphaOff?: number
+		blue?: number
+		blueMod?: number
+		blueOff?: number
+		green?: number
+		greenMod?: number
+		greenOff?: number
+		red?: number
+		redMod?: number
+		redOff?: number
+		hue?: number
+		hueMod?: number
+		hueOff?: number
+		lum?: number
+		lumMod?: number
+		lumOff?: number
+		sat?: number
+		satMod?: number
+		satOff?: number
+		shade?: number
+		tint?: number
+
+		comp?: boolean
+		gray?: boolean
+		inv?: boolean
+		gamma?: boolean
+	}
+	export type Color = HexColor | ThemeColor | ModifiedThemeColor
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
@@ -1833,7 +1865,7 @@ declare namespace PptxGenJS {
 		 * Gridline color (hex)
 		 * @example 'FF3399'
 		 */
-		color?: HexColor
+		color?: Color
 		/**
 		 * Gridline size (points)
 		 */
@@ -1854,7 +1886,7 @@ declare namespace PptxGenJS {
 		 */
 		axisPos?: 'b' | 'l' | 'r' | 't'
 		border?: BorderProps
-		chartColors?: HexColor[]
+		chartColors?: Color[]
 		/**
 		 * opacity (0.0 - 1.0)
 		 * @example 0.5 // 50% opaque
@@ -1862,7 +1894,7 @@ declare namespace PptxGenJS {
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
-		fill?: HexColor
+		fill?: Color
 		invertedColors?: string
 		lang?: string
 		layout?: PositionProps
@@ -1912,7 +1944,7 @@ declare namespace PptxGenJS {
 		catAxisMinVal?: number
 		catAxisOrientation?: 'minMax'
 		catAxisTitle?: string
-		catAxisTitleColor?: string
+		catAxisTitleColor?: Color
 		catAxisTitleFontFace?: string
 		catAxisTitleFontSize?: number
 		catAxisTitleRotate?: number
@@ -1991,7 +2023,7 @@ declare namespace PptxGenJS {
 		valAxisMinVal?: number
 		valAxisOrientation?: 'minMax'
 		valAxisTitle?: string
-		valAxisTitleColor?: string
+		valAxisTitleColor?: Color
 		valAxisTitleFontFace?: string
 		valAxisTitleFontSize?: number
 		valAxisTitleRotate?: number
@@ -2083,7 +2115,7 @@ declare namespace PptxGenJS {
 		title?: string
 		titleAlign?: string
 		titleBold?: boolean
-		titleColor?: string
+		titleColor?: Color
 		titleFontFace?: string
 		titleFontSize?: number
 		titlePos?: { x: number; y: number }
