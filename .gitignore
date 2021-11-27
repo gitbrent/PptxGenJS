@@ -17,3 +17,5 @@ docs/
 img/
 privacy.html
 website
+.docusaurus
+build/
