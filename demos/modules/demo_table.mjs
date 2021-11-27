@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.6.0
- * BLD.: 20210404
+ * VER.: 3.7.2
+ * BLD.: 20210807
  */
 
 import {
@@ -21,14 +21,24 @@ import {
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
-
 	genSlide01(pptx);
 	genSlide02(pptx);
 	genSlide03(pptx);
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
+
+	pptx.addSection({ title: "Tables: Auto-Paging" });
 	genSlide07(pptx);
+
+	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
+	genSlide08(pptx);
+
+	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
+	genSlide09(pptx);
+
+	pptx.addSection({ title: "Tables: QA" });
+	genSlide10(pptx);
 }
 
 /**
@@ -92,7 +102,7 @@ function genSlide01(pptx) {
 		[
 			{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
 			{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
-			{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
+			{ text: "0.15 margin", options: { fill: { color: "6699CC" }, margin: 0.15 } },
 		],
 	];
 	slide.addTable(arrTabRows2, {
@@ -196,12 +206,13 @@ function genSlide02(pptx) {
 	];
 	slide.addTable(arrTabRows2, tabOpts2);
 
+	// BTM-LEFT
 	let tabOpts3 = {
 		x: 0.5,
 		y: 5.15,
 		w: 6.25,
 		h: 2,
-		margin: 0.25,
+		margin: 0.05,
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
@@ -219,6 +230,7 @@ function genSlide02(pptx) {
 	];
 	slide.addTable(arrTabRows3, tabOpts3);
 
+	// BTM-RIGHT
 	let tabOpts4 = {
 		x: 7.4,
 		y: 5.15,
@@ -323,16 +335,16 @@ function genSlide04(pptx) {
 	slide.addText("Cell Margins:", optsSub);
 
 	slide.addTable([["margin:0"]], { x: 0.5, y: 1.1, margin: 0, w: 1.2, fill: "FFFCCC", border: { pt: 0 } });
-	slide.addTable([["margin:[0,0,0,20]"]], { x: 2.5, y: 1.1, margin: [0, 0, 0, 20], w: 2.0, fill: "FFFCCC", align: "right" });
-	slide.addTable([["margin:5"]], { x: 5.5, y: 1.1, margin: 5, w: 1.0, fill: pptx.SchemeColor.background2 });
-	slide.addTable([["margin:[40,5,5,20]"]], { x: 7.5, y: 1.1, margin: [40, 5, 5, 20], w: 2.2, fill: "F1F1F1" });
-	slide.addTable([["margin:[30,5,5,30]"]], { x: 10.5, y: 1.1, margin: [30, 5, 5, 30], w: 2.2, fill: "F1F1F1" });
+	slide.addTable([["margin:[0, 0, 0, 0.3]"]], { x: 2.5, y: 1.1, margin: [0, 0, 0, 0.3], w: 2.0, fill: "FFFCCC", align: "right" });
+	slide.addTable([["margin:0.05"]], { x: 5.5, y: 1.1, margin: 0.05, w: 1.0, fill: pptx.SchemeColor.background2 });
+	slide.addTable([["margin:[0.6, 0.05, 0.05, 0.3]"]], { x: 7.1, y: 1.1, margin: [0.6, 0.05, 0.05, 0.3], w: 2.6, fill: "F1F1F1" });
+	slide.addTable([["margin:[0.45, 0.05, 0.05, 0.45]"]], { x: 10.1, y: 1.1, margin: [0.45, 0.05, 0.05, 0.45], w: 2.6, fill: "F1F1F1" });
 
 	slide.addTable(
 		[
 			[
-				{ text: "no border and number zero", options: { margin: 5 } },
-				{ text: 0, options: { margin: 5 } },
+				{ text: "no border and number zero", options: { margin: 0.05 } },
+				{ text: 0, options: { margin: 0.05 } },
 			],
 		],
 		{ x: 0.5, y: 1.9, fill: { color: "f2f9fc" }, border: { type: "none" }, colW: [2.5, 0.5] }
@@ -348,7 +360,7 @@ function genSlide04(pptx) {
 			{ text: 3, options: { color: "0088CC", align: "left" } },
 		],
 	];
-	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 7, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } });
+	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 8, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } }); // DEPRECATED: `margin` in points
 
 	// Complex/Compound border
 	optsSub.y = 3.9;
@@ -385,9 +397,9 @@ function genSlide04(pptx) {
 		valign: "middle",
 	});
 
-	// Invalid char check
+	// Special char check
 	optsSub.y = 6.1;
-	slide.addText("Escaped Invalid Chars:", optsSub);
+	slide.addText("Escaped Special Chars:", optsSub);
 	let arrTabRows3 = [["<", ">", '"', "'", "&", "plain"]];
 	slide.addTable(arrTabRows3, {
 		x: 0.5,
@@ -521,8 +533,282 @@ function genSlide06(pptx) {
 function genSlide07(pptx) {
 	let slide = null;
 
+	// STEP 1: Build data
 	let arrRows = [];
 	let arrText = [];
+	let arrRowsHead1 = [];
+	let arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: "center", bold: true, colspan: 3, colW: 4 } }]];
+	{
+		arrRows.push([
+			{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+			{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+			{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+		]);
+		TABLE_NAMES_F.forEach((name, idx) => {
+			let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
+			arrRows.push([idx + 1, name, strText]);
+			arrText.push([strText]);
+		});
+		arrRows.forEach((row, idx) => {
+			if (idx < 6) arrRowsHead1.push(row);
+		});
+		arrRows.forEach((row, idx) => {
+			if (idx < 6) arrRowsHead2.push(row);
+		});
+	}
+
+	// EX-1: "Basic Auto-Paging Example"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+		slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Basic Auto-Paging Example", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.5, y: 0.13, w: "90%" }
+		);
+		slide.addTable(arrRows, { x: 0.5, y: 0.5, colW: [0.75, 1.75, 10], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
+	}
+
+	// EX-2: "Paging with smaller table area (50% width)"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Paging with smaller table area (50% width)", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.5, y: 0.13, w: "90%" }
+		);
+		slide.addTable(arrRows, {
+			x: "50%",
+			y: 0.5,
+			colW: [0.75, 1.75, 4],
+			margin: 0.05,
+			border: { color: "CFCFCF" },
+			autoPage: true,
+			verbose: false,
+		});
+	}
+
+	// EX-3: "Master Page with Auto-Paging"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Master Page with Auto-Paging", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.5, y: 0.13, w: "90%" }
+		);
+		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
+	}
+
+	// EX-4: "Auto-Paging Disabled"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Auto-Paging Disabled", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.5, y: 0.13, w: "90%" }
+		);
+		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" } }); // Negative-Test: no `autoPage:false`
+	}
+
+	// EX-5: "Start at `{ y: 4.0 }`, subsequent slides start at slide top margin"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MARGIN_SLIDE" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Start at `{ y:4.0 }`, subsequent slides start at slide top margin", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 3.0, y: 0.75, w: "75%", h: 0.5 }
+		);
+		slide.addTable(arrRows, {
+			x: 3.0,
+			y: 4.0,
+			colW: [0.75, 1.75, 7],
+			margin: 0.05,
+			border: { color: "CFCFCF" },
+			fontFace: "Arial",
+			autoPage: true,
+			verbose: false,
+		});
+	}
+
+	// EX-6: "Start at `{ y: 4.0 }`, subsequent slides start at `{ autoPageSlideStartY: 1.5 }`"
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MARGIN_SLIDE_STARTY15" });
+		slide.addText(
+			[
+				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+				{ text: "Start at `{ y: 4.0 }`, subsequent slides start at `{ autoPageSlideStartY: 1.5 }`", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 3.0, y: 0.75, w: "75%", h: 0.5 }
+		);
+		slide.addTable(arrRows, {
+			x: 3.0,
+			y: 4.0,
+			colW: [0.75, 1.75, 7],
+			margin: 0.05,
+			border: { color: "CFCFCF" },
+			autoPage: true,
+			autoPageSlideStartY: 1.5,
+			autoPageCharWeight: 0.15,
+			verbose: false,
+		});
+	}
+
+	// EX-7: `autoPageRepeatHeader` option demos
+	{
+		pptx.addSection({ title: "Tables: Auto-Paging Repeat Header" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Repeat Header" });
+		slide.addText(
+			[
+				{ text: "Table Examples: `autoPageHeaderRows`", options: DEMO_TITLE_TEXTBK },
+				{ text: "no `autoPageHeaderRows` prop", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrRowsHead1, {
+			x: 0.23,
+			y: 0.6,
+			colW: [0.5, 1.0, 2.5],
+			margin: 0.05,
+			border: { color: "CFCFCF" },
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageSlideStartY: 0.6,
+		});
+
+		slide.addText(
+			[
+				{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
+				{ text: "`{ autoPageHeaderRows: 1 }`", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrRowsHead1, {
+			x: 4.75,
+			y: 0.6,
+			colW: [0.5, 1.0, 2.5],
+			margin: 0.05,
+			border: { color: "CFCFCF" },
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageHeaderRows: 1,
+			autoPageSlideStartY: 0.6,
+		});
+
+		slide.addText(
+			[
+				{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
+				{ text: "`{ autoPageHeaderRows: 2 }`", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrRowsHead2, {
+			x: 9.1,
+			y: 0.6,
+			colW: [0.5, 1.0, 2.5],
+			margin: 0.05,
+			border: { color: "CFCFCF" },
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageHeaderRows: 2,
+			autoPageSlideStartY: 0.6,
+		});
+	}
+
+	// EX-8: `autoPageLineWeight` option demos
+	{
+		pptx.addSection({ title: "Tables: Auto-Paging LineWeight" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging LineWeight" });
+		slide.addText(
+			[
+				{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
+				{ text: "autoPageLineWeight:0.0", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.0 });
+
+		slide.addText(
+			[
+				{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
+				{ text: "autoPageLineWeight:0.5", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.5 });
+
+		slide.addText(
+			[
+				{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
+				{ text: "autoPageLineWeight:-0.5", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: -0.5 });
+	}
+
+	// EX-9: `autoPageCharWeight` option demos
+	{
+		pptx.addSection({ title: "Tables: Auto-Paging CharWeight" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging CharWeight" });
+		slide.addText(
+			[
+				{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
+				{ text: "autoPageCharWeight:0.0", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.0 });
+
+		slide.addText(
+			[
+				{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
+				{ text: "autoPageCharWeight:0.25", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.25 });
+
+		slide.addText(
+			[
+				{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
+				{ text: "autoPageCharWeight:-0.25", options: DEMO_TITLE_OPTS },
+			],
+			{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
+		);
+		slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 0.05, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: -0.25 });
+	}
+}
+
+/**
+ * SLIDE 8[...]: Table auto-paging with complex text array (unsupported until 3.7.2/3.8.0)
+ * @param {PptxGenJS} pptx
+ * @since 3.8.0
+ */
+function genSlide08(pptx) {
+	let slide = null;
+	let arrRows = [];
+
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Complex" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+	slide.addText([{ text: "Table Examples: Auto-Paging Using Complex Text Example", options: DEMO_TITLE_TEXTBK }], {
+		x: 0.23,
+		y: 0.13,
+		w: 8,
+		h: 0.4,
+	});
+
+	// ------------
+
 	arrRows.push([
 		{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
@@ -530,205 +816,210 @@ function genSlide07(pptx) {
 	]);
 	TABLE_NAMES_F.forEach((name, idx) => {
 		let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
-		arrRows.push([idx, name, strText]);
-		arrText.push([strText]);
+		arrRows.push([
+			{ text: idx.toString(), options: { align: "center" } },
+			{ text: name },
+			{ text: [{ text: "Title", options: { bold: true, color: "FF0000", breakLine: true } }, { text: `>${strText}<` }] },
+		]);
 	});
-
-	let arrRowsHead1 = [];
-	arrRows.forEach((row, idx) => {
-		if (idx < 6) arrRowsHead1.push(row);
-	});
-	let arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: "center", bold: true, colspan: 3, colW: 4 } }]];
-	arrRows.forEach((row, idx) => {
-		if (idx < 6) arrRowsHead2.push(row);
-	});
-
-	pptx.addSection({ title: "Tables: Auto-Paging" });
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Auto-Paging Example", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.5, y: 0.13, w: "90%" }
-	);
-	slide.addTable(arrRows, { x: 0.5, y: 0.6, colW: [0.75, 1.75, 10], margin: 2, border: { color: "CFCFCF" }, autoPage: true });
-
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Smaller Table Area", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.5, y: 0.13, w: "90%" }
-	);
-	slide.addTable(arrRows, { x: 3.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, autoPage: true });
-
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Test: Correct starting Y location upon paging", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.5, y: 0.13, w: "90%" }
-	);
-	slide.addTable(arrRows, { x: 3.0, y: 4.0, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, fontFace: "Arial", autoPage: true });
-
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Test: `{ autoPageSlideStartY: 1.5 }`", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.5, y: 0.13, w: "90%" }
-	);
 	slide.addTable(arrRows, {
-		x: 3.0,
-		y: 4.0,
-		colW: [0.75, 1.75, 7],
-		margin: 5,
+		x: 0.5,
+		y: 0.5,
+		w: 8,
+		colW: [1, 1, 6],
 		border: { color: "CFCFCF" },
 		autoPage: true,
-		autoPageSlideStartY: 1.5,
+		autoPageRepeatHeader: true,
+		verbose: false,
 	});
+}
 
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Master Page with Auto-Paging", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.5, y: 0.13, w: "90%" }
-	);
-	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, autoPage: true });
+/**
+ * SLIDE 9[...]: Tightly calculated/labels rows and cells for precision auto-paging dev & test
+ * @param {PptxGenJS} pptx
+ * @since 3.8.0
+ */
+function genSlide09(pptx) {
+	let slide = null;
+	let arrRows = [];
 
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
-	slide.addText(
-		[
-			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
-			{ text: "Auto-Paging Disabled", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.5, y: 0.13, w: "90%" }
-	);
-	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" } }); // Negative-Test: no `autoPage:false`
-
-	// `autoPageRepeatHeader` option demos
-	pptx.addSection({ title: "Tables: Auto-Paging Repeat Header" });
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Repeat Header" });
-	slide.addText(
-		[
-			{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
-			{ text: "no autoPageHeaderRows", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrRowsHead1, {
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Calc" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+	slide.addText([{ text: "Table Examples: Auto-Paging Calculations", options: DEMO_TITLE_TEXTBK }], {
 		x: 0.23,
-		y: 0.6,
-		colW: [0.5, 1.0, 2.5],
-		margin: 5,
+		y: 0.13,
+		w: 8,
+		h: 0.4,
+	});
+
+	// ------------
+
+	arrRows.push([
+		{ text: "TH1", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+		{ text: "TH2", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+		{ text: "TH3", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+	]);
+	for (let rowIdx = 0; rowIdx < 9; rowIdx++) {
+		let col3Lines = [{ text: "Complex-Title", options: { bold: true, color: "FF0000", breakLine: true } }];
+		for (let lineIdx = 0; lineIdx < 9; lineIdx++) {
+			col3Lines.push({ text: `This is ROW#:${rowIdx + 1} LNE#:${lineIdx + 1}`, options: { breakLine: true } });
+		}
+		arrRows.push([{ text: "" }, { text: "" }, { text: col3Lines }]);
+	}
+	slide.addTable(arrRows, {
+		x: 0.5,
+		y: 0.75,
+		w: 8,
+		colW: [1, 1, 6],
 		border: { color: "CFCFCF" },
 		autoPage: true,
 		autoPageRepeatHeader: true,
-		autoPageSlideStartY: 0.6,
+		verbose: false,
 	});
+}
 
-	slide.addText(
-		[
-			{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageHeaderRows:1", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrRowsHead1, {
-		x: 4.75,
-		y: 0.6,
-		colW: [0.5, 1.0, 2.5],
-		margin: 5,
-		border: { color: "CFCFCF" },
-		autoPage: true,
-		autoPageRepeatHeader: true,
-		autoPageHeaderRows: 1,
-		autoPageSlideStartY: 0.6,
-	});
+/**
+ * SLIDE 10[...]: Test paging with a single row
+ * @param {PptxGenJS} pptx
+ * @since 3.9.0
+ */
+function genSlide10(pptx) {
+	let slide = null;
 
-	slide.addText(
-		[
-			{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageHeaderRows:2", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrRowsHead2, {
-		x: 9.1,
-		y: 0.6,
-		colW: [0.5, 1.0, 2.5],
-		margin: 5,
-		border: { color: "CFCFCF" },
-		autoPage: true,
-		autoPageRepeatHeader: true,
-		autoPageHeaderRows: 2,
-		autoPageSlideStartY: 0.6,
-	});
+	// SLIDE 1:
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
 
-	// autoPageLineWeight option demos
-	pptx.addSection({ title: "Tables: Auto-Paging LineWeight" });
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging LineWeight" });
-	slide.addText(
-		[
-			{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageLineWeight:0.0", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.0 });
+		let projRows = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "First item Desc", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Impact", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Owner", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Created Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Due Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Status", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Update", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{ text: "Adam" },
+				{ text: "Aenean commodo ligula eget dolor. Aenean massa." },
+				{ text: "20-10-2021" },
+				{ text: "01-11-2021" },
+				{ text: "Pending" },
+				{ text: "24-10-2021" },
+			],
+		];
 
-	slide.addText(
-		[
-			{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageLineWeight:0.5", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: 0.5 });
+		slide.addTable(projRows, {
+			x: 0.4,
+			y: 5.25,
+			colW: [0.5, 1.8, 5, 0.9, 1.0, 0.95, 0.8, 1.5],
+			border: { pt: 0.1, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Segoe UI",
+			fontSize: 8,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageLineWeight: -0.4,
+			verbose: true,
+		});
+	}
 
-	slide.addText(
-		[
-			{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageLineWeight:-0.5", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageLineWeight: -0.5 });
+	// SLIDE 2:
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
 
-	// autoPageCharWeight option demos
-	pptx.addSection({ title: "Tables: Auto-Paging CharWeight" });
-	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging CharWeight" });
-	slide.addText(
-		[
-			{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageCharWeight:0.0", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrText, { x: 0.23, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.0 });
+		let projRows2 = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "First item Desc", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Impact", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Owner", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Created Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Due Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Status", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Update", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+			],
+		];
 
-	slide.addText(
-		[
-			{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageCharWeight:0.25", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrText, { x: 4.75, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: 0.25 });
+		slide.addTable(projRows2, {
+			x: 0.4,
+			y: 5.25,
+			colW: [0.5, 1.8, 5, 0.9, 1.0, 0.95, 0.8, 1.5],
+			border: { pt: 0.1, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Segoe UI",
+			fontSize: 8,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageLineWeight: -0.4,
+			verbose: true,
+		});
+	}
 
-	slide.addText(
-		[
-			{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
-			{ text: "autoPageCharWeight:-0.25", options: DEMO_TITLE_OPTS },
-		],
-		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
-	);
-	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: -0.25 });
+	// SLIDE 3:
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+
+		let projRows = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "First item Desc", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Impact", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Owner", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Created Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Due Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Status", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Update", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{ text: "Aenean commodo ligula eget dolor. Aenean massa." },
+				{ text: "20-10-2021" },
+				{ text: "01-11-2021" },
+				{ text: "Pending" },
+				{ text: "24-10-2021" },
+			],
+		];
+
+		slide.addTable(projRows, {
+			x: 0.4,
+			y: 5.25,
+			colW: [0.5, 3.4, 3.4, 0.9, 1.0, 0.95, 0.8, 1.5],
+			border: { pt: 0.1, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Segoe UI",
+			fontSize: 8,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageLineWeight: -0.4,
+			verbose: true,
+		});
+	}
 }

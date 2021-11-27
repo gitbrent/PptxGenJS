@@ -7,7 +7,7 @@ import {
 	CHART_NAME,
 	CHART_TYPE,
 	DEF_CELL_BORDER,
-	DEF_CELL_MARGIN_PT,
+	DEF_CELL_MARGIN_IN,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
@@ -198,43 +198,40 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 	// barGrouping must be handled before data label validation as it can affect valid label positioning
 	if (options._type === CHART_TYPE.AREA) {
-		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-			options.barGrouping = 'standard';
+		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
 	}
 	if (options._type === CHART_TYPE.BAR) {
-        if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-            options.barGrouping = 'clustered';
-    }
-    if (options._type === CHART_TYPE.BAR3D) {
-            if (['clustered', 'stacked','standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-                options.barGrouping = 'standard';
-    }
-    if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
-        if (!options.barGapWidthPct)
-            options.barGapWidthPct = 50;
-    }
+		if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'clustered'
+	}
+	if (options._type === CHART_TYPE.BAR3D) {
+		if (['clustered', 'stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
+	}
+	if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
+		if (!options.barGapWidthPct) options.barGapWidthPct = 50
+	}
 	// Clean up and validate data label positions
-    // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
-    if (options.dataLabelPosition) {
-        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR) delete options.dataLabelPosition 
-        if (options._type === CHART_TYPE.PIE) {
-            if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-        }
-        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
-            if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-        }
-        if (options._type === CHART_TYPE.BAR) {
-            if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr','inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-            }
-            if (['clustered'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr','inBase', 'inEnd','outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-            }
-        }
-    }
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
-    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r';
-	
+	// REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
+	if (options.dataLabelPosition) {
+		if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR)
+			delete options.dataLabelPosition
+		if (options._type === CHART_TYPE.PIE) {
+			if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+		}
+		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+			if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+		}
+		if (options._type === CHART_TYPE.BAR) {
+			if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
+				if (['ctr', 'inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+			}
+			if (['clustered'].indexOf(options.barGrouping || '') < 0) {
+				if (['ctr', 'inBase', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+			}
+		}
+	}
+	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
+	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
+
 	// 3D bar: ST_Shape
 	if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0) options.bar3DShape = 'box'
 	// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
@@ -642,7 +639,7 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	// 3: Handle line (lots of deprecated opts)
 	if (typeof options.line === 'string') {
 		let tmpOpts = newLineOpts
-		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
+		tmpOpts.color = options.line + '' // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
 	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLineProps` now)
@@ -765,7 +762,7 @@ export function addTableDefinition(
 	opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout)
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
-	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
+	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
 	if (typeof opt.border === 'string') {
@@ -847,7 +844,7 @@ export function addTableDefinition(
 	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
 	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
 
-	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to skip autopaging while here
+	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to unset `autoPage` while here
 	arrRows.forEach(row => {
 		row.forEach((cell, idy) => {
 			// A: Transform cell data if needed
@@ -876,7 +873,8 @@ export function addTableDefinition(
 			// B: Check for fine-grained formatting, disable auto-page when found
 			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
 			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
-			if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+			//if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+			// TODO: FIXME: WIP: 20210807: We cant do this anymore
 		})
 	})
 
