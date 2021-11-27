@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-14T18:01:02.696Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-18T02:13:12.646Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6401,7 +6401,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211114-1200';
+var VERSION = '3.9.0-beta-20211117-2010';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
