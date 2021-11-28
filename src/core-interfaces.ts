@@ -1229,6 +1229,14 @@ export interface IChartPropsChartBar {
 	barGapDepthPct?: number
 	barGapWidthPct?: number
 	barGrouping?: string
+	/**
+	 * MS-PPT > Format chart > Format Data Point > Series Options >  "Series Overlap"
+	 * - overlap (percent)
+	 * - range: `-100` - `100`
+	 * @since v3.9.0
+	 * @default 0
+	 */
+	barOverlapPct?: number
 }
 export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean

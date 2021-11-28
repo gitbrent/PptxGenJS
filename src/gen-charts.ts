@@ -920,7 +920,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 4: Add more chart options (gapWidth, line Marker, etc.)
 			if (chartType === CHART_TYPE.BAR) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
-				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
+				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0) + '"/>'
 			} else if (chartType === CHART_TYPE.BAR3D) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>'
