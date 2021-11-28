@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.9.0-beta-20211127-2155'
+const VERSION = '3.9.0-beta-20211128-1334'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -394,21 +394,16 @@ export default class PptxGenJS implements IPresentationProps {
 		slide._relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide._relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
-				if (rel.isDuplicate) {
-					console.log(rel.isDuplicate) // TODO: WIP:
-					return
-				} else {
-					// A: Loop vars
-					let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
+				// A: Loop vars
+				let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
 
-					// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-					if (data.indexOf(',') === -1 && data.indexOf(';') === -1) data = 'image/png;base64,' + data
-					else if (data.indexOf(',') === -1) data = 'image/png;base64,' + data
-					else if (data.indexOf(';') === -1) data = 'image/png;' + data
+				// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+				if (data.indexOf(',') === -1 && data.indexOf(';') === -1) data = 'image/png;base64,' + data
+				else if (data.indexOf(',') === -1) data = 'image/png;base64,' + data
+				else if (data.indexOf(';') === -1) data = 'image/png;' + data
 
-					// C: Add media
-					zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true })
-				}
+				// C: Add media
+				zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true })
 			}
 		})
 	}

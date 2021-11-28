@@ -22,81 +22,84 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 	let unqPaths: string[] = []
 	candidateRels.forEach(rel => {
 		if (unqPaths.indexOf(rel.path) === -1) {
+			rel.isDuplicate = false
 			unqPaths.push(rel.path)
 		} else {
 			rel.isDuplicate = true
 		}
 	})
 
-	// TODO: fix following so we skip `isDuplicate`
-	// TODO: then after load (near resolve), set any media with that same path & `isDuplicate` to use same BASE64 data
-
-	// C: Read/Encode each audio/image/video applicable (filtering online/pre-encoded)
-	candidateRels.forEach(rel => {
-		imageProms.push(
-			new Promise((resolve, reject) => {
-				if (rel.path) {
-					rel.isDuplicate = true
-					return resolve('done') // TODO: WIP:
-				} else if (fs && rel.path.indexOf('http') !== 0) {
-					// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-					try {
-						let bitmap = fs.readFileSync(rel.path)
-						rel.data = Buffer.from(bitmap).toString('base64')
-						resolve('done')
-					} catch (ex) {
-						rel.data = IMG_BROKEN
-						reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
-					}
-				} else if (fs && https && rel.path.indexOf('http') === 0) {
-					https.get(rel.path, res => {
-						let rawData = ''
-						res.setEncoding('binary') // IMPORTANT: Only binary encoding works
-						res.on('data', chunk => (rawData += chunk))
-						res.on('end', () => {
-							rel.data = Buffer.from(rawData, 'binary').toString('base64')
+	// C: Read/Encode each unique audio/image/video path
+	candidateRels
+		.filter(rel => !rel.isDuplicate)
+		.forEach(rel => {
+			imageProms.push(
+				new Promise((resolve, reject) => {
+					if (fs && rel.path.indexOf('http') !== 0) {
+						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
+						try {
+							let bitmap = fs.readFileSync(rel.path)
+							rel.data = Buffer.from(bitmap).toString('base64')
+							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 							resolve('done')
-						})
-						res.on('error', ex => {
+						} catch (ex) {
 							rel.data = IMG_BROKEN
-							reject(`ERROR! Unable to load image (https.get): ${rel.path}`)
-						})
-					})
-				} else {
-					// A: Declare XHR and onload/onerror handlers
-					// DESIGN: `XMLHttpRequest()` plus `FileReader()` = Ablity to read any file into base64!
-					let xhr = new XMLHttpRequest()
-					xhr.onload = () => {
-						let reader = new FileReader()
-						reader.onloadend = () => {
-							rel.data = reader.result
-							if (!rel.isSvgPng) {
-								resolve('done')
-							} else {
-								createSvgPngPreview(rel)
-									.then(() => {
-										resolve('done')
-									})
-									.catch(ex => {
-										reject(ex)
-									})
-							}
+							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+							reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
 						}
-						reader.readAsDataURL(xhr.response)
-					}
-					xhr.onerror = ex => {
-						rel.data = IMG_BROKEN
-						reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
-					}
+					} else if (fs && https && rel.path.indexOf('http') === 0) {
+						https.get(rel.path, (res: any) => {
+							let rawData = ''
+							res.setEncoding('binary') // IMPORTANT: Only binary encoding works
+							res.on('data', (chunk: string) => (rawData += chunk))
+							res.on('end', () => {
+								rel.data = Buffer.from(rawData, 'binary').toString('base64')
+								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+								resolve('done')
+							})
+							res.on('error', (_ex: any) => {
+								rel.data = IMG_BROKEN
+								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+								reject(`ERROR! Unable to load image (https.get): ${rel.path}`)
+							})
+						})
+					} else {
+						// A: Declare XHR and onload/onerror handlers
+						// DESIGN: `XMLHttpRequest()` plus `FileReader()` = Ablity to read any file into base64!
+						let xhr = new XMLHttpRequest()
+						xhr.onload = () => {
+							let reader = new FileReader()
+							reader.onloadend = () => {
+								rel.data = reader.result
+								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+								if (!rel.isSvgPng) {
+									resolve('done')
+								} else {
+									createSvgPngPreview(rel)
+										.then(() => {
+											resolve('done')
+										})
+										.catch(ex => {
+											reject(ex)
+										})
+								}
+							}
+							reader.readAsDataURL(xhr.response)
+						}
+						xhr.onerror = ex => {
+							rel.data = IMG_BROKEN
+							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+							reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
+						}
 
-					// B: Execute request
-					xhr.open('GET', rel.path)
-					xhr.responseType = 'blob'
-					xhr.send()
-				}
-			})
-		)
-	})
+						// B: Execute request
+						xhr.open('GET', rel.path)
+						xhr.responseType = 'blob'
+						xhr.send()
+					}
+				})
+			)
+		})
 
 	// B: SVG: base64 data still requires a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
 	layout._relsMedia
