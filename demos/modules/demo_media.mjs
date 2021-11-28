@@ -8,6 +8,7 @@
  */
 
 import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.mjs";
+import { COVER_AUDIO } from "./media.mjs";
 
 export function genSlides_Media(pptx) {
 	pptx.addSection({ title: "Media" });
@@ -111,6 +112,7 @@ function genSlide02(pptx) {
 		h: 0.3,
 		type: "audio",
 		path: IMAGE_PATHS.sample_mp3.path,
+		cover: COVER_AUDIO,
 	});
 
 	slide2.addText("Audio: wav", { x: 0.5, y: 2.6, w: 4.0, h: 0.4, color: "0088CC" });
