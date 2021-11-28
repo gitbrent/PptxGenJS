@@ -44,7 +44,7 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 							resolve('done')
 						} catch (ex) {
 							rel.data = IMG_BROKEN
-							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 							reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
 						}
 					} else if (fs && https && rel.path.indexOf('http') === 0) {
@@ -54,12 +54,12 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 							res.on('data', (chunk: string) => (rawData += chunk))
 							res.on('end', () => {
 								rel.data = Buffer.from(rawData, 'binary').toString('base64')
-								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 								resolve('done')
 							})
 							res.on('error', (_ex: any) => {
 								rel.data = IMG_BROKEN
-								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 								reject(`ERROR! Unable to load image (https.get): ${rel.path}`)
 							})
 						})
@@ -71,7 +71,7 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 							let reader = new FileReader()
 							reader.onloadend = () => {
 								rel.data = reader.result
-								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 								if (!rel.isSvgPng) {
 									resolve('done')
 								} else {
@@ -88,7 +88,7 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 						}
 						xhr.onerror = ex => {
 							rel.data = IMG_BROKEN
-							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => dupe.data === rel.data)
+							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 							reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
 						}
 
