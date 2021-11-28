@@ -257,12 +257,6 @@ export interface TextBaseProps {
 	 */
 	breakLine?: boolean
 	/**
-	 * Add a soft line-break (shift+enter) before line text content
-	 * @default false
-	 * @since v3.5.0
-	 */
-	softBreakBefore?: boolean
-	/**
 	 * Add standard or custom bullet
 	 * - use `true` for standard bullet
 	 * - pass object options for custom bullet
@@ -377,6 +371,12 @@ export interface TextBaseProps {
 	 * @example 'fr-CA' // french Canadian
 	 */
 	lang?: string
+	/**
+	 * Add a soft line-break (shift+enter) before line text content
+	 * @default false
+	 * @since v3.5.0
+	 */
+	softBreakBefore?: boolean
 	/**
 	 * tab stops
 	 * - PowerPoint: Paragraph > Tabs > Tab stop position
