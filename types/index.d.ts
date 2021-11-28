@@ -2010,6 +2010,12 @@ declare namespace PptxGenJS {
 		bar3DShape?: string
 		barDir?: string
 		barGapDepthPct?: number
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Gap Width"
+		 * - width (percent)
+		 * - range: `0`-`500`
+		 * @default 150
+		 */
 		barGapWidthPct?: number
 		barGrouping?: string
 		/**
