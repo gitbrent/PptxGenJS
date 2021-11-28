@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-28T01:45:32.581Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-28T02:02:58.313Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -2169,7 +2169,7 @@ function slideObjectToXml(slide) {
             strSlideXml += '</a:defRPr>';
         }
         strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-        strSlideXml += "<a:p><a:fld id=\"" + SLDNUMFLDID + "\" type=\"slidenum\"><a:rPr lang=\"en-US\"/>";
+        strSlideXml += '<a:p>';
         if (slide._slideNumberProps.align.startsWith('l'))
             strSlideXml += '<a:pPr algn="l"/>';
         else if (slide._slideNumberProps.align.startsWith('c'))
@@ -2178,7 +2178,8 @@ function slideObjectToXml(slide) {
             strSlideXml += '<a:pPr algn="r"/>';
         else
             strSlideXml += "<a:pPr algn=\"l\"/>";
-        strSlideXml += "<a:t></a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>";
+        strSlideXml += "<a:fld id=\"" + SLDNUMFLDID + "\" type=\"slidenum\"><a:rPr b=\"" + (slide._slideNumberProps.bold ? 1 : 0) + "\" lang=\"en-US\"/>";
+        strSlideXml += "<a:t>" + slide._slideNum + "</a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>";
         strSlideXml += '</p:txBody></p:sp>';
     }
     // STEP 5: Close spTree and finalize slide XML
@@ -6432,7 +6433,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211127-1921';
+var VERSION = '3.9.0-beta-20211127-2002';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
