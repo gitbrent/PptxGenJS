@@ -737,7 +737,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				// [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
 				if (chartType !== CHART_TYPE.RADAR) {
 					strXml += '  <c:dLbls>'
-					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+					strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 					if (opts.dataLabelBkgrdColors) {
 						strXml += '    <c:spPr>'
 						strXml += '       <a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
@@ -747,7 +747,14 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '      <a:bodyPr/>'
 					strXml += '      <a:lstStyle/>'
 					strXml += '      <a:p><a:pPr>'
-					strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+					strXml +=
+						'        <a:defRPr b="' +
+						(opts.dataLabelFontBold ? 1 : 0) +
+						'" i="' +
+						(opts.dataLabelFontItalic ? 1 : 0) +
+						'" strike="noStrike" sz="' +
+						Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+						'" u="none">'
 					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 					strXml += '        </a:defRPr>'
@@ -883,13 +890,19 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 3: "Data Labels"
 			{
 				strXml += '  <c:dLbls>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
 				strXml +=
-					'        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="' +
+					(opts.dataLabelFontItalic ? 1 : 0) +
+					'" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -909,7 +922,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 4: Add more chart options (gapWidth, line Marker, etc.)
 			if (chartType === CHART_TYPE.BAR) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
-				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
+				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0) + '"/>'
 			} else if (chartType === CHART_TYPE.BAR3D) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>'
@@ -1195,12 +1208,19 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 3: Data Labels
 			{
 				strXml += '  <c:dLbls>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
-				strXml += '        <a:defRPr b="' +	(opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+				strXml +=
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="' +
+					(opts.dataLabelFontItalic ? 1 : 0) +
+					'" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -1349,12 +1369,19 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 3: Data Labels
 			{
 				strXml += '  <c:dLbls>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
-				strXml += '        <a:defRPr b="' +	(opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+				strXml +=
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="' +
+					(opts.dataLabelFontItalic ? 1 : 0) +
+					'" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -1450,11 +1477,13 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
 				strXml += ` <c:idx val="${idx}"/>`
-				strXml += `  <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
+				strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '  <c:spPr/><c:txPr>'
 				strXml += '   <a:bodyPr/><a:lstStyle/>'
 				strXml += '   <a:p><a:pPr>'
-				strXml += `   <a:defRPr sz="${Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" u="none" strike="noStrike">`
+				strXml += `   <a:defRPr sz="${Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.dataLabelFontBold ? 1 : 0}" i="${
+					opts.dataLabelFontItalic ? 1 : 0
+				}" u="none" strike="noStrike">`
 				strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += `    <a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
 				strXml += '   </a:defRPr>'
@@ -1469,7 +1498,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbl>'
 			})
-			strXml += ` <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
+			strXml += ` <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 			strXml += '	<c:txPr>'
 			strXml += '	  <a:bodyPr/>'
 			strXml += '	  <a:lstStyle/>'
@@ -1571,9 +1600,9 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
 	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
-		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
+		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>'
 	} else {
-		strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || 'General') + '" sourceLinked="0"/>'
+		strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="0"/>'
 	}
 	if (opts._type === CHART_TYPE.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
@@ -1599,7 +1628,11 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml +=
 		'    <a:defRPr sz="' +
 		Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-		'" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.catAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">'
+		'" b="' +
+		(opts.catAxisLabelFontBold ? 1 : 0) +
+		'" i="' +
+		(opts.catAxisLabelFontItalic ? 1 : 0) +
+		'" u="none" strike="noStrike">'
 	strXml += '      <a:solidFill>' + createColorElement(opts.catAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'
@@ -1678,7 +1711,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 			title: opts.valAxisTitle || 'Axis Title',
 		})
 	}
-	strXml += `<c:numFmt formatCode='${opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General'}' sourceLinked="0"/>`
+	strXml += `<c:numFmt formatCode="${opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General'}" sourceLinked="0"/>`
 	if (opts._type === CHART_TYPE.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
@@ -1701,7 +1734,13 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  <a:p>'
 	strXml += '    <a:pPr>'
 	strXml +=
-		'      <a:defRPr sz="' + Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.valAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">'
+		'      <a:defRPr sz="' +
+		Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
+		'" b="' +
+		(opts.valAxisLabelFontBold ? 1 : 0) +
+		'" i="' +
+		(opts.valAxisLabelFontItalic ? 1 : 0) +
+		'" u="none" strike="noStrike">'
 	strXml += '        <a:solidFill>' + createColorElement(opts.valAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '      </a:defRPr>'
@@ -1753,7 +1792,7 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 			title: opts.serAxisTitle || 'Axis Title',
 		})
 	}
-	strXml += '  <c:numFmt formatCode="' + (opts.serLabelFormatCode || 'General') + '" sourceLinked="0"/>'
+	strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.serLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 	strXml += '  <c:majorTickMark val="out"/>'
 	strXml += '  <c:minorTickMark val="none"/>'
 	strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>'
@@ -1769,7 +1808,9 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml += '    <a:lstStyle/>'
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'
-	strXml += `    <a:defRPr sz="${Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.serAxisLabelFontBold || 0}" i="${opts.serAxisLabelFontItalic || 0}" u="none" strike="noStrike">`
+	strXml += `    <a:defRPr sz="${Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.serAxisLabelFontBold || 0}" i="${
+		opts.serAxisLabelFontItalic || 0
+	}" u="none" strike="noStrike">`
 	strXml += '      <a:solidFill>' + createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'

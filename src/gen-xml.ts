@@ -2,7 +2,6 @@
  * PptxGenJS: XML Generation
  */
 
-import { IImage } from 'image-size/dist/types/interface'
 import {
 	BULLET_TYPES,
 	CRLF,
@@ -744,6 +743,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
 			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
 		}
+		if (slide._slideNumberProps.valign) {
+			strSlideXml += ` anchor="${slide._slideNumberProps.valign.replace('top', 't').replace('middle', 'ctr').replace('bottom', 'b')}"`
+		}
 		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
@@ -754,12 +756,13 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			strSlideXml += '</a:defRPr>'
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
-		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
+		strSlideXml += '<a:p>'
 		if (slide._slideNumberProps.align.startsWith('l')) strSlideXml += '<a:pPr algn="l"/>'
 		else if (slide._slideNumberProps.align.startsWith('c')) strSlideXml += '<a:pPr algn="ctr"/>'
 		else if (slide._slideNumberProps.align.startsWith('r')) strSlideXml += '<a:pPr algn="r"/>'
 		else strSlideXml += `<a:pPr algn="l"/>`
-		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
+		strSlideXml += `<a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr b="${slide._slideNumberProps.bold ? 1 : 0}" lang="en-US"/>`
+		strSlideXml += `<a:t>${slide._slideNum}</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 
@@ -1323,7 +1326,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
 			paragraphPropXml = genXmlParagraphProperties(textObj, false)
 
-			strSlideXml += paragraphPropXml
+			strSlideXml += paragraphPropXml.replace('<a:pPr></a:pPr>', '') // IMPORTANT: Empty "pPr" blocks will generate needs-repair/corrupt msg
 			// C: Inherit any main options (color, fontSize, etc.)
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.

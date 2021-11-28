@@ -36,6 +36,9 @@ export function genSlides_Table(pptx) {
 
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
+
+	pptx.addSection({ title: "Tables: QA" });
+	genSlide10(pptx);
 }
 
 /**
@@ -873,4 +876,150 @@ function genSlide09(pptx) {
 		autoPageRepeatHeader: true,
 		verbose: false,
 	});
+}
+
+/**
+ * SLIDE 10[...]: Test paging with a single row
+ * @param {PptxGenJS} pptx
+ * @since 3.9.0
+ */
+function genSlide10(pptx) {
+	let slide = null;
+
+	// SLIDE 1:
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+
+		let projRows = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "First item Desc", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Impact", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Owner", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Created Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Due Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Status", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Update", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{ text: "Adam" },
+				{ text: "Aenean commodo ligula eget dolor. Aenean massa." },
+				{ text: "20-10-2021" },
+				{ text: "01-11-2021" },
+				{ text: "Pending" },
+				{ text: "24-10-2021" },
+			],
+		];
+
+		slide.addTable(projRows, {
+			x: 0.4,
+			y: 5.25,
+			colW: [0.5, 1.8, 5, 0.9, 1.0, 0.95, 0.8, 1.5],
+			border: { pt: 0.1, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Segoe UI",
+			fontSize: 8,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageLineWeight: -0.4,
+			verbose: true,
+		});
+	}
+
+	// SLIDE 2:
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+
+		let projRows2 = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "First item Desc", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Impact", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Owner", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Created Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Due Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Status", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Update", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+				{ text: "" },
+			],
+		];
+
+		slide.addTable(projRows2, {
+			x: 0.4,
+			y: 5.25,
+			colW: [0.5, 1.8, 5, 0.9, 1.0, 0.95, 0.8, 1.5],
+			border: { pt: 0.1, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Segoe UI",
+			fontSize: 8,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageLineWeight: -0.4,
+			verbose: true,
+		});
+	}
+
+	// SLIDE 3:
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+
+		let projRows = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "First item Desc", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Impact", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Owner", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Created Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Due Date", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Status", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Update", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{
+					text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.",
+				},
+				{ text: "Aenean commodo ligula eget dolor. Aenean massa." },
+				{ text: "20-10-2021" },
+				{ text: "01-11-2021" },
+				{ text: "Pending" },
+				{ text: "24-10-2021" },
+			],
+		];
+
+		slide.addTable(projRows, {
+			x: 0.4,
+			y: 5.25,
+			colW: [0.5, 3.4, 3.4, 0.9, 1.0, 0.95, 0.8, 1.5],
+			border: { pt: 0.1, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Segoe UI",
+			fontSize: 8,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageLineWeight: -0.4,
+			verbose: true,
+		});
+	}
 }
