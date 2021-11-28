@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-28T02:02:58.313Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-28T02:14:20.670Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -5192,8 +5192,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
                 if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
                     data.length === 1 &&
-                    opts.chartColors !== BARCHART_COLORS &&
-                    opts.chartColors.length > 1) {
+                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors && opts.invertedColors.length))) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
@@ -6433,7 +6432,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211127-2002';
+var VERSION = '3.9.0-beta-20211127-2012';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
