@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-28T01:21:20.742Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-28T01:45:32.573Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5312,7 +5312,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 4: Add more chart options (gapWidth, line Marker, etc.)
             if (chartType === CHART_TYPE.BAR) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
-                strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>';
+                strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0) + '"/>';
             }
             else if (chartType === CHART_TYPE.BAR3D) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
