@@ -257,12 +257,6 @@ export interface TextBaseProps {
 	 */
 	breakLine?: boolean
 	/**
-	 * Add a soft line-break (shift+enter) before line text content
-	 * @default false
-	 * @since v3.5.0
-	 */
-	softBreakBefore?: boolean
-	/**
 	 * Add standard or custom bullet
 	 * - use `true` for standard bullet
 	 * - pass object options for custom bullet
@@ -377,6 +371,12 @@ export interface TextBaseProps {
 	 * @example 'fr-CA' // french Canadian
 	 */
 	lang?: string
+	/**
+	 * Add a soft line-break (shift+enter) before line text content
+	 * @default false
+	 * @since v3.5.0
+	 */
+	softBreakBefore?: boolean
 	/**
 	 * tab stops
 	 * - PowerPoint: Paragraph > Tabs > Tab stop position
@@ -1083,7 +1083,7 @@ export interface IChartPropsBase {
 	dataBorder?: BorderProps
 	displayBlanksAs?: string
 	fill?: HexColor
-	invertedColors?: string
+	invertedColors?: HexColor[]
 	lang?: string
 	layout?: PositionProps
 	shadow?: ShadowProps
@@ -1230,8 +1230,22 @@ export interface IChartPropsChartBar {
 	bar3DShape?: string
 	barDir?: string
 	barGapDepthPct?: number
+	/**
+	 * MS-PPT > Format chart > Format Data Point > Series Options >  "Gap Width"
+	 * - width (percent)
+	 * - range: `0`-`500`
+	 * @default 150
+	 */
 	barGapWidthPct?: number
 	barGrouping?: string
+	/**
+	 * MS-PPT > Format chart > Format Data Point > Series Options >  "Series Overlap"
+	 * - overlap (percent)
+	 * - range: `-100`-`100`
+	 * @since v3.9.0
+	 * @default 0
+	 */
+	barOverlapPct?: number
 }
 export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean

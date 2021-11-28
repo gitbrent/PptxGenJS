@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.2-beta @ 2021-11-09T09:49:22.588Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-28T02:14:20.670Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -999,6 +999,32 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
     var tablePropW = getSmartParseNumber(tableProps.w, 'X', presLayout);
     var tablePropH = getSmartParseNumber(tableProps.h, 'Y', presLayout);
     var tableCalcW = tablePropW;
+    function calcSlideTabH() {
+        var emuStartY = 0;
+        if (tableRowSlides.length === 0)
+            emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0]);
+        if (tableRowSlides.length > 0)
+            emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0]);
+        emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2]);
+        //console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
+        //console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
+        if (tableRowSlides.length > 1) {
+            // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
+            if (typeof tableProps.autoPageSlideStartY === 'number') {
+                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2]);
+            }
+            else if (typeof tableProps.newSlideStartY === 'number') {
+                // @deprecated v3.3.0
+                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2]);
+            }
+            else if (tablePropY) {
+                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu((tablePropY / EMU < arrInchMargins[0] ? tablePropY / EMU : arrInchMargins[0]) + arrInchMargins[2]);
+                // Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding Y on paging is to *increase* usable space)
+                if (emuSlideTabH < tablePropH)
+                    emuSlideTabH = tablePropH;
+            }
+        }
+    }
     if (tableProps.verbose) {
         console.log('[[VERBOSE MODE]]');
         console.log('|-- TABLE PROPS --------------------------------------------------------|');
@@ -1060,7 +1086,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         if (tableProps.verbose)
             console.log("| tableCalcW ...................................... = " + tableCalcW / EMU);
     }
-    // STEP 4: Calculate usable space/table size (now that total usable space is known)
+    // STEP 4: Calculate usable width now that total usable space is known (`emuSlideTabW`)
     {
         emuSlideTabW = tableCalcW ? tableCalcW : inch2Emu((tablePropX ? tablePropX / EMU : arrInchMargins[1]) + arrInchMargins[3]);
         if (tableProps.verbose)
@@ -1093,7 +1119,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         var rowCellLines = [];
         var maxCellMarTopEmu = 0;
         var maxCellMarBtmEmu = 0;
-        // B: Create new row in data model
+        // B: Create new row in data model, calc `maxCellMar*`
         var currTableRow = [];
         row.forEach(function (cell) {
             currTableRow.push({
@@ -1127,33 +1153,11 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
             }
         });
         // C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-        var emuStartY = 0;
-        if (tableRowSlides.length === 0)
-            emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0]);
-        if (tableRowSlides.length > 0)
-            emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0]);
-        emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2]);
-        //console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
-        //console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
-        if (tableRowSlides.length > 1) {
-            // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
-            if (typeof tableProps.autoPageSlideStartY === 'number') {
-                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.autoPageSlideStartY + arrInchMargins[2]);
-            }
-            else if (typeof tableProps.newSlideStartY === 'number') {
-                // @deprecated v3.3.0
-                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu(tableProps.newSlideStartY + arrInchMargins[2]);
-            }
-            else if (tablePropY) {
-                emuSlideTabH = (tablePropH || presLayout.height) - inch2Emu((tablePropY / EMU < arrInchMargins[0] ? tablePropY / EMU : arrInchMargins[0]) + arrInchMargins[2]);
-                // Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding Y on paging is to *increase* usable space)
-                if (emuSlideTabH < tablePropH)
-                    emuSlideTabH = tablePropH;
-            }
-        }
+        calcSlideTabH();
+        emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu; // Start row height with margins
         if (tableProps.verbose && iRow === 0)
             console.log("| SLIDE [" + tableRowSlides.length + "]: emuSlideTabH ...... = " + (emuSlideTabH / EMU).toFixed(1) + " ");
-        // E: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
+        // D: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
         row.forEach(function (cell, iCell) {
             var newCell = {
                 _type: SLIDE_OBJECT_TYPES.tablecell,
@@ -1179,9 +1183,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
             // E-5: Add cell to array
             rowCellLines.push(newCell);
         });
-        // F: Start row height with margins
-        emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
-        /** G: --==[[ PAGE DATA SET ]]==--
+        /** E: --==[[ PAGE DATA SET ]]==--
          * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
          *
          * Design:
@@ -1190,104 +1192,111 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
          * - Then, when the vertical size limit is hit is by any of the cells, make a new slide and continue adding any remaining lines
          *
          * Implementation:
-         * `rowCellLines` is an array of cells
-         * - each cell contains an array of lines
-         * EX:
+         * - `rowCellLines` is an array of cells, one for each column in the table, with each cell containing an array of lines
+         *
+         * Sample Data:
+         * - `rowCellLines` ..: [ TableCell, TableCell, TableCell ]
+         * - `TableCell` .....: { _type: 'tablecell', _lines: TableCell[], _lineHeight: 10 }
+         * - `_lines` ........: [ {_type: 'tablecell', text: 'cell-1,line-1', options: {…}}, {_type: 'tablecell', text: 'cell-1,line-2', options: {…}} }
+         * - `_lines` is TableCell[] (the 1-N words in the line)
          * {
          *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line-2' }],															// TOTAL-CELL-HEIGHT = 2
          *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line-2' }],															// TOTAL-CELL-HEIGHT = 2
          *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line-2' }, { text:'cell-3,line-3' }, { text:'cell-3,line-4' }],		// TOTAL-CELL-HEIGHT = 4
          * }
+         *
+         * Example: 2 rows, with the firstrow overflowing onto a new slide
+         * SLIDE 1:
+         *  |--------|--------|--------|--------|
+         *  | line-1 | line-1 | line-1 | line-1 |
+         *  |        |        | line-2 |        |
+         *  |        |        | line-3 |        |
+         *  |--------|--------|--------|--------|
+         *
+         * SLIDE 2:
+         *  |--------|--------|--------|--------|
+         *  |        |        | line-4 |        |
+         *  |--------|--------|--------|--------|
+         *  | line-1 | line-1 | line-1 | line-1 |
+         *  |--------|--------|--------|--------|
          */
-        if (rowCellLines) {
-            if (tableProps.verbose)
-                console.log("\n| SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
-            // 1: Only increment `emuTabCurrH` below when adding lines from tallest cell (most lines or tallest total lineH)
-            var maxLineHeightCellIdx_1 = 0;
-            rowCellLines.forEach(function (cell, cellIdx) {
-                // NOTE: Use ">=" because we want to use largest index possible - if all cols are H=1, then we want last index ot be the one we select
-                if (cell._lines.length >= rowCellLines[maxLineHeightCellIdx_1]._lines.length)
-                    maxLineHeightCellIdx_1 = cellIdx;
-                // TODO: we're only looking or most lines - we need to check for TALLEST _lineHeight too!
+        if (tableProps.verbose)
+            console.log("\n| SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
+        var currCellIdx = 0;
+        var emuLineMaxH = 0;
+        var isDone = false;
+        while (!isDone) {
+            var srcCell = rowCellLines[currCellIdx];
+            var tgtCell = currTableRow[currCellIdx]; // NOTE: may be redefined below (a new row may be created, thus changing this value)
+            // 1: calc emuLineMaxH
+            rowCellLines.forEach(function (cell) {
+                if (cell._lineHeight >= emuLineMaxH)
+                    emuLineMaxH = cell._lineHeight;
             });
-            // 2: build lines inside cells
-            rowCellLines.forEach(function (cell, cellIdx) {
-                cell._lines.forEach(function (line, lineIdx) {
-                    // A: create a new slide if there is insufficient room for the current row
-                    if (emuTabCurrH + cell._lineHeight > emuSlideTabH) {
-                        if (tableProps.verbose) {
-                            console.log('\n|-----------------------------------------------------------------------|');
-                            console.log("|-- NEW SLIDE CREATED (currTabH+currLineH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (cell._lineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
-                            console.log('|-----------------------------------------------------------------------|\n\n');
-                        }
-                        // 1: add current row slide or it will be lost (only if it has rows and text)
-                        if (currTableRow.length > 0 && currTableRow.map(function (cell) { return cell.text.length; }).reduce(function (p, n) { return p + n; }) > 0)
-                            newTableRowSlide.rows.push(currTableRow);
-                        // 2: add current slide to Slides array
-                        tableRowSlides.push(newTableRowSlide);
-                        // 3: reset working/curr slide to hold rows as they're created
-                        var newRows = [];
-                        newTableRowSlide = { rows: newRows };
-                        // 4: reset working/curr row
-                        currTableRow = [];
+            // 2: create a new slide if there is insufficient room for the current row
+            if (emuTabCurrH + emuLineMaxH > emuSlideTabH) {
+                if (tableProps.verbose) {
+                    console.log('\n|-----------------------------------------------------------------------|');
+                    // prettier-ignore
+                    console.log("|-- NEW SLIDE CREATED (currTabH+currLineH > maxH) => " + (emuTabCurrH / EMU).toFixed(2) + " + " + (srcCell._lineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU);
+                    console.log('|-----------------------------------------------------------------------|\n\n');
+                }
+                // A: add current row slide or it will be lost (only if it has rows and text)
+                if (currTableRow.length > 0 && currTableRow.map(function (cell) { return cell.text.length; }).reduce(function (p, n) { return p + n; }) > 0)
+                    newTableRowSlide.rows.push(currTableRow);
+                // B: add current slide to Slides array
+                tableRowSlides.push(newTableRowSlide);
+                // C: reset working/curr slide to hold rows as they're created
+                var newRows = [];
+                newTableRowSlide = { rows: newRows };
+                // D: reset working/curr row
+                currTableRow = [];
+                row.forEach(function (cell) { return currTableRow.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: [], options: cell.options }); });
+                // E: Calc usable vertical space/table height now as we may still be in the same row and code above ("C: Calc usable vertical space/table height.") calc may now be invalid
+                calcSlideTabH();
+                emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu; // Start row height with margins
+                if (tableProps.verbose)
+                    console.log("| SLIDE [" + tableRowSlides.length + "]: emuSlideTabH ...... = " + (emuSlideTabH / EMU).toFixed(1) + " ");
+                // F: reset current table height for this new Slide
+                emuTabCurrH = 0;
+                // G: handle repeat headers option /or/ Add new empty row to continue current lines into
+                if ((tableProps.addHeaderToEach || tableProps.autoPageRepeatHeader) && tableProps._arrObjTabHeadRows) {
+                    tableProps._arrObjTabHeadRows.forEach(function (row) {
+                        var newHeadRow = [];
+                        var maxLineHeight = 0;
                         row.forEach(function (cell) {
-                            currTableRow.push({
-                                _type: SLIDE_OBJECT_TYPES.tablecell,
-                                text: [],
-                                options: cell.options,
-                            });
+                            newHeadRow.push(cell);
+                            if (cell._lineHeight > maxLineHeight)
+                                maxLineHeight = cell._lineHeight;
                         });
-                        // 5: reset current table height for this new Slide
-                        emuTabCurrH = 0;
-                        // 6: handle repeat headers option /or/ Add new empty row to continue current lines into
-                        if ((tableProps.addHeaderToEach || tableProps.autoPageRepeatHeader) && tableProps._arrObjTabHeadRows) {
-                            tableProps._arrObjTabHeadRows.forEach(function (row) {
-                                var newHeadRow = [];
-                                var maxLineHeight = 0;
-                                row.forEach(function (cell) {
-                                    newHeadRow.push(cell);
-                                    if (cell._lineHeight > maxLineHeight)
-                                        maxLineHeight = cell._lineHeight;
-                                });
-                                newTableRowSlide.rows.push(newHeadRow);
-                                emuTabCurrH += maxLineHeight; // TODO: what about margins? dont we need to include cell margin in line height?
-                            });
-                        }
-                    }
-                    // B: get current cell on `currTableRow`
-                    var currCell = currTableRow[cellIdx];
-                    // C: create new line (add all words)
-                    if (Array.isArray(currCell.text))
-                        currCell.text = currCell.text.concat(line);
-                    // D: increase table height by the curr line height (if this is tallest cell)
-                    if (cellIdx === maxLineHeightCellIdx_1)
-                        emuTabCurrH += cell._lineHeight;
-                    /** E: handle case where a cell's lines overflow, but adjacent row cells dont have lines left
-                     * - In this case, `rowCellLines` has no content for cell 0 and cell 1
-                     * - so we need to add a { text: "" } or PPTX will be corrupted! (as each row needs the same amount of cells)
-                     *
-                     * SLIDE 1:
-                     * |--------|--------|--------|
-                     * | line-1 | line-1 | line-1 |
-                     * |--------|--------|--------|
-                     *
-                     * SLIDE 2:
-                     * |--------|--------|--------|
-                     * |        |        | line-2 |
-                     * |--------|--------|--------|
-                     */
-                    currTableRow.forEach(function (cell, idx) {
-                        if (idx < cellIdx && Array.isArray(cell.text) && cell.text.length === 0)
-                            cell.text.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: ' ' });
+                        newTableRowSlide.rows.push(newHeadRow);
+                        emuTabCurrH += maxLineHeight; // TODO: what about margins? dont we need to include cell margin in line height?
                     });
-                    // DONE
-                    if (tableProps.verbose) {
-                        console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: CELL [" + cellIdx + "]: LINE [" + lineIdx + "] added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
-                    }
-                });
-            });
+                }
+                // WIP: NEW: TEST THIS!!
+                tgtCell = currTableRow[currCellIdx];
+            }
+            // 3: set array of words that comprise this line
+            var currLine = srcCell._lines.shift();
+            // 4: create new line by adding all words from curr line (or add empty if there are no words to avoid "needs repair" issue triggered when cells have null content)
+            if (Array.isArray(tgtCell.text)) {
+                if (currLine)
+                    tgtCell.text = tgtCell.text.concat(currLine);
+                else if (tgtCell.text.length === 0)
+                    tgtCell.text = tgtCell.text.concat({ _type: SLIDE_OBJECT_TYPES.tablecell, text: '' });
+                // IMPORTANT: ^^^ add empty if there are no words to avoid "needs repair" issue triggered when cells have null content
+            }
+            // 5: increase table height by the curr line height (if we're on the last column)
+            if (currCellIdx === rowCellLines.length - 1)
+                emuTabCurrH += emuLineMaxH;
+            // 6: advance column/cell index (or circle back to first one to continue adding lines)
+            currCellIdx = currCellIdx < rowCellLines.length - 1 ? currCellIdx + 1 : 0;
+            // 7: done?
+            var brent = rowCellLines.map(function (cell) { return cell._lines.length; }).reduce(function (prev, next) { return prev + next; });
+            if (brent === 0)
+                isDone = true;
         }
-        // 7: Flush/capture row buffer before it resets at the top of this loop
+        // F: Flush/capture row buffer before it resets at the top of this loop
         if (currTableRow.length > 0)
             newTableRowSlide.rows.push(currTableRow);
         if (tableProps.verbose)
@@ -2160,7 +2169,7 @@ function slideObjectToXml(slide) {
             strSlideXml += '</a:defRPr>';
         }
         strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-        strSlideXml += "<a:p><a:fld id=\"" + SLDNUMFLDID + "\" type=\"slidenum\"><a:rPr lang=\"en-US\"/>";
+        strSlideXml += '<a:p>';
         if (slide._slideNumberProps.align.startsWith('l'))
             strSlideXml += '<a:pPr algn="l"/>';
         else if (slide._slideNumberProps.align.startsWith('c'))
@@ -2169,7 +2178,8 @@ function slideObjectToXml(slide) {
             strSlideXml += '<a:pPr algn="r"/>';
         else
             strSlideXml += "<a:pPr algn=\"l\"/>";
-        strSlideXml += "<a:t></a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>";
+        strSlideXml += "<a:fld id=\"" + SLDNUMFLDID + "\" type=\"slidenum\"><a:rPr b=\"" + (slide._slideNumberProps.bold ? 1 : 0) + "\" lang=\"en-US\"/>";
+        strSlideXml += "<a:t>" + slide._slideNum + "</a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>";
         strSlideXml += '</p:txBody></p:sp>';
     }
     // STEP 5: Close spTree and finalize slide XML
@@ -3677,9 +3687,7 @@ function addMediaDefinition(target, opt) {
     var strLink = opt.link || '';
     var strPath = opt.path || '';
     var strType = opt.type || 'audio';
-    var strExtn = opt.ext || ''; // file extension name: mp4
-    var cover = opt.cover || IMG_PLAYBTN; // cover base64 string
-    var isFsPath = opt.isFsPath || false; // 让 node.js 直接读取文件，而不是转换成 base64
+    var strExtn = 'mp3';
     var slideData = {
         _type: SLIDE_OBJECT_TYPES.media,
     };
@@ -3696,7 +3704,7 @@ function addMediaDefinition(target, opt) {
     }
     // FIXME: 20190707
     //strType = strData ? strData.split(';')[0].split('/')[0] : strType
-    strExtn = strExtn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop());
+    strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop();
     // STEP 2: Set type, media
     slideData.mtype = strType;
     slideData.media = strPath || 'preencoded.mov';
@@ -3722,7 +3730,7 @@ function addMediaDefinition(target, opt) {
         // B: Add preview/overlay image
         target._relsMedia.push({
             path: 'preencoded.png',
-            data: cover,
+            data: IMG_PLAYBTN,
             type: 'image/png',
             extn: 'png',
             rId: intRels + 2,
@@ -3740,7 +3748,6 @@ function addMediaDefinition(target, opt) {
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
-            isFsPath: isFsPath || false,
             rId: intRels + 0,
             Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
         });
@@ -3751,13 +3758,12 @@ function addMediaDefinition(target, opt) {
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
-            isDuplicate: true,
             rId: intRels + 1,
             Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
         });
         // C: Add preview/overlay image
         target._relsMedia.push({
-            data: cover,
+            data: IMG_PLAYBTN,
             path: 'preencoded.png',
             type: 'image/png',
             extn: 'png',
@@ -5124,7 +5130,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
                 if (chartType !== CHART_TYPE.RADAR) {
                     strXml += '  <c:dLbls>';
-                    strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+                    strXml += "    <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.dataLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
                     if (opts.dataLabelBkgrdColors) {
                         strXml += '    <c:spPr>';
                         strXml += '       <a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
@@ -5134,7 +5140,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      <a:bodyPr/>';
                     strXml += '      <a:lstStyle/>';
                     strXml += '      <a:p><a:pPr>';
-                    strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                    strXml +=
+                        '        <a:defRPr b="' +
+                            (opts.dataLabelFontBold ? 1 : 0) +
+                            '" i="' +
+                            (opts.dataLabelFontItalic ? 1 : 0) +
+                            '" strike="noStrike" sz="' +
+                            Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+                            '" u="none">';
                     strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                     strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                     strXml += '        </a:defRPr>';
@@ -5179,8 +5192,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
                 if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
                     data.length === 1 &&
-                    opts.chartColors !== BARCHART_COLORS &&
-                    opts.chartColors.length > 1) {
+                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors && opts.invertedColors.length))) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5262,13 +5274,19 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: "Data Labels"
             {
                 strXml += '  <c:dLbls>';
-                strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+                strXml += "    <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.dataLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
                 strXml += '    <c:txPr>';
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
                 strXml +=
-                    '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                    '        <a:defRPr b="' +
+                        (opts.dataLabelFontBold ? 1 : 0) +
+                        '" i="' +
+                        (opts.dataLabelFontItalic ? 1 : 0) +
+                        '" strike="noStrike" sz="' +
+                        Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+                        '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5288,7 +5306,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 4: Add more chart options (gapWidth, line Marker, etc.)
             if (chartType === CHART_TYPE.BAR) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
-                strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>';
+                strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0) + '"/>';
             }
             else if (chartType === CHART_TYPE.BAR3D) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
@@ -5562,12 +5580,19 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: Data Labels
             {
                 strXml += '  <c:dLbls>';
-                strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+                strXml += "    <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.dataLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
                 strXml += '    <c:txPr>';
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                strXml +=
+                    '        <a:defRPr b="' +
+                        (opts.dataLabelFontBold ? 1 : 0) +
+                        '" i="' +
+                        (opts.dataLabelFontItalic ? 1 : 0) +
+                        '" strike="noStrike" sz="' +
+                        Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+                        '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5702,12 +5727,19 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: Data Labels
             {
                 strXml += '  <c:dLbls>';
-                strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+                strXml += "    <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.dataLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
                 strXml += '    <c:txPr>';
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                strXml +=
+                    '        <a:defRPr b="' +
+                        (opts.dataLabelFontBold ? 1 : 0) +
+                        '" i="' +
+                        (opts.dataLabelFontItalic ? 1 : 0) +
+                        '" strike="noStrike" sz="' +
+                        Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+                        '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5792,7 +5824,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             obj.labels.forEach(function (_label, idx) {
                 strXml += '<c:dLbl>';
                 strXml += " <c:idx val=\"" + idx + "\"/>";
-                strXml += "  <c:numFmt formatCode=\"" + (opts.dataLabelFormatCode || 'General') + "\" sourceLinked=\"0\"/>";
+                strXml += "  <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.dataLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
                 strXml += '  <c:spPr/><c:txPr>';
                 strXml += '   <a:bodyPr/><a:lstStyle/>';
                 strXml += '   <a:p><a:pPr>';
@@ -5812,7 +5844,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '    <c:showBubbleSize val="0"/>';
                 strXml += '  </c:dLbl>';
             });
-            strXml += " <c:numFmt formatCode=\"" + (opts.dataLabelFormatCode || 'General') + "\" sourceLinked=\"0\"/>";
+            strXml += " <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.dataLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
             strXml += '	<c:txPr>';
             strXml += '	  <a:bodyPr/>';
             strXml += '	  <a:lstStyle/>';
@@ -5911,10 +5943,10 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     // NOTE: Adding Val Axis Formatting if scatter or bubble charts
     if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
-        strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
+        strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>';
     }
     else {
-        strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || 'General') + '" sourceLinked="0"/>';
+        strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="0"/>';
     }
     if (opts._type === CHART_TYPE.SCATTER) {
         strXml += '  <c:majorTickMark val="none"/>';
@@ -5941,7 +5973,11 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml +=
         '    <a:defRPr sz="' +
             Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-            '" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.catAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">';
+            '" b="' +
+            (opts.catAxisLabelFontBold ? 1 : 0) +
+            '" i="' +
+            (opts.catAxisLabelFontItalic ? 1 : 0) +
+            '" u="none" strike="noStrike">';
     strXml += '      <a:solidFill>' + createColorElement(opts.catAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
@@ -6026,7 +6062,7 @@ function makeValAxis(opts, valAxisId) {
             title: opts.valAxisTitle || 'Axis Title',
         });
     }
-    strXml += "<c:numFmt formatCode='" + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + "' sourceLinked=\"0\"/>";
+    strXml += "<c:numFmt formatCode=\"" + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + "\" sourceLinked=\"0\"/>";
     if (opts._type === CHART_TYPE.SCATTER) {
         strXml += '  <c:majorTickMark val="none"/>';
         strXml += '  <c:minorTickMark val="none"/>';
@@ -6050,7 +6086,13 @@ function makeValAxis(opts, valAxisId) {
     strXml += '  <a:p>';
     strXml += '    <a:pPr>';
     strXml +=
-        '      <a:defRPr sz="' + Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.valAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">';
+        '      <a:defRPr sz="' +
+            Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
+            '" b="' +
+            (opts.valAxisLabelFontBold ? 1 : 0) +
+            '" i="' +
+            (opts.valAxisLabelFontItalic ? 1 : 0) +
+            '" u="none" strike="noStrike">';
     strXml += '        <a:solidFill>' + createColorElement(opts.valAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '      </a:defRPr>';
@@ -6099,7 +6141,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
             title: opts.serAxisTitle || 'Axis Title',
         });
     }
-    strXml += '  <c:numFmt formatCode="' + (opts.serLabelFormatCode || 'General') + '" sourceLinked="0"/>';
+    strXml += "  <c:numFmt formatCode=\"" + (encodeXmlEntities(opts.serLabelFormatCode) || 'General') + "\" sourceLinked=\"0\"/>";
     strXml += '  <c:majorTickMark val="out"/>';
     strXml += '  <c:minorTickMark val="none"/>';
     strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>';
@@ -6234,26 +6276,17 @@ function createGridLineElement(glOpts) {
  * @return {Promise} promise
  */
 function encodeSlideMediaRels(layout) {
-    var fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null; // NodeJS
-    var https = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('https') : null; // NodeJS
+    var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
+    var https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
     layout._relsMedia
         .filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); })
-        .forEach(function (rel, index) {
+        .forEach(function (rel) {
         imageProms.push(new Promise(function (resolve, reject) {
-            if (rel.isDuplicate) {
-                return resolve('done');
-            }
-            if (rel.isFsPath) {
-                // console.log(`>>> isFsPath ${index}:`, rel.path)
-                rel.data = fs.readFileSync(rel.path);
-                resolve('done');
-            }
-            else if (fs && rel.path.indexOf('http') !== 0) {
+            if (fs && rel.path.indexOf('http') !== 0) {
                 // DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
                 try {
-                    // console.log(`>>> path ${index}:`, rel.path)
                     var bitmap = fs.readFileSync(rel.path);
                     rel.data = Buffer.from(bitmap).toString('base64');
                     resolve('done');
@@ -6399,7 +6432,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211024-1302';
+var VERSION = '3.9.0-beta-20211127-2012';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6462,34 +6495,22 @@ var PptxGenJS = /** @class */ (function () {
          * @param {PresSlide | SlideLayout} slide - slide with rels
          * @param {JSZip} zip - JSZip instance
          * @param {Promise<any>[]} chartPromises - promise array
-         * @param flag
          */
         this.createChartMediaRels = function (slide, zip, chartPromises) {
             slide._relsChart.forEach(function (rel) { return chartPromises.push(createExcelWorksheet(rel, zip)); });
-            slide._relsMedia.forEach(function (rel, index) {
+            slide._relsMedia.forEach(function (rel) {
                 if (rel.type !== 'online' && rel.type !== 'hyperlink') {
-                    if (rel.isDuplicate) {
-                        return;
-                    }
-                    var zipPath = rel.Target.replace('..', 'ppt');
-                    if (rel.isFsPath) {
-                        // console.log(`>>> zip add bin ${index}:`, zipPath)
-                        zip.file(zipPath, rel.data, {});
-                    }
-                    else {
-                        // A: Loop vars
-                        var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
-                        // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-                        if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
-                            data = 'image/png;base64,' + data;
-                        else if (data.indexOf(',') === -1)
-                            data = 'image/png;base64,' + data;
-                        else if (data.indexOf(';') === -1)
-                            data = 'image/png;' + data;
-                        // C: Add media
-                        // console.log(`>>> zip add base64 ${index}:`, zipPath)
-                        zip.file(zipPath, data.split(',').pop(), { base64: true });
-                    }
+                    // A: Loop vars
+                    var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
+                    // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+                    if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
+                        data = 'image/png;base64,' + data;
+                    else if (data.indexOf(',') === -1)
+                        data = 'image/png;base64,' + data;
+                    else if (data.indexOf(';') === -1)
+                        data = 'image/png;' + data;
+                    // C: Add media
+                    zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
                 }
             });
         };
@@ -6593,13 +6614,10 @@ var PptxGenJS = /** @class */ (function () {
                 });
                 _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
                 // E: Wait for Promises (if any) then generate the PPTX file
-                // @ts-ignore
                 return Promise.all(arrChartPromises).then(function () {
                     if (props.outputType === 'STREAM') {
                         // A: stream file
-                        // return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
-                        // 直接使用 createWriteStream 输出
-                        return zip.generateNodeStream({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles: true });
+                        return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' });
                     }
                     else if (props.outputType) {
                         // B: Node [fs]: Output type user option or default
@@ -6889,7 +6907,7 @@ var PptxGenJS = /** @class */ (function () {
      */
     PptxGenJS.prototype.writeFile = function (props) {
         var _this = this;
-        var fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null; // NodeJS
+        var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
         // DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
         if (typeof props === 'string')
             console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');

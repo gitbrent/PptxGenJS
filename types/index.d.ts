@@ -1863,7 +1863,7 @@ declare namespace PptxGenJS {
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
 		fill?: HexColor
-		invertedColors?: string
+		invertedColors?: HexColor[]
 		lang?: string
 		layout?: PositionProps
 		shadow?: ShadowProps
@@ -2010,8 +2010,22 @@ declare namespace PptxGenJS {
 		bar3DShape?: string
 		barDir?: string
 		barGapDepthPct?: number
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Gap Width"
+		 * - width (percent)
+		 * - range: `0`-`500`
+		 * @default 150
+		 */
 		barGapWidthPct?: number
 		barGrouping?: string
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Series Overlap"
+		 * - overlap (percent)
+		 * - range: `-100` - `100`
+		 * @since v3.9.0
+		 * @default 0
+		 */
+		barOverlapPct?: number
 	}
 	export interface IChartPropsChartDoughnut {
 		dataNoEffects?: boolean

@@ -67,7 +67,7 @@ export function createMasterSlides(pptx) {
 		title: "MASTER_SLIDE",
 		background: { color: "E1E1E1", transparency: 50 },
 		margin: [0.5, 0.25, 1.0, 0.25],
-		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
+		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10, bold: true },
 		objects: [
 			//{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },
 			{

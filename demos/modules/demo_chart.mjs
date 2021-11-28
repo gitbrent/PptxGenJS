@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.6.0
- * BLD.: 20210426
+ * VER.: 3.9.0
+ * BLD.: 20211127
  */
 
 import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.mjs";
@@ -324,6 +324,7 @@ function genSlide02(pptx) {
 		w: 6.0,
 		h: 3.5,
 		barDir: "bar",
+		barOverlapPct: -50,
 
 		border: { pt: "3", color: "CF0909" },
 		fill: "F1C1C1",
