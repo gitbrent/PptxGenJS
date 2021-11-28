@@ -8,7 +8,7 @@
  */
 
 import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.mjs";
-import { COVER_AUDIO } from "./media.mjs";
+import { COVER_AUDIO, COVER_VIDEO_16X9 } from "./media.mjs";
 
 export function genSlides_Media(pptx) {
 	pptx.addSection({ title: "Media" });
@@ -34,6 +34,7 @@ function genSlide01(pptx) {
 		h: 2.27,
 		type: "video",
 		path: IMAGE_PATHS.sample_m4v.path,
+		cover: COVER_VIDEO_16X9,
 	});
 
 	slide1.addText("Video: mpg", { x: 5.5, y: 0.6, w: 3.0, h: 0.4, color: "0088CC" });
@@ -109,18 +110,18 @@ function genSlide02(pptx) {
 		x: 0.5,
 		y: 1.0,
 		w: 4.0,
-		h: 0.3,
+		h: 4.0,
 		type: "audio",
 		path: IMAGE_PATHS.sample_mp3.path,
 		cover: COVER_AUDIO,
 	});
 
-	slide2.addText("Audio: wav", { x: 0.5, y: 2.6, w: 4.0, h: 0.4, color: "0088CC" });
+	slide2.addText("Audio: wav", { x: 6.7, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
 	slide2.addMedia({
-		x: 0.5,
-		y: 3.0,
+		x: 6.7,
+		y: 1.0,
 		w: 4.0,
-		h: 0.3,
+		h: 4.0,
 		type: "audio",
 		path: IMAGE_PATHS.sample_wav.path,
 	});
