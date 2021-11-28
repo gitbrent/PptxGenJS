@@ -802,8 +802,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				if (
 					(chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
 					data.length === 1 &&
-					opts.chartColors !== BARCHART_COLORS &&
-					opts.chartColors.length > 1
+					((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors && opts.invertedColors.length))
 				) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
