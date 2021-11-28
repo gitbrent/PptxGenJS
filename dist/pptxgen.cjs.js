@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-28T02:14:20.649Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-28T04:15:02.007Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3693,7 +3693,8 @@ function addMediaDefinition(target, opt) {
     var strLink = opt.link || '';
     var strPath = opt.path || '';
     var strType = opt.type || 'audio';
-    var strExtn = 'mp3';
+    var strExtn = '';
+    var strCover = opt.cover || IMG_PLAYBTN;
     var slideData = {
         _type: SLIDE_OBJECT_TYPES.media,
     };
@@ -3710,7 +3711,7 @@ function addMediaDefinition(target, opt) {
     }
     // FIXME: 20190707
     //strType = strData ? strData.split(';')[0].split('/')[0] : strType
-    strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop();
+    strExtn = opt.extn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()) || 'mp3';
     // STEP 2: Set type, media
     slideData.mtype = strType;
     slideData.media = strPath || 'preencoded.mov';
@@ -3736,7 +3737,7 @@ function addMediaDefinition(target, opt) {
         // B: Add preview/overlay image
         target._relsMedia.push({
             path: 'preencoded.png',
-            data: IMG_PLAYBTN,
+            data: strCover,
             type: 'image/png',
             extn: 'png',
             rId: intRels + 2,
@@ -3764,12 +3765,13 @@ function addMediaDefinition(target, opt) {
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
+            isDuplicate: true,
             rId: intRels + 1,
             Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
         });
         // C: Add preview/overlay image
         target._relsMedia.push({
-            data: IMG_PLAYBTN,
+            data: strCover,
             path: 'preencoded.png',
             type: 'image/png',
             extn: 'png',
@@ -6290,7 +6292,10 @@ function encodeSlideMediaRels(layout) {
         .filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); })
         .forEach(function (rel) {
         imageProms.push(new Promise(function (resolve, reject) {
-            if (fs && rel.path.indexOf('http') !== 0) {
+            if (rel.isDuplicate) {
+                return resolve('done'); // TODO: WIP:
+            }
+            else if (fs && rel.path.indexOf('http') !== 0) {
                 // DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
                 try {
                     var bitmap = fs.readFileSync(rel.path);
@@ -6438,7 +6443,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211127-2012';
+var VERSION = '3.9.0-beta-20211127-2155';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6506,17 +6511,22 @@ var PptxGenJS = /** @class */ (function () {
             slide._relsChart.forEach(function (rel) { return chartPromises.push(createExcelWorksheet(rel, zip)); });
             slide._relsMedia.forEach(function (rel) {
                 if (rel.type !== 'online' && rel.type !== 'hyperlink') {
-                    // A: Loop vars
-                    var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
-                    // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-                    if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
-                        data = 'image/png;base64,' + data;
-                    else if (data.indexOf(',') === -1)
-                        data = 'image/png;base64,' + data;
-                    else if (data.indexOf(';') === -1)
-                        data = 'image/png;' + data;
-                    // C: Add media
-                    zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
+                    if (rel.isDuplicate) {
+                        return;
+                    }
+                    else {
+                        // A: Loop vars
+                        var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
+                        // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+                        if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
+                            data = 'image/png;base64,' + data;
+                        else if (data.indexOf(',') === -1)
+                            data = 'image/png;base64,' + data;
+                        else if (data.indexOf(';') === -1)
+                            data = 'image/png;' + data;
+                        // C: Add media
+                        zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
+                    }
                 }
             });
         };
@@ -6620,10 +6630,12 @@ var PptxGenJS = /** @class */ (function () {
                 });
                 _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
                 // E: Wait for Promises (if any) then generate the PPTX file
+                // @ts-ignore
                 return Promise.all(arrChartPromises).then(function () {
                     if (props.outputType === 'STREAM') {
                         // A: stream file
-                        return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' });
+                        //return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' }) // TODO: below is okay?
+                        return zip.generateNodeStream({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles: true });
                     }
                     else if (props.outputType) {
                         // B: Node [fs]: Output type user option or default

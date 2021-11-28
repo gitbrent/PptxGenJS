@@ -11,83 +11,92 @@ import { PresSlide, SlideLayout, ISlideRelMedia } from './core-interfaces'
  * @return {Promise} promise
  */
 export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<string>[] {
-	const fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null // NodeJS
-	const https = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('https') : null // NodeJS
+	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
+	const https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null // NodeJS
 	let imageProms: Promise<string>[] = []
 
-	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
-	layout._relsMedia
-		.filter(rel => rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)))
-		.forEach((rel, index) => {
-			imageProms.push(
-				new Promise((resolve, reject) => {
-					if (rel.isDuplicate) {
-						return resolve('done')
-					}
-					if (rel.isFsPath) {
-						// console.log(`>>> isFsPath ${index}:`, rel.path)
-						rel.data = fs.readFileSync(rel.path)
-						resolve('done')
-					} else if (fs && rel.path.indexOf('http') !== 0) {
-						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-						try {
-							// console.log(`>>> path ${index}:`, rel.path)
-							let bitmap = fs.readFileSync(rel.path)
-							rel.data = Buffer.from(bitmap).toString('base64')
-							resolve('done')
-						} catch (ex) {
-							rel.data = IMG_BROKEN
-							reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
-						}
-					} else if (fs && https && rel.path.indexOf('http') === 0) {
-						https.get(rel.path, res => {
-							let rawData = ''
-							res.setEncoding('binary') // IMPORTANT: Only binary encoding works
-							res.on('data', chunk => (rawData += chunk))
-							res.on('end', () => {
-								rel.data = Buffer.from(rawData, 'binary').toString('base64')
-								resolve('done')
-							})
-							res.on('error', ex => {
-								rel.data = IMG_BROKEN
-								reject(`ERROR! Unable to load image (https.get): ${rel.path}`)
-							})
-						})
-					} else {
-						// A: Declare XHR and onload/onerror handlers
-						// DESIGN: `XMLHttpRequest()` plus `FileReader()` = Ablity to read any file into base64!
-						let xhr = new XMLHttpRequest()
-						xhr.onload = () => {
-							let reader = new FileReader()
-							reader.onloadend = () => {
-								rel.data = reader.result
-								if (!rel.isSvgPng) {
-									resolve('done')
-								} else {
-									createSvgPngPreview(rel)
-										.then(() => {
-											resolve('done')
-										})
-										.catch(ex => {
-											reject(ex)
-										})
-								}
-							}
-							reader.readAsDataURL(xhr.response)
-						}
-						xhr.onerror = ex => {
-							rel.data = IMG_BROKEN
-							reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
-						}
+	// A: Capture all audio/image/video candidates for encoding (filtering online/pre-encoded)
+	let candidateRels = layout._relsMedia.filter(rel => rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)))
 
-						// B: Execute request
-						xhr.open('GET', rel.path)
-						xhr.responseType = 'blob'
-						xhr.send()
+	// B: PERF: Mark dupes (same `path`) so that we dont load same media over-and-over
+	let unqPaths: string[] = []
+	candidateRels.forEach(rel => {
+		if (unqPaths.indexOf(rel.path) === -1) {
+			unqPaths.push(rel.path)
+		} else {
+			rel.isDuplicate = true
+		}
+	})
+
+	// TODO: fix following so we skip `isDuplicate`
+	// TODO: then after load (near resolve), set any media with that same path & `isDuplicate` to use same BASE64 data
+
+	// C: Read/Encode each audio/image/video applicable (filtering online/pre-encoded)
+	candidateRels.forEach(rel => {
+		imageProms.push(
+			new Promise((resolve, reject) => {
+				if (rel.path) {
+					rel.isDuplicate = true
+					return resolve('done') // TODO: WIP:
+				} else if (fs && rel.path.indexOf('http') !== 0) {
+					// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
+					try {
+						let bitmap = fs.readFileSync(rel.path)
+						rel.data = Buffer.from(bitmap).toString('base64')
+						resolve('done')
+					} catch (ex) {
+						rel.data = IMG_BROKEN
+						reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
 					}
-				})
-			)
-		})
+				} else if (fs && https && rel.path.indexOf('http') === 0) {
+					https.get(rel.path, res => {
+						let rawData = ''
+						res.setEncoding('binary') // IMPORTANT: Only binary encoding works
+						res.on('data', chunk => (rawData += chunk))
+						res.on('end', () => {
+							rel.data = Buffer.from(rawData, 'binary').toString('base64')
+							resolve('done')
+						})
+						res.on('error', ex => {
+							rel.data = IMG_BROKEN
+							reject(`ERROR! Unable to load image (https.get): ${rel.path}`)
+						})
+					})
+				} else {
+					// A: Declare XHR and onload/onerror handlers
+					// DESIGN: `XMLHttpRequest()` plus `FileReader()` = Ablity to read any file into base64!
+					let xhr = new XMLHttpRequest()
+					xhr.onload = () => {
+						let reader = new FileReader()
+						reader.onloadend = () => {
+							rel.data = reader.result
+							if (!rel.isSvgPng) {
+								resolve('done')
+							} else {
+								createSvgPngPreview(rel)
+									.then(() => {
+										resolve('done')
+									})
+									.catch(ex => {
+										reject(ex)
+									})
+							}
+						}
+						reader.readAsDataURL(xhr.response)
+					}
+					xhr.onerror = ex => {
+						rel.data = IMG_BROKEN
+						reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
+					}
+
+					// B: Execute request
+					xhr.open('GET', rel.path)
+					xhr.responseType = 'blob'
+					xhr.send()
+				}
+			})
+		)
+	})
 
 	// B: SVG: base64 data still requires a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
 	layout._relsMedia

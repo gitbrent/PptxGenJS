@@ -490,14 +490,24 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
  * @requires either `link` or `path`
  */
 export interface MediaProps extends PositionProps, DataOrPathProps {
-	isFsPath: boolean;
-	cover: string;
-	ext: string;
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
 	 */
 	type: MediaType
+	/**
+	 * Cover image
+	 * @since 3.9.0
+	 * @default "play button" image, gray backround
+	 */
+	cover?: string
+	/**
+	 * media file extension
+	 * - use when the media file path does not already have an extension, ex: "/folder/SomeSong"
+	 * @since 3.9.0
+	 * @default extension from file provided
+	 */
+	extn?: string
 	/**
 	 * video embed link
 	 * - works with YouTube
@@ -1379,7 +1389,7 @@ export interface ISlideRelMedia {
 	path?: string
 	extn?: string
 	data?: string | ArrayBuffer
-	isFsPath?: boolean
+	/** used to indicate that a media file has already been read/enocded (PERF) */
 	isDuplicate?: boolean
 	isSvgPng?: boolean
 	svgSize?: { w: number; h: number }

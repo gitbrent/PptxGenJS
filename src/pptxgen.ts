@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.9.0-beta-20211127-2012'
+const VERSION = '3.9.0-beta-20211127-2155'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -389,19 +389,14 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {PresSlide | SlideLayout} slide - slide with rels
 	 * @param {JSZip} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
-	 * @param flag
 	 */
 	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide._relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
-		slide._relsMedia.forEach((rel, index) => {
+		slide._relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
 				if (rel.isDuplicate) {
+					console.log(rel.isDuplicate) // TODO: WIP:
 					return
-				}
-				const zipPath = rel.Target.replace('..', 'ppt')
-				if (rel.isFsPath) {
-					// console.log(`>>> zip add bin ${index}:`, zipPath)
-					zip.file(zipPath, rel.data, {})
 				} else {
 					// A: Loop vars
 					let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
@@ -412,8 +407,7 @@ export default class PptxGenJS implements IPresentationProps {
 					else if (data.indexOf(';') === -1) data = 'image/png;' + data
 
 					// C: Add media
-					// console.log(`>>> zip add base64 ${index}:`, zipPath)
-					zip.file(zipPath, data.split(',').pop(), { base64: true })
+					zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true })
 				}
 			}
 		})
@@ -532,10 +526,8 @@ export default class PptxGenJS implements IPresentationProps {
 			return Promise.all(arrChartPromises).then(() => {
 				if (props.outputType === 'STREAM') {
 					// A: stream file
-					// return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
-
-					// 直接使用 createWriteStream 输出
-					return zip.generateNodeStream({type:'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles:true})
+					//return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' }) // TODO: below is okay?
+					return zip.generateNodeStream({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles: true })
 				} else if (props.outputType) {
 					// B: Node [fs]: Output type user option or default
 					return zip.generateAsync({ type: props.outputType })
@@ -585,7 +577,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(props?: WriteFileProps | string): Promise<string> {
-		const fs = typeof require !== 'undefined' && typeof global !== 'undefined' ? require('fs') : null // NodeJS
+		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
 		const propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : ''

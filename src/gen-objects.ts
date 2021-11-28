@@ -490,9 +490,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strLink = opt.link || ''
 	let strPath = opt.path || ''
 	let strType = opt.type || 'audio'
-	let strExtn = opt.ext || '' // file extension name: mp4
-	let cover = opt.cover || IMG_PLAYBTN // cover base64 string
-	let isFsPath = opt.isFsPath || false // 让 node.js 直接读取文件，而不是转换成 base64
+	let strExtn = ''
+	let strCover = opt.cover || IMG_PLAYBTN
 	let slideData: ISlideObject = {
 		_type: SLIDE_OBJECT_TYPES.media,
 	}
@@ -510,7 +509,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 	// FIXME: 20190707
 	//strType = strData ? strData.split(';')[0].split('/')[0] : strType
-	strExtn = strExtn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop())
+	strExtn = opt.extn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()) || 'mp3'
 
 	// STEP 2: Set type, media
 	slideData.mtype = strType
@@ -540,7 +539,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		// B: Add preview/overlay image
 		target._relsMedia.push({
 			path: 'preencoded.png',
-			data: cover,
+			data: strCover,
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
@@ -558,7 +557,6 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			isFsPath: isFsPath || false,
 			rId: intRels + 0,
 			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
 		})
@@ -570,14 +568,14 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			isDuplicate: true, // Fix：重复读写文件
+			//isDuplicate: true, // TODO: WIP: why would we set this to true??
 			rId: intRels + 1,
 			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
 		})
 
 		// C: Add preview/overlay image
 		target._relsMedia.push({
-			data: cover,
+			data: strCover,
 			path: 'preencoded.png',
 			type: 'image/png',
 			extn: 'png',
