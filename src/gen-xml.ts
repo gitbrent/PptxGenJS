@@ -1326,7 +1326,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
 			paragraphPropXml = genXmlParagraphProperties(textObj, false)
 
-			strSlideXml += paragraphPropXml
+			strSlideXml += paragraphPropXml.replace('<a:pPr></a:pPr>', '') // IMPORTANT: Empty "pPr" blocks will generate needs-repair/corrupt msg
 			// C: Inherit any main options (color, fontSize, etc.)
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
