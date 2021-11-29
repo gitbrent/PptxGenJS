@@ -442,13 +442,17 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
+		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && item.isDuplicate === false)[0]
+
 		target._relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		newObject.imageRid = imageRelId
 	}
@@ -477,7 +481,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 
 /**
  * Adds a media object to a slide definition.
- * @param {PresSlide} `target` - slide object that the text will be added to
+ * @param {PresSlide} `target` - slide object that the media will be added to
  * @param {MediaProps} `opt` - media options
  */
 export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
@@ -490,7 +494,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strLink = opt.link || ''
 	let strPath = opt.path || ''
 	let strType = opt.type || 'audio'
-	let strExtn = 'mp3'
+	let strExtn = ''
+	let strCover = opt.cover || IMG_PLAYBTN
 	let slideData: ISlideObject = {
 		_type: SLIDE_OBJECT_TYPES.media,
 	}
@@ -508,7 +513,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 	// FIXME: 20190707
 	//strType = strData ? strData.split(';')[0].split('/')[0] : strType
-	strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()
+	strExtn = opt.extn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()) || 'mp3'
 
 	// STEP 2: Set type, media
 	slideData.mtype = strType
@@ -522,7 +527,15 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	slideData.options.h = intSizeY
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
-	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+	/**
+	 * NOTE:
+	 * - rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+	 *
+	 * NOTE:
+	 * - Audio/Video files consume *TWO* rId's:
+	 * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
+	 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+	 */
 	if (strType === 'online') {
 		// A: Add video
 		target._relsMedia.push({
@@ -535,20 +548,18 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		})
 		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
 
-		// B: Add preview/overlay image
+		// B: Add cover (preview/overlay) image
 		target._relsMedia.push({
 			path: 'preencoded.png',
-			data: IMG_PLAYBTN,
+			data: strCover,
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	} else {
-		/* NOTE: Audio/Video files consume *TWO* rId's:
-		 * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-		 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
-		 */
+		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false)[0]
 
 		// A: "relationships/video"
 		target._relsMedia.push({
@@ -557,7 +568,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 0,
-			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 1}.${strExtn}`,
 		})
 		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
 
@@ -568,17 +580,18 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 1,
-			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 0}.${strExtn}`,
 		})
 
-		// C: Add preview/overlay image
+		// C: Add cover (preview/overlay) image
 		target._relsMedia.push({
-			data: IMG_PLAYBTN,
 			path: 'preencoded.png',
 			type: 'image/png',
 			extn: 'png',
+			data: strCover,
 			rId: intRels + 2,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+			Target: `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.png`,
 		})
 	}
 
