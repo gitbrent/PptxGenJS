@@ -498,7 +498,7 @@ export interface MediaProps extends PositionProps, DataOrPathProps {
 	/**
 	 * Cover image
 	 * @since 3.9.0
-	 * @default "play button" image, gray backround
+	 * @default "play button" image, gray background
 	 */
 	cover?: string
 	/**

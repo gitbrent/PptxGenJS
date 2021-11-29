@@ -1315,6 +1315,19 @@ declare namespace PptxGenJS {
 		 */
 		type: MediaType
 		/**
+		 * Cover image
+		 * @since 3.9.0
+		 * @default "play button" image, gray background
+		 */
+		cover?: string
+		/**
+		 * media file extension
+		 * - use when the media file path does not already have an extension, ex: "/folder/SomeSong"
+		 * @since 3.9.0
+		 * @default extension from file provided
+		 */
+		extn?: string
+		/**
 		 * video embed link
 		 * - works with YouTube
 		 * - other sites may not show correctly in PowerPoint
