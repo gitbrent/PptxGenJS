@@ -442,13 +442,17 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
+		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && item.isDuplicate === false)[0]
+
 		target._relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		newObject.imageRid = imageRelId
 	}
@@ -554,7 +558,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	} else {
-		// PERF: Duplicate media should resue existing `Target` and `data` values
+		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
 		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false)[0]
 
 		// A: "relationships/video"
