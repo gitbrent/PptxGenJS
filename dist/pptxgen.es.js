@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-28T04:15:02.017Z */
+/* PptxGenJS 3.9.0-beta @ 2021-11-29T02:20:26.062Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -3643,13 +3643,16 @@ function addImageDefinition(target, opt) {
         newObject.imageRid = imageRelId + 1;
     }
     else {
+        // PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+        var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && item.isDuplicate === false; })[0];
         target._relsMedia.push({
             path: strImagePath || 'preencoded.' + strImgExtn,
             type: 'image/' + strImgExtn,
             extn: strImgExtn,
             data: strImageData || '',
             rId: imageRelId,
-            Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+            isDuplicate: dupeItem && dupeItem.Target ? true : false,
+            Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/image-" + target._slideNum + "-" + (target._relsMedia.length + 1) + "." + strImgExtn,
         });
         newObject.imageRid = imageRelId;
     }
@@ -3674,7 +3677,7 @@ function addImageDefinition(target, opt) {
 }
 /**
  * Adds a media object to a slide definition.
- * @param {PresSlide} `target` - slide object that the text will be added to
+ * @param {PresSlide} `target` - slide object that the media will be added to
  * @param {MediaProps} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
@@ -3716,7 +3719,15 @@ function addMediaDefinition(target, opt) {
     slideData.options.w = intSizeX;
     slideData.options.h = intSizeY;
     // STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
-    // NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+    /**
+     * NOTE:
+     * - rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+     *
+     * NOTE:
+     * - Audio/Video files consume *TWO* rId's:
+     * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
+     * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+     */
     if (strType === 'online') {
         // A: Add video
         target._relsMedia.push({
@@ -3728,7 +3739,7 @@ function addMediaDefinition(target, opt) {
             Target: strLink,
         });
         slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId;
-        // B: Add preview/overlay image
+        // B: Add cover (preview/overlay) image
         target._relsMedia.push({
             path: 'preencoded.png',
             data: strCover,
@@ -3739,10 +3750,8 @@ function addMediaDefinition(target, opt) {
         });
     }
     else {
-        /* NOTE: Audio/Video files consume *TWO* rId's:
-         * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-         * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
-         */
+        // PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+        var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false; })[0];
         // A: "relationships/video"
         target._relsMedia.push({
             path: strPath || 'preencoded' + strExtn,
@@ -3750,7 +3759,8 @@ function addMediaDefinition(target, opt) {
             extn: strExtn,
             data: strData || '',
             rId: intRels + 0,
-            Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
+            isDuplicate: dupeItem && dupeItem.Target ? true : false,
+            Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/media-" + target._slideNum + "-" + (target._relsMedia.length + 1) + "." + strExtn,
         });
         slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId;
         // B: "relationships/media"
@@ -3759,18 +3769,18 @@ function addMediaDefinition(target, opt) {
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
-            isDuplicate: true,
             rId: intRels + 1,
-            Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
+            isDuplicate: dupeItem && dupeItem.Target ? true : false,
+            Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/media-" + target._slideNum + "-" + (target._relsMedia.length + 0) + "." + strExtn,
         });
-        // C: Add preview/overlay image
+        // C: Add cover (preview/overlay) image
         target._relsMedia.push({
-            data: strCover,
             path: 'preencoded.png',
             type: 'image/png',
             extn: 'png',
+            data: strCover,
             rId: intRels + 2,
-            Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+            Target: "../media/image-" + target._slideNum + "-" + (target._relsMedia.length + 1) + ".png",
         });
     }
     // LAST
@@ -6281,23 +6291,35 @@ function encodeSlideMediaRels(layout) {
     var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
     var https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
-    // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
-    layout._relsMedia
-        .filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); })
+    // A: Capture all audio/image/video candidates for encoding (filtering online/pre-encoded)
+    var candidateRels = layout._relsMedia.filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); });
+    // B: PERF: Mark dupes (same `path`) so that we dont load same media over-and-over
+    var unqPaths = [];
+    candidateRels.forEach(function (rel) {
+        if (unqPaths.indexOf(rel.path) === -1) {
+            rel.isDuplicate = false;
+            unqPaths.push(rel.path);
+        }
+        else {
+            rel.isDuplicate = true;
+        }
+    });
+    // C: Read/Encode each unique audio/image/video path
+    candidateRels
+        .filter(function (rel) { return !rel.isDuplicate; })
         .forEach(function (rel) {
         imageProms.push(new Promise(function (resolve, reject) {
-            if (rel.isDuplicate) {
-                return resolve('done'); // TODO: WIP:
-            }
-            else if (fs && rel.path.indexOf('http') !== 0) {
+            if (fs && rel.path.indexOf('http') !== 0) {
                 // DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
                 try {
                     var bitmap = fs.readFileSync(rel.path);
                     rel.data = Buffer.from(bitmap).toString('base64');
+                    candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
                     resolve('done');
                 }
                 catch (ex) {
                     rel.data = IMG_BROKEN;
+                    candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
                     reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString());
                 }
             }
@@ -6308,10 +6330,12 @@ function encodeSlideMediaRels(layout) {
                     res.on('data', function (chunk) { return (rawData += chunk); });
                     res.on('end', function () {
                         rel.data = Buffer.from(rawData, 'binary').toString('base64');
+                        candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
                         resolve('done');
                     });
-                    res.on('error', function (ex) {
+                    res.on('error', function (_ex) {
                         rel.data = IMG_BROKEN;
+                        candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
                         reject("ERROR! Unable to load image (https.get): " + rel.path);
                     });
                 });
@@ -6324,6 +6348,7 @@ function encodeSlideMediaRels(layout) {
                     var reader = new FileReader();
                     reader.onloadend = function () {
                         rel.data = reader.result;
+                        candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
                         if (!rel.isSvgPng) {
                             resolve('done');
                         }
@@ -6341,6 +6366,7 @@ function encodeSlideMediaRels(layout) {
                 };
                 xhr_1.onerror = function (ex) {
                     rel.data = IMG_BROKEN;
+                    candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
                     reject("ERROR! Unable to load image (xhr.onerror): " + rel.path);
                 };
                 // B: Execute request
@@ -6437,7 +6463,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211127-2155';
+var VERSION = '3.9.0-beta-20211128-2010';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6505,22 +6531,17 @@ var PptxGenJS = /** @class */ (function () {
             slide._relsChart.forEach(function (rel) { return chartPromises.push(createExcelWorksheet(rel, zip)); });
             slide._relsMedia.forEach(function (rel) {
                 if (rel.type !== 'online' && rel.type !== 'hyperlink') {
-                    if (rel.isDuplicate) {
-                        return;
-                    }
-                    else {
-                        // A: Loop vars
-                        var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
-                        // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-                        if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
-                            data = 'image/png;base64,' + data;
-                        else if (data.indexOf(',') === -1)
-                            data = 'image/png;base64,' + data;
-                        else if (data.indexOf(';') === -1)
-                            data = 'image/png;' + data;
-                        // C: Add media
-                        zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
-                    }
+                    // A: Loop vars
+                    var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
+                    // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+                    if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
+                        data = 'image/png;base64,' + data;
+                    else if (data.indexOf(',') === -1)
+                        data = 'image/png;base64,' + data;
+                    else if (data.indexOf(';') === -1)
+                        data = 'image/png;' + data;
+                    // C: Add media
+                    zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
                 }
             });
         };
