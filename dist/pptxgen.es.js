@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-11-29T02:30:56.741Z */
+/* PptxGenJS 3.9.0-beta @ 2021-12-04T19:46:04.303Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -5793,7 +5793,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             */
             // 1: Start Chart
             strXml += '<c:' + chartType + 'Chart>';
-            strXml += '  <c:varyColors val="0"/>';
+            strXml += '  <c:varyColors val="1"/>';
             strXml += '<c:ser>';
             strXml += '  <c:idx val="0"/>';
             strXml += '  <c:order val="0"/>';
@@ -6463,7 +6463,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211128-2030';
+var VERSION = '3.9.0-beta-20211204-1340';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
