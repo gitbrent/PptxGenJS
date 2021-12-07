@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PPT repair issue for long text [\#1008](https://github.com/gitbrent/PptxGenJS/issues/1008) ([Naveencheekoti17](https://github.com/Naveencheekoti17)), fixed via [\#1028](https://github.com/gitbrent/PptxGenJS/pull/1028) ([gitbrent](https://github.com/gitbrent))
 - Doughnut chart: each data marker as a different color [\#1017](https://github.com/gitbrent/PptxGenJS/pull/1017) ([mathbruyen](https://github.com/mathbruyen))
 
+### Changed
+
+- React Demo: updated to latest create-react-app ([gitbrent](https://github.com/gitbrent))
+
 ## [3.8.0] - 2021-09-28
 
 ### Added
