@@ -12,3 +12,5 @@ src/bld
 ### docusaurus
 .docusaurus
 /build
+/demo
+/docs
