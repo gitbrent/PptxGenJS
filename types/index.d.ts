@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.8.0
+// Type definitions for pptxgenjs 3.9.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -1076,12 +1076,6 @@ declare namespace PptxGenJS {
 		 */
 		breakLine?: boolean
 		/**
-		 * Add a soft line-break (shift+enter) before line text content
-		 * @default false
-		 * @since v3.5.0
-		 */
-		softBreakBefore?: boolean
-		/**
 		 * Add standard or custom bullet
 		 * - use `true` for standard bullet
 		 * - pass object options for custom bullet
@@ -1196,6 +1190,12 @@ declare namespace PptxGenJS {
 		 * @example 'fr-CA' // french Canadian
 		 */
 		lang?: string
+		/**
+		 * Add a soft line-break (shift+enter) before line text content
+		 * @default false
+		 * @since v3.5.0
+		 */
+		softBreakBefore?: boolean
 		/**
 		 * tab stops
 		 * - PowerPoint: Paragraph > Tabs > Tab stop position
@@ -2034,7 +2034,7 @@ declare namespace PptxGenJS {
 		/**
 		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Series Overlap"
 		 * - overlap (percent)
-		 * - range: `-100` - `100`
+		 * - range: `-100`-`100`
 		 * @since v3.9.0
 		 * @default 0
 		 */
@@ -2194,6 +2194,10 @@ declare namespace PptxGenJS {
 		height: number
 	}
 	export interface SlideNumberProps extends PositionProps, TextBaseProps {
+		/**
+		 * margin (points)
+		 * TODO: convert to inches in 4.0 (valid values are 0-22)
+		 */
 		margin?: Margin
 	}
 	export interface SlideMasterProps {
