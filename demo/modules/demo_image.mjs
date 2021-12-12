@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.5.0
- * BLD.: 20210403
+ * VER.: 3.8.0
+ * BLD.: 20210928
  */
 
 /**
@@ -40,10 +40,10 @@ function genSlide01(pptx) {
 	// TOP: 1
 	slide.addText("Type: Animated GIF", { x: 0.5, y: 0.6, w: 2.5, h: 0.4, color: "0088CC" });
 	slide.addImage({ x: 1.0, y: 1.1, w: 1.5, h: 1.5, path: IMAGE_PATHS.gifAnimTrippy.path });
-	slide.addText("(use slide Show)", {
-		x: 1.0,
+	slide.addText("(legacy PPT only animates in slide show)", {
+		x: 0.5,
 		y: 2.7,
-		w: 1.5,
+		w: 2.6,
 		h: 0.3,
 		align: "center",
 		fontSize: 10,
@@ -53,7 +53,7 @@ function genSlide01(pptx) {
 
 	// TOP: 2
 	slide.addText("Type: GIF", { x: 4.35, y: 0.6, w: 1.4, h: 0.4, color: "0088CC" });
-	slide.addImage({ x: 4.4, y: 1.05, w: 1.2, h: 1.2, path: IMAGE_PATHS.ccDjGif.path });
+	slide.addImage({ x: 4.4, y: 1.05, w: 1.2, h: 1.2, path: IMAGE_PATHS.ccDjGif.path, altText: "this is a gif" });
 
 	// TOP: 3
 	slide.addText("Type: base64 PNG", { x: 7.2, y: 0.6, w: 2.4, h: 0.4, color: "0088CC" });

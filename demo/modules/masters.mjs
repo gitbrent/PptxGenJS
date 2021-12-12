@@ -67,7 +67,7 @@ export function createMasterSlides(pptx) {
 		title: "MASTER_SLIDE",
 		background: { color: "E1E1E1", transparency: 50 },
 		margin: [0.5, 0.25, 1.0, 0.25],
-		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
+		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10, bold: true },
 		objects: [
 			//{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },
 			{
@@ -147,6 +147,39 @@ export function createMasterSlides(pptx) {
 					text: "(add homepage URL)",
 				},
 			},
+		],
+	});
+
+	// MARGIN_SLIDE (used for demo/test)
+	const MARGINS = [0.5, 0.5, 0.5, 0.5];
+	const TEXT_PROPS = {
+		shape: pptx.shapes.RECTANGLE,
+		fill: { color: "FFFCCC" },
+		color: "9f9f9f",
+		align: "center",
+		fontFace: "Courier New",
+		fontSize: 10,
+	};
+	pptx.defineSlideMaster({
+		title: "MARGIN_SLIDE",
+		background: { color: "FFFFFF" },
+		margin: MARGINS,
+		objects: [
+			{ text: { text: "(margin-top)", options: { ...TEXT_PROPS, ...{ x: 0, y: 0, w: "100%", h: MARGINS[0] } } } },
+			{ text: { text: "(margin-btm)", options: { ...TEXT_PROPS, ...{ x: 0, y: 7.5 - MARGINS[2], w: "100%", h: MARGINS[2], flipV: true } } } },
+		],
+	});
+
+	// MARGIN_SLIDE_STARTY15 (used for demo/test)
+	pptx.defineSlideMaster({
+		title: "MARGIN_SLIDE_STARTY15",
+		background: { color: "FFFFFF" },
+		margin: MARGINS,
+		objects: [
+			{ text: { text: "(4.0 inches H)", options: { ...TEXT_PROPS, ...{ x: 0, y: 0, w: 1, h: 4.0 } } } },
+			{ text: { text: "(1.5 inches H)", options: { ...TEXT_PROPS, ...{ x: 1, y: 0, w: 1, h: 1.5 } } } },
+			{ text: { text: "(margin-top)", options: { ...TEXT_PROPS, ...{ x: 0, y: 0, w: "100%", h: MARGINS[0] } } } },
+			{ text: { text: "(margin-btm)", options: { ...TEXT_PROPS, ...{ x: 0, y: 7.5 - MARGINS[2], w: "100%", h: MARGINS[2], flipV: true } } } },
 		],
 	});
 
