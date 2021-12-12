@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0-beta @ 2021-12-04T19:46:04.288Z */
+/* PptxGenJS 3.9.0 @ 2021-12-11T18:00:42.636Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6469,7 +6469,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0-beta-20211204-1340';
+var VERSION = '3.9.0';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6655,8 +6655,7 @@ var PptxGenJS = /** @class */ (function () {
                 return Promise.all(arrChartPromises).then(function () {
                     if (props.outputType === 'STREAM') {
                         // A: stream file
-                        //return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' }) // TODO: below is okay?
-                        return zip.generateNodeStream({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles: true });
+                        return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' });
                     }
                     else if (props.outputType) {
                         // B: Node [fs]: Output type user option or default

@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.9.0-beta-20211204-1340'
+const VERSION = '3.9.0'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -521,8 +521,7 @@ export default class PptxGenJS implements IPresentationProps {
 			return Promise.all(arrChartPromises).then(() => {
 				if (props.outputType === 'STREAM') {
 					// A: stream file
-					//return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' }) // TODO: below is okay?
-					return zip.generateNodeStream({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE', streamFiles: true })
+					return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
 				} else if (props.outputType) {
 					// B: Node [fs]: Output type user option or default
 					return zip.generateAsync({ type: props.outputType })
