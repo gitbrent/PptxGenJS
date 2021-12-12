@@ -6,9 +6,10 @@
 /demos
 
 # Generated files
-.docusaurus
-.cache-loader
-src/bld
+/.docusaurus
+/.cache-loader
+/.vscode
+/src/bld
 
 # Misc
 .DS_Store

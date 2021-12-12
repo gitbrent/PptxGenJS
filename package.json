@@ -23,7 +23,7 @@
 		"clsx": "^1.1.1",
 		"file-loader": "^6.2.0",
 		"gulp": "^4.0.2",
-		"pptxgenjs": "^3.7.1",
+		"pptxgenjs": "^3.9.0",
 		"prism-react-renderer": "^1.2.1",
 		"purgecss": "^4.0.3",
 		"react": "^17.0.1",

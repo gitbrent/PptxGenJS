@@ -14,7 +14,7 @@ export default () => {
 							<div className="my-5">
 								<h1 className="display-1 mb-3">PptxGenJS</h1>
 								<h3 className="fw-light mb-4">Create PowerPoint presentations with JavaScript</h3>
-								<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with over 1,200 stars on GitHub</h6>
+								<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with over 1,300 stars on GitHub</h6>
 								<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
 									<div className="col-12 col-md-4">
 										<button
