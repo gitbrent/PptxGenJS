@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/PptxGenJS/demo/react/index.html/static/css/main.48d3448f.chunk.css",
-    "main.js": "/PptxGenJS/demo/react/index.html/static/js/main.79983b5d.chunk.js",
-    "main.js.map": "/PptxGenJS/demo/react/index.html/static/js/main.79983b5d.chunk.js.map",
-    "runtime-main.js": "/PptxGenJS/demo/react/index.html/static/js/runtime-main.e265c207.js",
-    "runtime-main.js.map": "/PptxGenJS/demo/react/index.html/static/js/runtime-main.e265c207.js.map",
-    "static/js/2.80b36377.chunk.js": "/PptxGenJS/demo/react/index.html/static/js/2.80b36377.chunk.js",
-    "static/js/2.80b36377.chunk.js.map": "/PptxGenJS/demo/react/index.html/static/js/2.80b36377.chunk.js.map",
-    "static/js/3.3af7fb1d.chunk.js": "/PptxGenJS/demo/react/index.html/static/js/3.3af7fb1d.chunk.js",
-    "static/js/3.3af7fb1d.chunk.js.map": "/PptxGenJS/demo/react/index.html/static/js/3.3af7fb1d.chunk.js.map",
-    "index.html": "/PptxGenJS/demo/react/index.html/index.html",
-    "static/css/main.48d3448f.chunk.css.map": "/PptxGenJS/demo/react/index.html/static/css/main.48d3448f.chunk.css.map",
-    "static/js/2.80b36377.chunk.js.LICENSE.txt": "/PptxGenJS/demo/react/index.html/static/js/2.80b36377.chunk.js.LICENSE.txt",
-    "static/media/logo.6ce24c58.svg": "/PptxGenJS/demo/react/index.html/static/media/logo.6ce24c58.svg"
+    "main.css": "/PptxGenJS/demo/react/static/css/main.48d3448f.chunk.css",
+    "main.js": "/PptxGenJS/demo/react/static/js/main.79983b5d.chunk.js",
+    "main.js.map": "/PptxGenJS/demo/react/static/js/main.79983b5d.chunk.js.map",
+    "runtime-main.js": "/PptxGenJS/demo/react/static/js/runtime-main.e5c0dc35.js",
+    "runtime-main.js.map": "/PptxGenJS/demo/react/static/js/runtime-main.e5c0dc35.js.map",
+    "static/js/2.80b36377.chunk.js": "/PptxGenJS/demo/react/static/js/2.80b36377.chunk.js",
+    "static/js/2.80b36377.chunk.js.map": "/PptxGenJS/demo/react/static/js/2.80b36377.chunk.js.map",
+    "static/js/3.3af7fb1d.chunk.js": "/PptxGenJS/demo/react/static/js/3.3af7fb1d.chunk.js",
+    "static/js/3.3af7fb1d.chunk.js.map": "/PptxGenJS/demo/react/static/js/3.3af7fb1d.chunk.js.map",
+    "index.html": "/PptxGenJS/demo/react/index.html",
+    "static/css/main.48d3448f.chunk.css.map": "/PptxGenJS/demo/react/static/css/main.48d3448f.chunk.css.map",
+    "static/js/2.80b36377.chunk.js.LICENSE.txt": "/PptxGenJS/demo/react/static/js/2.80b36377.chunk.js.LICENSE.txt",
+    "static/media/logo.6ce24c58.svg": "/PptxGenJS/demo/react/static/media/logo.6ce24c58.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.e265c207.js",
+    "static/js/runtime-main.e5c0dc35.js",
     "static/js/2.80b36377.chunk.js",
     "static/css/main.48d3448f.chunk.css",
     "static/js/main.79983b5d.chunk.js"
