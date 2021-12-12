@@ -59,10 +59,12 @@ Either provide a URL location or base64 data along with type to create media.
 
 ### Media Props ([MediaProps](/PptxGenJS/docs/types#media-props-mediaprops))
 
-| Option | Type   | Description | Possible Values                                                                   |
-| :----- | :----- | :---------- | :-------------------------------------------------------------------------------- |
-| `type` | string | media type  | media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`) |
-| `link` | string | video URL   | (YouTube only): link to online video                                              |
+| Option  | Type   | Description     | Possible Values                                                                         |
+| :------ | :----- | :-------------- | :-------------------------------------------------------------------------------------- |
+| `type`  | string | media type      | media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`)       |
+| `cover` | string | cover image     | base64 encoded string of cover image                                                    |
+| `extn`  | string | media extension | use when the media file path does not already have an extension, ex: "/folder/SomeSong" |
+| `link`  | string | video URL       | (YouTube only): link to online video                                                    |
 
 ## Example
 

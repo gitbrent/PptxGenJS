@@ -12,16 +12,16 @@ Charts of almost any type can be added to Slides. See [demos/modules/demo_chart.
 ```typescript
 let pres = new pptxgen();
 let dataChartAreaLine = [
-    {
-        name: "Actual Sales",
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121],
-    },
-    {
-        name: "Projected Sales",
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121],
-    },
+	{
+		name: "Actual Sales",
+		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121],
+	},
+	{
+		name: "Projected Sales",
+		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121],
+	},
 ];
 
 slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 });
@@ -168,6 +168,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 | `barDir`                  | string      | `col`       | bar direction                                | (_Bar Chart_) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}`               |
 | `barGapWidthPct`          | number      | `150`       | width between bar groups (percent)           | (_Bar Chart_) 0-500. Ex: `{ barGapWidthPct:50 }`                                         |
 | `barGrouping`             | string      | `clustered` | bar grouping                                 | (_Bar Chart_) `clustered` or `stacked` or `percentStacked`.                              |
+| `barOverlapPct`           | number      | `0`         | overlap (percent)                            | (_Bar Chart_) `-100`-`100`. Ex: `{ barOverlapPct:50 }`                                   |
 | `catLabelFormatCode`      | string      |             | format to show data value                    | format string. Ex: `{ catLabelFormatCode:'#,##0' }`                                      |
 | `dataBorder`              | object      |             | data border                                  | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}`               |
 | `dataLabelColor`          | string      | `000000`    | data label color                             | hex color code. Ex: `{ dataLabelColor:'0088CC' }`                                        |
