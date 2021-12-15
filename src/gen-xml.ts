@@ -756,12 +756,13 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			strSlideXml += '</a:defRPr>'
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
-		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
+		strSlideXml += '<a:p>'
 		if (slide._slideNumberProps.align.startsWith('l')) strSlideXml += '<a:pPr algn="l"/>'
 		else if (slide._slideNumberProps.align.startsWith('c')) strSlideXml += '<a:pPr algn="ctr"/>'
 		else if (slide._slideNumberProps.align.startsWith('r')) strSlideXml += '<a:pPr algn="r"/>'
 		else strSlideXml += `<a:pPr algn="l"/>`
-		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
+		strSlideXml += `<a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr b="${slide._slideNumberProps.bold ? 1 : 0}" lang="en-US"/>`
+		strSlideXml += `<a:t>${slide._slideNum}</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 

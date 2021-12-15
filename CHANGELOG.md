@@ -7,11 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
-## [3.9.0] - 2021-11-??
+## [3.9.0] - 2021-12-11
+
+### Added
+
+- Added overlap parameter to bar charts [\#1010](https://github.com/gitbrent/PptxGenJS/pull/1010) ([Norfaer](https://github.com/Norfaer))
+- Slide number can now be set as bold [\#1016](https://github.com/gitbrent/PptxGenJS/pull/1016) ([mathbruyen](https://github.com/mathbruyen))
+- Added media cover images & file extensions; media is reused now (same file only loaded/written once) [\#1024](https://github.com/gitbrent/PptxGenJS/pull/1024) ([canwdev](https://github.com/canwdev))
 
 ### Fixed
 
+- Use `encodeXmlEntities()` for formatCode attributes [\#955](https://github.com/gitbrent/PptxGenJS/pull/955) ([dimfeld](https://github.com/dimfeld))
 - SlideNumber vertical alignment (`valign`) not working [\#1000](https://github.com/gitbrent/PptxGenJS/pull/1000) ([kramsram](https://github.com/kramsram))
+- Fix for InvertedColors (Issue #970) [\#1004](https://github.com/gitbrent/PptxGenJS/pull/1004) ([leonyah](https://github.com/leonyah))
+- PPT repair issue for long text [\#1008](https://github.com/gitbrent/PptxGenJS/issues/1008) ([Naveencheekoti17](https://github.com/Naveencheekoti17)), fixed via [\#1028](https://github.com/gitbrent/PptxGenJS/pull/1028) ([gitbrent](https://github.com/gitbrent))
+- Doughnut chart: each data marker as a different color [\#1017](https://github.com/gitbrent/PptxGenJS/pull/1017) ([mathbruyen](https://github.com/mathbruyen))
+
+### Changed
+
+- React Demo: updated to latest create-react-app ([gitbrent](https://github.com/gitbrent))
 
 ## [3.8.0] - 2021-09-28
 
@@ -22,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Browser Demo: refreshed UI and upgraded to bootstrap-5 [\#997](https://github.com/gitbrent/PptxGenJS/pull/997) ([gitbrent](https://github.com/gitbrent))
-- Documentation site (gh-pages) rebuilt from scrath [\#999](https://github.com/gitbrent/PptxGenJS/pull/999) ([gitbrent](https://github.com/gitbrent))
+- Documentation site (gh-pages) rebuilt from scratch [\#999](https://github.com/gitbrent/PptxGenJS/pull/999) ([gitbrent](https://github.com/gitbrent))
 
 ## [3.7.1] - 2021-07-21
 

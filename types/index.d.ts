@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.8.0
+// Type definitions for pptxgenjs 3.9.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -1076,12 +1076,6 @@ declare namespace PptxGenJS {
 		 */
 		breakLine?: boolean
 		/**
-		 * Add a soft line-break (shift+enter) before line text content
-		 * @default false
-		 * @since v3.5.0
-		 */
-		softBreakBefore?: boolean
-		/**
 		 * Add standard or custom bullet
 		 * - use `true` for standard bullet
 		 * - pass object options for custom bullet
@@ -1196,6 +1190,12 @@ declare namespace PptxGenJS {
 		 * @example 'fr-CA' // french Canadian
 		 */
 		lang?: string
+		/**
+		 * Add a soft line-break (shift+enter) before line text content
+		 * @default false
+		 * @since v3.5.0
+		 */
+		softBreakBefore?: boolean
 		/**
 		 * tab stops
 		 * - PowerPoint: Paragraph > Tabs > Tab stop position
@@ -1314,6 +1314,19 @@ declare namespace PptxGenJS {
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
 		 */
 		type: MediaType
+		/**
+		 * Cover image
+		 * @since 3.9.0
+		 * @default "play button" image, gray background
+		 */
+		cover?: string
+		/**
+		 * media file extension
+		 * - use when the media file path does not already have an extension, ex: "/folder/SomeSong"
+		 * @since 3.9.0
+		 * @default extension from file provided
+		 */
+		extn?: string
 		/**
 		 * video embed link
 		 * - works with YouTube
@@ -1863,7 +1876,7 @@ declare namespace PptxGenJS {
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
 		fill?: HexColor
-		invertedColors?: string
+		invertedColors?: HexColor[]
 		lang?: string
 		layout?: PositionProps
 		shadow?: ShadowProps
@@ -2010,8 +2023,22 @@ declare namespace PptxGenJS {
 		bar3DShape?: string
 		barDir?: string
 		barGapDepthPct?: number
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Gap Width"
+		 * - width (percent)
+		 * - range: `0`-`500`
+		 * @default 150
+		 */
 		barGapWidthPct?: number
 		barGrouping?: string
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Series Overlap"
+		 * - overlap (percent)
+		 * - range: `-100`-`100`
+		 * @since v3.9.0
+		 * @default 0
+		 */
+		barOverlapPct?: number
 	}
 	export interface IChartPropsChartDoughnut {
 		dataNoEffects?: boolean
@@ -2167,6 +2194,10 @@ declare namespace PptxGenJS {
 		height: number
 	}
 	export interface SlideNumberProps extends PositionProps, TextBaseProps {
+		/**
+		 * margin (points)
+		 * TODO: convert to inches in 4.0 (valid values are 0-22)
+		 */
 		margin?: Margin
 	}
 	export interface SlideMasterProps {

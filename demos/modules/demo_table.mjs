@@ -38,7 +38,7 @@ export function genSlides_Table(pptx) {
 	genSlide09(pptx);
 
 	pptx.addSection({ title: "Tables: QA" });
-	//genSlide10(pptx);
+	genSlide10(pptx);
 }
 
 /**

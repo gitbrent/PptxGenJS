@@ -74,7 +74,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
-- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demo)
+- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demos/)
 
 # Installation
 
@@ -85,14 +85,14 @@ Visit the demos page to create a simple presentation to see how easy it is to us
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.8.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.9.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.8.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.8.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.9.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.9.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download
@@ -187,21 +187,21 @@ That's really all there is to it!
 
 Full documentation and code examples are available
 
-- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create)
-- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options)
-- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide)
-- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options)
-- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving)
-- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters)
-- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts)
-- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images)
-- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media)
-- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes)
-- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables)
-- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text)
-- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes)
-- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes)
-- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration)
+- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create/)
+- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options/)
+- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide/)
+- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options/)
+- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving/)
+- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters/)
+- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts/)
+- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images/)
+- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media/)
+- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes/)
+- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables/)
+- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text/)
+- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes/)
+- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
+- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
 
 ---
 
@@ -217,8 +217,7 @@ pptx.writeFile({ fileName: "html2pptx-demo.pptx" });
 
 Learn more:
 
-- [HTML-to-PowerPoint Documentation](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint)
-- [Online HTML-to-PowerPoint Demo](https://gitbrent.github.io/PptxGenJS/demo/#html2pptx)
+- [HTML-to-PowerPoint Docs/Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
 
 ---
 
@@ -269,7 +268,7 @@ PowerPoint shape definitions and some XML code via [Officegen Project](https://g
 
 # Sponsor Us
 
-If you find this library useful, please consider sponsoring us through a [donation](https://gitbrent.github.io/PptxGenJS/sponsor)
+If you find this library useful, please consider sponsoring us through a [donation](https://gitbrent.github.io/PptxGenJS/sponsor/)
 
 ---
 
