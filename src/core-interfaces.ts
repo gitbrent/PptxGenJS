@@ -456,6 +456,12 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 	 */
 	rounding?: boolean
 	/**
+	 * Transparency (percent)
+	 * - range: 0-100
+	 * @default 0
+	 */
+	transparency?: number
+	/**
 	 * Image sizing options
 	 */
 	sizing?: {
