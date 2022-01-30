@@ -66,7 +66,7 @@ export default () => {
 									<h4 className="text-primary mb-4">Works Everywhere</h4>
 									<ul className="mb-0">
 										<li>Every modern desktop and mobile browser is supported</li>
-										<li>Integrates with Node, Angular, React and Electron</li>
+										<li>Integrates with Node, Angular, React, and Electron</li>
 										<li>Compatible with Microsoft PowerPoint, Apple Keynote, and many others</li>
 									</ul>
 								</div>
@@ -77,9 +77,9 @@ export default () => {
 								<div className="card-body border-top border-2 border-primary p-4 border-0">
 									<h4 className="text-primary mb-4">Full Featured</h4>
 									<ul className="mb-0">
-										<li>All major objects are available (charts, shapes, tables, etc)</li>
+										<li>All major objects are available (charts, shapes, tables, etc.)</li>
 										<li>Master Slide support for academic/corporate branding</li>
-										<li>SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts</li>
+										<li>Animated gifs, SVG images, YouTube videos, RTL text, and Asian fonts</li>
 									</ul>
 								</div>
 							</div>
