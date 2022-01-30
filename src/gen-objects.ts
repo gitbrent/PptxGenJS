@@ -640,6 +640,11 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 		dashType: options.line.dashType || 'solid',
 		beginArrowType: options.line.beginArrowType || null,
 		endArrowType: options.line.endArrowType || null,
+		sourceId: options.line.sourceId || null,
+		targetId: options.line.targetId || null,
+		sourceAnchorPos: options.line.sourceAnchorPos || (options.line.sourceAnchorPos === 0 ? 0 : null),
+		targetAnchorPos: options.line.targetAnchorPos || (options.line.targetAnchorPos === 0 ? 0 : null),
+		isConnector: options.line && (options.line.sourceId != null || options.line.targetId != null),
 	}
 	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
