@@ -89,7 +89,7 @@ export default () => {
 						type="button"
 						aria-label="demo"
 						className="btn btn-outline-primary px-5"
-						onClick={() => (window.location.href = "/PptxGenJS/demo/index.html#html2pptx")}
+						onClick={() => (window.location.href = "/PptxGenJS/demo/browser/index.html#html2pptx")}
 					>
 						HTML to PowerPoint Demo
 					</button>
