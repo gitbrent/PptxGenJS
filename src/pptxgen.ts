@@ -76,6 +76,7 @@ import {
 	SchemeColor,
 	ShapeType,
 	WRITE_OUTPUT_TYPE,
+	ANCHOR
 } from './core-enums'
 import {
 	AddSlideProps,
@@ -281,6 +282,10 @@ export default class PptxGenJS implements IPresentationProps {
 	private _shapes = SHAPE_TYPE
 	public get shapes(): typeof SHAPE_TYPE {
 		return this._shapes
+	}
+	private _anchor = ANCHOR
+	public get anchor(): typeof ANCHOR {
+		return this._anchor
 	}
 
 	constructor() {
