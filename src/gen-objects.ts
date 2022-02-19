@@ -1006,6 +1006,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true
 
 			// E: Inset
+			// @deprecated 3.10.0 (`inset` - use `margin`)
 			if ((itemOpts.inset && !isNaN(Number(itemOpts.inset))) || itemOpts.inset === 0) {
 				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.inset)
 				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.inset)

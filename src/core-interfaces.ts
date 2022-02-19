@@ -948,7 +948,6 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	glow?: TextGlowProps
 	hyperlink?: HyperlinkProps
 	indentLevel?: number
-	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
 	/**
@@ -965,6 +964,15 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @since v3.5.0
 	 */
 	lineSpacingMultiple?: number
+	// TODO: [20220219] powerpoint uses inches but library has always been pt... @future @deprecated - update in v4.0? [range: 0.0-22.0]
+	/**
+	 * Margin (points)
+	 * - PowerPoint: Format Shape > Shape Options > Size & Properties > Text Box > Left/Right/Top/Bottom margin
+	 * @default "Normal" margin in PowerPoint [3.5, 7.0, 3.5, 7.0] // (this library sets no value, but PowerPoint defaults to "Normal" [0.05", 0.1", 0.05", 0.1"])
+	 * @example 0 // Top/Right/Bottom/Left margin 0 [0.0" in powerpoint]
+	 * @example 10 // Top/Right/Bottom/Left margin 10 [0.14" in powerpoint]
+	 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
+	 */
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
@@ -993,6 +1001,10 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
 	superscript?: boolean
+	/**
+	 * Vertical alignment
+	 * @default middle
+	 */
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
@@ -1003,7 +1015,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	wrap?: boolean
 
 	/**
-	 * Whather "Fit to Shape?" is enabled
+	 * Whether "Fit to Shape?" is enabled
 	 * @deprecated v3.3.0 - use `fit`
 	 */
 	autoFit?: boolean
@@ -1012,6 +1024,11 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @deprecated v3.3.0 - use `fit`
 	 */
 	shrinkText?: boolean
+	/**
+	 * Inset
+	 * @deprecated v3.10.0 - use `margin`
+	 */
+	inset?: number
 	/**
 	 * Dash type
 	 * @deprecated v3.3.0 - use `line.dashType`

@@ -1741,7 +1741,6 @@ declare namespace PptxGenJS {
 		glow?: TextGlowProps
 		hyperlink?: HyperlinkProps
 		indentLevel?: number
-		inset?: number
 		isTextBox?: boolean
 		line?: ShapeLineProps
 		/**
@@ -1758,6 +1757,14 @@ declare namespace PptxGenJS {
 		 * @since v3.5.0
 		 */
 		lineSpacingMultiple?: number
+		/**
+		 * Margin (points)
+		 * - PowerPoint: Format Shape > Shape Options > Size & Properties > Text Box > Left/Right/Top/Bottom margin
+		 * @default "Normal" margin in PowerPoint [3.5, 7.0, 3.5, 7.0] // (this library sets no value, but PowerPoint defaults to "Normal" [0.05", 0.1", 0.05", 0.1"])
+		 * @example 0 // Top/Right/Bottom/Left margin 0 [0.0" in powerpoint]
+		 * @example 10 // Top/Right/Bottom/Left margin 10 [0.14" in powerpoint]
+		 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
+		 */
 		margin?: Margin
 		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
@@ -1796,7 +1803,7 @@ declare namespace PptxGenJS {
 		wrap?: boolean
 
 		/**
-		 * Whather "Fit to Shape?" is enabled
+		 * Whether "Fit to Shape?" is enabled
 		 * @deprecated v3.3.0 - use `fit`
 		 */
 		autoFit?: boolean
@@ -1805,6 +1812,11 @@ declare namespace PptxGenJS {
 		 * @deprecated v3.3.0 - use `fit`
 		 */
 		shrinkText?: boolean
+		/**
+		 * Inset
+		 * @deprecated v3.10.0 - use `margin`
+		 */
+		inset?: number
 		/**
 		 * Dash type
 		 * @deprecated v3.3.0 - use `line.dashType`
