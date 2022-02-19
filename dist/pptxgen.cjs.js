@@ -1,4 +1,4 @@
-/* PptxGenJS 3.9.0 @ 2021-12-11T18:00:42.636Z */
+/* PptxGenJS 3.10.0-beta @ 2022-02-19T20:14:23.994Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4184,6 +4184,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             itemOpts._bodyProp.vert = itemOpts.vert || null; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
             itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true;
             // E: Inset
+            // @deprecated 3.10.0 (`inset` - use `margin`)
             if ((itemOpts.inset && !isNaN(Number(itemOpts.inset))) || itemOpts.inset === 0) {
                 itemOpts._bodyProp.lIns = inch2Emu(itemOpts.inset);
                 itemOpts._bodyProp.rIns = inch2Emu(itemOpts.inset);
@@ -6469,7 +6470,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.9.0';
+var VERSION = '3.10.0-beta-20220219-1356';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
