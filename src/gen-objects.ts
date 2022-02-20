@@ -645,6 +645,7 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 		sourceAnchorPos: options.line.sourceAnchorPos || (options.line.sourceAnchorPos === 0 ? 0 : null),
 		targetAnchorPos: options.line.targetAnchorPos || (options.line.targetAnchorPos === 0 ? 0 : null),
 		isConnector: options.line && (options.line.sourceId != null || options.line.targetId != null),
+		curveadjust: options.line.curveadjust || null
 	}
 	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 

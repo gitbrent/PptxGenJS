@@ -16,6 +16,12 @@ import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALI
  * @example '75%' // coordinate as percentage of slide size
  */
 export type Coord = number | string
+
+export type IDCoord = {
+	id:number
+	posistion: PositionProps
+}
+
 export type PositionProps = {
 	/**
 	 * Horizontal position
@@ -259,6 +265,10 @@ export interface ShapeLineProps extends ShapeFillProps {
 	 * target shape connection position (dependent on available connection points on a shape)
 	 */
 	targetAnchorPos?: number
+	/**
+	 * adjustments to the curve
+	 */
+	 curveadjust?: number[]
 
 }
 // used by: chart, slide, table, text

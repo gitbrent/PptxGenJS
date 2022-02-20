@@ -3,6 +3,7 @@
  */
 
 import {
+	ANCHOR,
 	BULLET_TYPES,
 	CRLF,
 	DEF_BULLET_MARGIN,
@@ -18,6 +19,7 @@ import {
 } from './core-enums'
 import {
 	IChartOpts,
+	IDCoord,
 	ImageProps,
 	IPresentationProps,
 	ISlideObject,
@@ -80,6 +82,23 @@ let imageSizingXml = {
 }
 
 /**
+ * this function finds the elements of a list based on its id
+ * it is only really used for finding shapes in the coordinates list
+ * this is so the program can caluclate the posistion of connecting lines by itself
+ * @param {IDCoord[]} list 
+ * @param {number} id 
+ */
+
+function FindById(list: IDCoord[], id: number): IDCoord {
+	for (const element of list) {
+		if (element.id == id) {
+			return element
+		}
+	}
+	console.error("no element in list matching id")
+}
+
+/**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
  * @param {PresSlide|SlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
@@ -104,7 +123,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>'
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
-	let IDs = []
+	let IDs: number[] = []
+	let coordinates: IDCoord[] = []
 
 	// STEP 3: Loop over all Slide.data objects and add them to this slide
 	slide._slideObjects.forEach((slideItemObj: ISlideObject, idx: number) => {
@@ -127,6 +147,19 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 
 
+
+		if (slideItemObj.options != undefined) {
+			coordinates.push({
+				id: IDs.at(-1),
+				posistion: {
+					x: slideItemObj.options.x,
+					y: slideItemObj.options.y,
+					w: slideItemObj.options.w,
+					h: slideItemObj.options.h
+				}
+			})
+		}
+
 		let x = 0,
 			y = 0,
 			cx = getSmartParseNumber('75%', 'X', slide._presLayout),
@@ -148,10 +181,107 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		// A: Set option vars
 		slideItemObj.options = slideItemObj.options || {}
 
-		if (typeof slideItemObj.options.x !== 'undefined') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide._presLayout)
-		if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout)
-		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
-		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
+		//calculates the coordinates for connecting lines, only works for squares with number posistions ( so no percentages)
+		if (slideItemObj.options.line != undefined) {
+			if (slideItemObj.options.line.isConnector) {
+				const source = FindById(coordinates, slideItemObj.options.line.sourceId);
+				const target = FindById(coordinates, slideItemObj.options.line.targetId);
+
+
+				let deltaX = 0;
+				let deltaY = 0;
+				//this does not work for triangle because anchorpoint is outside the enum!!!!
+				switch (slideItemObj.options.line.sourceAnchorPos) {
+					case ANCHOR.TOP:
+						deltaX = Number(source.posistion.w) / 2;
+						x = Number(source.posistion.x) + deltaX;
+						y = Number(source.posistion.y)
+						break;
+					case ANCHOR.BOTTOM:
+						deltaX = Number(source.posistion.w) / 2;
+						x = Number(source.posistion.x) + deltaX;
+						deltaY = Number(source.posistion.h)
+						y = Number(source.posistion.y) + deltaY
+						break;
+					case ANCHOR.LEFT:
+						deltaY = Number(source.posistion.h) / 2;
+						y = Number(source.posistion.y) + deltaY;
+						x = Number(source.posistion.x);
+						break;
+					case ANCHOR.RIGHT:
+						deltaY = Number(source.posistion.h) / 2;
+						y = Number(source.posistion.y) + deltaY;
+						deltaX = Number(source.posistion.w)
+						x = Number(source.posistion.x) + deltaX;
+						break;
+				}
+
+				let tx = 0;
+				let ty = 0;
+
+				switch (slideItemObj.options.line.targetAnchorPos) {
+					case ANCHOR.TOP:
+						deltaX = Number(target.posistion.w) / 2;
+						tx = Number(target.posistion.x) + deltaX;
+						ty = Number(target.posistion.y)
+						break;
+					case ANCHOR.BOTTOM:
+						deltaX = Number(target.posistion.w) / 2;
+						tx = Number(target.posistion.x) + deltaX;
+						deltaY = Number(target.posistion.h)
+						ty = Number(target.posistion.y) + deltaY
+						break;
+					case ANCHOR.LEFT:
+						deltaY = Number(target.posistion.h) / 2;
+						ty = Number(target.posistion.y) + deltaY;
+						tx = Number(target.posistion.x);
+						break;
+					case ANCHOR.RIGHT:
+						deltaY = Number(target.posistion.h) / 2;
+						ty = Number(target.posistion.y) + deltaY;
+						deltaX = Number(target.posistion.w)
+						tx = Number(target.posistion.x) + deltaX;
+						break;
+				}
+
+				if (tx > x) {
+					cx = tx - x
+
+					slideItemObj.options.flipH = false;
+				} else {
+					slideItemObj.options.flipH = true;
+					cx = x - tx
+					x = tx;
+				}
+				if (ty > y) {
+					cy = ty - y;
+					slideItemObj.options.flipV = false;
+				} else {
+					cy = y - ty
+					y = ty;
+					slideItemObj.options.flipV = true;
+				}
+
+				x = getSmartParseNumber(x, "X", slide._presLayout);
+				y = getSmartParseNumber(y, "Y", slide._presLayout);
+				cx = getSmartParseNumber(cx, "X", slide._presLayout);
+				cy = getSmartParseNumber(cy, "X", slide._presLayout);
+
+
+			} else {
+				if (typeof slideItemObj.options.x !== 'undefined') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide._presLayout)
+				if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout)
+				if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
+				if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
+			}
+		} else {
+			if (typeof slideItemObj.options.x !== 'undefined') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide._presLayout)
+			if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout)
+			if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
+			if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
+		}
+
+
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
@@ -228,7 +358,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				// We have to build an actual grid now
 				/*
 					EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
-
+	
 					/------|------|------|------\
 					|  A0  |  B0  |  C0  |  D0  |
 					|      |  B1  |  C1  |      |
@@ -440,8 +570,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += '</p:cNvPr>'
 					//TODO add idx feature
 					strSlideXml += `<p:cNvCxnSpPr> 
-										<a:stCxn id="${slideItemObj.options.line.sourceId }" idx="${slideItemObj.options.line.sourceAnchorPos}" /> 
-										<a:endCxn id="${slideItemObj.options.line.targetId }" idx="${slideItemObj.options.line.targetAnchorPos}" />
+										<a:stCxn id="${slideItemObj.options.line.sourceId}" idx="${slideItemObj.options.line.sourceAnchorPos}" /> 
+										<a:endCxn id="${slideItemObj.options.line.targetId}" idx="${slideItemObj.options.line.targetAnchorPos}" />
 									</p:cNvCxnSpPr>` ;
 					strSlideXml += '<p:nvPr/>'
 					strSlideXml += '</p:nvCxnSpPr><p:spPr>'
@@ -450,9 +580,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
 
 					strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>'
-					if (slideItemObj.options.rectRadius) {
-						strSlideXml += `<a:gd name="adj" fmla="val ${Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy))}"/>`
-					} else if (slideItemObj.options.angleRange) {
+					if (slideItemObj.options.angleRange) {
 						for (let i = 0; i < 2; i++) {
 							const angle = slideItemObj.options.angleRange[i]
 							strSlideXml += `<a:gd name="adj${i + 1}" fmla="val ${convertRotationDegrees(angle)}" />`
@@ -462,6 +590,17 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 							strSlideXml += `<a:gd name="adj3" fmla="val ${Math.round(slideItemObj.options.arcThicknessRatio * 50000)}" />`
 						}
 					}
+
+					if (slideItemObj.options.line.curveadjust) {
+						let i = 1
+						for (const adjustments in slideItemObj.options.line.curveadjust) {
+							strSlideXml += `<a:gd name="adj${i}" fmla="val ${getSmartParseNumber(adjustments, "X", slide._presLayout)}" />`
+							i++
+						}
+
+					}
+
+
 					strSlideXml += '</a:avLst></a:prstGeom>'
 
 
