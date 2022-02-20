@@ -465,22 +465,32 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		type: 'contain' | 'cover' | 'crop'
 		/**
 		 * Image width
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
 		w: Coord
 		/**
 		 * Image height
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
 		h: Coord
 		/**
-		 * Area horizontal position related to the image
-		 * - Values: 0-n
+		 * Offset from left to crop image
 		 * - `crop` only
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
 		x?: Coord
 		/**
-		 * Area vertical position related to the image
-		 * - Values: 0-n
+		 * Offset from top to crop image
 		 * - `crop` only
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
 		y?: Coord
 	}
