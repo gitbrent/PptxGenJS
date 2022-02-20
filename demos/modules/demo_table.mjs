@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.7.2
- * BLD.: 20210807
+ * VER.: 3.10.0
+ * BLD.: 20220220
  */
 
 import {
@@ -101,7 +101,7 @@ function genSlide01(pptx) {
 		],
 		[
 			{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
-			{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
+			{ text: "Underline", options: { fill: { color: "336699" }, underline: { style: "sng" } } },
 			{ text: "0.15 margin", options: { fill: { color: "6699CC" }, margin: 0.15 } },
 		],
 	];
