@@ -321,6 +321,13 @@ export enum AlignV {
 	'bottom' = 'bottom',
 }
 
+export enum ANCHOR{
+	"TOP" = 0,
+	"LEFT" = 1,
+	"BOTTOM" = 2,
+	"RIGHT" = 3
+}
+
 export enum SHAPE_TYPE {
 	ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
 	ACTION_BUTTON_BEGINNING = 'actionButtonBeginning',

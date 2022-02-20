@@ -96,6 +96,7 @@ function genSlide01(pptx) {
 	});
 
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, {
+		sId: 20,
 		x: 0.4,
 		y: 4.3,
 		w: 6.0,
@@ -105,6 +106,7 @@ function genSlide01(pptx) {
 		shapeName: "First Right Triangle",
 	});
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, {
+		sId: 21,
 		x: 7.0,
 		y: 4.3,
 		w: 6.0,
@@ -113,6 +115,22 @@ function genSlide01(pptx) {
 		line: { color: pptx.colors.ACCENT1, width: 2 },
 		flipH: true,
 	});
+
+	slide.addShape(pptx.shapes.LINE, {
+		x: 3108960,
+		y: 5303520,
+		w: 6035040,
+		h: 0,
+		line: {
+			width: 2, color: "000000",
+			sourceId: 20,
+			targetId: 21,
+			sourceAnchorPos: 5, // on rectangel pptx.anchor.TOP , pptx.anchor.BOTTOM , pptx.anchor.LEFT or pptx.anchor.RIGHT
+			targetAnchorPos: 5 // could be used instead
+		}
+	});
+
+
 }
 
 /**
@@ -251,6 +269,7 @@ function genSlide02(pptx) {
 	slide.addText("RIGHT-TRIANGLE", {
 		shape: pptx.shapes.RIGHT_TRIANGLE,
 		align: "center",
+		sId: 20,
 		x: 0.4,
 		y: 4.3,
 		w: 6,
@@ -261,6 +280,7 @@ function genSlide02(pptx) {
 	slide.addText("HYPERLINK-SHAPE", {
 		shape: pptx.shapes.RIGHT_TRIANGLE,
 		align: "center",
+		sId: 21,
 		x: 7.0,
 		y: 4.3,
 		w: 6,
@@ -270,4 +290,18 @@ function genSlide02(pptx) {
 		flipH: true,
 		hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" },
 	});
+	slide.addShape(pptx.shapes.LINE, {
+		x: 3108960,
+		y: 5303520,
+		w: 6035040,
+		h: 0,
+		line: {
+			width: 2, color: "000000",
+			sourceId: 20,
+			targetId: 21,
+			sourceAnchorPos: 5, // on rectangel pptx.anchor.TOP , pptx.anchor.BOTTOM , pptx.anchor.LEFT or pptx.anchor.RIGHT
+			targetAnchorPos: 5 // could be used instead
+		}
+	});
+	slide.addText("Connected lines do not support text", {x:4.5,y:6})
 }
