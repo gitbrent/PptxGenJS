@@ -9,13 +9,13 @@ import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALI
 
 /**
  * Coordinate number - either:
- * - Inches
- * - Percentage
+ * - Inches (0-n)
+ * - Percentage (0-100)
  *
  * @example 10.25 // coordinate in inches
  * @example '75%' // coordinate as percentage of slide size
  */
-export type Coord = number | string
+export type Coord = number | `${number}%`
 export type PositionProps = {
 	/**
 	 * Horizontal position
@@ -466,23 +466,23 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		/**
 		 * Image width
 		 */
-		w: number
+		w: Coord
 		/**
 		 * Image height
 		 */
-		h: number
+		h: Coord
 		/**
 		 * Area horizontal position related to the image
 		 * - Values: 0-n
 		 * - `crop` only
 		 */
-		x?: number
+		x?: Coord
 		/**
 		 * Area vertical position related to the image
 		 * - Values: 0-n
 		 * - `crop` only
 		 */
-		y?: number
+		y?: Coord
 	}
 }
 /**
