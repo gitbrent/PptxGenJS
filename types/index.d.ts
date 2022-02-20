@@ -19,7 +19,7 @@ declare class PptxGenJS {
 	readonly version: string
 
 	// Exposed prop types
-	readonly presLayout: PptxGenJS.PresentationProps
+	readonly presLayout: PptxGenJS.PresLayout
 	readonly AlignH: typeof PptxGenJS.AlignH
 	readonly AlignV: typeof PptxGenJS.AlignV
 	readonly ChartType: typeof PptxGenJS.ChartType
@@ -1284,22 +1284,32 @@ declare namespace PptxGenJS {
 			type: 'contain' | 'cover' | 'crop'
 			/**
 			 * Image width
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
 			w: Coord
 			/**
 			 * Image height
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
 			h: Coord
 			/**
-			 * Area horizontal position related to the image
-			 * - Values: 0-n
+			 * Offset from left to crop image
 			 * - `crop` only
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
 			x?: Coord
 			/**
-			 * Area vertical position related to the image
-			 * - Values: 0-n
+			 * Offset from top to crop image
 			 * - `crop` only
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
 			y?: Coord
 		}
