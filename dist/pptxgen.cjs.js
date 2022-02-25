@@ -1,4 +1,4 @@
-/* PptxGenJS 3.10.0-beta @ 2022-02-20T18:32:35.520Z */
+/* PptxGenJS 3.10.0-beta @ 2022-02-25T02:41:09.336Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5126,7 +5126,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 else {
                     strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
                 }
-                if (chartType === CHART_TYPE.LINE) {
+                if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
                     if (opts.lineSize === 0) {
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
@@ -6470,7 +6470,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.10.0-beta-20220220-1232';
+var VERSION = '3.10.0-beta-20220224-1805';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
