@@ -3,11 +3,22 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.9.0
- * BLD.: 20211127
+ * VER.: 3.10.0
+ * BLD.: 20220224
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.mjs";
+import {
+	IMAGE_PATHS,
+	BASE_TABLE_OPTS,
+	BASE_TEXT_OPTS_L,
+	BASE_TEXT_OPTS_R,
+	COLOR_RED,
+	COLOR_AMB,
+	COLOR_GRN,
+	COLOR_UNK,
+	TESTMODE,
+	COLOR_BLU,
+} from "./enums.mjs";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -1393,88 +1404,154 @@ function genSlide16(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Radar Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	let arrDataRegions = [
+	const arrDataRegions = [
 		{
 			name: "Region 1",
-			labels: ["May", "June", "July", "August", "September"],
-			values: [26, 53, 100, 75, 41],
+			labels: ["Jun", "Jul", "Aug", "Sep"],
+			values: [20, 18, 15, 10],
 		},
 	];
-	let arrDataHighVals = [
+	const arrDataStudents = [
 		{
-			name: "California",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [2000, 2800, 3200, 4000, 5000],
+			name: "Student 1",
+			labels: ["Logic", "Coding", "Results", "Comments", "Runtime"],
+			values: [3, 1, 3, 3, 4],
 		},
 		{
-			name: "Texas",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [1400, 2000, 2500, 3000, 3800],
+			name: "Student 2",
+			labels: ["Logic", "Coding", "Results", "Comments", "Runtime"],
+			values: [1, 2, 2, 3, 2],
+		},
+		{
+			name: "Student 3",
+			labels: ["Logic", "Coding", "Results", "Comments", "Runtime"],
+			values: [2, 3, 3, 4, 3],
 		},
 	];
 
-	// TOP-LEFT: Standard
-	let optsChartRadar1 = { x: 0.5, y: 0.6, w: 6.0, h: 3.0, radarStyle: "standard", lineDataSymbol: "none", fill: "F1F1F1" };
-	slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar1);
+	// TOP-ROW
+	{
+		// TOP-L: `{ radar:'normal' }`
+		slide.addText("....", { x: 0.5, y: 0.6, w: 4.0, h: 3.0, fill: { color: "F9F9F9" }, color: "F9F9F9" });
+		let optsChartRadar1 = {
+			x: 0.5,
+			y: 0.6,
+			w: 4.0,
+			h: 3.0,
+			radarStyle: "standard",
+			//
+			showTitle: true,
+			titleColor: "7F7F7F",
+			titleFontFace: "Segoe UI",
+			titleFontSize: 12,
+			title: "radarStyle: 'standard'",
+			//
+			lineDataSymbol: "none",
+		};
+		slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar1);
 
-	// TOP-RIGHT: Marker
-	let optsChartRadar2 = {
-		x: 7.0,
-		y: 0.6,
-		w: 6.0,
-		h: 3.0,
-		radarStyle: "marker",
-		catAxisLabelColor: "0000CC",
-		catAxisLabelFontFace: "Courier",
-		catAxisLabelFontSize: 12,
-	};
-	slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar2);
+		// TOP-C: `{ radar:'marker' }` Cat Axis options
+		slide.addText("....", { x: 4.65, y: 0.6, w: 4.0, h: 3.0, fill: { color: "F9F9F9" }, color: "F9F9F9" });
+		let optsChartRadar2 = {
+			x: 4.65,
+			y: 0.6,
+			w: 4.0,
+			h: 3.0,
+			radarStyle: "marker",
+			//
+			showTitle: true,
+			titleColor: "7F7F7F",
+			titleFontFace: "Segoe UI",
+			titleFontSize: 12,
+			title: "radarStyle: 'marker'",
+		};
+		slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar2);
 
-	// BTM-LEFT: Filled - TITLE and LEGEND
-	slide.addText(".", { x: 0.5, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
-	let optsChartRadar3 = {
-		x: 0.5,
-		y: 3.8,
-		w: 6.0,
-		h: 3.5,
-		radarStyle: "filled",
-		catAxisLabelColor: "CC0000",
-		catAxisLabelFontFace: "Helvetica Neue",
-		catAxisLabelFontSize: 14,
+		// TOP-R: `{ radar:'marker' }` Cat Axis options
+		slide.addText("....", { x: 8.8, y: 0.6, w: 4.0, h: 3.0, fill: { color: "F9F9F9" }, color: "F9F9F9" });
+		let optsChartRadar3 = {
+			x: 8.8,
+			y: 0.6,
+			w: 4.0,
+			h: 3.0,
+			radarStyle: "filled",
+			//
+			showTitle: true,
+			titleColor: "7F7F7F",
+			titleFontFace: "Segoe UI",
+			titleFontSize: 12,
+			title: "radarStyle: 'filled'",
+		};
+		slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar3);
+	}
 
-		showTitle: true,
-		titleColor: "33CF22",
-		titleFontFace: "Helvetica Neue",
-		titleFontSize: 16,
-		title: "Sales by Region",
+	// BTM-ROW
+	{
+		// BTM-L: marker/line options
+		slide.addText(".", { x: 0.5, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
+		let optsChartRadar10 = {
+			x: 0.5,
+			y: 3.8,
+			w: 6.0,
+			h: 3.5,
+			radarStyle: "marker",
+			catAxisLabelColor: COLOR_BLU,
+			catAxisLabelFontFace: "Courier",
+			catAxisLabelFontSize: 11,
+			//
+			chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN], // marker & line color
+			lineDataSymbol: "diamond", // marker type ('circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle')
+			lineDataSymbolLineColor: COLOR_BLU, // marker border color (hex)
+			lineDataSymbolLineSize: 2, // marker border size (points)
+			lineDataSymbolSize: 12, // marker size (2-72)
+			lineSize: 3, // line size
+			valAxisLineColor: "D9D9D9", // val axis is the main, center N-S, W-E lines
+			valAxisLineSize: 2, // val axis lines size
+			//
+			showLegend: true,
+			legendPos: "l",
+			//
+			showTitle: true,
+			title: "Line/Marker Options",
+			titleColor: "7F7F7F",
+			titleFontFace: "Helvetica Neue",
+			titleFontSize: 12,
+		};
+		slide.addChart(pptx.charts.RADAR, arrDataStudents, optsChartRadar10);
 
-		showLegend: true,
-	};
-	slide.addChart(pptx.charts.RADAR, arrDataHighVals, optsChartRadar3);
-
-	// BTM-RIGHT: TITLE and LEGEND
-	slide.addText(".", { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
-	let optsChartRadar4 = {
-		x: 7.0,
-		y: 3.8,
-		w: 6.0,
-		h: 3.5,
-		radarStyle: "filled",
-		chartColors: ["0088CC", "99FFCC"],
-
-		catAxisLabelColor: "0000CC",
-		catAxisLabelFontFace: "Times",
-		catAxisLabelFontSize: 11,
-		catAxisLineShow: false,
-
-		showLegend: true,
-		legendPos: "t",
-		legendColor: "FF0000",
-		showTitle: true,
-		titleColor: "FF0000",
-		title: "Red Title and Legend",
-	};
-	slide.addChart(pptx.charts.RADAR, arrDataHighVals, optsChartRadar4);
+		// BTM-R: Filled/Axis Options
+		slide.addText(".", { x: 6.83, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
+		let optsChartRadar11 = {
+			x: 6.83,
+			y: 3.8,
+			w: 6.0,
+			h: 3.5,
+			radarStyle: "filled",
+			//
+			chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN], // marker & line color
+			chartColorsOpacity: 25,
+			catAxisLabelColor: "404040",
+			catAxisLabelFontFace: "Segoe UI",
+			catAxisLabelFontSize: 10,
+			catAxisLineShow: false,
+			//
+			lineDataSymbolSize: 2, // marker size (2-72)
+			lineSize: 1, // line size
+			valAxisLabelFontFace: "Segoe UI",
+			valAxisLabelFontSize: 10,
+			//
+			showLegend: true,
+			legendPos: "r",
+			legendColor: "404040",
+			//
+			titleColor: "404040",
+			titleFontFace: "Helvetica Neue",
+			titleFontSize: 12,
+			showTitle: true,
+			title: "Filled/Axis Options",
+		};
+		slide.addChart(pptx.charts.RADAR, arrDataStudents, optsChartRadar11);
+	}
 }
 
 // SLIDE 17: Multi-Type Charts
