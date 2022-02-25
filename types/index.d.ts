@@ -1891,8 +1891,8 @@ declare namespace PptxGenJS {
 		border?: BorderProps
 		chartColors?: HexColor[]
 		/**
-		 * opacity (0.0 - 1.0)
-		 * @example 0.5 // 50% opaque
+		 * opacity (0 - 100)
+		 * @example 50 // 50% opaque
 		 */
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
@@ -2068,11 +2068,43 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartLine {
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+		 * - marker type
+		 * @default circle
+		 */
 		lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+		/**
+		 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Color
+		 * - border color
+		 * @default circle
+		 */
 		lineDataSymbolLineColor?: string
+		/**
+		 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Width
+		 * - border width (points)
+		 * @default 0.75
+		 */
 		lineDataSymbolLineSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Size
+		 * - marker size
+		 * - range: 2-72
+		 * @default 6
+		 */
 		lineDataSymbolSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Width
+		 * - line width (points)
+		 * - range: 0-1584
+		 * @default 2
+		 */
 		lineSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Smoothed line
+		 * - "Smoothed line"
+		 * @default false
+		 */
 		lineSmooth?: boolean
 	}
 	export interface IChartPropsChartPie {
@@ -2087,6 +2119,11 @@ declare namespace PptxGenJS {
 		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
+		/**
+		 * MS-PPT > Chart Type > Waterfall
+		 * - radar chart type
+		 * @default standard
+		 */
 		radarStyle?: 'standard' | 'marker' | 'filled'
 	}
 	export interface IChartPropsDataLabel {
