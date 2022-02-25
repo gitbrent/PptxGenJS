@@ -1113,8 +1113,8 @@ export interface IChartPropsBase {
 	border?: BorderProps
 	chartColors?: HexColor[]
 	/**
-	 * opacity (0.0 - 1.0)
-	 * @example 0.5 // 50% opaque
+	 * opacity (0 - 100)
+	 * @example 50 // 50% opaque
 	 */
 	chartColorsOpacity?: number
 	dataBorder?: BorderProps
@@ -1290,11 +1290,43 @@ export interface IChartPropsChartDoughnut {
 }
 export interface IChartPropsChartLine {
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+	 * - marker type
+	 * @default circle
+	 */
 	lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+	/**
+	 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Color
+	 * - border color
+	 * @default circle
+	 */
 	lineDataSymbolLineColor?: string
+	/**
+	 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Width
+	 * - border width (points)
+	 * @default 0.75
+	 */
 	lineDataSymbolLineSize?: number
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Size
+	 * - marker size
+	 * - range: 2-72
+	 * @default 6
+	 */
 	lineDataSymbolSize?: number
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Line > Width
+	 * - line width (points)
+	 * - range: 0-1584
+	 * @default 2
+	 */
 	lineSize?: number
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Line > Smoothed line
+	 * - "Smoothed line"
+	 * @default false
+	 */
 	lineSmooth?: boolean
 }
 export interface IChartPropsChartPie {
@@ -1309,7 +1341,12 @@ export interface IChartPropsChartPie {
 	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
-	radarStyle?: 'standard' | 'marker' | 'filled'
+	/**
+	 * MS-PPT > Chart Type > Waterfall
+	 * - radar chart type
+	 * @default standard
+	 */
+	radarStyle?: 'standard' | 'marker' | 'filled' // TODO: convert to 'radar'|'markers'|'filled' in 4.0 (verbatim with PPT app UI)
 }
 export interface IChartPropsDataLabel {
 	dataLabelBkgrdColors?: boolean
@@ -1496,9 +1533,8 @@ export interface PresLayout {
 export interface SlideNumberProps extends PositionProps, TextBaseProps {
 	/**
 	 * margin (points)
-	 * TODO: convert to inches in 4.0 (valid values are 0-22)
 	 */
-	margin?: Margin
+	margin?: Margin // TODO: convert to inches in 4.0 (valid values are 0-22)
 }
 export interface SlideMasterProps {
 	/**
