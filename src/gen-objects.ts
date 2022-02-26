@@ -191,6 +191,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1
 	options.w = options.w || '50%'
 	options.h = options.h || '50%'
+	options.objectName = options.objectName ? encodeXmlEntities(options.objectName) : `Chart ${target._rels.length}`
 
 	// B: Options: misc
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
@@ -361,6 +362,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
 	let imageRelId = getNewRelId(target)
+	let objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Image ${target._rels.length}`
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -414,7 +416,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		rotate: opt.rotate || 0,
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
-		objectName: opt.objectName || '',
+		objectName: objectName,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -486,7 +488,6 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
  * @param {MediaProps} `opt` - media options
  */
 export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
-	let intRels = target._relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -497,10 +498,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strType = opt.type || 'audio'
 	let strExtn = ''
 	let strCover = opt.cover || IMG_PLAYBTN
-	let objectName = opt.objectName || ''
-	let slideData: ISlideObject = {
-		_type: SLIDE_OBJECT_TYPES.media,
-	}
+	let objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Media ${target._rels.length}`
+	let slideData: ISlideObject = { _type: SLIDE_OBJECT_TYPES.media }
 
 	// STEP 1: REALITY-CHECK
 	if (!strPath && !strData && strType !== 'online') {
@@ -653,6 +652,7 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
+	options.objectName = options.objectName ? encodeXmlEntities(options.objectName) : `Shape ${target._rels.length}`
 
 	// 3: Handle line (lots of deprecated opts)
 	if (typeof options.line === 'string') {
@@ -691,8 +691,9 @@ export function addTableDefinition(
 	addSlide: Function,
 	getSlide: Function
 ) {
-	let opt: TableProps = options && typeof options === 'object' ? options : {}
 	let slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
+	let opt: TableProps = options && typeof options === 'object' ? options : {}
+	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._rels.length}`
 
 	// STEP 1: REALITY-CHECK
 	{
