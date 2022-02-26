@@ -17,8 +17,6 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
-	IChartOpts,
-	ImageProps,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
