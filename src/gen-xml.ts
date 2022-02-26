@@ -650,7 +650,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
 					strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${
 						slideItemObj.options.objectName
-					}"/><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>`
+					}"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>`
 					strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 					strSlideXml += ' <p:nvPr>'
 					strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>'
