@@ -17,8 +17,6 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
-	IChartOpts,
-	ImageProps,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -163,7 +161,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 				// STEP 1: Start Table XML
 				// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-				let strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="Table ${intTableNum * slide._slideNum}"/>`
+				let strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="${slideItemObj.options.objectName}"/>`
 				strXml +=
 					'<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 					'  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -388,8 +386,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 			case SLIDE_OBJECT_TYPES.text:
 			case SLIDE_OBJECT_TYPES.placeholder:
-				let shapeName = slideItemObj.options.shapeName ? encodeXmlEntities(slideItemObj.options.shapeName) : `Object${idx + 1}`
-
 				// Lines can have zero cy, but text should not
 				if (!slideItemObj.options.line && cy === 0) cy = EMU * 0.3
 
@@ -411,7 +407,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${shapeName}">`
+				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`
 				// <Hyperlink>
 				if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
 					strSlideXml +=
@@ -566,15 +562,16 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.image:
-				let imageOpts = slideItemObj.options as ImageProps
-				let sizing = imageOpts.sizing,
-					rounding = imageOpts.rounding,
+				let sizing = slideItemObj.options.sizing,
+					rounding = slideItemObj.options.rounding,
 					width = cx,
 					height = cy
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += `<p:cNvPr id="${idx + 2}" name="Object ${idx + 1}" descr="${encodeXmlEntities(imageOpts.altText || slideItemObj.image)}">`
+				strSlideXml += `<p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
+					slideItemObj.options.altText || slideItemObj.image
+				)}">`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
 					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
 						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
@@ -630,8 +627,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (slideItemObj.mtype === 'online') {
 					strSlideXml += '<p:pic>'
 					strSlideXml += ' <p:nvPicPr>'
-					// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preview image rId, PowerPoint throws error!
-					strSlideXml += ' <p:cNvPr id="' + (slideItemObj.mediaRid + 2) + '" name="Picture' + (idx + 1) + '"/>'
+					// IMPORTANT: <p:cNvPr id="" value is critical - if its not the same number as preview image `rId`, PowerPoint throws error!
+					strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}"/>`
 					strSlideXml += ' <p:cNvPicPr/>'
 					strSlideXml += ' <p:nvPr>'
 					strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>'
@@ -651,12 +648,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += '<p:pic>'
 					strSlideXml += ' <p:nvPicPr>'
 					// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
-					strSlideXml +=
-						' <p:cNvPr id="' +
-						(slideItemObj.mediaRid + 2) +
-						'" name="' +
-						slideItemObj.media.split('/').pop().split('.').shift() +
-						'"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>'
+					strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${
+						slideItemObj.options.objectName
+					}"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>`
 					strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 					strSlideXml += ' <p:nvPr>'
 					strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>'
@@ -680,10 +674,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
-				let chartOpts = slideItemObj.options as IChartOpts
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
+				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
 				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += ' </p:nvGraphicFramePr>'
@@ -710,7 +703,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
-			'    <p:cNvPr id="25" name="Slide Number Placeholder 24"/>' +
+			'    <p:cNvPr id="25" name="Slide Number Placeholder 0"/>' +
 			'    <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>' +
 			'    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>' +
 			'  </p:nvSpPr>' +

@@ -415,11 +415,22 @@ export interface TextBaseProps {
 	 */
 	valign?: VAlign
 }
+export type ObjectNameProps = {
+	/**
+	 * Object name
+	 * - used instead of default "Object N" name
+	 * - PowerPoint: Home > Arrange > Selection Pane...
+	 * @since v3.10.0
+	 * @default 'Object 1'
+	 * @example 'Antenna Design 9'
+	 */
+	objectName?: string
+}
 
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
 
-export interface ImageProps extends PositionProps, DataOrPathProps {
+export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -499,7 +510,7 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
  * Add media (audio/video) to slide
  * @requires either `link` or `path`
  */
-export interface MediaProps extends PositionProps, DataOrPathProps {
+export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -535,7 +546,7 @@ export interface MediaProps extends PositionProps, DataOrPathProps {
 
 // shapes =========================================================================================
 
-export interface ShapeProps extends PositionProps {
+export interface ShapeProps extends PositionProps, ObjectNameProps {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -618,30 +629,28 @@ export interface ShapeProps extends PositionProps {
 	 * TODO: need new demo.js entry for shape shadow
 	 */
 	shadow?: ShadowProps
-	/**
-	 * Shape name
-	 * - used instead of default "Shape N" name
-	 * @since v3.3.0
-	 * @example 'Antenna Design 9'
-	 */
-	shapeName?: string
 
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineSize?: number
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * Shape name (used instead of default "Shape N" name)
+	 * @deprecated v3.10.0 - use `objectName`
+	 */
+	shapeName?: string
 }
 
 // tables =========================================================================================
@@ -771,7 +780,7 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	rowspan?: number
 }
-export interface TableProps extends PositionProps, TextBaseProps {
+export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
 	_arrObjTabHeadRows?: TableRow[]
 
 	/**
@@ -902,7 +911,7 @@ export interface TextGlowProps {
 	size: number
 }
 
-export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
+export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
 	_bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
 		autoFit?: boolean
@@ -1412,7 +1421,8 @@ export interface IChartOpts
 		IChartPropsLegend,
 		IChartPropsTitle,
 		OptsChartGridLine,
-		PositionProps {
+		PositionProps,
+		ObjectNameProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
