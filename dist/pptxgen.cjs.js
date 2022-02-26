@@ -1,4 +1,4 @@
-/* PptxGenJS 3.10.0-beta @ 2022-02-26T18:13:03.197Z */
+/* PptxGenJS 3.10.0-beta @ 2022-02-26T19:01:02.529Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3691,7 +3691,7 @@ function addImageDefinition(target, opt) {
  * @param {MediaProps} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
-    var intRels = target._relsMedia.length + 1;
+    target._relsMedia.length + 1;
     var intPosX = opt.x || 0;
     var intPosY = opt.y || 0;
     var intSizeX = opt.w || 2;
@@ -3739,23 +3739,24 @@ function addMediaDefinition(target, opt) {
      * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
      */
     if (strType === 'online') {
+        var relId1 = getNewRelId(target);
         // A: Add video
         target._relsMedia.push({
             path: strPath || 'preencoded' + strExtn,
             data: 'dummy',
             type: 'online',
             extn: strExtn,
-            rId: intRels + 1,
+            rId: relId1,
             Target: strLink,
         });
-        slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId;
+        slideData.mediaRid = relId1;
         // B: Add cover (preview/overlay) image
         target._relsMedia.push({
             path: 'preencoded.png',
             data: strCover,
             type: 'image/png',
             extn: 'png',
-            rId: intRels + 2,
+            rId: getNewRelId(target),
             Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
         });
     }
@@ -3763,23 +3764,24 @@ function addMediaDefinition(target, opt) {
         // PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
         var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false; })[0];
         // A: "relationships/video"
+        var relId1 = getNewRelId(target);
         target._relsMedia.push({
             path: strPath || 'preencoded' + strExtn,
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
-            rId: intRels + 0,
+            rId: relId1,
             isDuplicate: dupeItem && dupeItem.Target ? true : false,
             Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/media-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".").concat(strExtn),
         });
-        slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId;
+        slideData.mediaRid = relId1;
         // B: "relationships/media"
         target._relsMedia.push({
             path: strPath || 'preencoded' + strExtn,
             type: strType + '/' + strExtn,
             extn: strExtn,
             data: strData || '',
-            rId: intRels + 1,
+            rId: getNewRelId(target),
             isDuplicate: dupeItem && dupeItem.Target ? true : false,
             Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/media-".concat(target._slideNum, "-").concat(target._relsMedia.length + 0, ".").concat(strExtn),
         });
@@ -3789,7 +3791,7 @@ function addMediaDefinition(target, opt) {
             type: 'image/png',
             extn: 'png',
             data: strCover,
-            rId: intRels + 2,
+            rId: getNewRelId(target),
             Target: "../media/image-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".png"),
         });
     }
@@ -6474,7 +6476,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.10.0-beta-20220226-1212';
+var VERSION = '3.10.0-beta-20220226-1224';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
