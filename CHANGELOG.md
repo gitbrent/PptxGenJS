@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Radar chart line colors [\#539](https://github.com/gitbrent/PptxGenJS/issues/539) ([pablodicosta](https://github.com/pablodicosta))
+- Adding charts and media together is causing a pptx error, and repair is needed. [\#1020](https://github.com/gitbrent/PptxGenJS/issues/1020) ([mvecsernyes](https://github.com/mvecsernyes))
 - Underline doesn't work in table after update to v3.9.0 [\#1052](https://github.com/gitbrent/PptxGenJS/issues/1052) ([hhq365](https://github.com/hhq365))
 - `ImageProps.sizing` props `w`, `h`, `x`, `y` s/b typed `Coord` [\#1065](https://github.com/gitbrent/PptxGenJS/issues/1065) ([Naveencheekoti17](https://github.com/BistroStu))
 - `ImageProps.sizing` are type Coord [\#1066](https://github.com/gitbrent/PptxGenJS/pull/1066) ([BistroStu](https://github.com/BistroStu))
