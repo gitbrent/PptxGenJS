@@ -323,6 +323,16 @@ function testMethod_Table(pptx: pptxgen) {
 			},
 		]);
 		slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 3, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
+
+		// TEST: `hyperlink`
+		let arrTextObjects: pptxgen.TableRow[] = [
+			[
+				{ text: "Text Objects", options: { color: "99ABCC", align: "right" } },
+				{ text: "2nd cell", options: { color: "0000EE", align: "center" } },
+				{ text: "Hyperlink", options: { hyperlink: { url: "https://github.com/gitbrent/pptxgenjs" } } },
+			],
+		];
+		slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } });
 	}
 }
 /*
