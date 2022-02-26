@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -16,7 +16,7 @@ import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color
  * @param {PresLayout} layout - presentation layout
  * @returns {number} calculated size
  */
-export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: PresLayout): number {
+export function getSmartParseNumber(size: Coord, xyDir: 'X' | 'Y', layout: PresLayout): number {
 	// FIRST: Convert string numeric value if reqd
 	if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
 

@@ -16,7 +16,7 @@ export const CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/li
 // TABLES
 export const TABLE_NAMES_F = ["Markiplier", "Jack", "Brian", "Paul", "Ev", "Ann", "Michelle", "Jenny", "Lara", "Kathryn"];
 export const TABLE_NAMES_L = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark", "Griswold", "Hart", "Cube", "Malloy", "Capri"];
-export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=13.33
+export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=12.33
 
 // STYLES
 export const COLOR_RED = "FF0000";
@@ -61,8 +61,7 @@ export const IMAGE_PATHS = {
 		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest",
 	},
 	sydneyBridge: {
-		path:
-			"https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg",
+		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg",
 	},
 	tokyoSubway: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg" },
 	sample_avi: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi" },
@@ -72,6 +71,7 @@ export const IMAGE_PATHS = {
 	sample_mpg: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mpg" },
 	sample_mp3: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mp3" },
 	sample_wav: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.wav" },
+	big_earth_mp4: { path: "/common/media/earth-big.mp4" },
 };
 
 // LOREM IPSUM

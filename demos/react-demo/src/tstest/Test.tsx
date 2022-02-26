@@ -363,6 +363,17 @@ function testMethod_Media(pptx: pptxgen) {
 	slide.addImage({ path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg", x: 1, y: 1, w: 3, h: 1 });
 	slide.addImage({ data: IMGBASE64, x: 1, y: 1, w: 3, h: 1 });
 
+	slide.addImage({
+		data: IMGBASE64,
+		sizing: {
+			type: "contain",
+			w: "90%",
+			h: "75%",
+			x: "5%",
+			y: "20%",
+		},
+	});
+
 	// 8. Media
 	slide.addMedia({
 		x: 5.5,

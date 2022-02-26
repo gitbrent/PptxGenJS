@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.8.0
+// Type definitions for pptxgenjs 3.10.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -19,7 +19,7 @@ declare class PptxGenJS {
 	readonly version: string
 
 	// Exposed prop types
-	readonly presLayout: PptxGenJS.PresentationProps
+	readonly presLayout: PptxGenJS.PresLayout
 	readonly AlignH: typeof PptxGenJS.AlignH
 	readonly AlignV: typeof PptxGenJS.AlignV
 	readonly ChartType: typeof PptxGenJS.ChartType
@@ -829,13 +829,13 @@ declare namespace PptxGenJS {
 
 	/**
 	 * Coordinate number - either:
-	 * - Inches
-	 * - Percentage
+	 * - Inches (0-n)
+	 * - Percentage (0-100)
 	 *
 	 * @example 10.25 // coordinate in inches
 	 * @example '75%' // coordinate as percentage of slide size
 	 */
-	export type Coord = number | string
+	export type Coord = number | `${number}%`
 	export type PositionProps = {
 		/**
 		 * Horizontal position
@@ -1087,12 +1087,6 @@ declare namespace PptxGenJS {
 		 */
 		breakLine?: boolean
 		/**
-		 * Add a soft line-break (shift+enter) before line text content
-		 * @default false
-		 * @since v3.5.0
-		 */
-		softBreakBefore?: boolean
-		/**
 		 * Add standard or custom bullet
 		 * - use `true` for standard bullet
 		 * - pass object options for custom bullet
@@ -1208,6 +1202,12 @@ declare namespace PptxGenJS {
 		 */
 		lang?: string
 		/**
+		 * Add a soft line-break (shift+enter) before line text content
+		 * @default false
+		 * @since v3.5.0
+		 */
+		softBreakBefore?: boolean
+		/**
 		 * tab stops
 		 * - PowerPoint: Paragraph > Tabs > Tab stop position
 		 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
@@ -1295,24 +1295,34 @@ declare namespace PptxGenJS {
 			type: 'contain' | 'cover' | 'crop'
 			/**
 			 * Image width
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			w: number
+			w: Coord
 			/**
 			 * Image height
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			h: number
+			h: Coord
 			/**
-			 * Area horizontal position related to the image
-			 * - Values: 0-n
+			 * Offset from left to crop image
 			 * - `crop` only
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			x?: number
+			x?: Coord
 			/**
-			 * Area vertical position related to the image
-			 * - Values: 0-n
+			 * Offset from top to crop image
 			 * - `crop` only
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			y?: number
+			y?: Coord
 		}
 	}
 	/**
@@ -1325,6 +1335,19 @@ declare namespace PptxGenJS {
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
 		 */
 		type: MediaType
+		/**
+		 * Cover image
+		 * @since 3.9.0
+		 * @default "play button" image, gray background
+		 */
+		cover?: string
+		/**
+		 * media file extension
+		 * - use when the media file path does not already have an extension, ex: "/folder/SomeSong"
+		 * @since 3.9.0
+		 * @default extension from file provided
+		 */
+		extn?: string
 		/**
 		 * video embed link
 		 * - works with YouTube
@@ -1731,7 +1754,6 @@ declare namespace PptxGenJS {
 		glow?: TextGlowProps
 		hyperlink?: HyperlinkProps
 		indentLevel?: number
-		inset?: number
 		isTextBox?: boolean
 		line?: ShapeLineProps
 		/**
@@ -1748,6 +1770,14 @@ declare namespace PptxGenJS {
 		 * @since v3.5.0
 		 */
 		lineSpacingMultiple?: number
+		/**
+		 * Margin (points)
+		 * - PowerPoint: Format Shape > Shape Options > Size & Properties > Text Box > Left/Right/Top/Bottom margin
+		 * @default "Normal" margin in PowerPoint [3.5, 7.0, 3.5, 7.0] // (this library sets no value, but PowerPoint defaults to "Normal" [0.05", 0.1", 0.05", 0.1"])
+		 * @example 0 // Top/Right/Bottom/Left margin 0 [0.0" in powerpoint]
+		 * @example 10 // Top/Right/Bottom/Left margin 10 [0.14" in powerpoint]
+		 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
+		 */
 		margin?: Margin
 		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
@@ -1786,7 +1816,7 @@ declare namespace PptxGenJS {
 		wrap?: boolean
 
 		/**
-		 * Whather "Fit to Shape?" is enabled
+		 * Whether "Fit to Shape?" is enabled
 		 * @deprecated v3.3.0 - use `fit`
 		 */
 		autoFit?: boolean
@@ -1795,6 +1825,11 @@ declare namespace PptxGenJS {
 		 * @deprecated v3.3.0 - use `fit`
 		 */
 		shrinkText?: boolean
+		/**
+		 * Inset
+		 * @deprecated v3.10.0 - use `margin`
+		 */
+		inset?: number
 		/**
 		 * Dash type
 		 * @deprecated v3.3.0 - use `line.dashType`
@@ -1859,14 +1894,14 @@ declare namespace PptxGenJS {
 		border?: BorderProps
 		chartColors?: HexColor[]
 		/**
-		 * opacity (0.0 - 1.0)
-		 * @example 0.5 // 50% opaque
+		 * opacity (0 - 100)
+		 * @example 50 // 50% opaque
 		 */
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
 		fill?: HexColor
-		invertedColors?: string
+		invertedColors?: HexColor[]
 		lang?: string
 		layout?: PositionProps
 		shadow?: ShadowProps
@@ -2013,8 +2048,22 @@ declare namespace PptxGenJS {
 		bar3DShape?: string
 		barDir?: string
 		barGapDepthPct?: number
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Gap Width"
+		 * - width (percent)
+		 * - range: `0`-`500`
+		 * @default 150
+		 */
 		barGapWidthPct?: number
 		barGrouping?: string
+		/**
+		 * MS-PPT > Format chart > Format Data Point > Series Options >  "Series Overlap"
+		 * - overlap (percent)
+		 * - range: `-100`-`100`
+		 * @since v3.9.0
+		 * @default 0
+		 */
+		barOverlapPct?: number
 	}
 	export interface IChartPropsChartDoughnut {
 		dataNoEffects?: boolean
@@ -2022,11 +2071,43 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartLine {
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+		 * - marker type
+		 * @default circle
+		 */
 		lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+		/**
+		 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Color
+		 * - border color
+		 * @default circle
+		 */
 		lineDataSymbolLineColor?: string
+		/**
+		 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Width
+		 * - border width (points)
+		 * @default 0.75
+		 */
 		lineDataSymbolLineSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Size
+		 * - marker size
+		 * - range: 2-72
+		 * @default 6
+		 */
 		lineDataSymbolSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Width
+		 * - line width (points)
+		 * - range: 0-1584
+		 * @default 2
+		 */
 		lineSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Smoothed line
+		 * - "Smoothed line"
+		 * @default false
+		 */
 		lineSmooth?: boolean
 	}
 	export interface IChartPropsChartPie {
@@ -2041,6 +2122,11 @@ declare namespace PptxGenJS {
 		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
+		/**
+		 * MS-PPT > Chart Type > Waterfall
+		 * - radar chart type
+		 * @default standard
+		 */
 		radarStyle?: 'standard' | 'marker' | 'filled'
 	}
 	export interface IChartPropsDataLabel {
@@ -2171,6 +2257,10 @@ declare namespace PptxGenJS {
 		height: number
 	}
 	export interface SlideNumberProps extends PositionProps, TextBaseProps {
+		/**
+		 * margin (points)
+		 * TODO: convert to inches in 4.0 (valid values are 0-22)
+		 */
 		margin?: Margin
 	}
 	export interface SlideMasterProps {
