@@ -467,12 +467,6 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 */
 	rounding?: boolean
 	/**
-	 * Transparency (percent)
-	 * - range: 0-100
-	 * @default 0
-	 */
-	transparency?: number
-	/**
 	 * Image sizing options
 	 */
 	sizing?: {
@@ -511,6 +505,15 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 		 */
 		y?: Coord
 	}
+	/**
+	 * Transparency (percent)
+	 *
+	 * MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
+	 * - range: 0-100
+	 * @default 0
+	 * @example 25 // 25% transparent
+	 */
+	transparency?: number
 }
 /**
  * Add media (audio/video) to slide
