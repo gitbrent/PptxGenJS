@@ -357,7 +357,7 @@ function genSlide04(pptx) {
 		[
 			{ text: "Text Objects", options: { color: "99ABCC", align: "right" } },
 			{ text: "2nd cell", options: { color: "0000EE", align: "center" } },
-			{ text: 3, options: { color: "0088CC", align: "left" } },
+			{ text: "Hyperlink", options: { hyperlink: { url: "https://github.com/gitbrent/pptxgenjs" } } },
 		],
 	];
 	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 8, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } }); // DEPRECATED: `margin` in points
