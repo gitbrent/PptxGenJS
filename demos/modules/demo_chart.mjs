@@ -121,6 +121,7 @@ function genSlide01(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		objectName: "bar chart (top L)",
 		altText: "this is the alt text content",
 
 		barDir: "bar",
@@ -150,6 +151,7 @@ function genSlide01(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		objectName: "bar chart (top R)",
 		barDir: "col",
 
 		catAxisLabelColor: "0000CC",
