@@ -713,7 +713,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 				}
 
-				if (chartType === CHART_TYPE.LINE) {
+				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {

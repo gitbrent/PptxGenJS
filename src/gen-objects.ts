@@ -11,7 +11,6 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
-	DEF_SLIDE_BKGD,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
@@ -30,6 +29,7 @@ import {
 	ISlideObject,
 	ImageProps,
 	MediaProps,
+	ObjectOptions,
 	OptsChartGridLine,
 	PresLayout,
 	PresSlide,
@@ -44,7 +44,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId, valToPts } from './gen-utils'
+import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -191,6 +191,9 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1
 	options.w = options.w || '50%'
 	options.h = options.h || '50%'
+	options.objectName = options.objectName
+		? encodeXmlEntities(options.objectName)
+		: `Chart ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.chart).length}`
 
 	// B: Options: misc
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
@@ -361,6 +364,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
 	let imageRelId = getNewRelId(target)
+	let objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Image ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.image).length}`
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -415,6 +419,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
+		objectName: objectName,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -486,7 +491,6 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
  * @param {MediaProps} `opt` - media options
  */
 export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
-	let intRels = target._relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -497,9 +501,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strType = opt.type || 'audio'
 	let strExtn = ''
 	let strCover = opt.cover || IMG_PLAYBTN
-	let slideData: ISlideObject = {
-		_type: SLIDE_OBJECT_TYPES.media,
-	}
+	let objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Media ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.media).length}`
+	let slideData: ISlideObject = { _type: SLIDE_OBJECT_TYPES.media }
 
 	// STEP 1: REALITY-CHECK
 	if (!strPath && !strData && strType !== 'online') {
@@ -526,6 +529,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	slideData.options.y = intPosY
 	slideData.options.w = intSizeX
 	slideData.options.h = intSizeY
+	slideData.options.objectName = objectName
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	/**
@@ -538,16 +542,17 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
 	 */
 	if (strType === 'online') {
+		const relId1 = getNewRelId(target)
 		// A: Add video
 		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			data: 'dummy',
 			type: 'online',
 			extn: strExtn,
-			rId: intRels + 1,
+			rId: relId1,
 			Target: strLink,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = relId1
 
 		// B: Add cover (preview/overlay) image
 		target._relsMedia.push({
@@ -555,7 +560,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			data: strCover,
 			type: 'image/png',
 			extn: 'png',
-			rId: intRels + 2,
+			rId: getNewRelId(target),
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	} else {
@@ -563,16 +568,17 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false)[0]
 
 		// A: "relationships/video"
+		const relId1 = getNewRelId(target)
 		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			rId: intRels + 0,
+			rId: relId1,
 			isDuplicate: dupeItem && dupeItem.Target ? true : false,
 			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 1}.${strExtn}`,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = relId1
 
 		// B: "relationships/media"
 		target._relsMedia.push({
@@ -580,7 +586,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			rId: intRels + 1,
+			rId: getNewRelId(target),
 			isDuplicate: dupeItem && dupeItem.Target ? true : false,
 			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 0}.${strExtn}`,
 		})
@@ -591,7 +597,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: 'image/png',
 			extn: 'png',
 			data: strCover,
-			rId: intRels + 2,
+			rId: getNewRelId(target),
 			Target: `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.png`,
 		})
 	}
@@ -649,6 +655,9 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
+	options.objectName = options.objectName
+		? encodeXmlEntities(options.objectName)
+		: `Shape ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.text).length}`
 
 	// 3: Handle line (lots of deprecated opts)
 	if (typeof options.line === 'string') {
@@ -687,8 +696,9 @@ export function addTableDefinition(
 	addSlide: Function,
 	getSlide: Function
 ) {
-	let opt: TableProps = options && typeof options === 'object' ? options : {}
 	let slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
+	let opt: TableProps = options && typeof options === 'object' ? options : {}
+	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.table).length}`
 
 	// STEP 1: REALITY-CHECK
 	{
@@ -947,7 +957,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 		options: opts || {},
 	}
 
-	function cleanOpts(itemOpts): TextPropsOptions {
+	function cleanOpts(itemOpts: ObjectOptions): TextPropsOptions {
 		// STEP 1: Set some options
 		{
 			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
@@ -968,6 +978,11 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				if (placeHold && placeHold.options) itemOpts = { ...itemOpts, ...placeHold.options }
 			}
 
+			// A.4: Other options
+			itemOpts.objectName = itemOpts.objectName
+				? encodeXmlEntities(itemOpts.objectName)
+				: `Text ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.text).length}`
+
 			// B:
 			if (itemOpts.shape === SHAPE_TYPE.LINE) {
 				// ShapeLineProps defaults
@@ -985,7 +1000,8 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				// 3: Handle line (lots of deprecated opts)
 				if (typeof itemOpts.line === 'string') {
 					let tmpOpts = newLineOpts
-					tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line` string (was line color)
+					if (typeof itemOpts.line === 'string') tmpOpts.color = itemOpts.line // @deprecated [remove in v4.0]
+					//tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line`:[string] (was line color)
 					itemOpts.line = tmpOpts
 				}
 				if (typeof itemOpts.lineSize === 'number') itemOpts.line.width = itemOpts.lineSize // @deprecated (part of `ShapeLineProps` now)
@@ -1007,6 +1023,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true
 
 			// E: Inset
+			// @deprecated 3.10.0 (`inset` - use `margin`)
 			if ((itemOpts.inset && !isNaN(Number(itemOpts.inset))) || itemOpts.inset === 0) {
 				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.inset)
 				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.inset)

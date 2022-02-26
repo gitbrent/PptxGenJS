@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.9.0
+// Type definitions for pptxgenjs 3.10.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -19,7 +19,7 @@ declare class PptxGenJS {
 	readonly version: string
 
 	// Exposed prop types
-	readonly presLayout: PptxGenJS.PresentationProps
+	readonly presLayout: PptxGenJS.PresLayout
 	readonly AlignH: typeof PptxGenJS.AlignH
 	readonly AlignV: typeof PptxGenJS.AlignV
 	readonly ChartType: typeof PptxGenJS.ChartType
@@ -829,13 +829,13 @@ declare namespace PptxGenJS {
 
 	/**
 	 * Coordinate number - either:
-	 * - Inches
-	 * - Percentage
+	 * - Inches (0-n)
+	 * - Percentage (0-100)
 	 *
 	 * @example 10.25 // coordinate in inches
 	 * @example '75%' // coordinate as percentage of slide size
 	 */
-	export type Coord = number | string
+	export type Coord = number | `${number}%`
 	export type PositionProps = {
 		/**
 		 * Horizontal position
@@ -1234,11 +1234,25 @@ declare namespace PptxGenJS {
 		 */
 		valign?: VAlign
 	}
+	/**
+	 * Common for Props
+	 */
+	export type ObjectNameProps = {
+		/**
+		 * Object name
+		 * - used instead of default "Object N" name
+		 * - PowerPoint: Home > Arrange > Selection Pane...
+		 * @since v3.10.0
+		 * @default 'Object 1'
+		 * @example 'Antenna Design 9'
+		 */
+		objectName?: string
+	}
 
 	// image / media ==================================================================================
 	export type MediaType = 'audio' | 'online' | 'video'
 
-	export interface ImageProps extends PositionProps, DataOrPathProps {
+	export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -1284,31 +1298,41 @@ declare namespace PptxGenJS {
 			type: 'contain' | 'cover' | 'crop'
 			/**
 			 * Image width
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			w: number
+			w: Coord
 			/**
 			 * Image height
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			h: number
+			h: Coord
 			/**
-			 * Area horizontal position related to the image
-			 * - Values: 0-n
+			 * Offset from left to crop image
 			 * - `crop` only
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			x?: number
+			x?: Coord
 			/**
-			 * Area vertical position related to the image
-			 * - Values: 0-n
+			 * Offset from top to crop image
 			 * - `crop` only
+			 * - inches or percentage
+			 * @example 10.25 // position in inches
+			 * @example '75%' // position as percentage of slide size
 			 */
-			y?: number
+			y?: Coord
 		}
 	}
 	/**
 	 * Add media (audio/video) to slide
 	 * @requires either `link` or `path`
 	 */
-	export interface MediaProps extends PositionProps, DataOrPathProps {
+	export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 		/**
 		 * Media type
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -1344,7 +1368,7 @@ declare namespace PptxGenJS {
 
 	// shapes =========================================================================================
 
-	export interface ShapeProps extends PositionProps {
+	export interface ShapeProps extends PositionProps, ObjectNameProps {
 		/**
 		 * Horizontal alignment
 		 * @default 'left'
@@ -1427,30 +1451,28 @@ declare namespace PptxGenJS {
 		 * TODO: need new demo.js entry for shape shadow
 		 */
 		shadow?: ShadowProps
-		/**
-		 * Shape name
-		 * - used instead of default "Shape N" name
-		 * @since v3.3.0
-		 * @example 'Antenna Design 9'
-		 */
-		shapeName?: string
 
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineSize?: number
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+		/**
+		 * Shape name (used instead of default "Shape N" name)
+		 * @deprecated v3.10.0 - use `objectName`
+		 */
+		shapeName?: string
 	}
 
 	// tables =========================================================================================
@@ -1570,6 +1592,7 @@ declare namespace PptxGenJS {
 		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 		 */
 		fill?: ShapeFillProps
+		hyperlink?: HyperlinkProps
 		/**
 		 * Cell margin (inches)
 		 * @default 0
@@ -1580,7 +1603,7 @@ declare namespace PptxGenJS {
 		 */
 		rowspan?: number
 	}
-	export interface TableProps extends PositionProps, TextBaseProps {
+	export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
 		//_arrObjTabHeadRows?: TableRow[]
 
 		/**
@@ -1699,7 +1722,7 @@ declare namespace PptxGenJS {
 		size: number
 	}
 
-	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
+	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
 		baseline?: number
 		/**
 		 * Character spacing
@@ -1741,7 +1764,6 @@ declare namespace PptxGenJS {
 		glow?: TextGlowProps
 		hyperlink?: HyperlinkProps
 		indentLevel?: number
-		inset?: number
 		isTextBox?: boolean
 		line?: ShapeLineProps
 		/**
@@ -1758,6 +1780,14 @@ declare namespace PptxGenJS {
 		 * @since v3.5.0
 		 */
 		lineSpacingMultiple?: number
+		/**
+		 * Margin (points)
+		 * - PowerPoint: Format Shape > Shape Options > Size & Properties > Text Box > Left/Right/Top/Bottom margin
+		 * @default "Normal" margin in PowerPoint [3.5, 7.0, 3.5, 7.0] // (this library sets no value, but PowerPoint defaults to "Normal" [0.05", 0.1", 0.05", 0.1"])
+		 * @example 0 // Top/Right/Bottom/Left margin 0 [0.0" in powerpoint]
+		 * @example 10 // Top/Right/Bottom/Left margin 10 [0.14" in powerpoint]
+		 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
+		 */
 		margin?: Margin
 		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
@@ -1796,7 +1826,7 @@ declare namespace PptxGenJS {
 		wrap?: boolean
 
 		/**
-		 * Whather "Fit to Shape?" is enabled
+		 * Whether "Fit to Shape?" is enabled
 		 * @deprecated v3.3.0 - use `fit`
 		 */
 		autoFit?: boolean
@@ -1805,6 +1835,11 @@ declare namespace PptxGenJS {
 		 * @deprecated v3.3.0 - use `fit`
 		 */
 		shrinkText?: boolean
+		/**
+		 * Inset
+		 * @deprecated v3.10.0 - use `margin`
+		 */
+		inset?: number
 		/**
 		 * Dash type
 		 * @deprecated v3.3.0 - use `line.dashType`
@@ -1869,8 +1904,8 @@ declare namespace PptxGenJS {
 		border?: BorderProps
 		chartColors?: HexColor[]
 		/**
-		 * opacity (0.0 - 1.0)
-		 * @example 0.5 // 50% opaque
+		 * opacity (0 - 100)
+		 * @example 50 // 50% opaque
 		 */
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
@@ -2046,11 +2081,43 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartLine {
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+		 * - marker type
+		 * @default circle
+		 */
 		lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+		/**
+		 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Color
+		 * - border color
+		 * @default circle
+		 */
 		lineDataSymbolLineColor?: string
+		/**
+		 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Width
+		 * - border width (points)
+		 * @default 0.75
+		 */
 		lineDataSymbolLineSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Size
+		 * - marker size
+		 * - range: 2-72
+		 * @default 6
+		 */
 		lineDataSymbolSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Width
+		 * - line width (points)
+		 * - range: 0-1584
+		 * @default 2
+		 */
 		lineSize?: number
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Smoothed line
+		 * - "Smoothed line"
+		 * @default false
+		 */
 		lineSmooth?: boolean
 	}
 	export interface IChartPropsChartPie {
@@ -2065,6 +2132,11 @@ declare namespace PptxGenJS {
 		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
+		/**
+		 * MS-PPT > Chart Type > Waterfall
+		 * - radar chart type
+		 * @default standard
+		 */
 		radarStyle?: 'standard' | 'marker' | 'filled'
 	}
 	export interface IChartPropsDataLabel {
@@ -2131,7 +2203,8 @@ declare namespace PptxGenJS {
 			IChartPropsLegend,
 			IChartPropsTitle,
 			OptsChartGridLine,
-			PositionProps {
+			PositionProps,
+			ObjectNameProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."

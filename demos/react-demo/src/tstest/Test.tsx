@@ -323,6 +323,16 @@ function testMethod_Table(pptx: pptxgen) {
 			},
 		]);
 		slide.addTable(arrRows, { x: 0.5, y: 0.6, w: 3, border: { color: "CFCFCF" }, autoPage: true, verbose: true });
+
+		// TEST: `hyperlink`
+		let arrTextObjects: pptxgen.TableRow[] = [
+			[
+				{ text: "Text Objects", options: { color: "99ABCC", align: "right" } },
+				{ text: "2nd cell", options: { color: "0000EE", align: "center" } },
+				{ text: "Hyperlink", options: { hyperlink: { url: "https://github.com/gitbrent/pptxgenjs" } } },
+			],
+		];
+		slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } });
 	}
 }
 /*
@@ -362,6 +372,17 @@ function testMethod_Media(pptx: pptxgen) {
 	// 7: Image
 	slide.addImage({ path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg", x: 1, y: 1, w: 3, h: 1 });
 	slide.addImage({ data: IMGBASE64, x: 1, y: 1, w: 3, h: 1 });
+
+	slide.addImage({
+		data: IMGBASE64,
+		sizing: {
+			type: "contain",
+			w: "90%",
+			h: "75%",
+			x: "5%",
+			y: "20%",
+		},
+	});
 
 	// 8. Media
 	slide.addMedia({

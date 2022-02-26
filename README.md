@@ -45,7 +45,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 **Works Everywhere**
 
 - Every modern desktop and mobile browser is supported
-- Integrates with Node, Angular, React and Electron
+- Integrates with Node, Angular, React, and Electron
 - Compatible with PowerPoint, Keynote, and more
 
 **Full Featured**
@@ -58,7 +58,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 - The absolute easiest PowerPoint library to use
 - Learn as you code will full typescript definitions included
-- Tons of demo code comes included (over 70 slides of features)
+- Tons of demo code comes included (over 75 slides of features)
 
 **Export Your Way**
 
