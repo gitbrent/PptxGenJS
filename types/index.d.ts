@@ -867,17 +867,6 @@ declare namespace PptxGenJS {
 		w?: Coord
 	}
 	/**
-	 * Common for Props
-	 */
-	export type CommonProps = {
-		/**
-	 * Object name
-	 * - used instead of default "Object N" name
-	 * @example 'Antenna Design 9'
-	 */
-		objectName?: string
-	}
-	/**
 	 * Either `data` or `path` is required
 	 */
 	export type DataOrPathProps = {
@@ -1245,11 +1234,25 @@ declare namespace PptxGenJS {
 		 */
 		valign?: VAlign
 	}
+	/**
+	 * Common for Props
+	 */
+	export type ObjectNameProps = {
+		/**
+		 * Object name
+		 * - used instead of default "Object N" name
+		 * - PowerPoint: Home > Arrange > Selection Pane...
+		 * @since v3.10.0
+		 * @default 'Object 1'
+		 * @example 'Antenna Design 9'
+		 */
+		objectName?: string
+	}
 
 	// image / media ==================================================================================
 	export type MediaType = 'audio' | 'online' | 'video'
 
-	export interface ImageProps extends PositionProps, DataOrPathProps, CommonProps {
+	export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -1329,7 +1332,7 @@ declare namespace PptxGenJS {
 	 * Add media (audio/video) to slide
 	 * @requires either `link` or `path`
 	 */
-	export interface MediaProps extends PositionProps, DataOrPathProps, CommonProps {
+	export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 		/**
 		 * Media type
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -1365,7 +1368,7 @@ declare namespace PptxGenJS {
 
 	// shapes =========================================================================================
 
-	export interface ShapeProps extends PositionProps, CommonProps {
+	export interface ShapeProps extends PositionProps, ObjectNameProps {
 		/**
 		 * Horizontal alignment
 		 * @default 'left'
@@ -1448,22 +1451,28 @@ declare namespace PptxGenJS {
 		 * TODO: need new demo.js entry for shape shadow
 		 */
 		shadow?: ShadowProps
+
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineSize?: number
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 		/**
-		 * @depreacted v3.3.0
+		 * @deprecated v3.3.0
 		 */
 		lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+		/**
+		 * Shape name (used instead of default "Shape N" name)
+		 * @deprecated v3.10.0 - use `objectName`
+		 */
+		shapeName?: string
 	}
 
 	// tables =========================================================================================
@@ -1593,7 +1602,7 @@ declare namespace PptxGenJS {
 		 */
 		rowspan?: number
 	}
-	export interface TableProps extends PositionProps, TextBaseProps, CommonProps {
+	export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
 		//_arrObjTabHeadRows?: TableRow[]
 
 		/**
@@ -1712,7 +1721,7 @@ declare namespace PptxGenJS {
 		size: number
 	}
 
-	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, CommonProps {
+	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
 		baseline?: number
 		/**
 		 * Character spacing
@@ -2194,7 +2203,7 @@ declare namespace PptxGenJS {
 			IChartPropsTitle,
 			OptsChartGridLine,
 			PositionProps,
-			CommonProps {
+			ObjectNameProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
