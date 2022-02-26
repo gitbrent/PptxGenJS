@@ -537,16 +537,17 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
 	 */
 	if (strType === 'online') {
+		const relId1 = getNewRelId(target)
 		// A: Add video
 		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			data: 'dummy',
 			type: 'online',
 			extn: strExtn,
-			rId: intRels + 1,
+			rId: relId1,
 			Target: strLink,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = relId1
 
 		// B: Add cover (preview/overlay) image
 		target._relsMedia.push({
@@ -554,7 +555,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			data: strCover,
 			type: 'image/png',
 			extn: 'png',
-			rId: intRels + 2,
+			rId: getNewRelId(target),
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	} else {
@@ -562,16 +563,17 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false)[0]
 
 		// A: "relationships/video"
+		const relId1 = getNewRelId(target)
 		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			rId: intRels + 0,
+			rId: relId1,
 			isDuplicate: dupeItem && dupeItem.Target ? true : false,
 			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 1}.${strExtn}`,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = relId1
 
 		// B: "relationships/media"
 		target._relsMedia.push({
@@ -579,7 +581,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			rId: intRels + 1,
+			rId: getNewRelId(target),
 			isDuplicate: dupeItem && dupeItem.Target ? true : false,
 			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 0}.${strExtn}`,
 		})
@@ -590,7 +592,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: 'image/png',
 			extn: 'png',
 			data: strCover,
-			rId: intRels + 2,
+			rId: getNewRelId(target),
 			Target: `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.png`,
 		})
 	}
