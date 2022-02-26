@@ -703,7 +703,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
-			'    <p:cNvPr id="25" name="Slide Number Placeholder 24"/>' +
+			'    <p:cNvPr id="25" name="Slide Number Placeholder 0"/>' +
 			'    <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>' +
 			'    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>' +
 			'  </p:nvSpPr>' +
