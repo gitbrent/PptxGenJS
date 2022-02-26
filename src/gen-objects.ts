@@ -11,7 +11,6 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
-	DEF_SLIDE_BKGD,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
@@ -30,6 +29,7 @@ import {
 	ISlideObject,
 	ImageProps,
 	MediaProps,
+	ObjectOptions,
 	OptsChartGridLine,
 	PresLayout,
 	PresSlide,
@@ -44,7 +44,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId, valToPts } from './gen-utils'
+import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -952,7 +952,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 		options: opts || {},
 	}
 
-	function cleanOpts(itemOpts): TextPropsOptions {
+	function cleanOpts(itemOpts: ObjectOptions): TextPropsOptions {
 		// STEP 1: Set some options
 		{
 			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
@@ -973,6 +973,9 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				if (placeHold && placeHold.options) itemOpts = { ...itemOpts, ...placeHold.options }
 			}
 
+			// A.4: Other options
+			itemOpts.objectName = itemOpts.objectName ? encodeXmlEntities(itemOpts.objectName) : `Text ${target._rels.length}`
+
 			// B:
 			if (itemOpts.shape === SHAPE_TYPE.LINE) {
 				// ShapeLineProps defaults
@@ -990,7 +993,8 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				// 3: Handle line (lots of deprecated opts)
 				if (typeof itemOpts.line === 'string') {
 					let tmpOpts = newLineOpts
-					tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line` string (was line color)
+					if (typeof itemOpts.line === 'string') tmpOpts.color = itemOpts.line // @deprecated [remove in v4.0]
+					//tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line`:[string] (was line color)
 					itemOpts.line = tmpOpts
 				}
 				if (typeof itemOpts.lineSize === 'number') itemOpts.line.width = itemOpts.lineSize // @deprecated (part of `ShapeLineProps` now)
