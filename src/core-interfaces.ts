@@ -770,6 +770,7 @@ export interface TableCellProps extends TextBaseProps {
 	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 	 */
 	fill?: ShapeFillProps
+	hyperlink?: HyperlinkProps
 	/**
 	 * Cell margin (inches)
 	 * @default 0
