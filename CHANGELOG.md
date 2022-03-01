@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add name (`objectName`) to all core objects [\#1019](https://github.com/gitbrent/PptxGenJS/pull/1019) ([mvecsernyes](https://github.com/mvecsernyes))
+- Add image transparency [\#1053](https://github.com/gitbrent/PptxGenJS/pull/1053) ([mmarkelov](https://github.com/mmarkelov))
 
 ### Fixed
 
