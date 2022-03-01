@@ -1327,6 +1327,15 @@ declare namespace PptxGenJS {
 			 */
 			y?: Coord
 		}
+		/**
+		 * Transparency (percent)
+		 *
+		 * MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
+		 * - range: 0-100
+		 * @default 0
+		 * @example 25 // 25% transparent
+		 */
+		transparency?: number
 	}
 	/**
 	 * Add media (audio/video) to slide

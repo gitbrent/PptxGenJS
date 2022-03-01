@@ -591,6 +591,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					(slide._relsMedia || []).filter(rel => rel.rId === slideItemObj.imageRid)[0]['extn'] === 'svg'
 				) {
 					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
+					strSlideXml += slideItemObj.options.transparency ? ` <a:alphaModFix amt="${Math.round((100 - slideItemObj.options.transparency) * 1000)}"/>` : ''
 					strSlideXml += ' <a:extLst>'
 					strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">'
 					strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>'
@@ -598,7 +599,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += ' </a:extLst>'
 					strSlideXml += '</a:blip>'
 				} else {
-					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
+					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">'
+					strSlideXml += slideItemObj.options.transparency ? ` <a:alphaModFix amt="${Math.round((100 - slideItemObj.options.transparency) * 1000)}"/>` : ''
+					strSlideXml += '</a:blip>'
 				}
 				if (sizing && sizing.type) {
 					let boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide._presLayout) : cx,

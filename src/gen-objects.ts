@@ -418,6 +418,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		rotate: opt.rotate || 0,
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
+		transparency: opt.transparency || 0,
 		objectName: objectName,
 	}
 
