@@ -1,4 +1,4 @@
-/* PptxGenJS 3.10.0-beta @ 2022-02-26T19:01:02.534Z */
+/* PptxGenJS 3.10.0-beta @ 2022-03-20T19:58:55.772Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -1628,7 +1628,7 @@ function slideObjectToXml(slide) {
                 });
                 // STEP 1: Start Table XML
                 // NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-                var strXml_1 = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"".concat(intTableNum * slide._slideNum + 1, "\" name=\"Table ").concat(intTableNum * slide._slideNum, "\"/>");
+                var strXml_1 = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"".concat(intTableNum * slide._slideNum + 1, "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
                 strXml_1 +=
                     '<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
                         '  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -1845,7 +1845,6 @@ function slideObjectToXml(slide) {
                 break;
             case SLIDE_OBJECT_TYPES.text:
             case SLIDE_OBJECT_TYPES.placeholder:
-                var shapeName = slideItemObj.options.shapeName ? encodeXmlEntities(slideItemObj.options.shapeName) : "Object".concat(idx + 1);
                 // Lines can have zero cy, but text should not
                 if (!slideItemObj.options.line && cy === 0)
                     cy = EMU * 0.3;
@@ -1867,7 +1866,7 @@ function slideObjectToXml(slide) {
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
                 // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(shapeName, "\">");
+                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\">");
                 // <Hyperlink>
                 if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
                     strSlideXml +=
@@ -1996,11 +1995,10 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var imageOpts = slideItemObj.options;
-                var sizing = imageOpts.sizing, rounding = imageOpts.rounding, width = cx, height = cy;
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy;
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"Object ").concat(idx + 1, "\" descr=\"").concat(encodeXmlEntities(imageOpts.altText || slideItemObj.image), "\">");
+                strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
                     strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\"/>");
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
@@ -2014,6 +2012,7 @@ function slideObjectToXml(slide) {
                 if ((slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0] &&
                     (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0]['extn'] === 'svg') {
                     strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
+                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
                     strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
@@ -2022,7 +2021,9 @@ function slideObjectToXml(slide) {
                     strSlideXml += '</a:blip>';
                 }
                 else {
-                    strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>';
+                    strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">';
+                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
+                    strSlideXml += '</a:blip>';
                 }
                 if (sizing && sizing.type) {
                     var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide._presLayout) : cx, boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide._presLayout) : cy, boxX = getSmartParseNumber(sizing.x || 0, 'X', slide._presLayout), boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide._presLayout);
@@ -2047,8 +2048,8 @@ function slideObjectToXml(slide) {
                 if (slideItemObj.mtype === 'online') {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
-                    // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preview image rId, PowerPoint throws error!
-                    strSlideXml += ' <p:cNvPr id="' + (slideItemObj.mediaRid + 2) + '" name="Picture' + (idx + 1) + '"/>';
+                    // IMPORTANT: <p:cNvPr id="" value is critical - if its not the same number as preview image `rId`, PowerPoint throws error!
+                    strSlideXml += "<p:cNvPr id=\"".concat(slideItemObj.mediaRid + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
                     strSlideXml += ' <p:cNvPicPr/>';
                     strSlideXml += ' <p:nvPr>';
                     strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>';
@@ -2069,12 +2070,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
                     // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
-                    strSlideXml +=
-                        ' <p:cNvPr id="' +
-                            (slideItemObj.mediaRid + 2) +
-                            '" name="' +
-                            slideItemObj.media.split('/').pop().split('.').shift() +
-                            '"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>';
+                    strSlideXml += "<p:cNvPr id=\"".concat(slideItemObj.mediaRid + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\"><a:hlinkClick r:id=\"\" action=\"ppaction://media\"/></p:cNvPr>");
                     strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                     strSlideXml += ' <p:nvPr>';
                     strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>';
@@ -2097,10 +2093,9 @@ function slideObjectToXml(slide) {
                 }
                 break;
             case SLIDE_OBJECT_TYPES.chart:
-                var chartOpts = slideItemObj.options;
                 strSlideXml += '<p:graphicFrame>';
                 strSlideXml += ' <p:nvGraphicFramePr>';
-                strSlideXml += "   <p:cNvPr id=\"".concat(idx + 2, "\" name=\"Chart ").concat(idx + 1, "\" descr=\"").concat(encodeXmlEntities(chartOpts.altText || ''), "\"/>");
+                strSlideXml += "   <p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || ''), "\"/>");
                 strSlideXml += '   <p:cNvGraphicFramePr/>';
                 strSlideXml += "   <p:nvPr>".concat(genXmlPlaceholder(placeholderObj), "</p:nvPr>");
                 strSlideXml += ' </p:nvGraphicFramePr>';
@@ -2125,7 +2120,7 @@ function slideObjectToXml(slide) {
         strSlideXml +=
             '<p:sp>' +
                 '  <p:nvSpPr>' +
-                '    <p:cNvPr id="25" name="Slide Number Placeholder 24"/>' +
+                '    <p:cNvPr id="25" name="Slide Number Placeholder 0"/>' +
                 '    <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>' +
                 '    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>' +
                 '  </p:nvSpPr>' +
@@ -3391,6 +3386,9 @@ function addChartDefinition(target, type, data, opt) {
     options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1;
     options.w = options.w || '50%';
     options.h = options.h || '50%';
+    options.objectName = options.objectName
+        ? encodeXmlEntities(options.objectName)
+        : "Chart ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.chart; }).length);
     // B: Options: misc
     if (['bar', 'col'].indexOf(options.barDir || '') < 0)
         options.barDir = 'col';
@@ -3568,6 +3566,7 @@ function addImageDefinition(target, opt) {
     var strImageData = opt.data || '';
     var strImagePath = opt.path || '';
     var imageRelId = getNewRelId(target);
+    var objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : "Image ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.image; }).length);
     // REALITY-CHECK:
     if (!strImagePath && !strImageData) {
         console.error("ERROR: addImage() requires either 'data' or 'path' parameter!");
@@ -3619,6 +3618,8 @@ function addImageDefinition(target, opt) {
         rotate: opt.rotate || 0,
         flipV: opt.flipV || false,
         flipH: opt.flipH || false,
+        transparency: opt.transparency || 0,
+        objectName: objectName,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
@@ -3685,7 +3686,6 @@ function addImageDefinition(target, opt) {
  * @param {MediaProps} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
-    target._relsMedia.length + 1;
     var intPosX = opt.x || 0;
     var intPosY = opt.y || 0;
     var intSizeX = opt.w || 2;
@@ -3696,9 +3696,8 @@ function addMediaDefinition(target, opt) {
     var strType = opt.type || 'audio';
     var strExtn = '';
     var strCover = opt.cover || IMG_PLAYBTN;
-    var slideData = {
-        _type: SLIDE_OBJECT_TYPES.media,
-    };
+    var objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : "Media ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.media; }).length);
+    var slideData = { _type: SLIDE_OBJECT_TYPES.media };
     // STEP 1: REALITY-CHECK
     if (!strPath && !strData && strType !== 'online') {
         throw new Error("addMedia() error: either 'data' or 'path' are required!");
@@ -3722,6 +3721,7 @@ function addMediaDefinition(target, opt) {
     slideData.options.y = intPosY;
     slideData.options.w = intSizeX;
     slideData.options.h = intSizeY;
+    slideData.options.objectName = objectName;
     // STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
     /**
      * NOTE:
@@ -3839,6 +3839,9 @@ function addShapeDefinition(target, shapeName, opts) {
     options.y = options.y || (options.y === 0 ? 0 : 1);
     options.w = options.w || (options.w === 0 ? 0 : 1);
     options.h = options.h || (options.h === 0 ? 0 : 1);
+    options.objectName = options.objectName
+        ? encodeXmlEntities(options.objectName)
+        : "Shape ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.text; }).length);
     // 3: Handle line (lots of deprecated opts)
     if (typeof options.line === 'string') {
         var tmpOpts = newLineOpts;
@@ -3869,8 +3872,9 @@ function addShapeDefinition(target, shapeName, opts) {
  * @param {Function} getSlide - method
  */
 function addTableDefinition(target, tableRows, options, slideLayout, presLayout, addSlide, getSlide) {
-    var opt = options && typeof options === 'object' ? options : {};
     var slides = [target]; // Create array of Slides as more may be added by auto-paging
+    var opt = options && typeof options === 'object' ? options : {};
+    opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : "Table ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.table; }).length);
     // STEP 1: REALITY-CHECK
     {
         // A: check for empty
@@ -4144,6 +4148,10 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
                 if (placeHold && placeHold.options)
                     itemOpts = __assign(__assign({}, itemOpts), placeHold.options);
             }
+            // A.4: Other options
+            itemOpts.objectName = itemOpts.objectName
+                ? encodeXmlEntities(itemOpts.objectName)
+                : "Text ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.text; }).length);
             // B:
             if (itemOpts.shape === SHAPE_TYPE.LINE) {
                 // ShapeLineProps defaults
@@ -4161,7 +4169,9 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
                 // 3: Handle line (lots of deprecated opts)
                 if (typeof itemOpts.line === 'string') {
                     var tmpOpts = newLineOpts;
-                    tmpOpts.color = itemOpts.line.toString(); // @deprecated `itemOpts.line` string (was line color)
+                    if (typeof itemOpts.line === 'string')
+                        tmpOpts.color = itemOpts.line; // @deprecated [remove in v4.0]
+                    //tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line`:[string] (was line color)
                     itemOpts.line = tmpOpts;
                 }
                 if (typeof itemOpts.lineSize === 'number')
@@ -6470,7 +6480,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.10.0-beta-20220226-1224';
+var VERSION = '3.10.0-beta-20220320-1450';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
