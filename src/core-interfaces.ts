@@ -136,7 +136,8 @@ export interface ShadowProps {
 	 */
 	type: 'outer' | 'inner' | 'none'
 	/**
-	 * opacity (0.0 - 1.0)
+	 * opacity (percent)
+	 * - range: 0.0-1.0
 	 * @example 0.5 // 50% opaque
 	 */
 	opacity?: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
@@ -341,6 +342,7 @@ export interface TextBaseProps {
 	/**
 	 * Text color
 	 * - `HexColor` or `ThemeColor`
+	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Color
 	 * @example 'FF0000' // hex color (red)
 	 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 	 */
@@ -384,6 +386,13 @@ export interface TextBaseProps {
 	 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
 	 */
 	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+	/**
+	 * Transparency (percent)
+	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Transparency
+	 * - range: 0-100
+	 * @default 0
+	 */
+	transparency?: number
 	/**
 	 * underline properties
 	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
@@ -508,8 +517,7 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	}
 	/**
 	 * Transparency (percent)
-	 *
-	 * MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
+	 * - MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
 	 * - range: 0-100
 	 * @default 0
 	 * @example 25 // 25% transparent
@@ -1637,12 +1645,12 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Background color or image (`Color` | `path` | `data`)
-	 * @example {color: 'FF3399'} - hex fill color
-	 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
-	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
-	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
-	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
+	 * Background color or image (`color` | `path` | `data`)
+	 * @example { color: 'FF3399' } - hex color
+	 * @example { color: 'FF3399', transparency:50 } - hex color with 50% transparency
+	 * @example { path: 'https://onedrives.com/myimg.png` } - retrieve image via URL
+	 * @example { path: '/home/gitbrent/images/myimg.png` } - retrieve image via local path
+	 * @example { data: 'image/png;base64,iVtDaDrF[...]=' } - base64 string
 	 * @since v3.3.0
 	 */
 	background?: BackgroundProps

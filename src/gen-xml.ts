@@ -549,7 +549,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 									+ '</a:ext>'
 									+ '</a:extLst>';
 					}
-					*/
+				*/
 
 				// B: Close shape Properties
 				strSlideXml += '</p:spPr>'
@@ -1025,7 +1025,7 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
-		if (opts.color) runProps += genXmlColorSelection(opts.color)
+		if (opts.color) runProps += genXmlColorSelection({ color: opts.color, transparency: opts.transparency })
 		if (opts.highlight) runProps += `<a:highlight>${createColorElement(opts.highlight)}</a:highlight>`
 		if (typeof opts.underline === 'object' && opts.underline.color) runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
