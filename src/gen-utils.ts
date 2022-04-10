@@ -138,6 +138,13 @@ export function rgbToHex(r: number, g: number, b: number): string {
 	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase()
 }
 
+/**  TODO: FUTURE: TODO-4.0:
+ * @date 2022-04-10
+ * @tldr this s/b a private method with all current calls switched to `genXmlColorSelection()`
+ * @desc lots of code calls this method
+ * @example [gen-charts.tx] `strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(opts.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>'`
+ * Thi sis wrong. We s/b calling `genXmlColorSelection()` instead as it returns `<a:solidfill>BLAH</a:solidFill>`!!
+ */
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
  * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
@@ -216,8 +223,8 @@ export function genXmlColorSelection(props: Color | ShapeFillProps | ShapeLinePr
 			case 'solid':
 				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
 				break
-			default:
-				outText += '' // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
+			default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
+				outText += ''
 				break
 		}
 	}

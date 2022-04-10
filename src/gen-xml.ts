@@ -311,9 +311,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 								: cell._optImp && cell._optImp.fill && typeof cell._optImp.fill === 'string'
 								? cell._optImp.fill
 								: ''
-						fillColor =
-							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
-						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
+						fillColor = fillColor || cellOpts.fill ? cellOpts.fill : ''
+						let cellFill = fillColor ? genXmlColorSelection(fillColor) : ''
+
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
 						/** FUTURE: DEPRECATED:
