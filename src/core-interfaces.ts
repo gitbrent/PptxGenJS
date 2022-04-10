@@ -170,7 +170,7 @@ export interface ShapeFillProps {
 	 * Fill color
 	 * - `HexColor` or `ThemeColor`
 	 * @example 'FF0000' // red
-	 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
+	 * @example pptx.SchemeColor.text1 // Text1 Theme Color
 	 */
 	color?: Color
 	/**
@@ -342,7 +342,7 @@ export interface TextBaseProps {
 	 * Text color
 	 * - `HexColor` or `ThemeColor`
 	 * @example 'FF0000' // red
-	 * @example 'pptxgen.SchemeColor.text1' // Text1 Theme Color
+	 * @example pptx.SchemeColor.text1 // Text1 Theme Color
 	 */
 	color?: Color
 	/**
@@ -580,9 +580,9 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	arcThicknessRatio?: number
 	/**
 	 * Shape fill color properties
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -774,10 +774,9 @@ export interface TableCellProps extends TextBaseProps {
 	colspan?: number
 	/**
 	 * Fill color
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
-	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	hyperlink?: HyperlinkProps
@@ -853,9 +852,9 @@ export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProp
 	colW?: number | number[]
 	/**
 	 * Cell background color
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -960,9 +959,9 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	fit?: 'none' | 'shrink' | 'resize'
 	/**
 	 * Shape fill
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
