@@ -210,47 +210,47 @@ function genSlide02(pptx) {
 	let tabOpts3 = {
 		x: 0.5,
 		y: 5.15,
-		w: 6.25,
+		w: 6.0,
 		h: 2,
 		margin: 0.05,
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
-		border: { pt: "1", color: "c7c7c7" },
+		border: { pt: "2", color: pptx.colors.TEXT2 },
 		fill: { color: "F1F1F1" },
 	};
 	let arrTabRows3 = [
 		[
-			{ text: "A1\nA2\nA3", options: { rowspan: 3, fill: { color: "FFFCCC" } } },
-			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: "FFFCCC" } } },
-			"C1",
+			{ text: "A1\nA2\nA3", options: { rowspan: 3, fill: { color: pptx.colors.ACCENT6 } } },
+			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: pptx.colors.ACCENT2 } } },
+			{ text: "C1", options: { fill: { color: pptx.colors.ACCENT4 } } },
 		],
-		["C2"],
-		[{ text: "B3 -> C3", options: { colspan: 2, fill: { color: "99FFCC" } } }],
+		[{ text: "C2", options: { fill: { color: pptx.colors.ACCENT4 } } }],
+		[{ text: "B3 -> C3", options: { colspan: 2, fill: { color: pptx.colors.ACCENT5 } } }],
 	];
 	slide.addTable(arrTabRows3, tabOpts3);
 
 	// BTM-RIGHT
 	let tabOpts4 = {
-		x: 7.4,
+		x: 6.93,
 		y: 5.15,
-		w: 5.5,
+		w: 6.0,
 		h: 2,
 		margin: 0,
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
-		border: { pt: "1", color: "c7c7c7" },
+		border: { pt: "1", color: pptx.colors.TEXT2 },
 		fill: { color: "f2f9fc" },
 	};
 	let arrTabRows4 = [
 		[
-			"A1",
-			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: "FFFCCC" } } },
-			{ text: "C1\nC2\nC3", options: { rowspan: 3, fill: { color: "FFFCCC" } } },
+			{ text: "A1", options: { fill: { color: pptx.colors.ACCENT4, transparency: 25 } } },
+			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: pptx.colors.ACCENT2, transparency: 25 } } },
+			{ text: "C1\nC2\nC3", options: { rowspan: 3, fill: { color: pptx.colors.ACCENT6, transparency: 25 } } },
 		],
-		["A2"],
-		[{ text: "A3 -> B3", options: { colspan: 2, fill: { color: "99FFCC" } } }],
+		[{ text: "A2", options: { fill: { color: pptx.colors.ACCENT4, transparency: 25 } } }],
+		[{ text: "A3 -> B3", options: { colspan: 2, fill: { color: pptx.colors.ACCENT5, transparency: 25 } } }],
 	];
 	slide.addTable(arrTabRows4, tabOpts4);
 }
