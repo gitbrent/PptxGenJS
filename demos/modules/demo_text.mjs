@@ -39,7 +39,8 @@ function genSlide01(pptx) {
 	slide.addText(
 		[
 			{ text: "Textbox align (center/middle)", options: { fontSize: 32, breakLine: true } },
-			{ text: "Character Spacing 16", options: { fontSize: 16, charSpacing: 16 } },
+			{ text: "Character Spacing 16", options: { fontSize: 16, charSpacing: 16, breakLine: true } },
+			{ text: "Transparency 50%", options: { fontSize: 16, transparency: 50 } },
 		],
 		{ x: 0.5, y: 0.75, w: 8.5, h: 2.5, color: "FFFFFF", fill: { color: "0000FF" }, valign: "middle", align: "center", isTextBox: true }
 	);
@@ -48,14 +49,14 @@ function genSlide01(pptx) {
 			{ text: "(left/top)", options: { fontSize: 12, breakLine: true } },
 			{ text: "Textbox", options: { bold: true } },
 		],
-		{ x: 10, y: 0.75, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "00FF00" }, valign: "top", align: "left", margin: 15 }
+		{ x: 10, y: 0.75, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "00B050" }, valign: "top", align: "left", margin: 15 }
 	);
 	slide.addText(
 		[
 			{ text: "Textbox", breakLine: true },
 			{ text: "(right/bottom)", options: { fontSize: 12 } },
 		],
-		{ x: 10, y: 2.25, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "FF0000" }, valign: "bottom", align: "right", margin: 0 }
+		{ x: 10, y: 2.25, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "C00000" }, valign: "bottom", align: "right", margin: 0 }
 	);
 
 	slide.addText("^ (50%/50%)", { x: "50%", y: "50%", w: 2 });
