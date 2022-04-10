@@ -341,8 +341,8 @@ export interface TextBaseProps {
 	/**
 	 * Text color
 	 * - `HexColor` or `ThemeColor`
-	 * @example 'FF0000' // red
-	 * @example pptx.SchemeColor.text1 // Text1 Theme Color
+	 * @example 'FF0000' // hex color (red)
+	 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 	 */
 	color?: Color
 	/**
