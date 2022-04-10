@@ -1,4 +1,4 @@
-/* PptxGenJS 3.10.0-beta @ 2022-03-27T17:20:46.294Z */
+/* PptxGenJS 3.10.0-beta @ 2022-04-10T18:37:25.957Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -744,6 +744,13 @@ function componentToHex(c) {
 function rgbToHex(r, g, b) {
     return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase();
 }
+/**  TODO: FUTURE: TODO-4.0:
+ * @date 2022-04-10
+ * @tldr this s/b a private method with all current calls switched to `genXmlColorSelection()`
+ * @desc lots of code calls this method
+ * @example [gen-charts.tx] `strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(opts.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>'`
+ * Thi sis wrong. We s/b calling `genXmlColorSelection()` instead as it returns `<a:solidfill>BLAH</a:solidFill>`!!
+ */
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
  * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
@@ -812,8 +819,8 @@ function genXmlColorSelection(props) {
             case 'solid':
                 outText += "<a:solidFill>".concat(createColorElement(colorVal, internalElements), "</a:solidFill>");
                 break;
-            default:
-                outText += ''; // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
+            default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
+                outText += '';
                 break;
         }
     }
@@ -1783,9 +1790,8 @@ function slideObjectToXml(slide) {
                             : cell._optImp && cell._optImp.fill && typeof cell._optImp.fill === 'string'
                                 ? cell._optImp.fill
                                 : '';
-                        fillColor =
-                            fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
-                        var cellFill = fillColor ? "<a:solidFill>".concat(createColorElement(fillColor), "</a:solidFill>") : '';
+                        fillColor = fillColor || cellOpts.fill ? cellOpts.fill : '';
+                        var cellFill = fillColor ? genXmlColorSelection(fillColor) : '';
                         var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
@@ -6480,7 +6486,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.10.0-beta-20220327-1220';
+var VERSION = '3.10.0-beta-20220410-1303';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
