@@ -1,4 +1,4 @@
-/* PptxGenJS 3.10.0-beta @ 2022-04-10T18:37:25.957Z */
+/* PptxGenJS 3.10.0-beta @ 2022-04-10T20:36:53.265Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -326,6 +326,9 @@ var ShapeType;
     ShapeType["wedgeRectCallout"] = "wedgeRectCallout";
     ShapeType["wedgeRoundRectCallout"] = "wedgeRoundRectCallout";
 })(ShapeType || (ShapeType = {}));
+/**
+ * TODO: FUTURE: v4.0: rename to `ThemeColor`
+ */
 var SchemeColor;
 (function (SchemeColor) {
     SchemeColor["text1"] = "tx1";
@@ -1992,7 +1995,7 @@ function slideObjectToXml(slide) {
                                     + '</a:ext>'
                                     + '</a:extLst>';
                     }
-                    */
+                */
                 // B: Close shape Properties
                 strSlideXml += '</p:spPr>';
                 // C: Add formatted text (text body "bodyPr")
@@ -2431,7 +2434,7 @@ function genXmlTextRunProperties(opts, isDefault) {
             runProps += "<a:ln w=\"".concat(valToPts(opts.outline.size || 0.75), "\">").concat(genXmlColorSelection(opts.outline.color || 'FFFFFF'), "</a:ln>");
         }
         if (opts.color)
-            runProps += genXmlColorSelection(opts.color);
+            runProps += genXmlColorSelection({ color: opts.color, transparency: opts.transparency });
         if (opts.highlight)
             runProps += "<a:highlight>".concat(createColorElement(opts.highlight), "</a:highlight>");
         if (typeof opts.underline === 'object' && opts.underline.color)
@@ -6486,7 +6489,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.10.0-beta-20220410-1303';
+var VERSION = '3.10.0-beta-20220410-1533';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
