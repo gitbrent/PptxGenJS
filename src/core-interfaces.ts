@@ -175,6 +175,7 @@ export interface ShapeFillProps {
 	color?: Color
 	/**
 	 * Transparency (percent)
+	 * - MS-PPT > Format Shape > Fill & Line > Fill > Transparency
 	 * - range: 0-100
 	 * @default 0
 	 */
