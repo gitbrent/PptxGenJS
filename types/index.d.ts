@@ -171,6 +171,9 @@ declare namespace PptxGenJS {
 		'nodebuffer' = 'nodebuffer',
 		'uint8array' = 'uint8array',
 	}
+	/**
+	 * TODO: FUTURE: v4.0: rename to `SchemeColor`
+	 */
 	export enum SchemeColor {
 		'text1' = 'tx1',
 		'text2' = 'tx2',
