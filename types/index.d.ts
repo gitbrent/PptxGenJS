@@ -942,14 +942,6 @@ declare namespace PptxGenJS {
 		 */
 		tooltip?: string
 	}
-	export interface PlaceholderProps {
-		name: string
-		type: PLACEHOLDER_TYPE
-		x: Coord
-		y: Coord
-		w: Coord
-		h: Coord
-	}
 	// used by: chart, text
 	export interface ShadowProps {
 		/**
@@ -1236,6 +1228,14 @@ declare namespace PptxGenJS {
 		 * @default 'top'
 		 */
 		valign?: VAlign
+	}
+	export interface PlaceholderProps extends PositionProps, TextBaseProps {
+		name: string
+		type: PLACEHOLDER_TYPE
+		/**
+		 * margin (points)
+		 */
+		margin?: Margin
 	}
 	/**
 	 * Common for Props
@@ -2290,8 +2290,9 @@ declare namespace PptxGenJS {
 		 * Unique name for this master
 		 */
 		title: string
-		margin?: Margin
 		background?: BackgroundProps
+		margin?: Margin
+		slideNumber?: SlideNumberProps
 		objects?: (
 			| { chart: {} }
 			| { image: {} }
@@ -2309,7 +2310,6 @@ declare namespace PptxGenJS {
 					}
 			  }
 		)[]
-		slideNumber?: SlideNumberProps
 
 		/**
 		 * @deprecated v3.3.0 - use `background`

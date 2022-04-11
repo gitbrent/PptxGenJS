@@ -120,14 +120,6 @@ export interface HyperlinkProps {
 	 */
 	tooltip?: string
 }
-export interface PlaceholderProps {
-	name: string
-	type: PLACEHOLDER_TYPE
-	x: Coord
-	y: Coord
-	w: Coord
-	h: Coord
-}
 // used by: chart, text
 export interface ShadowProps {
 	/**
@@ -170,8 +162,8 @@ export interface ShapeFillProps {
 	/**
 	 * Fill color
 	 * - `HexColor` or `ThemeColor`
-	 * @example 'FF0000' // red
-	 * @example pptx.SchemeColor.text1 // Text1 Theme Color
+	 * @example 'FF0000' // hex color (red)
+	 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 	 */
 	color?: Color
 	/**
@@ -424,6 +416,14 @@ export interface TextBaseProps {
 	 * @default 'top'
 	 */
 	valign?: VAlign
+}
+export interface PlaceholderProps extends PositionProps, TextBaseProps {
+	name: string
+	type: PLACEHOLDER_TYPE
+	/**
+	 * margin (points)
+	 */
+	margin?: Margin
 }
 export type ObjectNameProps = {
 	/**
@@ -1569,8 +1569,9 @@ export interface SlideMasterProps {
 	 * Unique name for this master
 	 */
 	title: string
-	margin?: Margin
 	background?: BackgroundProps
+	margin?: Margin
+	slideNumber?: SlideNumberProps
 	objects?: (
 		| { chart: {} }
 		| { image: {} }
@@ -1588,7 +1589,6 @@ export interface SlideMasterProps {
 				}
 		  }
 	)[]
-	slideNumber?: SlideNumberProps
 
 	/**
 	 * @deprecated v3.3.0 - use `background`
