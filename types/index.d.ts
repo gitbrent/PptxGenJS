@@ -929,6 +929,7 @@ declare namespace PptxGenJS {
 	}
 	// used by: image, object, text,
 	export interface HyperlinkProps {
+		//_rId: number
 		/**
 		 * Slide number to link to
 		 */
@@ -950,7 +951,8 @@ declare namespace PptxGenJS {
 		 */
 		type: 'outer' | 'inner' | 'none'
 		/**
-		 * opacity (0.0 - 1.0)
+		 * opacity (percent)
+		 * - range: 0.0-1.0
 		 * @example 0.5 // 50% opaque
 		 */
 		opacity?: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
@@ -983,12 +985,13 @@ declare namespace PptxGenJS {
 		/**
 		 * Fill color
 		 * - `HexColor` or `ThemeColor`
-		 * @example 'FF0000' // red
-		 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
+		 * @example 'FF0000' // hex color (red)
+		 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 		 */
 		color?: Color
 		/**
 		 * Transparency (percent)
+		 * - MS-PPT > Format Shape > Fill & Line > Fill > Transparency
 		 * - range: 0-100
 		 * @default 0
 		 */
@@ -1154,8 +1157,9 @@ declare namespace PptxGenJS {
 		/**
 		 * Text color
 		 * - `HexColor` or `ThemeColor`
-		 * @example 'FF0000' // red
-		 * @example 'pptxgen.SchemeColor.text1' // Text1 Theme Color
+		 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Color
+		 * @example 'FF0000' // hex color (red)
+		 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 		 */
 		color?: Color
 		/**
@@ -1198,6 +1202,13 @@ declare namespace PptxGenJS {
 		 */
 		tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
 		/**
+		 * Transparency (percent)
+		 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Transparency
+		 * - range: 0-100
+		 * @default 0
+		 */
+		transparency?: number
+		/**
 		 * underline properties
 		 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
 		 * @default (none)
@@ -1237,9 +1248,6 @@ declare namespace PptxGenJS {
 		 */
 		margin?: Margin
 	}
-	/**
-	 * Common for Props
-	 */
 	export type ObjectNameProps = {
 		/**
 		 * Object name
@@ -1332,8 +1340,7 @@ declare namespace PptxGenJS {
 		}
 		/**
 		 * Transparency (percent)
-		 *
-		 * MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
+		 * - MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
 		 * - range: 0-100
 		 * @default 0
 		 * @example 25 // 25% transparent
@@ -1404,9 +1411,9 @@ declare namespace PptxGenJS {
 		arcThicknessRatio?: number
 		/**
 		 * Shape fill color properties
-		 * @example { color:'FF0000' } // hex string (red)
-		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+		 * @example { color:'FF0000' } // hex color (red)
+		 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+		 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1598,10 +1605,9 @@ declare namespace PptxGenJS {
 		colspan?: number
 		/**
 		 * Fill color
-		 * @example { color:'FF0000' } // hex string (red)
-		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
-		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
+		 * @example { color:'FF0000' } // hex color (red)
+		 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+		 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 		 */
 		fill?: ShapeFillProps
 		hyperlink?: HyperlinkProps
@@ -1677,9 +1683,9 @@ declare namespace PptxGenJS {
 		colW?: number | number[]
 		/**
 		 * Cell background color
-		 * @example { color:'FF0000' } // hex string (red)
-		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+		 * @example { color:'FF0000' } // hex color (red)
+		 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+		 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1758,9 +1764,9 @@ declare namespace PptxGenJS {
 		fit?: 'none' | 'shrink' | 'resize'
 		/**
 		 * Shape fill
-		 * @example { color:'FF0000' } // hex string (red)
-		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+		 * @example { color:'FF0000' } // hex color (red)
+		 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+		 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1792,6 +1798,7 @@ declare namespace PptxGenJS {
 		 * @since v3.5.0
 		 */
 		lineSpacingMultiple?: number
+		// TODO: [20220219] powerpoint uses inches but library has always been pt... @future @deprecated - update in v4.0? [range: 0.0-22.0]
 		/**
 		 * Margin (points)
 		 * - PowerPoint: Format Shape > Shape Options > Size & Properties > Text Box > Left/Right/Top/Bottom margin
@@ -1828,6 +1835,10 @@ declare namespace PptxGenJS {
 		strike?: boolean | 'dblStrike' | 'sngStrike'
 		subscript?: boolean
 		superscript?: boolean
+		/**
+		 * Vertical alignment
+		 * @default middle
+		 */
 		valign?: VAlign
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		/**
@@ -1876,6 +1887,15 @@ declare namespace PptxGenJS {
 	}
 
 	// charts =========================================================================================
+	// FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
+	/*
+	export interface OptsDataLabelPosition {
+		pie: 'ctr' | 'inEnd' | 'outEnd' | 'bestFit'
+		scatter: 'b' | 'ctr' | 'l' | 'r' | 't'
+		// TODO: add all othere chart types
+	}
+	*/
+
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 	export interface OptsChartData {
 		index?: number
@@ -1903,6 +1923,7 @@ declare namespace PptxGenJS {
 		 */
 		style?: 'solid' | 'dash' | 'dot' | 'none'
 	}
+	// TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 	export interface IChartMulti {
 		type: CHART_NAME
 		data: any[]
@@ -2149,7 +2170,7 @@ declare namespace PptxGenJS {
 		 * - radar chart type
 		 * @default standard
 		 */
-		radarStyle?: 'standard' | 'marker' | 'filled'
+		radarStyle?: 'standard' | 'marker' | 'filled' // TODO: convert to 'radar'|'markers'|'filled' in 4.0 (verbatim with PPT app UI)
 	}
 	export interface IChartPropsDataLabel {
 		dataLabelBkgrdColors?: boolean
@@ -2227,10 +2248,11 @@ declare namespace PptxGenJS {
 		type: CHART_NAME | IChartMulti[]
 		opts: IChartOpts
 		data: OptsChartData[]
-		rId: number
-		Target: string
-		globalId: number
-		fileName: string
+		// internal below
+		//rId: number
+		//Target: string
+		//globalId: number
+		//fileName: string
 	}
 
 	// Core
@@ -2259,6 +2281,9 @@ declare namespace PptxGenJS {
 		fileName?: string
 	}
 	export interface SectionProps {
+		//_type: 'user' | 'default'
+		//_slides: PresSlide[]
+
 		/**
 		 * Section title
 		 */
@@ -2270,6 +2295,9 @@ declare namespace PptxGenJS {
 		order?: number
 	}
 	export interface PresLayout {
+		//_sizeW?: number
+		//_sizeH?: number
+
 		/**
 		 * Layout Name
 		 * @example 'LAYOUT_WIDE'
@@ -2281,9 +2309,8 @@ declare namespace PptxGenJS {
 	export interface SlideNumberProps extends PositionProps, TextBaseProps {
 		/**
 		 * margin (points)
-		 * TODO: convert to inches in 4.0 (valid values are 0-22)
 		 */
-		margin?: Margin
+		margin?: Margin // TODO: convert to inches in 4.0 (valid values are 0-22)
 	}
 	export interface SlideMasterProps {
 		/**
@@ -2317,6 +2344,9 @@ declare namespace PptxGenJS {
 		bkgd?: string | BackgroundProps
 	}
 	export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
+		//_placeholderIdx?: number
+		//_placeholderType?: PLACEHOLDER_TYPE
+
 		cx?: Coord
 		cy?: Coord
 		margin?: Margin
@@ -2333,12 +2363,12 @@ declare namespace PptxGenJS {
 		addText: Function
 
 		/**
-		 * Background color or image (`Color` | `path` | `data`)
-		 * @example {color: 'FF3399'} - hex fill color
-		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
-		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
-		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
-		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
+		 * Background color or image (`color` | `path` | `data`)
+		 * @example { color: 'FF3399' } - hex color
+		 * @example { color: 'FF3399', transparency:50 } - hex color with 50% transparency
+		 * @example { path: 'https://onedrives.com/myimg.png` } - retrieve image via URL
+		 * @example { path: '/home/gitbrent/images/myimg.png` } - retrieve image via local path
+		 * @example { data: 'image/png;base64,iVtDaDrF[...]=' } - base64 string
 		 * @since v3.3.0
 		 */
 		background?: BackgroundProps
@@ -2388,12 +2418,12 @@ declare namespace PptxGenJS {
 	 */
 	export class Slide {
 		/**
-		 * Background color or image (`Color` | `path` | `data`)
-		 * @example {color: 'FF3399'} - hex fill color
-		 * @example {color: 'FF3399', transparency: 50} - hex fill color with transparency of 50%
-		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
-		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
-		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
+		 * Background color or image (`color` | `path` | `data`)
+		 * @example { color: 'FF3399' } - hex color
+		 * @example { color: 'FF3399', transparency:50 } - hex color with 50% transparency
+		 * @example { path: 'https://onedrives.com/myimg.png` } - retrieve image via URL
+		 * @example { path: '/home/gitbrent/images/myimg.png` } - retrieve image via local path
+		 * @example { data: 'image/png;base64,iVtDaDrF[...]=' } - base64 string
 		 * @since 3.3.0
 		 */
 		background: BackgroundProps
