@@ -74,7 +74,7 @@ function App() {
 			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
 				<div className="container-fluid">
 					<a className="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
-						<img src={logo} width="30" height="24" />
+						<img src={logo} alt="logo" width="30" height="24" />
 						PptxGenJS
 					</a>
 					<button
