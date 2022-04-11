@@ -13,12 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add name (`objectName`) to all core objects [\#1019](https://github.com/gitbrent/PptxGenJS/pull/1019) ([mvecsernyes](https://github.com/mvecsernyes))
 - Add image transparency [\#1053](https://github.com/gitbrent/PptxGenJS/pull/1053) ([mmarkelov](https://github.com/mmarkelov))
-- Add Opacity for text element [\#1054](https://github.com/gitbrent/PptxGenJS/issues/1054) ([ibrahimovfuad](https://github.com/ibrahimovfuad))
+- Add text transparency [\#1054](https://github.com/gitbrent/PptxGenJS/issues/1054) ([ibrahimovfuad](https://github.com/ibrahimovfuad))
 
 ### Fixed
 
 - Radar chart line colors [\#539](https://github.com/gitbrent/PptxGenJS/issues/539) ([pablodicosta](https://github.com/pablodicosta))
-- Adding charts and media together is causing a pptx error, and repair is needed. [\#1020](https://github.com/gitbrent/PptxGenJS/issues/1020) ([mvecsernyes](https://github.com/mvecsernyes))
+- Placeholder definitions missing props [\#987](https://github.com/gitbrent/PptxGenJS/issues/987) ([bigbug](https://github.com/bigbug))
+- Charts and media together is causing pptx needs repair error [\#1020](https://github.com/gitbrent/PptxGenJS/issues/1020) ([mvecsernyes](https://github.com/mvecsernyes))
 - Adding hyperlink to table cell doesn't work [\#1049](https://github.com/gitbrent/PptxGenJS/issues/1049) ([tbowmo](https://github.com/tbowmo))
 - Underline doesn't work in table after update to v3.9.0 [\#1052](https://github.com/gitbrent/PptxGenJS/issues/1052) ([hhq365](https://github.com/hhq365))
 - `ImageProps.sizing` props `w`, `h`, `x`, `y` s/b typed `Coord` [\#1065](https://github.com/gitbrent/PptxGenJS/issues/1065) ([Naveencheekoti17](https://github.com/BistroStu))
