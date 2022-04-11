@@ -91,24 +91,24 @@ function App() {
 					<div className="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 							<li className="nav-item">
-								<a className="nav-link active" aria-current="page" href="#">
+								<a className="nav-link active" aria-current="page" href="https://gitbrent.github.io/PptxGenJS/demo/react/">
 									Home
 								</a>
 							</li>
 						</ul>
 						<ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-							<li class="nav-item me-3">
-								<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/demos/">
+							<li className="nav-item me-3">
+								<a className="nav-link" href="https://gitbrent.github.io/PptxGenJS/demos/">
 									Library Demos
 								</a>
 							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/docs/installation/">
+							<li className="nav-item me-3">
+								<a className="nav-link" href="https://gitbrent.github.io/PptxGenJS/docs/installation/">
 									API Documentation
 								</a>
 							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link" href="https://github.com/gitbrent/PptxGenJS/">
+							<li className="nav-item me-3">
+								<a className="nav-link" href="https://github.com/gitbrent/PptxGenJS/">
 									GitHub Project
 								</a>
 							</li>
