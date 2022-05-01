@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
+## [3.11.0] - 2022-0?-0?
+
+### Added
+
+### Fixed
+
+- Using `addImage` with `tableToSlides()` does not work [\#1103](https://github.com/gitbrent/PptxGenJS/issues/1103) ([Strawberry0215](https://github.com/Strawberry0215))
+
 ## [3.10.0] - 2022-04-10
 
 ### Added

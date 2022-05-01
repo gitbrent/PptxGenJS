@@ -1502,8 +1502,11 @@ declare namespace PptxGenJS {
 
 		/**
 		 * Add an image to slide(s) created during autopaging
+		 * - `image` prop requires either `path` or `data`
+		 * - see `DataOrPathProps` for details on `image` props
+		 * - see `PositionProps` for details on `options` props
 		 */
-		addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+		addImage?: { image: DataOrPathProps; options: PositionProps }
 		/**
 		 * Add a shape to slide(s) created during autopaging
 		 */
