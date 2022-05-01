@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Chart with lines and bars produces repair file dialog in Powerpoint [\#1013](https://github.com/gitbrent/PptxGenJS/issues/1013) ([kornarakis](https://github.com/kornarakis))
 - Using `addImage` with `tableToSlides()` does not work [\#1103](https://github.com/gitbrent/PptxGenJS/issues/1103) ([Strawberry0215](https://github.com/Strawberry0215))
 
 ### Changed
