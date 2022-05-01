@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-05-01T18:17:59.663Z */
+/* PptxGenJS 3.11.0-beta @ 2022-05-01T21:07:11.409Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5116,7 +5116,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             }
             if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
                 strXml += '<c:barDir val="' + opts.barDir + '"/>';
-                strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
+                strXml += '<c:grouping val="' + (opts.barGrouping || 'clustered') + '"/>';
             }
             if (chartType === CHART_TYPE.RADAR) {
                 strXml += '<c:radarStyle val="' + opts.radarStyle + '"/>';
@@ -6139,7 +6139,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += '   </a:ln>';
     strXml += ' </c:spPr>';
     strXml += ' <c:txPr>';
-    strXml += '  <a:bodyPr ' + (opts.valAxisLabelRotate ? 'rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>'; // don't specify rot 0 so we get the auto behavior
+    strXml += '  <a:bodyPr' + (opts.valAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>'; // don't specify rot 0 so we get the auto behavior
     strXml += '  <a:lstStyle/>';
     strXml += '  <a:p>';
     strXml += '    <a:pPr>';
