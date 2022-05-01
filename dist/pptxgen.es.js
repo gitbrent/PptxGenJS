@@ -1,4 +1,4 @@
-/* PptxGenJS 3.10.0 @ 2022-04-11T01:44:46.027Z */
+/* PptxGenJS 3.11.0-beta @ 2022-05-01T18:17:59.681Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -1530,8 +1530,22 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         // C: Add table to Slide
         newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false });
         // D: Add any additional objects
-        if (opts.addImage)
-            newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h });
+        if (opts.addImage) {
+            opts.addImage.options = opts.addImage.options || {};
+            if (!opts.addImage.image || (!opts.addImage.image.path && !opts.addImage.image.data)) {
+                console.warn('Warning: tableToSlides.addImage requires either `path` or `data`');
+            }
+            else {
+                newSlide.addImage({
+                    path: opts.addImage.image.path,
+                    data: opts.addImage.image.data,
+                    x: opts.addImage.options.x,
+                    y: opts.addImage.options.y,
+                    w: opts.addImage.options.w,
+                    h: opts.addImage.options.h,
+                });
+            }
+        }
         if (opts.addShape)
             newSlide.addShape(opts.addShape.shape, opts.addShape.options || {});
         if (opts.addTable)
@@ -6489,7 +6503,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.10.0';
+var VERSION = '3.11.0-beta-20220501-1310';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
