@@ -45,7 +45,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 **Works Everywhere**
 
 - Every modern desktop and mobile browser is supported
-- Integrates with Node, Angular, React and Electron
+- Integrates with Node, Angular, React, and Electron
 - Compatible with PowerPoint, Keynote, and more
 
 **Full Featured**
@@ -58,7 +58,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 - The absolute easiest PowerPoint library to use
 - Learn as you code will full typescript definitions included
-- Tons of demo code comes included (over 70 slides of features)
+- Tons of demo code comes included (over 75 slides of features)
 
 **Export Your Way**
 
@@ -85,14 +85,14 @@ Visit the demos page to create a simple presentation to see how easy it is to us
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.9.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.9.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.9.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download

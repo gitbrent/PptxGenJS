@@ -1,7 +1,7 @@
 import React from "react";
 import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 import { testMainMethods, testTableMethod } from "./tstest/Test";
-import logo from "./logo.svg";
+import logo from "./logo.png";
 import "./App.css";
 
 const demoCode = `import pptxgen from "pptxgenjs";
@@ -71,44 +71,44 @@ function App() {
 
 	return (
 		<section>
-			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+			<nav className="navbar navbar-expand-lg navbar-dark bg-primary py-2">
 				<div className="container-fluid">
 					<a className="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
-						<img src={logo} width="30" height="24" />
+						<img src={logo} alt="logo" width="32" height="32" className="d-inline-block align-text-center me-2" />
 						PptxGenJS
 					</a>
 					<button
 						className="navbar-toggler"
 						type="button"
 						data-bs-toggle="collapse"
-						data-bs-target="#navbarSupportedContent"
-						aria-controls="navbarSupportedContent"
+						data-bs-target="#navbarText"
+						aria-controls="navbarText"
 						aria-expanded="false"
 						aria-label="Toggle navigation"
 					>
 						<span className="navbar-toggler-icon"></span>
 					</button>
-					<div className="collapse navbar-collapse" id="navbarSupportedContent">
+					<div className="collapse navbar-collapse" id="navbarText">
 						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 							<li className="nav-item">
-								<a className="nav-link active" aria-current="page" href="#">
-									Home
+								<a className="nav-link active" aria-current="page" href="https://gitbrent.github.io/PptxGenJS/demo/react/">
+									React Demo Home
 								</a>
 							</li>
 						</ul>
 						<ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-							<li class="nav-item me-3">
-								<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/demos/">
+							<li className="nav-item me-3">
+								<a className="nav-link" href="https://gitbrent.github.io/PptxGenJS/demos/">
 									Library Demos
 								</a>
 							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/docs/installation/">
+							<li className="nav-item me-3">
+								<a className="nav-link" href="https://gitbrent.github.io/PptxGenJS/docs/installation/">
 									API Documentation
 								</a>
 							</li>
-							<li class="nav-item me-3">
-								<a class="nav-link" href="https://github.com/gitbrent/PptxGenJS/">
+							<li className="nav-item me-3">
+								<a className="nav-link" href="https://github.com/gitbrent/PptxGenJS/">
 									GitHub Project
 								</a>
 							</li>

@@ -676,7 +676,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 
 			if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
 				strXml += '<c:barDir val="' + opts.barDir + '"/>'
-				strXml += '<c:grouping val="' + opts.barGrouping + '"/>'
+				strXml += '<c:grouping val="' + (opts.barGrouping || 'clustered') + '"/>'
 			}
 
 			if (chartType === CHART_TYPE.RADAR) {
@@ -749,7 +749,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 				}
 
-				if (chartType === CHART_TYPE.LINE) {
+				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
@@ -1766,7 +1766,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '   </a:ln>'
 	strXml += ' </c:spPr>'
 	strXml += ' <c:txPr>'
-	strXml += '  <a:bodyPr ' + (opts.valAxisLabelRotate ? 'rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
+	strXml += '  <a:bodyPr' + (opts.valAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
 	strXml += '  <a:lstStyle/>'
 	strXml += '  <a:p>'
 	strXml += '    <a:pPr>'
