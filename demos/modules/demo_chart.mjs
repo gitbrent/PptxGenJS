@@ -63,6 +63,8 @@ export function genSlides_Chart(pptx) {
 	genSlide16(pptx);
 	genSlide17(pptx);
 	genSlide18(pptx);
+	genSlide19(pptx);
+	genSlide20(pptx);
 }
 
 function initTestData() {
@@ -1558,9 +1560,6 @@ function genSlide16(pptx) {
 
 // SLIDE 17: Multi-Type Charts
 function genSlide17(pptx) {
-	// powerpoint 2016 add secondary category axis labels
-	// https://peltiertech.com/chart-with-a-dual-category-axis/
-
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Multi-Type Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
@@ -2106,4 +2105,185 @@ function genSlide18(pptx) {
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, pieOptions);
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar3);
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
+}
+
+// SLIDE 19: Chart Examples: Multi Level Category Axes
+function genSlide19(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Multi Level Category Axes", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+		const arrDataRegions = [
+			{
+				name: 'Mechanical',
+				labels: [
+					[
+						'Gear',  'Bearing',
+						'Motor', 'Switch',
+						'Plug',  'Cord',
+						'Fuse',  'Bulb',
+						'Pump',  'Leak',
+						'Seals'
+					],
+					[
+						'Mechanical', '',
+						'',           'Electrical',
+						'',           '',
+						'',           '',
+						'Hydraulic',  '',
+						''
+					]
+				],
+				values: [
+					11, 8, 3, 0, 0,
+					 0, 0, 0, 0, 0,
+					 0
+				]
+			},
+			{
+				name: 'Electrical',
+				labels: [
+					[
+						'Gear',  'Bearing',
+						'Motor', 'Switch',
+						'Plug',  'Cord',
+						'Fuse',  'Bulb',
+						'Pump',  'Leak',
+						'Seals'
+					],
+					[
+						'Mechanical', '',
+						'',           'Electrical',
+						'',           '',
+						'',           '',
+						'Hydraulic',  '',
+						''
+					]
+				],
+				values: [
+					 0, 0, 0, 19, 12,
+					11, 3, 2,  0,  0,
+					 0
+				]
+			},
+			{
+				name: 'Hydraulic',
+				labels: [
+					[
+						'Gear',  'Bearing',
+						'Motor', 'Switch',
+						'Plug',  'Cord',
+						'Fuse',  'Bulb',
+						'Pump',  'Leak',
+						'Seals'
+					],
+					[
+						'Mechanical', '',
+						'',           'Electrical',
+						'',           '',
+						'',           '',
+						'Hydraulic',  '',
+						''
+					]
+				],
+				values: [
+					0, 0, 0, 0, 0,
+					0, 0, 0, 4, 3,
+					1
+				]
+			}
+		];
+
+		const opts1 = {
+			catAxisMultiLevelLabels: true,
+			x: 0.6,
+			y: 0.6,
+			w: 6.0,
+			h: 3.0,
+		};
+
+		const opts2 = {
+			barDir: 'col',
+
+			catAxisMultiLevelLabels: true,
+			x: 7.0,
+			y: 0.6,
+			w: 6.0,
+			h: 3.0,
+		};
+
+		const opts3 = {
+			barDir: 'col',
+
+			catAxisMultiLevelLabels: true,
+			x: 0.6,
+			y: 4.0,
+			w: 6.0,
+			h: 3.0,
+		};
+
+		const opts4 = {
+			catAxisMultiLevelLabels: true,
+			x: 7,
+			y: 4.0,
+			w: 6.0,
+			h: 3.0,
+		};
+
+		slide.addChart(pptx.charts.AREA, arrDataRegions, opts1);
+		slide.addChart(pptx.charts.BAR, arrDataRegions, opts2);
+		slide.addChart(pptx.charts.BAR3D, arrDataRegions, opts3);
+		slide.addChart(pptx.charts.LINE, arrDataRegions, opts4);
+}
+
+// SLIDE 20: Chart Examples: Three Levels Category Axes
+function genSlide20(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Three Levels Category Axes", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	const arrDataRegions = [
+		{
+		  name: 'Fruits',
+		  labels: [
+			[
+			  '1/3',  '1/25', '6/5',
+			  '6/21', '7/27', '2/20',
+			  '3/17', '4/24', '6/23',
+			  '8/5',  '4/16', '1/29',
+			  '2/23', '4/4',  '7/15'
+			],
+			[
+			  'Apple', '', '',
+			  '',      '', 'Orange',
+			  '',      '', '',
+			  'Orange',      '', 'Peach',
+			  'Pear',  '', '',
+			  ''
+			],
+			[
+			  '2014', '',     '', '',
+			  '',     '',     '', '',
+			  '',     '2015', '', '',
+			  '',     '',     '', ''
+			]
+		  ],
+		  values: [
+			734, 465, 656, 176,
+			434, 165, 613, 359,
+			279, 660, 307, 270,
+			539, 142, 554
+		  ]
+		}
+	  ];
+
+	const opts1 = {
+		catAxisMultiLevelLabels: true,
+		x: 0.2,
+		y: 0.2,
+		w: 12.9,
+		h: 7.1
+	};
+
+	slide.addChart(pptx.charts.BAR, arrDataRegions, opts1);
 }
