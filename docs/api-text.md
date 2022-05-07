@@ -206,8 +206,8 @@ pptx.writeFile("Demo-Text");
 
 ### Line Break Options
 
--   Use the `breakLine` prop to force line breaks when composing text objects using an array of text objects.
--   Use the `softBreakBefore` prop to create a "soft line break" (shift-enter)
+- Use the `breakLine` prop to force line breaks when composing text objects using an array of text objects.
+- Use the `softBreakBefore` prop to create a "soft line break" (shift-enter)
 
 ```javascript
 let arrTextObjs1 = [

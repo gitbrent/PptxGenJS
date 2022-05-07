@@ -6,11 +6,13 @@ title: Speaker Notes
 Speaker Notes can be included on any Slide.
 
 ## Syntax
+
 ```typescript
 slide.addNotes('TEXT');
 ```
 
 ## Example: JavaScript
+
 ```typescript
 let pres = new PptxGenJS();
 let slide = pptx.addSlide();
@@ -23,6 +25,7 @@ pptx.writeFile('Sample Speaker Notes');
 ```
 
 ## Example: TypeScript
+
 ```typescript
 import pptxgen from "pptxgenjs";
 

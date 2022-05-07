@@ -6,13 +6,13 @@ title: HTML to PowerPoint
 
 Reproduces an HTML table into 1 or more slides (auto-paging).
 
--   Supported cell styling includes background colors, borders, fonts, padding, etc.
--   Slide margin settings can be set using options, or by providing a Master Slide definition
+- Supported cell styling includes background colors, borders, fonts, padding, etc.
+- Slide margin settings can be set using options, or by providing a Master Slide definition
 
 Notes:
 
--   CSS styles are only supported down to the cell level (word-level formatting is not supported)
--   Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)
+- CSS styles are only supported down to the cell level (word-level formatting is not supported)
+- Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)
 
 ## HTML to PowerPoint Syntax
 
@@ -46,8 +46,8 @@ slide.tableToSlides(htmlElementID, { OPTIONS });
 
 Add an `data` attribute to the table's `<th>` tag to manually size columns (inches)
 
--   minimum column width can be specified by using the `data-pptx-min-width` attribute
--   fixed column width can be specified by using the `data-pptx-width` attribute
+- minimum column width can be specified by using the `data-pptx-min-width` attribute
+- fixed column width can be specified by using the `data-pptx-width` attribute
 
 Example:
 
@@ -67,8 +67,8 @@ Example:
 
 ## HTML to PowerPoint Notes
 
--   Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
--   Hidden tables wont auto-size their columns correctly (as the properties are not accurate)
+- Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
+- Hidden tables wont auto-size their columns correctly (as the properties are not accurate)
 
 ## HTML to PowerPoint Examples
 
@@ -81,10 +81,10 @@ pptx.tableToSlides("myHtmlTableID", { master: "MASTER_SLIDE" });
 
 // Optionally, add images/shapes/text/tables to each Slide
 pptx.tableToSlides("myHtmlTableID", {
-	addText: { text: "Dynamic Title", options: { x: 1, y: 0.5, color: "0088CC" } },
+  addText: { text: "Dynamic Title", options: { x: 1, y: 0.5, color: "0088CC" } },
 });
 pptx.tableToSlides("myHtmlTableID", {
-	addImage: { path: "images/logo.png", x: 10, y: 0.5, w: 1.2, h: 0.75 },
+  addImage: { path: "images/logo.png", x: 10, y: 0.5, w: 1.2, h: 0.75 },
 });
 ```
 
@@ -98,7 +98,7 @@ pptx.tableToSlides("myHtmlTableID", {
 
 ### Demos
 
--   Working example is available under [/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
+- Working example is available under [/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
 
 ## HTML to PowerPoint Creative Solutions
 
@@ -111,7 +111,7 @@ Add a button to a webpage that will create a Presentation using whatever table d
 <button onclick="{ var pptx=new PptxGenJS(); pptx.tableToSlides('tableId'); pptx.writeFile(); }" type="button">Export to PPTX</button>
 ```
 
-**SharePoint Integration**
+## SharePoint Integration
 
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the PptxGenJS bundle `<script>` in that/another WebPart)

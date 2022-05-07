@@ -31,23 +31,23 @@ slide.addTable(rows, { w: 9, rowH: 1, align: "left", fontFace: "Arial" });
 
 ### Usage Notes
 
--   Properties passed to `addTable()` apply to every cell in the table
--   Selectively override formatting at a cell-level by providing properties to the cell object
+- Properties passed to `addTable()` apply to every cell in the table
+- Selectively override formatting at a cell-level by providing properties to the cell object
 
-### Table Cell Formatting
+### Cell Formatting
 
--   Table cells can be either a plain text string or an object with text and options properties
--   When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
--   Cell borders can be removed (aka: borderless table) by using the 'none' type (Ex: `border: {type:'none'}`)
--   Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
+- Table cells can be either a plain text string or an object with text and options properties
+- When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
+- Cell borders can be removed (aka: borderless table) by using the 'none' type (Ex: `border: {type:'none'}`)
+- Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
     as the `text` value allows fine-grained control over the text inside cells.
--   Available formatting options are here: [Text Props](/PptxGenJS/docs/api-text#base-properties-textpropsoptions)
+- Available formatting options are here: [Text Props](/PptxGenJS/docs/api-text#base-properties-textpropsoptions)
 
-### Table Row Height
+### Row Height
 
--   Use the `h` property to have row(s) divided evenly across the defined area
--   Use the `rowH` property with an array of values to specify row heights (indexed 0-n)
--   Omit both properties to have table rows consume only the space required for its contents
+- Use the `h` property to have row(s) divided evenly across the defined area
+- Use the `rowH` property with an array of values to specify row heights (indexed 0-n)
+- Omit both properties to have table rows consume only the space required for its contents
 
 ## Properties
 
@@ -118,30 +118,30 @@ Auto-paging will create new slides as table rows overflow, doing the magical wor
 
 ### Auto-Paging Property Notes
 
--   `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
--   `autoPageCharWeight`: adjusts the calculated width of characters. If too much empty space is left on each line,
+- `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
+- `autoPageCharWeight`: adjusts the calculated width of characters. If too much empty space is left on each line,
     then increase char weight value. Conversely, if the table rows are overflowing, then reduce the char weight value.
--   `autoPageLineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
+- `autoPageLineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
     then increase line weight value. Conversely, if the tables are overflowing the bottom of the Slides, then
     reduce the line weight value. Also helpful when using some fonts that do not have the usual golden ratio.
--   `newSlideStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
+- `newSlideStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
     you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
     tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
 
 ### Auto-Paging Usage Notes
 
--   New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`
--   Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides
--   Auto-paging is not an exact science! Try using different values for `autoPageCharWeight`/`autoPageLineWeight` and slide margin
--   Very small and very large font sizes cause tables to over/under-flow, be sure to adjust the char and line properties
--   There are many examples of auto-paging in the `examples` folder
+- New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`
+- Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides
+- Auto-paging is not an exact science! Try using different values for `autoPageCharWeight`/`autoPageLineWeight` and slide margin
+- Very small and very large font sizes cause tables to over/under-flow, be sure to adjust the char and line properties
+- There are many examples of auto-paging in the `examples` folder
 
 ## Examples
 
 ### Table Cell Formatting
 
--   Sample Code: [`demo_table.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_table.mjs) for 700+ lines of demo code
--   Online Demo: [pptxgenjs Table Demos](https://gitbrent.github.io/PptxGenJS/demo/#tables)
+- Sample Code: [`demo_table.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_table.mjs) for 700+ lines of demo code
+- Online Demo: [pptxgenjs Table Demos](https://gitbrent.github.io/PptxGenJS/demo/#tables)
 
 ```typescript
 // -------

@@ -37,4 +37,5 @@ slide.addImage({ path: "img1.png", x: 1, y: 2 }).addImage({ path: "img2.jpg", x:
 ```
 
 ## Slide Methods
+
 See [Slide Methods](/PptxGenJS/docs/usage-slide-options) for features such as Background and Slide Numbers.

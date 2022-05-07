@@ -5,8 +5,8 @@ title: Saving Presentations
 
 Several methods are available when generating a presentation.
 
--   All methods return a Promise
--   Working examples are available under [/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
+- All methods return a Promise
+- Working examples are available under [/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
 
 ## Write File
 
@@ -87,7 +87,7 @@ pptx.stream()
 
 ### Client Browser
 
--   In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
+- In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
 let pptx = null;
@@ -105,8 +105,8 @@ pptx.writeFile({ fileName: "PptxGenJS-Presentation-2" });
 
 ### Node.js
 
--   See `demos/node/demo.js` for a working demo with multiple presentations, promises, etc.
--   See `demos/node/demo_stream.js` for a working demo using streaming
+- See `demos/node/demo.js` for a working demo with multiple presentations, promises, etc.
+- See `demos/node/demo_stream.js` for a working demo using streaming
 
 ```javascript
 import pptxgen from "pptxgenjs";

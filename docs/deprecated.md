@@ -37,8 +37,6 @@ Options deprecated in early 1.0 versions (hopefully nobody still uses these):
 
 ### Node Users
 
-**Major Change**
-
 - `require('pptxgenjs')` no longer returns a singleton instance
 - `pptx = new PptxGenJS()` will create a single, unique instance
 - Advantage: Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).

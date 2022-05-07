@@ -12,16 +12,16 @@ Charts of almost any type can be added to Slides. See [demos/modules/demo_chart.
 ```typescript
 let pres = new pptxgen();
 let dataChartAreaLine = [
-	{
-		name: "Actual Sales",
-		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121],
-	},
-	{
-		name: "Projected Sales",
-		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121],
-	},
+  {
+    name: "Actual Sales",
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121],
+  },
+  {
+    name: "Projected Sales",
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121],
+  },
 ];
 
 slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 });
@@ -29,26 +29,26 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 
 ### Core Chart Types
 
--   Chart type can be any one of `pptx.ChartType`
--   Currently: `pptx.ChartType.area`, `pptx.ChartType.bar`, `pptx.ChartType.bar3d`, `pptx.ChartType.bubble`, `pptx.ChartType.doughnut`, `pptx.ChartType.line`, `pptx.ChartType.pie`, `pptx.ChartType.radar`, `pptx.ChartType.scatter`
+- Chart type can be any one of `pptx.ChartType`
+- Currently: `pptx.ChartType.area`, `pptx.ChartType.bar`, `pptx.ChartType.bar3d`, `pptx.ChartType.bubble`, `pptx.ChartType.doughnut`, `pptx.ChartType.line`, `pptx.ChartType.pie`, `pptx.ChartType.radar`, `pptx.ChartType.scatter`
 
 ### Multi-Type Charts
 
--   Chart types can be any one of `pptx.ChartType`, although `pptx.ChartType.area`, `pptx.ChartType.bar`, and `pptx.ChartType.line` will give the best results.
--   There should be at least two chart-types. There should always be two value axes and category axes.
--   Multi Charts have a different function signature than standard. There are two parameters:
--   `chartTypes`: Array of objects, each with `type`, `data`, and `options` objects.
--   `options`: Standard options as used with single charts. Can include axes options.
--   Columns makes the most sense in general. Line charts cannot be rotated to match up with horizontal bars (a PowerPoint limitation).
--   Can optionally have a secondary value axis.
--   If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
--   Standard options are used, and the chart-type-options are mixed in to each.
+- Chart types can be any one of `pptx.ChartType`, although `pptx.ChartType.area`, `pptx.ChartType.bar`, and `pptx.ChartType.line` will give the best results.
+- There should be at least two chart-types. There should always be two value axes and category axes.
+- Multi Charts have a different function signature than standard. There are two parameters:
+- `chartTypes`: Array of objects, each with `type`, `data`, and `options` objects.
+- `options`: Standard options as used with single charts. Can include axes options.
+- Columns makes the most sense in general. Line charts cannot be rotated to match up with horizontal bars (a PowerPoint limitation).
+- Can optionally have a secondary value axis.
+- If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
+- Standard options are used, and the chart-type-options are mixed in to each.
 
 ### Usage Notes
 
--   Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
--   Use `*LabelFormatCode` props to format numbers - see [Microsoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)
--   Examples: The [`demos/modules/demo_chart.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_chart.mjs) file has 17 slides of well-documented chart examples
+- Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
+- Use `*LabelFormatCode` props to format numbers - see [Microsoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)
+- Examples: The [`demos/modules/demo_chart.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_chart.mjs) file has 17 slides of well-documented chart examples
 
 ## Properties
 

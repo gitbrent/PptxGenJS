@@ -9,9 +9,7 @@ PptxGenJS PowerPoint presentations are created by following 4 basic steps. See e
 
 That's really all there is to it!
 
-## Modern Node.js Projects
-
-### Sample Code
+## Node-Based Applications
 
 ```tsx title="HelloWorld.ts"
 import pptxgen from "pptxgenjs";
@@ -48,8 +46,6 @@ Develop your apps quickly without needing to look up documentation.
 ![TypeScript Support](./assets/ex-typescript-writefile.png)
 
 ## Client Web Browser
-
-### Sample Code
 
 ```javascript title="HelloWorld.js"
 // 1. Create a new Presentation

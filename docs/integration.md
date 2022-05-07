@@ -5,13 +5,13 @@ title: Integration
 
 ## Available Distributions
 
--   Browser `dist/pptxgen.min.js`
--   CommonJS `dist/pptxgen.cjs.js`
--   ES6 Module `dist/pptxgen.es.js`
+- Browser `dist/pptxgen.min.js`
+- CommonJS `dist/pptxgen.cjs.js`
+- ES6 Module `dist/pptxgen.es.js`
 
 ## Integration with Angular/React
 
--   There is a working demo available: [demos/react-demo](https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo)
+- There is a working demo available: [demos/react-demo](https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo)
 
 ### React Example
 
@@ -29,10 +29,10 @@ pptx.writeFile({ fileName: "react-demo.pptx" });
 
 Some users have modified their webpack config to avoid a module resolution error using:
 
--   `node: { fs: "empty" }`
+- `node: { fs: "empty" }`
 
 ### Related Issues
 
--   [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
--   [See Issue #220 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
--   [See Issue #308 for more information](https://github.com/gitbrent/PptxGenJS/issues/308)
+- [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
+- [See Issue #220 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
+- [See Issue #308 for more information](https://github.com/gitbrent/PptxGenJS/issues/308)

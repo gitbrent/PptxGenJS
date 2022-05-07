@@ -7,13 +7,15 @@ A "Presentation" is a single `.pptx` file.
 (See [Saving Multiple Presentations](/PptxGenJS/docs/usage-saving#saving-multiple-presentations) for information
 on creating more than a one PPTX file at-a-time).
 
-## Browser
-```javascript
-let pres = new PptxGenJS();
-```
+## Modern Node-Based Applications
 
-## Angular, React, Node, TypeScript, Electron, etc.
 ```typescript
 import pptxgen from "pptxgenjs";
 let pres = new pptxgen();
+```
+
+## Client Web Browser
+
+```javascript
+let pres = new PptxGenJS();
 ```
