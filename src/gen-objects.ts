@@ -217,7 +217,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		if (options._type === CHART_TYPE.PIE) {
 			if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
 		}
-		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.BUBBLE3D || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
 			if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
 		}
 		if (options._type === CHART_TYPE.BAR) {
