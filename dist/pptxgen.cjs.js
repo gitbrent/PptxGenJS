@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-05-01T21:07:11.409Z */
+/* PptxGenJS 3.11.0-beta @ 2022-05-15T21:10:29.870Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -57,6 +57,7 @@ var LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
 var DEF_BULLET_MARGIN = 27;
 var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
 var DEF_CELL_MARGIN_IN = [0.05, 0.1, 0.05, 0.1]; // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
+var DEF_CHART_BORDER = { type: 'solid', color: '363636', pt: 1 };
 var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 };
 var DEF_FONT_COLOR = '000000';
 var DEF_FONT_SIZE = 12;
@@ -144,6 +145,7 @@ var ChartType;
     ChartType["bar"] = "bar";
     ChartType["bar3d"] = "bar3D";
     ChartType["bubble"] = "bubble";
+    ChartType["bubble3d"] = "bubble3D";
     ChartType["doughnut"] = "doughnut";
     ChartType["line"] = "line";
     ChartType["pie"] = "pie";
@@ -554,6 +556,7 @@ var CHART_TYPE;
     CHART_TYPE["BAR"] = "bar";
     CHART_TYPE["BAR3D"] = "bar3D";
     CHART_TYPE["BUBBLE"] = "bubble";
+    CHART_TYPE["BUBBLE3D"] = "bubble3D";
     CHART_TYPE["DOUGHNUT"] = "doughnut";
     CHART_TYPE["LINE"] = "line";
     CHART_TYPE["PIE"] = "pie";
@@ -768,8 +771,7 @@ function rgbToHex(r, g, b) {
  */
 function createColorElement(colorStr, innerElements) {
     var colorVal = (colorStr || '').replace('#', '');
-    var isHexaRgb = REGEX_HEX_COLOR.test(colorVal);
-    if (!isHexaRgb &&
+    if (!REGEX_HEX_COLOR.test(colorVal) &&
         colorVal !== SchemeColor.background1 &&
         colorVal !== SchemeColor.background2 &&
         colorVal !== SchemeColor.text1 &&
@@ -780,11 +782,11 @@ function createColorElement(colorStr, innerElements) {
         colorVal !== SchemeColor.accent4 &&
         colorVal !== SchemeColor.accent5 &&
         colorVal !== SchemeColor.accent6) {
-        console.warn("\"".concat(colorVal, "\" is not a valid scheme color or hexa RGB! \"").concat(DEF_FONT_COLOR, "\" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values"));
+        console.warn("\"".concat(colorVal, "\" is not a valid scheme color or hex RGB! \"").concat(DEF_FONT_COLOR, "\" used instead. Only provide 6-digit RGB or 'pptx.SchemeColor' values!"));
         colorVal = DEF_FONT_COLOR;
     }
-    var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
-    var colorAttr = 'val="' + (isHexaRgb ? colorVal.toUpperCase() : colorVal) + '"';
+    var tagName = REGEX_HEX_COLOR.test(colorVal) ? 'srgbClr' : 'schemeClr';
+    var colorAttr = 'val="' + (REGEX_HEX_COLOR.test(colorVal) ? colorVal.toUpperCase() : colorVal) + '"';
     return innerElements ? "<a:".concat(tagName, " ").concat(colorAttr, ">").concat(innerElements, "</a:").concat(tagName, ">") : "<a:".concat(tagName, " ").concat(colorAttr, "/>");
 }
 /**
@@ -3448,7 +3450,7 @@ function addChartDefinition(target, type, data, opt) {
             if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
                 delete options.dataLabelPosition;
         }
-        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.BUBBLE3D || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
             if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0)
                 delete options.dataLabelPosition;
         }
@@ -3525,12 +3527,33 @@ function addChartDefinition(target, type, data, opt) {
             ? PIECHART_COLORS
             : BARCHART_COLORS;
     options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null;
-    //
+    // DEPRECATED: v3.11.0 - use `plotArea.border` vvv
     options.border = options.border && typeof options.border === 'object' ? options.border : null;
     if (options.border && (!options.border.pt || isNaN(options.border.pt)))
-        options.border.pt = 1;
-    if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6))
-        options.border.color = '363636';
+        options.border.pt = DEF_CHART_BORDER.pt;
+    if (options.border && (!options.border.color || typeof options.border.color !== 'string'))
+        options.border.color = DEF_CHART_BORDER.color;
+    // DEPRECATED: (remove above in v4.0) ^^^
+    options.plotArea = options.plotArea || {};
+    options.plotArea.border = options.plotArea.border && typeof options.plotArea.border === 'object' ? options.plotArea.border : null;
+    if (options.plotArea.border && (!options.plotArea.border.pt || isNaN(options.plotArea.border.pt)))
+        options.plotArea.border.pt = DEF_CHART_BORDER.pt;
+    if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string'))
+        options.plotArea.border.color = DEF_CHART_BORDER.color;
+    if (options.border)
+        options.plotArea.border = options.border; // @deprecated [[remove in v4.0]]
+    options.plotArea.fill = options.plotArea.fill || { color: null, transparency: null };
+    if (options.fill)
+        options.plotArea.fill.color = options.fill; // @deprecated [[remove in v4.0]]
+    //
+    options.chartArea = options.chartArea || {};
+    options.chartArea.border = options.chartArea.border && typeof options.chartArea.border === 'object' ? options.chartArea.border : null;
+    if (options.chartArea.border) {
+        options.chartArea.border = {
+            color: options.chartArea.border.color || DEF_CHART_BORDER.color,
+            pt: options.chartArea.border.pt || DEF_CHART_BORDER.pt,
+        };
+    }
     //
     options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
     if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
@@ -4627,7 +4650,7 @@ function createExcelWorksheet(chartObject, zip) {
         {
             // A: Start XML
             var strSharedStrings_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">';
             }
@@ -4646,7 +4669,7 @@ function createExcelWorksheet(chartObject, zip) {
                 strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
             }
             // C: Add `name`/Series
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
                 data.forEach(function (objData, idx) {
                     if (idx === 0)
                         strSharedStrings_1 += '<si><t>X-Axis</t></si>';
@@ -4662,7 +4685,7 @@ function createExcelWorksheet(chartObject, zip) {
                 });
             }
             // D: Add `labels`/Categories
-            if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.SCATTER) {
+            if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
                 data[0].labels.forEach(function (label) {
                     strSharedStrings_1 += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
                 });
@@ -4673,7 +4696,7 @@ function createExcelWorksheet(chartObject, zip) {
         // tables/table1.xml
         {
             var strTableXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE) ;
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) ;
             else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
                 strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
@@ -4707,7 +4730,7 @@ function createExcelWorksheet(chartObject, zip) {
             var strSheetXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
             strSheetXml_1 +=
                 '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />';
             }
             else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
@@ -4718,7 +4741,7 @@ function createExcelWorksheet(chartObject, zip) {
             }
             strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
             strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
                 strSheetXml_1 += '<cols>';
                 strSheetXml_1 += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
                 strSheetXml_1 += '</cols>';
@@ -5034,9 +5057,9 @@ function makeXmlCharts(rel) {
         }
         strXml += '  <c:spPr>';
         // OPTION: Fill
-        strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>';
+        strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>';
         // OPTION: Border
-        strXml += rel.opts.border ? "<a:ln w=\"".concat(valToPts(rel.opts.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.border.color), "</a:ln>") : '<a:ln><a:noFill/></a:ln>';
+        strXml += rel.opts.plotArea.border ? "<a:ln w=\"".concat(valToPts(rel.opts.plotArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.plotArea.border.color), "</a:ln>") : '<a:ln><a:noFill/></a:ln>';
         // Close shapeProp/plotArea before Legend
         strXml += '    <a:effectLst/>';
         strXml += '  </c:spPr>';
@@ -5077,8 +5100,8 @@ function makeXmlCharts(rel) {
     strXml += '</c:chart>';
     // D: CHARTSPACE SHAPE PROPS
     strXml += '<c:spPr>';
-    strXml += '  <a:noFill/>';
-    strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
+    strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>';
+    strXml += rel.opts.chartArea.border ? "<a:ln w=\"".concat(valToPts(rel.opts.chartArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.chartArea.border.color), "</a:ln>") : '<a:ln><a:noFill/></a:ln>';
     strXml += '  <a:effectLst/>';
     strXml += '</c:spPr>';
     // E: DATA (Add relID)
@@ -5674,6 +5697,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // end switch
             break;
         case CHART_TYPE.BUBBLE:
+        case CHART_TYPE.BUBBLE3D:
             /*
                 `data` = [
                     { name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -5682,7 +5706,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 ];
             */
             // 1: Start Chart
-            strXml += '<c:' + chartType + 'Chart>';
+            strXml += '<c:bubbleChart>';
             strXml += '<c:varyColors val="0"/>';
             // 2: Series: (One for each Y-Axis)
             colorIndex_1 = -1;
@@ -5778,7 +5802,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      </c:numCache>';
                 strXml += '    </c:numRef>';
                 strXml += '  </c:bubbleSize>';
-                strXml += '  <c:bubble3D val="0"/>';
+                strXml += '  <c:bubble3D val="' + (chartType === CHART_TYPE.BUBBLE3D ? '1' : '0') + '"/>';
                 // F: Close "SERIES"
                 strXml += '</c:ser>';
             });
@@ -5821,7 +5845,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  <c:axId val="' + catAxisId + '"/>';
             strXml += '  <c:axId val="' + valAxisId + '"/>';
             // 6: Close Chart tag
-            strXml += '</c:' + chartType + 'Chart>';
+            strXml += '</c:bubbleChart>';
             // end switch
             break;
         case CHART_TYPE.DOUGHNUT:
@@ -5972,7 +5996,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     var strXml = '';
     // Build cat axis tag
     // NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
         strXml += '<c:valAx>';
     }
     else {
@@ -6000,7 +6024,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
         });
     }
     // NOTE: Adding Val Axis Formatting if scatter or bubble charts
-    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
         strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>';
     }
     else {
@@ -6052,7 +6076,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
         strXml += ' <c:tickLblSkip val="' + opts.catAxisLabelFrequency + '"/>';
     // Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
     // Allow major and minor units to be set for double value axis charts
-    if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+    if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
         if (opts.catLabelFormatCode) {
             ['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function (opt) {
                 // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
@@ -6075,7 +6099,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     // Close cat axis tag
     // NOTE: Added closing tag of val or cat axis based on chart type
-    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
         strXml += '</c:valAx>';
     }
     else {
@@ -6509,7 +6533,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220501-1310';
+var VERSION = '3.11.0-beta-20220515-1610';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
