@@ -16,7 +16,7 @@ export const CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/li
 // TABLES
 export const TABLE_NAMES_F = ["Markiplier", "Jack", "Brian", "Paul", "Ev", "Ann", "Michelle", "Jenny", "Lara", "Kathryn"];
 export const TABLE_NAMES_L = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark", "Griswold", "Hart", "Cube", "Malloy", "Capri"];
-export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=13.33
+export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=12.33
 
 // STYLES
 export const COLOR_RED = "FF0000";
@@ -47,6 +47,7 @@ export const DEMO_TITLE_OPTS = { fontSize: 13, color: "9F9F9F" };
 
 // PATHS
 export const IMAGE_PATHS = {
+	peace4: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/peace4.png" },
 	starlabsBkgd: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_bkgd.jpg" },
 	starlabsLogo: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_logo.png" },
 	wikimedia1: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/wiki-example.jpg" },

@@ -298,6 +298,9 @@ export enum ShapeType {
 	'wedgeRectCallout' = 'wedgeRectCallout',
 	'wedgeRoundRectCallout' = 'wedgeRoundRectCallout',
 }
+/**
+ * TODO: FUTURE: v4.0: rename to `ThemeColor`
+ */
 export enum SchemeColor {
 	'text1' = 'tx1',
 	'text2' = 'tx2',

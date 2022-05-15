@@ -9,13 +9,13 @@ import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALI
 
 /**
  * Coordinate number - either:
- * - Inches
- * - Percentage
+ * - Inches (0-n)
+ * - Percentage (0-100)
  *
  * @example 10.25 // coordinate in inches
  * @example '75%' // coordinate as percentage of slide size
  */
-export type Coord = number | string
+export type Coord = number | `${number}%`
 export type PositionProps = {
 	/**
 	 * Horizontal position
@@ -120,14 +120,6 @@ export interface HyperlinkProps {
 	 */
 	tooltip?: string
 }
-export interface PlaceholderProps {
-	name: string
-	type: PLACEHOLDER_TYPE
-	x: Coord
-	y: Coord
-	w: Coord
-	h: Coord
-}
 // used by: chart, text
 export interface ShadowProps {
 	/**
@@ -136,7 +128,8 @@ export interface ShadowProps {
 	 */
 	type: 'outer' | 'inner' | 'none'
 	/**
-	 * opacity (0.0 - 1.0)
+	 * opacity (percent)
+	 * - range: 0.0-1.0
 	 * @example 0.5 // 50% opaque
 	 */
 	opacity?: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
@@ -169,12 +162,13 @@ export interface ShapeFillProps {
 	/**
 	 * Fill color
 	 * - `HexColor` or `ThemeColor`
-	 * @example 'FF0000' // red
-	 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
+	 * @example 'FF0000' // hex color (red)
+	 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 	 */
 	color?: Color
 	/**
 	 * Transparency (percent)
+	 * - MS-PPT > Format Shape > Fill & Line > Fill > Transparency
 	 * - range: 0-100
 	 * @default 0
 	 */
@@ -340,8 +334,9 @@ export interface TextBaseProps {
 	/**
 	 * Text color
 	 * - `HexColor` or `ThemeColor`
-	 * @example 'FF0000' // red
-	 * @example 'pptxgen.SchemeColor.text1' // Text1 Theme Color
+	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Color
+	 * @example 'FF0000' // hex color (red)
+	 * @example pptx.SchemeColor.text1 // Theme color (Text1)
 	 */
 	color?: Color
 	/**
@@ -384,6 +379,13 @@ export interface TextBaseProps {
 	 */
 	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
 	/**
+	 * Transparency (percent)
+	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Transparency
+	 * - range: 0-100
+	 * @default 0
+	 */
+	transparency?: number
+	/**
 	 * underline properties
 	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
 	 * @default (none)
@@ -415,11 +417,30 @@ export interface TextBaseProps {
 	 */
 	valign?: VAlign
 }
+export interface PlaceholderProps extends PositionProps, TextBaseProps {
+	name: string
+	type: PLACEHOLDER_TYPE
+	/**
+	 * margin (points)
+	 */
+	margin?: Margin
+}
+export type ObjectNameProps = {
+	/**
+	 * Object name
+	 * - used instead of default "Object N" name
+	 * - PowerPoint: Home > Arrange > Selection Pane...
+	 * @since v3.10.0
+	 * @default 'Object 1'
+	 * @example 'Antenna Design 9'
+	 */
+	objectName?: string
+}
 
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
 
-export interface ImageProps extends PositionProps, DataOrPathProps {
+export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -465,31 +486,49 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		type: 'contain' | 'cover' | 'crop'
 		/**
 		 * Image width
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
-		w: number
+		w: Coord
 		/**
 		 * Image height
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
-		h: number
+		h: Coord
 		/**
-		 * Area horizontal position related to the image
-		 * - Values: 0-n
+		 * Offset from left to crop image
 		 * - `crop` only
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
-		x?: number
+		x?: Coord
 		/**
-		 * Area vertical position related to the image
-		 * - Values: 0-n
+		 * Offset from top to crop image
 		 * - `crop` only
+		 * - inches or percentage
+		 * @example 10.25 // position in inches
+		 * @example '75%' // position as percentage of slide size
 		 */
-		y?: number
+		y?: Coord
 	}
+	/**
+	 * Transparency (percent)
+	 * - MS-PPT > Format Picture > Picture > Picture Transparency > Transparency
+	 * - range: 0-100
+	 * @default 0
+	 * @example 25 // 25% transparent
+	 */
+	transparency?: number
 }
 /**
  * Add media (audio/video) to slide
  * @requires either `link` or `path`
  */
-export interface MediaProps extends PositionProps, DataOrPathProps {
+export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -525,7 +564,7 @@ export interface MediaProps extends PositionProps, DataOrPathProps {
 
 // shapes =========================================================================================
 
-export interface ShapeProps extends PositionProps {
+export interface ShapeProps extends PositionProps, ObjectNameProps {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -549,9 +588,9 @@ export interface ShapeProps extends PositionProps {
 	arcThicknessRatio?: number
 	/**
 	 * Shape fill color properties
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -608,30 +647,28 @@ export interface ShapeProps extends PositionProps {
 	 * TODO: need new demo.js entry for shape shadow
 	 */
 	shadow?: ShadowProps
-	/**
-	 * Shape name
-	 * - used instead of default "Shape N" name
-	 * @since v3.3.0
-	 * @example 'Antenna Design 9'
-	 */
-	shapeName?: string
 
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineSize?: number
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 	/**
-	 * @depreacted v3.3.0
+	 * @deprecated v3.3.0
 	 */
 	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * Shape name (used instead of default "Shape N" name)
+	 * @deprecated v3.10.0 - use `objectName`
+	 */
+	shapeName?: string
 }
 
 // tables =========================================================================================
@@ -642,8 +679,11 @@ export interface TableToSlidesProps extends TableProps {
 
 	/**
 	 * Add an image to slide(s) created during autopaging
+	 * - `image` prop requires either `path` or `data`
+	 * - see `DataOrPathProps` for details on `image` props
+	 * - see `PositionProps` for details on `options` props
 	 */
-	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+	addImage?: { image: DataOrPathProps; options: PositionProps }
 	/**
 	 * Add a shape to slide(s) created during autopaging
 	 */
@@ -745,12 +785,12 @@ export interface TableCellProps extends TextBaseProps {
 	colspan?: number
 	/**
 	 * Fill color
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
-	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
+	hyperlink?: HyperlinkProps
 	/**
 	 * Cell margin (inches)
 	 * @default 0
@@ -761,7 +801,7 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	rowspan?: number
 }
-export interface TableProps extends PositionProps, TextBaseProps {
+export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
 	_arrObjTabHeadRows?: TableRow[]
 
 	/**
@@ -823,9 +863,9 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	colW?: number | number[]
 	/**
 	 * Cell background color
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -892,7 +932,7 @@ export interface TextGlowProps {
 	size: number
 }
 
-export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
+export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
 	_bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
 		autoFit?: boolean
@@ -930,9 +970,9 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	fit?: 'none' | 'shrink' | 'resize'
 	/**
 	 * Shape fill
-	 * @example { color:'FF0000' } // hex string (red)
-	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
-	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 * @example { color:'FF0000' } // hex color (red)
+	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
+	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -948,7 +988,6 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	glow?: TextGlowProps
 	hyperlink?: HyperlinkProps
 	indentLevel?: number
-	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
 	/**
@@ -965,6 +1004,15 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @since v3.5.0
 	 */
 	lineSpacingMultiple?: number
+	// TODO: [20220219] powerpoint uses inches but library has always been pt... @future @deprecated - update in v4.0? [range: 0.0-22.0]
+	/**
+	 * Margin (points)
+	 * - PowerPoint: Format Shape > Shape Options > Size & Properties > Text Box > Left/Right/Top/Bottom margin
+	 * @default "Normal" margin in PowerPoint [3.5, 7.0, 3.5, 7.0] // (this library sets no value, but PowerPoint defaults to "Normal" [0.05", 0.1", 0.05", 0.1"])
+	 * @example 0 // Top/Right/Bottom/Left margin 0 [0.0" in powerpoint]
+	 * @example 10 // Top/Right/Bottom/Left margin 10 [0.14" in powerpoint]
+	 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
+	 */
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
@@ -993,6 +1041,10 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
 	superscript?: boolean
+	/**
+	 * Vertical alignment
+	 * @default middle
+	 */
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
@@ -1003,7 +1055,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	wrap?: boolean
 
 	/**
-	 * Whather "Fit to Shape?" is enabled
+	 * Whether "Fit to Shape?" is enabled
 	 * @deprecated v3.3.0 - use `fit`
 	 */
 	autoFit?: boolean
@@ -1012,6 +1064,11 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @deprecated v3.3.0 - use `fit`
 	 */
 	shrinkText?: boolean
+	/**
+	 * Inset
+	 * @deprecated v3.10.0 - use `margin`
+	 */
+	inset?: number
 	/**
 	 * Dash type
 	 * @deprecated v3.3.0 - use `line.dashType`
@@ -1086,8 +1143,8 @@ export interface IChartPropsBase {
 	border?: BorderProps
 	chartColors?: HexColor[]
 	/**
-	 * opacity (0.0 - 1.0)
-	 * @example 0.5 // 50% opaque
+	 * opacity (0 - 100)
+	 * @example 50 // 50% opaque
 	 */
 	chartColorsOpacity?: number
 	dataBorder?: BorderProps
@@ -1263,11 +1320,43 @@ export interface IChartPropsChartDoughnut {
 }
 export interface IChartPropsChartLine {
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+	 * - marker type
+	 * @default circle
+	 */
 	lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+	/**
+	 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Color
+	 * - border color
+	 * @default circle
+	 */
 	lineDataSymbolLineColor?: string
+	/**
+	 * MS-PPT > Chart format > Format Data Series > [Marker Options] > Border > Width
+	 * - border width (points)
+	 * @default 0.75
+	 */
 	lineDataSymbolLineSize?: number
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Size
+	 * - marker size
+	 * - range: 2-72
+	 * @default 6
+	 */
 	lineDataSymbolSize?: number
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Line > Width
+	 * - line width (points)
+	 * - range: 0-1584
+	 * @default 2
+	 */
 	lineSize?: number
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Line > Smoothed line
+	 * - "Smoothed line"
+	 * @default false
+	 */
 	lineSmooth?: boolean
 }
 export interface IChartPropsChartPie {
@@ -1282,7 +1371,12 @@ export interface IChartPropsChartPie {
 	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
-	radarStyle?: 'standard' | 'marker' | 'filled'
+	/**
+	 * MS-PPT > Chart Type > Waterfall
+	 * - radar chart type
+	 * @default standard
+	 */
+	radarStyle?: 'standard' | 'marker' | 'filled' // TODO: convert to 'radar'|'markers'|'filled' in 4.0 (verbatim with PPT app UI)
 }
 export interface IChartPropsDataLabel {
 	dataLabelBkgrdColors?: boolean
@@ -1348,7 +1442,8 @@ export interface IChartOpts
 		IChartPropsLegend,
 		IChartPropsTitle,
 		OptsChartGridLine,
-		PositionProps {
+		PositionProps,
+		ObjectNameProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
@@ -1469,17 +1564,17 @@ export interface PresLayout {
 export interface SlideNumberProps extends PositionProps, TextBaseProps {
 	/**
 	 * margin (points)
-	 * TODO: convert to inches in 4.0 (valid values are 0-22)
 	 */
-	margin?: Margin
+	margin?: Margin // TODO: convert to inches in 4.0 (valid values are 0-22)
 }
 export interface SlideMasterProps {
 	/**
 	 * Unique name for this master
 	 */
 	title: string
-	margin?: Margin
 	background?: BackgroundProps
+	margin?: Margin
+	slideNumber?: SlideNumberProps
 	objects?: (
 		| { chart: {} }
 		| { image: {} }
@@ -1497,7 +1592,6 @@ export interface SlideMasterProps {
 				}
 		  }
 	)[]
-	slideNumber?: SlideNumberProps
 
 	/**
 	 * @deprecated v3.3.0 - use `background`
@@ -1554,12 +1648,12 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Background color or image (`Color` | `path` | `data`)
-	 * @example {color: 'FF3399'} - hex fill color
-	 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
-	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
-	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
-	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
+	 * Background color or image (`color` | `path` | `data`)
+	 * @example { color: 'FF3399' } - hex color
+	 * @example { color: 'FF3399', transparency:50 } - hex color with 50% transparency
+	 * @example { path: 'https://onedrives.com/myimg.png` } - retrieve image via URL
+	 * @example { path: '/home/gitbrent/images/myimg.png` } - retrieve image via local path
+	 * @example { data: 'image/png;base64,iVtDaDrF[...]=' } - base64 string
 	 * @since v3.3.0
 	 */
 	background?: BackgroundProps
