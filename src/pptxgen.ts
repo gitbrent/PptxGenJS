@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.7.0-beta-20210521-2050'
+const VERSION = '3.11.0-beta-20220515-1610'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -422,21 +422,8 @@ export default class PptxGenJS implements IPresentationProps {
 		document.body.appendChild(eleLink)
 
 		// STEP 2: Download file to browser
-		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
-		if (window.navigator.msSaveOrOpenBlob) {
-			// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-			let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
-			eleLink.onclick = function () {
-				window.navigator.msSaveOrOpenBlob(blob, exportName)
-			}
-			eleLink.click()
-
-			// Clean-up
-			document.body.removeChild(eleLink)
-
-			// Done
-			return Promise.resolve(exportName)
-		} else if (window.URL.createObjectURL) {
+		// DESIGN: Use `createObjectURL()` to D/L files in client browsers (FYI: synchronously executed)
+		if (window.URL.createObjectURL) {
 			let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
 			eleLink.href = url
 			eleLink.download = exportName
@@ -530,6 +517,7 @@ export default class PptxGenJS implements IPresentationProps {
 			this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 
 			// E: Wait for Promises (if any) then generate the PPTX file
+			// @ts-ignore
 			return Promise.all(arrChartPromises).then(() => {
 				if (props.outputType === 'STREAM') {
 					// A: stream file

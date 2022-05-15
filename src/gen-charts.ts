@@ -139,7 +139,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		{
 			// A: Start XML
 			let strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
@@ -157,7 +157,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// C: Add `name`/Series
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				data.forEach((objData, idx) => {
 					if (idx === 0) strSharedStrings += '<si><t>X-Axis</t></si>'
 					else {
@@ -172,7 +172,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// D: Add `labels`/Categories
-			if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.SCATTER) {
+			if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
 				data[0].labels.forEach(label => {
 					strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
 				})
@@ -185,7 +185,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		// tables/table1.xml
 		{
 			let strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				/*
 				strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
 				strTableXml += '<tableColumns count="' + (data.length) +'">';
@@ -224,7 +224,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			let strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />'
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />'
@@ -234,7 +234,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
 			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSheetXml += '<cols>'
 				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
 				strSheetXml += '</cols>'
@@ -570,10 +570,10 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += '  <c:spPr>'
 
 		// OPTION: Fill
-		strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>'
+		strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>'
 
 		// OPTION: Border
-		strXml += rel.opts.border ? `<a:ln w="${valToPts(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
+		strXml += rel.opts.plotArea.border ? `<a:ln w="${valToPts(rel.opts.plotArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.plotArea.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
 		strXml += '    <a:effectLst/>'
@@ -615,8 +615,8 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 	// D: CHARTSPACE SHAPE PROPS
 	strXml += '<c:spPr>'
-	strXml += '  <a:noFill/>'
-	strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>'
+	strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>'
+	strXml += rel.opts.chartArea.border ? `<a:ln w="${valToPts(rel.opts.chartArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.chartArea.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
 	strXml += '  <a:effectLst/>'
 	strXml += '</c:spPr>'
 
@@ -660,7 +660,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 			if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
 				strXml += '<c:barDir val="' + opts.barDir + '"/>'
-				strXml += '<c:grouping val="' + opts.barGrouping + '"/>'
+				strXml += '<c:grouping val="' + (opts.barGrouping || 'clustered') + '"/>'
 			}
 
 			if (chartType === CHART_TYPE.RADAR) {
@@ -713,7 +713,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 				}
 
-				if (chartType === CHART_TYPE.LINE) {
+				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
@@ -737,7 +737,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				// [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
 				if (chartType !== CHART_TYPE.RADAR) {
 					strXml += '  <c:dLbls>'
-					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+					strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 					if (opts.dataLabelBkgrdColors) {
 						strXml += '    <c:spPr>'
 						strXml += '       <a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
@@ -747,7 +747,14 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '      <a:bodyPr/>'
 					strXml += '      <a:lstStyle/>'
 					strXml += '      <a:p><a:pPr>'
-					strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+					strXml +=
+						'        <a:defRPr b="' +
+						(opts.dataLabelFontBold ? 1 : 0) +
+						'" i="' +
+						(opts.dataLabelFontItalic ? 1 : 0) +
+						'" strike="noStrike" sz="' +
+						Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+						'" u="none">'
 					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 					strXml += '        </a:defRPr>'
@@ -795,8 +802,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				if (
 					(chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
 					data.length === 1 &&
-					opts.chartColors !== BARCHART_COLORS &&
-					opts.chartColors.length > 1
+					((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors && opts.invertedColors.length))
 				) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
@@ -881,13 +887,19 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 3: "Data Labels"
 			{
 				strXml += '  <c:dLbls>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
 				strXml +=
-					'        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="' +
+					(opts.dataLabelFontItalic ? 1 : 0) +
+					'" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -907,7 +919,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 4: Add more chart options (gapWidth, line Marker, etc.)
 			if (chartType === CHART_TYPE.BAR) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
-				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
+				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0) + '"/>'
 			} else if (chartType === CHART_TYPE.BAR3D) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>'
@@ -1193,12 +1205,19 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 3: Data Labels
 			{
 				strXml += '  <c:dLbls>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
-				strXml += '        <a:defRPr b="' +	(opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+				strXml +=
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="' +
+					(opts.dataLabelFontItalic ? 1 : 0) +
+					'" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -1225,6 +1244,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			break
 
 		case CHART_TYPE.BUBBLE:
+		case CHART_TYPE.BUBBLE3D:
 			/*
 				`data` = [
 					{ name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -1234,7 +1254,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			*/
 
 			// 1: Start Chart
-			strXml += '<c:' + chartType + 'Chart>'
+			strXml += '<c:bubbleChart>'
 			strXml += '<c:varyColors val="0"/>'
 
 			// 2: Series: (One for each Y-Axis)
@@ -1338,7 +1358,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '      </c:numCache>'
 				strXml += '    </c:numRef>'
 				strXml += '  </c:bubbleSize>'
-				strXml += '  <c:bubble3D val="0"/>'
+				strXml += '  <c:bubble3D val="' + (chartType === CHART_TYPE.BUBBLE3D ? '1' : '0') + '"/>'
 
 				// F: Close "SERIES"
 				strXml += '</c:ser>'
@@ -1347,12 +1367,19 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			// 3: Data Labels
 			{
 				strXml += '  <c:dLbls>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
-				strXml += '        <a:defRPr b="' +	(opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
+				strXml +=
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="' +
+					(opts.dataLabelFontItalic ? 1 : 0) +
+					'" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -1378,7 +1405,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			strXml += '  <c:axId val="' + valAxisId + '"/>'
 
 			// 6: Close Chart tag
-			strXml += '</c:' + chartType + 'Chart>'
+			strXml += '</c:bubbleChart>'
 
 			// end switch
 			break
@@ -1400,7 +1427,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 			// 1: Start Chart
 			strXml += '<c:' + chartType + 'Chart>'
-			strXml += '  <c:varyColors val="0"/>'
+			strXml += '  <c:varyColors val="1"/>'
 			strXml += '<c:ser>'
 			strXml += '  <c:idx val="0"/>'
 			strXml += '  <c:order val="0"/>'
@@ -1448,11 +1475,13 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
 				strXml += ` <c:idx val="${idx}"/>`
-				strXml += `  <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
+				strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 				strXml += '  <c:spPr/><c:txPr>'
 				strXml += '   <a:bodyPr/><a:lstStyle/>'
 				strXml += '   <a:p><a:pPr>'
-				strXml += `   <a:defRPr sz="${Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" u="none" strike="noStrike">`
+				strXml += `   <a:defRPr sz="${Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.dataLabelFontBold ? 1 : 0}" i="${
+					opts.dataLabelFontItalic ? 1 : 0
+				}" u="none" strike="noStrike">`
 				strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += `    <a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
 				strXml += '   </a:defRPr>'
@@ -1467,7 +1496,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbl>'
 			})
-			strXml += ` <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
+			strXml += ` <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 			strXml += '	<c:txPr>'
 			strXml += '	  <a:bodyPr/>'
 			strXml += '	  <a:lstStyle/>'
@@ -1543,7 +1572,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 	// Build cat axis tag
 	// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		strXml += '<c:valAx>'
 	} else {
 		strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1568,10 +1597,10 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 		})
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
-	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
-		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
+	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
+		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>'
 	} else {
-		strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || 'General') + '" sourceLinked="0"/>'
+		strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="0"/>'
 	}
 	if (opts._type === CHART_TYPE.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
@@ -1597,7 +1626,11 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml +=
 		'    <a:defRPr sz="' +
 		Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-		'" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.catAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">'
+		'" b="' +
+		(opts.catAxisLabelFontBold ? 1 : 0) +
+		'" i="' +
+		(opts.catAxisLabelFontItalic ? 1 : 0) +
+		'" u="none" strike="noStrike">'
 	strXml += '      <a:solidFill>' + createColorElement(opts.catAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'
@@ -1614,7 +1647,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 	// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
 	// Allow major and minor units to be set for double value axis charts
-	if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		if (opts.catLabelFormatCode) {
 			;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(opt => {
 				// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
@@ -1633,7 +1666,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 	// Close cat axis tag
 	// NOTE: Added closing tag of val or cat axis based on chart type
-	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		strXml += '</c:valAx>'
 	} else {
 		strXml += '</c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1676,7 +1709,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 			title: opts.valAxisTitle || 'Axis Title',
 		})
 	}
-	strXml += `<c:numFmt formatCode='${opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General'}' sourceLinked="0"/>`
+	strXml += `<c:numFmt formatCode="${opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General'}" sourceLinked="0"/>`
 	if (opts._type === CHART_TYPE.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
@@ -1694,12 +1727,18 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '   </a:ln>'
 	strXml += ' </c:spPr>'
 	strXml += ' <c:txPr>'
-	strXml += '  <a:bodyPr ' + (opts.valAxisLabelRotate ? 'rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
+	strXml += '  <a:bodyPr' + (opts.valAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
 	strXml += '  <a:lstStyle/>'
 	strXml += '  <a:p>'
 	strXml += '    <a:pPr>'
 	strXml +=
-		'      <a:defRPr sz="' + Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.valAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">'
+		'      <a:defRPr sz="' +
+		Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
+		'" b="' +
+		(opts.valAxisLabelFontBold ? 1 : 0) +
+		'" i="' +
+		(opts.valAxisLabelFontItalic ? 1 : 0) +
+		'" u="none" strike="noStrike">'
 	strXml += '        <a:solidFill>' + createColorElement(opts.valAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '      </a:defRPr>'
@@ -1751,7 +1790,7 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 			title: opts.serAxisTitle || 'Axis Title',
 		})
 	}
-	strXml += '  <c:numFmt formatCode="' + (opts.serLabelFormatCode || 'General') + '" sourceLinked="0"/>'
+	strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.serLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 	strXml += '  <c:majorTickMark val="out"/>'
 	strXml += '  <c:minorTickMark val="none"/>'
 	strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>'
@@ -1767,7 +1806,9 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml += '    <a:lstStyle/>'
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'
-	strXml += `    <a:defRPr sz="${Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.serAxisLabelFontBold || 0}" i="${opts.serAxisLabelFontItalic || 0}" u="none" strike="noStrike">`
+	strXml += `    <a:defRPr sz="${Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.serAxisLabelFontBold || 0}" i="${
+		opts.serAxisLabelFontItalic || 0
+	}" u="none" strike="noStrike">`
 	strXml += '      <a:solidFill>' + createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'

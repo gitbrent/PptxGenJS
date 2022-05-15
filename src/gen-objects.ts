@@ -7,11 +7,11 @@ import {
 	CHART_NAME,
 	CHART_TYPE,
 	DEF_CELL_BORDER,
-	DEF_CELL_MARGIN_PT,
+	DEF_CELL_MARGIN_IN,
+	DEF_CHART_BORDER,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
-	DEF_SLIDE_BKGD,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
@@ -30,6 +30,7 @@ import {
 	ISlideObject,
 	ImageProps,
 	MediaProps,
+	ObjectOptions,
 	OptsChartGridLine,
 	PresLayout,
 	PresSlide,
@@ -44,7 +45,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId, valToPts } from './gen-utils'
+import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -191,6 +192,9 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1
 	options.w = options.w || '50%'
 	options.h = options.h || '50%'
+	options.objectName = options.objectName
+		? encodeXmlEntities(options.objectName)
+		: `Chart ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.chart).length}`
 
 	// B: Options: misc
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
@@ -198,43 +202,40 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 	// barGrouping must be handled before data label validation as it can affect valid label positioning
 	if (options._type === CHART_TYPE.AREA) {
-		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-			options.barGrouping = 'standard';
+		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
 	}
 	if (options._type === CHART_TYPE.BAR) {
-        if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-            options.barGrouping = 'clustered';
-    }
-    if (options._type === CHART_TYPE.BAR3D) {
-            if (['clustered', 'stacked','standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-                options.barGrouping = 'standard';
-    }
-    if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
-        if (!options.barGapWidthPct)
-            options.barGapWidthPct = 50;
-    }
+		if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'clustered'
+	}
+	if (options._type === CHART_TYPE.BAR3D) {
+		if (['clustered', 'stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
+	}
+	if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
+		if (!options.barGapWidthPct) options.barGapWidthPct = 50
+	}
 	// Clean up and validate data label positions
-    // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
-    if (options.dataLabelPosition) {
-        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR) delete options.dataLabelPosition 
-        if (options._type === CHART_TYPE.PIE) {
-            if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-        }
-        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
-            if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-        }
-        if (options._type === CHART_TYPE.BAR) {
-            if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr','inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-            }
-            if (['clustered'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr','inBase', 'inEnd','outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
-            }
-        }
-    }
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
-    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r';
-	
+	// REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
+	if (options.dataLabelPosition) {
+		if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR)
+			delete options.dataLabelPosition
+		if (options._type === CHART_TYPE.PIE) {
+			if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+		}
+		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.BUBBLE3D || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+			if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+		}
+		if (options._type === CHART_TYPE.BAR) {
+			if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
+				if (['ctr', 'inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+			}
+			if (['clustered'].indexOf(options.barGrouping || '') < 0) {
+				if (['ctr', 'inBase', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
+			}
+		}
+	}
+	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
+	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
+
 	// 3D bar: ST_Shape
 	if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0) options.bar3DShape = 'box'
 	// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
@@ -295,10 +296,28 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		? PIECHART_COLORS
 		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
-	//
+	// DEPRECATED: v3.11.0 - use `plotArea.border` vvv
 	options.border = options.border && typeof options.border === 'object' ? options.border : null
-	if (options.border && (!options.border.pt || isNaN(options.border.pt))) options.border.pt = 1
-	if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6)) options.border.color = '363636'
+	if (options.border && (!options.border.pt || isNaN(options.border.pt))) options.border.pt = DEF_CHART_BORDER.pt
+	if (options.border && (!options.border.color || typeof options.border.color !== 'string')) options.border.color = DEF_CHART_BORDER.color
+	// DEPRECATED: (remove above in v4.0) ^^^
+	options.plotArea = options.plotArea || {}
+	options.plotArea.border = options.plotArea.border && typeof options.plotArea.border === 'object' ? options.plotArea.border : null
+	if (options.plotArea.border && (!options.plotArea.border.pt || isNaN(options.plotArea.border.pt))) options.plotArea.border.pt = DEF_CHART_BORDER.pt
+	if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string'))
+		options.plotArea.border.color = DEF_CHART_BORDER.color
+	if (options.border) options.plotArea.border = options.border // @deprecated [[remove in v4.0]]
+	options.plotArea.fill = options.plotArea.fill || { color: null, transparency: null }
+	if (options.fill) options.plotArea.fill.color = options.fill // @deprecated [[remove in v4.0]]
+	//
+	options.chartArea = options.chartArea || {}
+	options.chartArea.border = options.chartArea.border && typeof options.chartArea.border === 'object' ? options.chartArea.border : null
+	if (options.chartArea.border) {
+		options.chartArea.border = {
+			color: options.chartArea.border.color || DEF_CHART_BORDER.color,
+			pt: options.chartArea.border.pt || DEF_CHART_BORDER.pt,
+		}
+	}
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
@@ -364,6 +383,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
 	let imageRelId = getNewRelId(target)
+	let objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Image ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.image).length}`
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -417,6 +437,8 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		rotate: opt.rotate || 0,
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
+		transparency: opt.transparency || 0,
+		objectName: objectName,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -445,13 +467,17 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
+		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && item.isDuplicate === false)[0]
+
 		target._relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		newObject.imageRid = imageRelId
 	}
@@ -480,11 +506,10 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 
 /**
  * Adds a media object to a slide definition.
- * @param {PresSlide} `target` - slide object that the text will be added to
+ * @param {PresSlide} `target` - slide object that the media will be added to
  * @param {MediaProps} `opt` - media options
  */
 export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
-	let intRels = target._relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -493,10 +518,10 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	let strLink = opt.link || ''
 	let strPath = opt.path || ''
 	let strType = opt.type || 'audio'
-	let strExtn = 'mp3'
-	let slideData: ISlideObject = {
-		_type: SLIDE_OBJECT_TYPES.media,
-	}
+	let strExtn = ''
+	let strCover = opt.cover || IMG_PLAYBTN
+	let objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Media ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.media).length}`
+	let slideData: ISlideObject = { _type: SLIDE_OBJECT_TYPES.media }
 
 	// STEP 1: REALITY-CHECK
 	if (!strPath && !strData && strType !== 'online') {
@@ -511,7 +536,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 	// FIXME: 20190707
 	//strType = strData ? strData.split(';')[0].split('/')[0] : strType
-	strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()
+	strExtn = opt.extn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()) || 'mp3'
 
 	// STEP 2: Set type, media
 	slideData.mtype = strType
@@ -523,46 +548,56 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	slideData.options.y = intPosY
 	slideData.options.w = intSizeX
 	slideData.options.h = intSizeY
+	slideData.options.objectName = objectName
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
-	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+	/**
+	 * NOTE:
+	 * - rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+	 *
+	 * NOTE:
+	 * - Audio/Video files consume *TWO* rId's:
+	 * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
+	 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+	 */
 	if (strType === 'online') {
+		const relId1 = getNewRelId(target)
 		// A: Add video
 		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			data: 'dummy',
 			type: 'online',
 			extn: strExtn,
-			rId: intRels + 1,
+			rId: relId1,
 			Target: strLink,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = relId1
 
-		// B: Add preview/overlay image
+		// B: Add cover (preview/overlay) image
 		target._relsMedia.push({
 			path: 'preencoded.png',
-			data: IMG_PLAYBTN,
+			data: strCover,
 			type: 'image/png',
 			extn: 'png',
-			rId: intRels + 2,
+			rId: getNewRelId(target),
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	} else {
-		/* NOTE: Audio/Video files consume *TWO* rId's:
-		 * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-		 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
-		 */
+		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
+		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false)[0]
 
 		// A: "relationships/video"
+		const relId1 = getNewRelId(target)
 		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			rId: intRels + 0,
-			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
+			rId: relId1,
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 1}.${strExtn}`,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = relId1
 
 		// B: "relationships/media"
 		target._relsMedia.push({
@@ -570,18 +605,19 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
-			rId: intRels + 1,
-			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
+			rId: getNewRelId(target),
+			isDuplicate: dupeItem && dupeItem.Target ? true : false,
+			Target: dupeItem && dupeItem.Target ? dupeItem.Target : `../media/media-${target._slideNum}-${target._relsMedia.length + 0}.${strExtn}`,
 		})
 
-		// C: Add preview/overlay image
+		// C: Add cover (preview/overlay) image
 		target._relsMedia.push({
-			data: IMG_PLAYBTN,
 			path: 'preencoded.png',
 			type: 'image/png',
 			extn: 'png',
-			rId: intRels + 2,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+			data: strCover,
+			rId: getNewRelId(target),
+			Target: `../media/image-${target._slideNum}-${target._relsMedia.length + 1}.png`,
 		})
 	}
 
@@ -638,11 +674,14 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
+	options.objectName = options.objectName
+		? encodeXmlEntities(options.objectName)
+		: `Shape ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.text).length}`
 
 	// 3: Handle line (lots of deprecated opts)
 	if (typeof options.line === 'string') {
 		let tmpOpts = newLineOpts
-		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
+		tmpOpts.color = options.line + '' // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
 	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLineProps` now)
@@ -676,8 +715,9 @@ export function addTableDefinition(
 	addSlide: Function,
 	getSlide: Function
 ) {
-	let opt: TableProps = options && typeof options === 'object' ? options : {}
 	let slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
+	let opt: TableProps = options && typeof options === 'object' ? options : {}
+	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.table).length}`
 
 	// STEP 1: REALITY-CHECK
 	{
@@ -765,7 +805,7 @@ export function addTableDefinition(
 	opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout)
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
-	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
+	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
 	if (typeof opt.border === 'string') {
@@ -847,7 +887,7 @@ export function addTableDefinition(
 	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
 	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
 
-	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to skip autopaging while here
+	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to unset `autoPage` while here
 	arrRows.forEach(row => {
 		row.forEach((cell, idy) => {
 			// A: Transform cell data if needed
@@ -876,7 +916,8 @@ export function addTableDefinition(
 			// B: Check for fine-grained formatting, disable auto-page when found
 			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
 			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
-			if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+			//if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+			// TODO: FIXME: WIP: 20210807: We cant do this anymore
 		})
 	})
 
@@ -935,7 +976,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 		options: opts || {},
 	}
 
-	function cleanOpts(itemOpts): TextPropsOptions {
+	function cleanOpts(itemOpts: ObjectOptions): TextPropsOptions {
 		// STEP 1: Set some options
 		{
 			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
@@ -956,6 +997,11 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				if (placeHold && placeHold.options) itemOpts = { ...itemOpts, ...placeHold.options }
 			}
 
+			// A.4: Other options
+			itemOpts.objectName = itemOpts.objectName
+				? encodeXmlEntities(itemOpts.objectName)
+				: `Text ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.text).length}`
+
 			// B:
 			if (itemOpts.shape === SHAPE_TYPE.LINE) {
 				// ShapeLineProps defaults
@@ -973,7 +1019,8 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				// 3: Handle line (lots of deprecated opts)
 				if (typeof itemOpts.line === 'string') {
 					let tmpOpts = newLineOpts
-					tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line` string (was line color)
+					if (typeof itemOpts.line === 'string') tmpOpts.color = itemOpts.line // @deprecated [remove in v4.0]
+					//tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line`:[string] (was line color)
 					itemOpts.line = tmpOpts
 				}
 				if (typeof itemOpts.lineSize === 'number') itemOpts.line.width = itemOpts.lineSize // @deprecated (part of `ShapeLineProps` now)
@@ -995,6 +1042,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true
 
 			// E: Inset
+			// @deprecated 3.10.0 (`inset` - use `margin`)
 			if ((itemOpts.inset && !isNaN(Number(itemOpts.inset))) || itemOpts.inset === 0) {
 				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.inset)
 				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.inset)
