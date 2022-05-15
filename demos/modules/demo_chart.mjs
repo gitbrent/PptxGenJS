@@ -186,10 +186,11 @@ function genSlide01(pptx) {
 		h: 3.5,
 		barDir: "bar",
 
-		chartArea: { fill: { color: "F1F1F1" } },
-		//chartArea: { fill: { color: "F1F1F1", transparency: 75 } }, // @example
+		//chartArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		//chartArea: { fill: { color: "F1F1F1", transparency: 75 } },
 		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
-		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } }, // @example
+		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } },
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
