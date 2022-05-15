@@ -97,6 +97,8 @@ export interface BorderProps {
 	 */
 	color?: HexColor
 
+	// TODO: add `transparency` prop to Borders (0-100%)
+
 	// TODO: add `width` - deprecate `pt`
 	/**
 	 * Border size (points)
@@ -1135,12 +1137,23 @@ export interface IChartMulti {
 	data: any[]
 	options: {}
 }
+export interface IChartPropsFillLine {
+	/**
+	 * PowerPoint: Format [Chart|Plot Area] > Border ["Line"]
+	 */
+	border?: BorderProps
+	/**
+	 * PowerPoint: Format [Chart|Plot Area] > Fill
+	 */
+	fill?: ShapeFillProps
+	// NEW: `color`
+	// NEW: `transparency`
+}
 export interface IChartPropsBase {
 	/**
 	 * Axis position
 	 */
 	axisPos?: 'b' | 'l' | 'r' | 't'
-	border?: BorderProps
 	chartColors?: HexColor[]
 	/**
 	 * opacity (0 - 100)
@@ -1149,7 +1162,6 @@ export interface IChartPropsBase {
 	chartColorsOpacity?: number
 	dataBorder?: BorderProps
 	displayBlanksAs?: string
-	fill?: HexColor
 	invertedColors?: HexColor[]
 	lang?: string
 	layout?: PositionProps
@@ -1169,6 +1181,25 @@ export interface IChartPropsBase {
 	v3DRAngAx?: boolean
 	v3DRotX?: number
 	v3DRotY?: number
+
+	/**
+	 * PowerPoint: Format Chart Area (Fill & Border/Line)
+	 */
+	chartArea?: IChartPropsFillLine // WIP: NEW: TODO:
+	/**
+	 * PowerPoint: Format Plot Area (Fill & Border/Line)
+	 */
+	plotArea?: IChartPropsFillLine // WIP: NEW: TODO:
+
+	/**
+	 * Whether "Fit to Shape?" is enabled
+	 * @deprecated v3.11.0 - use `fit`
+	 */
+	border?: BorderProps
+	/**
+	 * @deprecated
+	 */
+	fill?: HexColor
 }
 export interface IChartPropsAxisCat {
 	/**
@@ -1441,9 +1472,9 @@ export interface IChartOpts
 		IChartPropsDataTable,
 		IChartPropsLegend,
 		IChartPropsTitle,
+		ObjectNameProps,
 		OptsChartGridLine,
-		PositionProps,
-		ObjectNameProps {
+		PositionProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
