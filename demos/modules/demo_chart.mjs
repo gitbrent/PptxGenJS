@@ -1427,13 +1427,20 @@ function genSlide15(pptx) {
 		y: 4.0,
 		w: "45%",
 		h: 3,
-		plotArea: { fill: { color: "363636" } },
+		chartArea: { fill: { color: "404040" } },
+		plotArea: { fill: { color: "202020" } },
 
+		catAxisLabelColor: "F1F1F1",
+		catAxisLabelFontSize: 10,
 		catAxisOrientation: "maxMin",
-		valAxisOrientation: "maxMin",
 		showCatAxisTitle: false,
-		showValAxisTitle: false,
+		//
+		valAxisLabelColor: "F1F1F1",
+		valAxisLabelFontSize: 10,
 		valAxisMinVal: 0,
+		valAxisOrientation: "maxMin",
+		showValAxisTitle: false,
+		//
 		dataBorder: { pt: 2, color: "e1e1e1" },
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
