@@ -189,7 +189,8 @@ function genSlide01(pptx) {
 		barDir: "bar",
 
 		//chartArea: { fill: { color: "F1F1F1" } },
-		chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		chartArea: { fill: { color: pptx.colors.BACKGROUND2 }, border: { color: pptx.colors.ACCENT3, pt: 3 } },
 		//chartArea: { fill: { color: "F1F1F1", transparency: 75 } },
 		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
 		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } },
@@ -754,7 +755,7 @@ function genSlide06(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
-		chartArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
 
 		barDir: "bar",
 
@@ -776,6 +777,8 @@ function genSlide06(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
+
 		barDir: "col",
 		bar3DShape: "cylinder",
 		catAxisLabelColor: "0000CC",
@@ -798,7 +801,7 @@ function genSlide06(pptx) {
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
-		chartArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
 
 		barDir: "col",
 		bar3DShape: "pyramid",
@@ -822,7 +825,7 @@ function genSlide06(pptx) {
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
-		chartArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
 
 		barDir: "col",
 		bar3DShape: "coneToMax",
@@ -874,6 +877,8 @@ function genSlide07(pptx) {
 			y: 0.5,
 			w: "90%",
 			h: "90%",
+			chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
+
 			valAxisMaxVal: 1,
 			barDir: "bar",
 			axisLabelFormatCode: "#%",
