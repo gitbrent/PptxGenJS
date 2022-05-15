@@ -125,7 +125,9 @@ function genSlide01(pptx) {
 		altText: "this is the alt text content",
 
 		barDir: "bar",
-		plotArea: { border: { pt: "3", color: "00EE00" }, fill: { color: "F1F1F1" } },
+		//plotArea: { border: { pt: "3", color: "00EE00" }, fill: { color: "F1F1F1" } },
+		border: { pt: "3", color: "00EE00" }, // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
+		fill: "F1F1F1", // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -751,7 +753,7 @@ function genSlide06(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
-		plotArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: "F1F1F1" } },
 
 		barDir: "bar",
 
@@ -1138,13 +1140,37 @@ function genSlide12(pptx) {
 	});
 
 	// TOP-MIDDLE
-	slide.addChart(pptx.charts.PIE, dataChartPieStat, { x: 5.6, y: 0.5, w: 3.2, h: 3.2, chartArea: { fill: { color: "F1F1F1" } }, showLegend: true, legendPos: "t" });
+	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
+		x: 5.6,
+		y: 0.5,
+		w: 3.2,
+		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+		showLegend: true,
+		legendPos: "t",
+	});
 
 	// BTM-LEFT
-	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { x: 0.5, y: 4.0, w: 4.2, h: 3.2, chartArea: { fill: { color: "F1F1F1" } }, showLegend: true, legendPos: "r" });
+	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
+		x: 0.5,
+		y: 4.0,
+		w: 4.2,
+		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+		showLegend: true,
+		legendPos: "r",
+	});
 
 	// BTM-MIDDLE
-	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { x: 5.6, y: 4.0, w: 3.2, h: 3.2, chartArea: { fill: { color: "F1F1F1" } }, showLegend: true, legendPos: "b" });
+	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
+		x: 5.6,
+		y: 4.0,
+		w: 3.2,
+		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+		showLegend: true,
+		legendPos: "b",
+	});
 
 	// BOTH: TOP-RIGHT
 	// DEMO: `legendFontSize`, `titleAlign`, `titlePos`
