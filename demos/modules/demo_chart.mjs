@@ -339,11 +339,12 @@ function genSlide02(pptx) {
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
-		barDir: "bar",
-		barOverlapPct: -50,
 
 		chartArea: { fill: { color: "F1F1F1" } },
 		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
+
+		barDir: "bar",
+		barOverlapPct: -50,
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -354,11 +355,11 @@ function genSlide02(pptx) {
 		catAxisTitleFontSize: 14,
 		showCatAxisTitle: true,
 
-		valAxisOrientation: "maxMin",
+		catGridLine: { color: "cc6699", style: "dash", size: 1 },
 		valGridLine: { style: "none" },
+		valAxisOrientation: "maxMin",
 		valAxisHidden: true,
 		valAxisDisplayUnitLabel: true,
-		catGridLine: { color: "cc6699", style: "dash", size: 1 },
 
 		titleColor: "33CF22",
 		titleFontFace: "Helvetica Neue",
