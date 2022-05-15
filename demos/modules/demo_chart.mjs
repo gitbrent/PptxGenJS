@@ -3,21 +3,21 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.10.0
- * BLD.: 20220224
+ * VER.: 3.11.0
+ * BLD.: 20220515
  */
 
 import {
-	IMAGE_PATHS,
 	BASE_TABLE_OPTS,
 	BASE_TEXT_OPTS_L,
 	BASE_TEXT_OPTS_R,
-	COLOR_RED,
 	COLOR_AMB,
-	COLOR_GRN,
-	COLOR_UNK,
-	TESTMODE,
 	COLOR_BLU,
+	COLOR_GRN,
+	COLOR_RED,
+	COLOR_UNK,
+	IMAGE_PATHS,
+	TESTMODE,
 } from "./enums.mjs";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -125,8 +125,7 @@ function genSlide01(pptx) {
 		altText: "this is the alt text content",
 
 		barDir: "bar",
-		border: { pt: "3", color: "00EE00" },
-		fill: "F1F1F1",
+		plotArea: { border: { pt: "3", color: "00EE00" }, fill: { color: "F1F1F1" } },
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -180,7 +179,6 @@ function genSlide01(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar2);
 
 	// BTM-LEFT: H/bar - TITLE and LEGEND
-	slide.addText(".", { x: 0.5, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar3 = {
 		x: 0.5,
 		y: 3.8,
@@ -188,8 +186,10 @@ function genSlide01(pptx) {
 		h: 3.5,
 		barDir: "bar",
 
-		border: { pt: "3", color: "CF0909" },
-		fill: "F1C1C1",
+		chartArea: { fill: { color: "F1F1F1" } },
+		//chartArea: { fill: { color: "F1F1F1", transparency: 75 } }, // @example
+		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
+		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } }, // @example
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -206,12 +206,13 @@ function genSlide01(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar3);
 
 	// BTM-RIGHT: V/col - TITLE and LEGEND
-	slide.addText(".", { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar4 = {
 		x: 7.0,
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		barDir: "col",
 		barGapWidthPct: 25,
 		chartColors: ["0088CC", "99FFCC"],
@@ -278,7 +279,7 @@ function genSlide02(pptx) {
 		w: 6.0,
 		h: 3.0,
 		barDir: "bar",
-		fill: "F1F1F1",
+		plotArea: { fill: { color: "F1F1F1" } },
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -307,7 +308,7 @@ function genSlide02(pptx) {
 		w: 6.0,
 		h: 3.0,
 		barDir: "col",
-		fill: "E1F1FF",
+		plotArea: { fill: { color: "E1F1FF" } },
 
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		dataLabelColor: "696969",
@@ -330,7 +331,6 @@ function genSlide02(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar2);
 
 	// BTM-LEFT: H/bar - TITLE and LEGEND
-	slide.addText(".", { x: 0.5, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar3 = {
 		x: 0.5,
 		y: 3.8,
@@ -339,8 +339,8 @@ function genSlide02(pptx) {
 		barDir: "bar",
 		barOverlapPct: -50,
 
-		border: { pt: "3", color: "CF0909" },
-		fill: "F1C1C1",
+		chartArea: { fill: { color: "F1F1F1" } },
+		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -367,12 +367,13 @@ function genSlide02(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar3);
 
 	// BTM-RIGHT: V/col - TITLE and LEGEND
-	slide.addText(".", { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar4 = {
 		x: 7.0,
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		barDir: "col",
 		barGapWidthPct: 25,
 		chartColors: ["0088CC", "99FFCC"],
@@ -510,12 +511,13 @@ function genSlide03(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar3);
 
 	// BTM-RIGHT: V/col - TITLE and LEGEND
-	slide.addText(".", { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar4 = {
 		x: 7.0,
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		barDir: "col",
 		barGrouping: "percentStacked",
 
@@ -748,8 +750,9 @@ function genSlide06(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		plotArea: { fill: { color: "F1F1F1" } },
+
 		barDir: "bar",
-		fill: "F1F1F1",
 
 		catAxisLabelColor: pptx.colors.ACCENT2,
 		catAxisLabelFontFace: "Arial",
@@ -786,12 +789,13 @@ function genSlide06(pptx) {
 	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar2);
 
 	// BTM-LEFT: H/bar - TITLE and LEGEND
-	slide.addText(".", { x: 0.5, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar3 = {
 		x: 0.5,
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		barDir: "col",
 		bar3DShape: "pyramid",
 		barGrouping: "stacked",
@@ -809,12 +813,13 @@ function genSlide06(pptx) {
 	slide.addChart(pptx.charts.BAR3D, arrDataHighVals, optsChartBar3);
 
 	// BTM-RIGHT: V/col - TITLE and LEGEND
-	slide.addText(".", { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartBar4 = {
 		x: 7.0,
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		barDir: "col",
 		bar3DShape: "coneToMax",
 		chartColors: ["0088CC", "99FFCC"],
@@ -893,12 +898,13 @@ function genSlide08(pptx) {
 		BASE_TABLE_OPTS
 	);
 
-	slide.addText("..", { x: 0.5, y: 0.6, w: 6.0, h: 3.0, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	let optsChartLine1 = {
 		x: 0.5,
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
 		lineSize: 8,
 		lineSmooth: true,
@@ -1008,10 +1014,8 @@ function genSlide10(pptx) {
 		y: 0.6,
 		w: "95%",
 		h: "85%",
-		fill: "F2F9FC",
-
+		plotArea: { fill: { color: "F2F9FC" } },
 		valAxisMaxVal: MAXVAL,
-
 		showLegend: true,
 		legendPos: "r",
 	};
@@ -1050,8 +1054,9 @@ function genSlide11(pptx) {
 		y: 0.6,
 		w: "45%",
 		h: 3,
+		plotArea: { fill: { color: "D1E1F1" } },
+
 		catAxisLabelRotate: 45,
-		fill: "D1E1F1",
 		chartColors: ["0088CC"],
 		chartColorsOpacity: 25,
 		dataBorder: { pt: 2, color: "FFFFFF" },
@@ -1065,12 +1070,13 @@ function genSlide11(pptx) {
 		y: 0.6,
 		w: "45%",
 		h: 3,
+		plotArea: { fill: { color: "D1E1F1" } },
+
 		chartColors: ["0088CC", "99FFCC"],
 		chartColorsOpacity: 25,
 		valAxisLabelRotate: 5,
 		dataBorder: { pt: 2, color: "FFFFFF" },
 		showValue: false,
-		fill: "D1E1F1",
 		barGrouping: "stacked",
 	};
 	slide.addChart(pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2);
@@ -1109,15 +1115,17 @@ function genSlide12(pptx) {
 		});
 
 	// TOP-LEFT
-	slide.addText(".", { x: 0.5, y: 0.5, w: 4.2, h: 3.2, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
 		x: 0.5,
 		y: 0.5,
 		w: 4.2,
 		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		legendPos: "left",
 		legendFontFace: "Courier New",
 		showLegend: true,
+
 		showLeaderLines: true,
 		showPercent: false,
 		showValue: true,
@@ -1129,25 +1137,23 @@ function genSlide12(pptx) {
 	});
 
 	// TOP-MIDDLE
-	slide.addText(".", { x: 5.6, y: 0.5, w: 3.2, h: 3.2, fill: { color: "F1F1F1" }, color: "F1F1F1" });
-	slide.addChart(pptx.charts.PIE, dataChartPieStat, { x: 5.6, y: 0.5, w: 3.2, h: 3.2, showLegend: true, legendPos: "t" });
+	slide.addChart(pptx.charts.PIE, dataChartPieStat, { x: 5.6, y: 0.5, w: 3.2, h: 3.2, chartArea: { fill: { color: "F1F1F1" } }, showLegend: true, legendPos: "t" });
 
 	// BTM-LEFT
-	slide.addText(".", { x: 0.5, y: 4.0, w: 4.2, h: 3.2, fill: { color: "F1F1F1" }, color: "F1F1F1" });
-	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { x: 0.5, y: 4.0, w: 4.2, h: 3.2, showLegend: true, legendPos: "r" });
+	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { x: 0.5, y: 4.0, w: 4.2, h: 3.2, chartArea: { fill: { color: "F1F1F1" } }, showLegend: true, legendPos: "r" });
 
 	// BTM-MIDDLE
-	slide.addText(".", { x: 5.6, y: 4.0, w: 3.2, h: 3.2, fill: { color: "F1F1F1" }, color: "F1F1F1" });
-	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { x: 5.6, y: 4.0, w: 3.2, h: 3.2, showLegend: true, legendPos: "b" });
+	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { x: 5.6, y: 4.0, w: 3.2, h: 3.2, chartArea: { fill: { color: "F1F1F1" } }, showLegend: true, legendPos: "b" });
 
 	// BOTH: TOP-RIGHT
 	// DEMO: `legendFontSize`, `titleAlign`, `titlePos`
-	slide.addText(".", { x: 9.8, y: 0.5, w: 3.2, h: 3.2, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
 		x: 9.8,
 		y: 0.5,
 		w: 3.2,
 		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
 		legendPos: "t",
@@ -1160,12 +1166,13 @@ function genSlide12(pptx) {
 	});
 
 	// BOTH: BTM-RIGHT
-	slide.addText(".", { x: 9.8, y: 4.0, w: 3.2, h: 3.2, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
 		x: 9.8,
 		y: 4.0,
 		w: 3.2,
 		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
 		legendPos: "b",
@@ -1186,6 +1193,8 @@ function genSlide13(pptx) {
 		y: 1.0,
 		w: 6.0,
 		h: 6.0,
+		chartArea: { fill: { color: "F1F1F1" } },
+
 		chartColors: ["FC0000", "FFCC00", "009900", "0088CC", "696969", "6600CC"],
 		dataBorder: { pt: "2", color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
@@ -1206,7 +1215,6 @@ function genSlide13(pptx) {
 		titleFontFace: "Helvetica Neue",
 		titleFontSize: 24,
 	};
-	slide.addText(".", { x: 0.5, y: 1.0, w: 6.0, h: 6.0, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1);
 
 	let optsChartPie2 = {
@@ -1280,7 +1288,8 @@ function genSlide14(pptx) {
 		y: 0.6,
 		w: "45%",
 		h: 3,
-		fill: "f1f1f1",
+		plotArea: { fill: { color: "F1F1F1" } },
+
 		showLegend: true,
 		legendPos: "b",
 
@@ -1300,7 +1309,8 @@ function genSlide14(pptx) {
 		y: 4.0,
 		w: "45%",
 		h: 3,
-		fill: "f2f9fc",
+		plotArea: { fill: { color: "F2F9FC" } },
+
 		//catAxisOrientation: 'maxMin',
 		//valAxisOrientation: 'maxMin',
 		showLegend: true,
@@ -1350,11 +1360,11 @@ function genSlide15(pptx) {
 		y: 0.6,
 		w: "45%",
 		h: 3,
+		chartArea: { fill: { color: "F1F1F1" } },
 		chartColors: ["4477CC", "ED7D31"],
 		chartColorsOpacity: 40,
 		dataBorder: { pt: 1, color: "FFFFFF" },
 	};
-	slide.addText(".", { x: 0.5, y: 0.6, w: 6.0, h: 3.0, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1);
 
 	// TOP-RIGHT
@@ -1363,7 +1373,8 @@ function genSlide15(pptx) {
 		y: 0.6,
 		w: "45%",
 		h: 3,
-		fill: "f1f1f1",
+		plotArea: { fill: { color: "F1F1F1" } },
+
 		showLegend: true,
 		legendPos: "b",
 
@@ -1383,7 +1394,8 @@ function genSlide15(pptx) {
 		y: 4.0,
 		w: "45%",
 		h: 3,
-		fill: "363636",
+		plotArea: { fill: { color: "363636" } },
+
 		catAxisOrientation: "maxMin",
 		valAxisOrientation: "maxMin",
 		showCatAxisTitle: false,
@@ -1436,12 +1448,13 @@ function genSlide16(pptx) {
 	// TOP-ROW
 	{
 		// TOP-L: `{ radar:'normal' }`
-		slide.addText("....", { x: 0.5, y: 0.6, w: 4.0, h: 3.0, fill: { color: "F9F9F9" }, color: "F9F9F9" });
 		let optsChartRadar1 = {
 			x: 0.5,
 			y: 0.6,
 			w: 4.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F9F9F9" } },
+			//
 			radarStyle: "standard",
 			//
 			showTitle: true,
@@ -1455,12 +1468,13 @@ function genSlide16(pptx) {
 		slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar1);
 
 		// TOP-C: `{ radar:'marker' }` Cat Axis options
-		slide.addText("....", { x: 4.65, y: 0.6, w: 4.0, h: 3.0, fill: { color: "F9F9F9" }, color: "F9F9F9" });
 		let optsChartRadar2 = {
 			x: 4.65,
 			y: 0.6,
 			w: 4.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F9F9F9" } },
+			//
 			radarStyle: "marker",
 			//
 			showTitle: true,
@@ -1472,12 +1486,13 @@ function genSlide16(pptx) {
 		slide.addChart(pptx.charts.RADAR, arrDataRegions, optsChartRadar2);
 
 		// TOP-R: `{ radar:'marker' }` Cat Axis options
-		slide.addText("....", { x: 8.8, y: 0.6, w: 4.0, h: 3.0, fill: { color: "F9F9F9" }, color: "F9F9F9" });
 		let optsChartRadar3 = {
 			x: 8.8,
 			y: 0.6,
 			w: 4.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F9F9F9" } },
+			//
 			radarStyle: "filled",
 			//
 			showTitle: true,
@@ -1492,12 +1507,13 @@ function genSlide16(pptx) {
 	// BTM-ROW
 	{
 		// BTM-L: marker/line options
-		slide.addText(".", { x: 0.5, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 		let optsChartRadar10 = {
 			x: 0.5,
 			y: 3.8,
 			w: 6.0,
 			h: 3.5,
+			chartArea: { fill: { color: "F1F1F1" } },
+			//
 			radarStyle: "marker",
 			catAxisLabelColor: COLOR_BLU,
 			catAxisLabelFontFace: "Courier",
@@ -1524,12 +1540,13 @@ function genSlide16(pptx) {
 		slide.addChart(pptx.charts.RADAR, arrDataStudents, optsChartRadar10);
 
 		// BTM-R: Filled/Axis Options
-		slide.addText(".", { x: 6.83, y: 3.8, w: 6.0, h: 3.5, fill: { color: "F1F1F1" }, color: "F1F1F1" });
 		let optsChartRadar11 = {
 			x: 6.83,
 			y: 3.8,
 			w: 6.0,
 			h: 3.5,
+			chartArea: { fill: { color: "F1F1F1" } },
+			//
 			radarStyle: "filled",
 			//
 			chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN], // marker & line color
