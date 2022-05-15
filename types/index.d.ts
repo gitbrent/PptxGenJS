@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.10.0
+// Type definitions for pptxgenjs 3.11.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -1932,12 +1932,23 @@ declare namespace PptxGenJS {
 		data: any[]
 		options: {}
 	}
+	export interface IChartPropsFillLine {
+		/**
+		 * PowerPoint: Format Chart Area/Plot > Border ["Line"]
+		 */
+		border?: BorderProps
+		/**
+		 * PowerPoint: Format Chart Area/Plot Area > Fill
+		 * @example fill: {color: '696969'} // hex rgb value
+		 * @example fill: {transparency: 50} // 50% transparency
+		 */
+		fill?: ShapeFillProps
+	}
 	export interface IChartPropsBase {
 		/**
 		 * Axis position
 		 */
 		axisPos?: 'b' | 'l' | 'r' | 't'
-		border?: BorderProps
 		chartColors?: HexColor[]
 		/**
 		 * opacity (0 - 100)
@@ -1946,7 +1957,6 @@ declare namespace PptxGenJS {
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
-		fill?: HexColor
 		invertedColors?: HexColor[]
 		lang?: string
 		layout?: PositionProps
@@ -1966,6 +1976,25 @@ declare namespace PptxGenJS {
 		v3DRAngAx?: boolean
 		v3DRotX?: number
 		v3DRotY?: number
+
+		/**
+		 * PowerPoint: Format Chart Area (Fill & Border/Line)
+		 */
+		chartArea?: IChartPropsFillLine
+		/**
+		 * PowerPoint: Format Plot Area (Fill & Border/Line)
+		 */
+		plotArea?: IChartPropsFillLine
+
+		/**
+		 * Whether "Fit to Shape?" is enabled
+		 * @deprecated v3.11.0 - use `plotArea.border`
+		 */
+		border?: BorderProps
+		/**
+		 * @deprecated v3.11.0 - use `plotArea.fill`
+		 */
+		fill?: HexColor
 	}
 	export interface IChartPropsAxisCat {
 		/**

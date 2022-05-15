@@ -1148,8 +1148,6 @@ export interface IChartPropsFillLine {
 	 * @example fill: {transparency: 50} // 50% transparency
 	 */
 	fill?: ShapeFillProps
-	// NEW: `color`
-	// NEW: `transparency`
 }
 export interface IChartPropsBase {
 	/**
@@ -1187,11 +1185,11 @@ export interface IChartPropsBase {
 	/**
 	 * PowerPoint: Format Chart Area (Fill & Border/Line)
 	 */
-	chartArea?: IChartPropsFillLine // WIP: NEW: TODO:
+	chartArea?: IChartPropsFillLine
 	/**
 	 * PowerPoint: Format Plot Area (Fill & Border/Line)
 	 */
-	plotArea?: IChartPropsFillLine // WIP: NEW: TODO:
+	plotArea?: IChartPropsFillLine
 
 	/**
 	 * Whether "Fit to Shape?" is enabled
