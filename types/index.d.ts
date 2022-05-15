@@ -1935,6 +1935,7 @@ declare namespace PptxGenJS {
 	export interface IChartPropsFillLine {
 		/**
 		 * PowerPoint: Format Chart Area/Plot > Border ["Line"]
+		 * @example border: {color: 'FF0000', pt: 1} // hex RGB color, 1 pt line
 		 */
 		border?: BorderProps
 		/**
