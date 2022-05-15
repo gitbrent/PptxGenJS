@@ -1139,11 +1139,13 @@ export interface IChartMulti {
 }
 export interface IChartPropsFillLine {
 	/**
-	 * PowerPoint: Format [Chart|Plot Area] > Border ["Line"]
+	 * PowerPoint: Format Chart Area/Plot > Border ["Line"]
 	 */
 	border?: BorderProps
 	/**
-	 * PowerPoint: Format [Chart|Plot Area] > Fill
+	 * PowerPoint: Format Chart Area/Plot Area > Fill
+	 * @example fill: {color: '696969'} // hex rgb value
+	 * @example fill: {transparency: 50} // 50% transparency
 	 */
 	fill?: ShapeFillProps
 	// NEW: `color`
@@ -1193,11 +1195,11 @@ export interface IChartPropsBase {
 
 	/**
 	 * Whether "Fit to Shape?" is enabled
-	 * @deprecated v3.11.0 - use `fit`
+	 * @deprecated v3.11.0 - use `plotArea.border`
 	 */
 	border?: BorderProps
 	/**
-	 * @deprecated
+	 * @deprecated v3.11.0 - use `plotArea.fill`
 	 */
 	fill?: HexColor
 }
