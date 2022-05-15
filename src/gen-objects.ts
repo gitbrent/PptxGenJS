@@ -8,6 +8,7 @@ import {
 	CHART_TYPE,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_IN,
+	DEF_CHART_BORDER,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
@@ -225,7 +226,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		if (options._type === CHART_TYPE.PIE) {
 			if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
 		}
-		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.BUBBLE3D || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
 			if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition
 		}
 		if (options._type === CHART_TYPE.BAR) {
@@ -300,10 +301,28 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		? PIECHART_COLORS
 		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
-	//
+	// DEPRECATED: v3.11.0 - use `plotArea.border` vvv
 	options.border = options.border && typeof options.border === 'object' ? options.border : null
-	if (options.border && (!options.border.pt || isNaN(options.border.pt))) options.border.pt = 1
-	if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6)) options.border.color = '363636'
+	if (options.border && (!options.border.pt || isNaN(options.border.pt))) options.border.pt = DEF_CHART_BORDER.pt
+	if (options.border && (!options.border.color || typeof options.border.color !== 'string')) options.border.color = DEF_CHART_BORDER.color
+	// DEPRECATED: (remove above in v4.0) ^^^
+	options.plotArea = options.plotArea || {}
+	options.plotArea.border = options.plotArea.border && typeof options.plotArea.border === 'object' ? options.plotArea.border : null
+	if (options.plotArea.border && (!options.plotArea.border.pt || isNaN(options.plotArea.border.pt))) options.plotArea.border.pt = DEF_CHART_BORDER.pt
+	if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string'))
+		options.plotArea.border.color = DEF_CHART_BORDER.color
+	if (options.border) options.plotArea.border = options.border // @deprecated [[remove in v4.0]]
+	options.plotArea.fill = options.plotArea.fill || { color: null, transparency: null }
+	if (options.fill) options.plotArea.fill.color = options.fill // @deprecated [[remove in v4.0]]
+	//
+	options.chartArea = options.chartArea || {}
+	options.chartArea.border = options.chartArea.border && typeof options.chartArea.border === 'object' ? options.chartArea.border : null
+	if (options.chartArea.border) {
+		options.chartArea.border = {
+			color: options.chartArea.border.color || DEF_CHART_BORDER.color,
+			pt: options.chartArea.border.pt || DEF_CHART_BORDER.pt,
+		}
+	}
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
@@ -320,7 +339,6 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	//
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
-	options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero'
 
 	if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.LINE) {
 		options.catAxisMultiLevelLabels = !!options.catAxisMultiLevelLabels
