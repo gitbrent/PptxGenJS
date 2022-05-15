@@ -1209,6 +1209,7 @@ export interface IChartPropsAxisCat {
 	 */
 	catAxes?: IChartPropsAxisCat[]
 	catAxisBaseTimeUnit?: string
+	catAxisCrossesAt?: number
 	catAxisHidden?: boolean
 	catAxisLabelColor?: string
 	catAxisLabelFontBold?: boolean
@@ -1244,7 +1245,6 @@ export interface IChartPropsAxisCat {
 	 */
 	secondaryCatAxis?: boolean
 	showCatAxisTitle?: boolean
-	catAxisCrossesAt?: string | number
 }
 export interface IChartPropsAxisSer {
 	serAxisBaseTimeUnit?: string
@@ -1283,7 +1283,7 @@ export interface IChartPropsAxisVal {
 	 * Multi-Chart prop: array of val axes
 	 */
 	valAxes?: IChartPropsAxisVal[]
-	valAxisCrossesAt?: string | number
+	valAxisCrossesAt?: number
 	valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 	valAxisDisplayUnitLabel?: boolean
 	valAxisHidden?: boolean

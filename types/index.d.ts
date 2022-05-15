@@ -2005,6 +2005,7 @@ declare namespace PptxGenJS {
 		 */
 		catAxes?: IChartPropsAxisCat[]
 		catAxisBaseTimeUnit?: string
+		catAxisCrossesAt?: number
 		catAxisHidden?: boolean
 		catAxisLabelColor?: string
 		catAxisLabelFontBold?: boolean
@@ -2078,7 +2079,7 @@ declare namespace PptxGenJS {
 		 * Multi-Chart prop: array of val axes
 		 */
 		valAxes?: IChartPropsAxisVal[]
-		valAxisCrossesAt?: string | number
+		valAxisCrossesAt?: number
 		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 		valAxisDisplayUnitLabel?: boolean
 		valAxisHidden?: boolean
