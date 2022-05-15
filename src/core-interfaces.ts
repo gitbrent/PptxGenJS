@@ -592,7 +592,7 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * Shape fill color properties
 	 * @example { color:'FF0000' } // hex color (red)
 	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
-	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
+	 * @example { color:pptx.SchemeColor.accent1 } // Theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -1144,7 +1144,8 @@ export interface IChartPropsFillLine {
 	border?: BorderProps
 	/**
 	 * PowerPoint: Format Chart Area/Plot Area > Fill
-	 * @example fill: {color: '696969'} // hex rgb value
+	 * @example fill: {color: '696969'} // hex RGB color value
+	 * @example fill: {color: pptx.SchemeColor.background2} // Theme color value
 	 * @example fill: {transparency: 50} // 50% transparency
 	 */
 	fill?: ShapeFillProps

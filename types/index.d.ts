@@ -1939,7 +1939,8 @@ declare namespace PptxGenJS {
 		border?: BorderProps
 		/**
 		 * PowerPoint: Format Chart Area/Plot Area > Fill
-		 * @example fill: {color: '696969'} // hex rgb value
+		 * @example fill: {color: '696969'} // hex RGB color value
+		 * @example fill: {color: pptx.SchemeColor.background2} // Theme color value
 		 * @example fill: {transparency: 50} // 50% transparency
 		 */
 		fill?: ShapeFillProps
