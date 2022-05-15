@@ -1649,13 +1649,14 @@ function genSlide17(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Multi-Type Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
+	// TOP-R:
 	function doStackedLine() {
-		// TOP-RIGHT:
 		let opts = {
-			x: 7.0,
+			x: 6.83,
 			y: 0.6,
 			w: 6.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F1F1F1" } },
 			barDir: "col",
 			barGrouping: "stacked",
 			catAxisLabelColor: "0000CC",
@@ -1710,12 +1711,15 @@ function genSlide17(pptx) {
 		slide.addChart(chartTypes, opts);
 	}
 
+	// TOP-L:
 	function doColumnAreaLine() {
 		let opts = {
-			x: 0.6,
+			x: 0.5,
 			y: 0.6,
 			w: 6.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F1F1F1" } },
+
 			barDir: "col",
 			catAxisLabelColor: "666666",
 			catAxisLabelFontFace: "Arial",
@@ -1799,13 +1803,15 @@ function genSlide17(pptx) {
 		slide.addChart(chartTypes, opts);
 	}
 
+	// BTM-L:
 	function doStackedDot() {
-		// BOT-LEFT:
 		let opts = {
-			x: 0.6,
+			x: 0.5,
 			y: 4.0,
 			w: 6.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F1F1F1" } },
+
 			barDir: "col",
 			barGrouping: "stacked",
 			catAxisLabelColor: "999999",
@@ -1895,13 +1901,15 @@ function genSlide17(pptx) {
 		slide.addChart(chartTypes, opts);
 	}
 
+	// BTM-R:
 	function doBarCol() {
-		// BOT-RGT:
 		let opts = {
-			x: 7,
+			x: 6.83,
 			y: 4.0,
 			w: 6.0,
 			h: 3.0,
+			chartArea: { fill: { color: "F1F1F1" } },
+
 			barDir: "col",
 			barGrouping: "stacked",
 			catAxisLabelColor: "999999",
@@ -1975,6 +1983,7 @@ function genSlide17(pptx) {
 				options: {
 					barDir: "bar",
 					barGrouping: "standard",
+					chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384"],
 					secondaryValAxis: !!opts.valAxes,
 					secondaryCatAxis: !!opts.catAxes,
 				},
@@ -2050,10 +2059,10 @@ function genSlide17(pptx) {
 		slide.addChart(chartTypes, multiOpts);
 	}
 
-	doBarCol();
-	doStackedDot();
 	doColumnAreaLine();
 	doStackedLine();
+	doStackedDot();
+	doBarCol();
 	//readmeExample();
 }
 
