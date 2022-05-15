@@ -153,10 +153,9 @@ export function rgbToHex(r: number, g: number, b: number): string {
  */
 export function createColorElement(colorStr: string | SCHEME_COLORS, innerElements?: string): string {
 	let colorVal = (colorStr || '').replace('#', '')
-	let isHexaRgb = REGEX_HEX_COLOR.test(colorVal)
 
 	if (
-		!isHexaRgb &&
+		!REGEX_HEX_COLOR.test(colorVal) &&
 		colorVal !== SchemeColor.background1 &&
 		colorVal !== SchemeColor.background2 &&
 		colorVal !== SchemeColor.text1 &&
@@ -168,12 +167,12 @@ export function createColorElement(colorStr: string | SCHEME_COLORS, innerElemen
 		colorVal !== SchemeColor.accent5 &&
 		colorVal !== SchemeColor.accent6
 	) {
-		console.warn(`"${colorVal}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
+		console.warn(`"${colorVal}" is not a valid scheme color or hex RGB! "${DEF_FONT_COLOR}" used instead. Only provide 6-digit RGB or 'pptx.SchemeColor' values!`)
 		colorVal = DEF_FONT_COLOR
 	}
 
-	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = 'val="' + (isHexaRgb ? colorVal.toUpperCase() : colorVal) + '"'
+	let tagName = REGEX_HEX_COLOR.test(colorVal) ? 'srgbClr' : 'schemeClr'
+	let colorAttr = 'val="' + (REGEX_HEX_COLOR.test(colorVal) ? colorVal.toUpperCase() : colorVal) + '"'
 
 	return innerElements ? `<a:${tagName} ${colorAttr}>${innerElements}</a:${tagName}>` : `<a:${tagName} ${colorAttr}/>`
 }

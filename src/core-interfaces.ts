@@ -97,6 +97,8 @@ export interface BorderProps {
 	 */
 	color?: HexColor
 
+	// TODO: add `transparency` prop to Borders (0-100%)
+
 	// TODO: add `width` - deprecate `pt`
 	/**
 	 * Border size (points)
@@ -590,7 +592,7 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * Shape fill color properties
 	 * @example { color:'FF0000' } // hex color (red)
 	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
-	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
+	 * @example { color:pptx.SchemeColor.accent1 } // Theme color Accent1
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -1135,12 +1137,25 @@ export interface IChartMulti {
 	data: any[]
 	options: {}
 }
+export interface IChartPropsFillLine {
+	/**
+	 * PowerPoint: Format Chart Area/Plot > Border ["Line"]
+	 * @example border: {color: 'FF0000', pt: 1} // hex RGB color, 1 pt line
+	 */
+	border?: BorderProps
+	/**
+	 * PowerPoint: Format Chart Area/Plot Area > Fill
+	 * @example fill: {color: '696969'} // hex RGB color value
+	 * @example fill: {color: pptx.SchemeColor.background2} // Theme color value
+	 * @example fill: {transparency: 50} // 50% transparency
+	 */
+	fill?: ShapeFillProps
+}
 export interface IChartPropsBase {
 	/**
 	 * Axis position
 	 */
 	axisPos?: 'b' | 'l' | 'r' | 't'
-	border?: BorderProps
 	chartColors?: HexColor[]
 	/**
 	 * opacity (0 - 100)
@@ -1149,7 +1164,6 @@ export interface IChartPropsBase {
 	chartColorsOpacity?: number
 	dataBorder?: BorderProps
 	displayBlanksAs?: string
-	fill?: HexColor
 	invertedColors?: HexColor[]
 	lang?: string
 	layout?: PositionProps
@@ -1169,6 +1183,25 @@ export interface IChartPropsBase {
 	v3DRAngAx?: boolean
 	v3DRotX?: number
 	v3DRotY?: number
+
+	/**
+	 * PowerPoint: Format Chart Area (Fill & Border/Line)
+	 */
+	chartArea?: IChartPropsFillLine
+	/**
+	 * PowerPoint: Format Plot Area (Fill & Border/Line)
+	 */
+	plotArea?: IChartPropsFillLine
+
+	/**
+	 * Whether "Fit to Shape?" is enabled
+	 * @deprecated v3.11.0 - use `plotArea.border`
+	 */
+	border?: BorderProps
+	/**
+	 * @deprecated v3.11.0 - use `plotArea.fill`
+	 */
+	fill?: HexColor
 }
 export interface IChartPropsAxisCat {
 	/**
@@ -1441,9 +1474,9 @@ export interface IChartOpts
 		IChartPropsDataTable,
 		IChartPropsLegend,
 		IChartPropsTitle,
+		ObjectNameProps,
 		OptsChartGridLine,
-		PositionProps,
-		ObjectNameProps {
+		PositionProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
