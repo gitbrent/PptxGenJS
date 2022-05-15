@@ -139,7 +139,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		{
 			// A: Start XML
 			let strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
@@ -157,7 +157,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// C: Add `name`/Series
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				data.forEach((objData, idx) => {
 					if (idx === 0) strSharedStrings += '<si><t>X-Axis</t></si>'
 					else {
@@ -172,7 +172,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// D: Add `labels`/Categories
-			if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.SCATTER) {
+			if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
 				data[0].labels.forEach(label => {
 					strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
 				})
@@ -185,7 +185,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		// tables/table1.xml
 		{
 			let strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				/*
 				strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
 				strTableXml += '<tableColumns count="' + (data.length) +'">';
@@ -224,7 +224,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			let strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />'
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />'
@@ -234,7 +234,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
 			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
-			if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSheetXml += '<cols>'
 				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
 				strSheetXml += '</cols>'
@@ -1244,6 +1244,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			break
 
 		case CHART_TYPE.BUBBLE:
+		case CHART_TYPE.BUBBLE3D:
 			/*
 				`data` = [
 					{ name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -1253,7 +1254,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			*/
 
 			// 1: Start Chart
-			strXml += '<c:' + chartType + 'Chart>'
+			strXml += '<c:bubbleChart>'
 			strXml += '<c:varyColors val="0"/>'
 
 			// 2: Series: (One for each Y-Axis)
@@ -1357,7 +1358,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '      </c:numCache>'
 				strXml += '    </c:numRef>'
 				strXml += '  </c:bubbleSize>'
-				strXml += '  <c:bubble3D val="0"/>'
+				strXml += '  <c:bubble3D val="' + (chartType === CHART_TYPE.BUBBLE3D ? '1' : '0') + '"/>'
 
 				// F: Close "SERIES"
 				strXml += '</c:ser>'
@@ -1404,7 +1405,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 			strXml += '  <c:axId val="' + valAxisId + '"/>'
 
 			// 6: Close Chart tag
-			strXml += '</c:' + chartType + 'Chart>'
+			strXml += '</c:bubbleChart>'
 
 			// end switch
 			break
@@ -1571,7 +1572,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 	// Build cat axis tag
 	// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		strXml += '<c:valAx>'
 	} else {
 		strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1596,7 +1597,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 		})
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
-	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>'
 	} else {
 		strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="0"/>'
@@ -1646,7 +1647,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 	// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
 	// Allow major and minor units to be set for double value axis charts
-	if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		if (opts.catLabelFormatCode) {
 			;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(opt => {
 				// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
@@ -1665,7 +1666,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 	// Close cat axis tag
 	// NOTE: Added closing tag of val or cat axis based on chart type
-	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
 		strXml += '</c:valAx>'
 	} else {
 		strXml += '</c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
