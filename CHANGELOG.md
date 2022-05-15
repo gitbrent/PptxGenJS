@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added category crosses at property (`catAxisCrossesAt`) [\#966](https://github.com/gitbrent/PptxGenJS/pull/966) ([parvezapathan](https://github.com/parvezapathan))
 - Added 2 new Chart props: `plotArea` and `chartArea` allowing fill and border for each (`plotArea` deprecates `fill` and `border`) [\#1015](https://github.com/gitbrent/PptxGenJS/issues/1015) ([hvstaden](https://github.com/hvstaden))
 - Added `bubble3D` chart type [\#1108](https://github.com/gitbrent/PptxGenJS/pull/1108) ([mathbruyen](https://github.com/mathbruyen))
 
