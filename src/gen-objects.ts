@@ -312,9 +312,12 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	//
 	options.chartArea = options.chartArea || {}
 	options.chartArea.border = options.chartArea.border && typeof options.chartArea.border === 'object' ? options.chartArea.border : null
-	if (options.chartArea.border && (!options.chartArea.border.pt || isNaN(options.chartArea.border.pt))) options.chartArea.border.pt = DEF_CHART_BORDER.pt
-	if (options.chartArea.border && (!options.chartArea.border.color || typeof options.chartArea.border.color !== 'string'))
-		options.chartArea.border.color = DEF_CHART_BORDER.color
+	if (options.chartArea.border) {
+		options.chartArea.border = {
+			color: options.chartArea.border.color || DEF_CHART_BORDER.color,
+			pt: options.chartArea.border.pt || DEF_CHART_BORDER.pt,
+		}
+	}
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
