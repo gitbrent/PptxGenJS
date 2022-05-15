@@ -570,10 +570,10 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += '  <c:spPr>'
 
 		// OPTION: Fill
-		strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>'
+		strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>'
 
 		// OPTION: Border
-		strXml += rel.opts.border ? `<a:ln w="${valToPts(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
+		strXml += rel.opts.plotArea.border ? `<a:ln w="${valToPts(rel.opts.plotArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.plotArea.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
 		strXml += '    <a:effectLst/>'
@@ -615,8 +615,8 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 	// D: CHARTSPACE SHAPE PROPS
 	strXml += '<c:spPr>'
-	strXml += '  <a:noFill/>'
-	strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>'
+	strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>'
+	strXml += rel.opts.chartArea.border ? `<a:ln w="${valToPts(rel.opts.chartArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.chartArea.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
 	strXml += '  <a:effectLst/>'
 	strXml += '</c:spPr>'
 
