@@ -157,6 +157,7 @@ declare namespace PptxGenJS {
 		'bar' = 'bar',
 		'bar3d' = 'bar3D',
 		'bubble' = 'bubble',
+		'bubble3d' = 'bubble3D',
 		'doughnut' = 'doughnut',
 		'line' = 'line',
 		'pie' = 'pie',
