@@ -334,7 +334,6 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	//
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
-	options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero'
 
 	// STEP 4: Set props
 	resultObject._type = 'chart'

@@ -573,7 +573,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>'
 
 		// OPTION: Border
-		strXml += rel.opts.plotArea.border ? `<a:ln w="${valToPts(rel.opts.plotArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.plotArea.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
+		strXml += rel.opts.plotArea.border
+			? `<a:ln w="${valToPts(rel.opts.plotArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.plotArea.border.color)}</a:ln>`
+			: '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
 		strXml += '    <a:effectLst/>'
@@ -616,7 +618,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 	// D: CHARTSPACE SHAPE PROPS
 	strXml += '<c:spPr>'
 	strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>'
-	strXml += rel.opts.chartArea.border ? `<a:ln w="${valToPts(rel.opts.chartArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.chartArea.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
+	strXml += rel.opts.chartArea.border
+		? `<a:ln w="${valToPts(rel.opts.chartArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.chartArea.border.color)}</a:ln>`
+		: '<a:ln><a:noFill/></a:ln>'
 	strXml += '  <a:effectLst/>'
 	strXml += '</c:spPr>'
 
@@ -1639,7 +1643,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml += '  </a:p>'
 	strXml += ' </c:txPr>'
 	strXml += ' <c:crossAx val="' + valAxisId + '"/>'
-	strXml += ' <c:' + (typeof opts.valAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses') + ' val="' + opts.valAxisCrossesAt + '"/>'
+	strXml += ` <c:${typeof opts.valAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses'} val="${opts.valAxisCrossesAt || 'autoZero'}"/>`
 	strXml += ' <c:auto val="1"/>'
 	strXml += ' <c:lblAlgn val="ctr"/>'
 	strXml += ' <c:noMultiLvlLbl val="1"/>'
@@ -1747,7 +1751,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  </a:p>'
 	strXml += ' </c:txPr>'
 	strXml += ' <c:crossAx val="' + crossAxId + '"/>'
-	strXml += ' <c:crosses val="' + crosses + '"/>'
+	strXml += ` <c:${typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses'} val="${opts.catAxisCrossesAt || 'autoZero'}"/>`
 	strXml +=
 		' <c:crossBetween val="' +
 		(opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0 ? true : false)
