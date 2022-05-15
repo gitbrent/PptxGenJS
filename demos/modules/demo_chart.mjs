@@ -1334,14 +1334,14 @@ function genSlide15(pptx) {
 
 	let arrDataBubble1 = [
 		{ name: "X-Axis", values: [0.3, 0.6, 0.9, 1.2, 1.5, 1.7] },
-		{ name: "Y-Value 1", values: [1.3, 9, 7.5, 2.5, 7.5, 5], sizes: [1, 4, 2, 3, 7, 4] },
-		{ name: "Y-Value 2", values: [5, 3, 2, 7, 2, 10], sizes: [9, 7, 9, 2, 4, 8] },
+		{ name: "Y-Value 1", values: [1.3, 9, 7.5, 2.5, 7.5, 3], sizes: [1, 4, 2, 3, 7, 4] },
+		{ name: "Y-Value 2", values: [5.0, 3, 2.0, 7.0, 2.0, 9], sizes: [9, 7, 9, 2, 4, 8] },
 	];
 	let arrDataBubble2 = [
 		{ name: "X-Axis", values: [1, 2, 3, 4, 5, 6] },
 		{ name: "Airplane", values: [33, 20, 51, 65, 71, 75], sizes: [10, 10, 12, 12, 15, 20] },
 		{ name: "Train", values: [99, 88, 77, 89, 99, 99], sizes: [20, 20, 22, 22, 25, 30] },
-		{ name: "Bus", values: [21, 22, 25, 49, 59, 69], sizes: [11, 11, 13, 13, 16, 21] },
+		{ name: "Bus", values: [21, 25, 32, 49, 59, 69], sizes: [11, 11, 13, 13, 16, 21] },
 	];
 
 	// TOP-LEFT
@@ -1383,21 +1383,23 @@ function genSlide15(pptx) {
 		y: 4.0,
 		w: "45%",
 		h: 3,
-		fill: "f2f9fc",
+		fill: "363636",
 		catAxisOrientation: "maxMin",
 		valAxisOrientation: "maxMin",
 		showCatAxisTitle: false,
 		showValAxisTitle: false,
 		valAxisMinVal: 0,
-		dataBorder: { pt: 2, color: "FFFFFF" },
-		dataLabelColor: "FFFFFF",
+		dataBorder: { pt: 2, color: "e1e1e1" },
+		dataLabelFontFace: "Arial",
+		dataLabelFontSize: 10,
+		dataLabelColor: "e1e1e1",
 		showValue: true,
 	};
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3);
 
 	// BOTTOM-RIGHT
 	let optsChartBubble4 = { x: 7.0, y: 4.0, w: "45%", h: 3, lineSize: 0 };
-	slide.addChart(pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble4);
+	slide.addChart(pptx.charts.BUBBLE3D, arrDataBubble2, optsChartBubble4);
 }
 
 // SLIDE 16: Radar Chart
