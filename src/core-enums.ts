@@ -3,7 +3,7 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
-import { BorderProps } from './core-interfaces'
+import { BorderProps, OptsChartGridLine } from './core-interfaces'
 
 // CONST
 export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
@@ -17,7 +17,8 @@ export const DEF_BULLET_MARGIN = 27
 export const DEF_CELL_BORDER: BorderProps = { type: 'solid', color: '666666', pt: 1 }
 export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style // DEPRECATED 3.8.0
 export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.1, 0.05, 0.1] // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
-export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
+export const DEF_CHART_BORDER: BorderProps = { type: 'solid', color: '363636', pt: 1 }
+export const DEF_CHART_GRIDLINE: OptsChartGridLine = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'
 export const DEF_FONT_SIZE: number = 12
 export const DEF_FONT_TITLE_SIZE: number = 18
