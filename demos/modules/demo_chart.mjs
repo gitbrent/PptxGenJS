@@ -617,6 +617,10 @@ function genSlide05(pptx) {
 			y: 0.6,
 			w: "45%",
 			h: 3,
+			chartArea: { fill: { color: "404040" } },
+			catAxisLabelColor: "F1F1F1",
+			valAxisLabelColor: "F1F1F1",
+
 			barDir: "bar",
 			chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384"],
 			catLabelFormatCode: "yyyy-mm",
@@ -647,10 +651,16 @@ function genSlide05(pptx) {
 			y: 0.6,
 			w: "45%",
 			h: 3,
+			chartArea: { fill: { color: "404040" } },
+			catAxisLabelColor: "F1F1F1",
+			valAxisLabelColor: "F1F1F1",
+			valAxisLineColor: "7F7F7F",
+			valGridLine: { color: "7F7F7F" },
+			dataLabelColor: "B7B7B7",
+
 			valAxisMaxVal: 1,
 			barDir: "bar",
 			catAxisLineShow: false,
-			valAxisLineShow: false,
 			showValue: true,
 			catLabelFormatCode: "mmm-yy",
 			dataLabelPosition: "outEnd",
@@ -677,6 +687,13 @@ function genSlide05(pptx) {
 			y: 4.0,
 			w: "45%",
 			h: 3,
+			chartArea: { fill: { color: "404040" } },
+			catAxisLabelColor: "F1F1F1",
+			valAxisLabelColor: "F1F1F1",
+			valAxisLineColor: "7F7F7F",
+			valGridLine: { color: "7F7F7F" },
+			dataLabelColor: "B7B7B7",
+
 			barDir: "col", // `col`(vert) | `bar`(horiz)
 			showValue: true,
 			dataLabelPosition: "outEnd",
@@ -687,6 +704,7 @@ function genSlide05(pptx) {
 			barGapWidthPct: 50,
 			showLegend: true,
 			legendPos: "r",
+			legendColor: "F1F1F1",
 		}
 	);
 
@@ -705,6 +723,13 @@ function genSlide05(pptx) {
 			y: 4,
 			w: "45%",
 			h: 3,
+			chartArea: { fill: { color: "404040" } },
+			catAxisLabelColor: "F1F1F1",
+			valAxisLabelColor: "F1F1F1",
+			valAxisLineColor: "7F7F7F",
+			valGridLine: { color: "7F7F7F" },
+			dataLabelColor: "B7B7B7",
+
 			barDir: "bar",
 			showValue: true,
 			dataLabelPosition: "outEnd",
