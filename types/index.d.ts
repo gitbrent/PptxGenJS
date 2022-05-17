@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.10.0
+// Type definitions for pptxgenjs 3.11.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -157,6 +157,7 @@ declare namespace PptxGenJS {
 		'bar' = 'bar',
 		'bar3d' = 'bar3D',
 		'bubble' = 'bubble',
+		'bubble3d' = 'bubble3D',
 		'doughnut' = 'doughnut',
 		'line' = 'line',
 		'pie' = 'pie',
@@ -1932,12 +1933,25 @@ declare namespace PptxGenJS {
 		data: any[]
 		options: {}
 	}
+	export interface IChartPropsFillLine {
+		/**
+		 * PowerPoint: Format Chart Area/Plot > Border ["Line"]
+		 * @example border: {color: 'FF0000', pt: 1} // hex RGB color, 1 pt line
+		 */
+		border?: BorderProps
+		/**
+		 * PowerPoint: Format Chart Area/Plot Area > Fill
+		 * @example fill: {color: '696969'} // hex RGB color value
+		 * @example fill: {color: pptx.SchemeColor.background2} // Theme color value
+		 * @example fill: {transparency: 50} // 50% transparency
+		 */
+		fill?: ShapeFillProps
+	}
 	export interface IChartPropsBase {
 		/**
 		 * Axis position
 		 */
 		axisPos?: 'b' | 'l' | 'r' | 't'
-		border?: BorderProps
 		chartColors?: HexColor[]
 		/**
 		 * opacity (0 - 100)
@@ -1946,7 +1960,6 @@ declare namespace PptxGenJS {
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
-		fill?: HexColor
 		invertedColors?: HexColor[]
 		lang?: string
 		layout?: PositionProps
@@ -1966,6 +1979,25 @@ declare namespace PptxGenJS {
 		v3DRAngAx?: boolean
 		v3DRotX?: number
 		v3DRotY?: number
+
+		/**
+		 * PowerPoint: Format Chart Area (Fill & Border/Line)
+		 */
+		chartArea?: IChartPropsFillLine
+		/**
+		 * PowerPoint: Format Plot Area (Fill & Border/Line)
+		 */
+		plotArea?: IChartPropsFillLine
+
+		/**
+		 * Whether "Fit to Shape?" is enabled
+		 * @deprecated v3.11.0 - use `plotArea.border`
+		 */
+		border?: BorderProps
+		/**
+		 * @deprecated v3.11.0 - use `plotArea.fill`
+		 */
+		fill?: HexColor
 	}
 	export interface IChartPropsAxisCat {
 		/**
@@ -1973,6 +2005,7 @@ declare namespace PptxGenJS {
 		 */
 		catAxes?: IChartPropsAxisCat[]
 		catAxisBaseTimeUnit?: string
+		catAxisCrossesAt?: number | 'autoZero'
 		catAxisHidden?: boolean
 		catAxisLabelColor?: string
 		catAxisLabelFontBold?: boolean
@@ -2046,7 +2079,7 @@ declare namespace PptxGenJS {
 		 * Multi-Chart prop: array of val axes
 		 */
 		valAxes?: IChartPropsAxisVal[]
-		valAxisCrossesAt?: string | number
+		valAxisCrossesAt?: number | 'autoZero'
 		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 		valAxisDisplayUnitLabel?: boolean
 		valAxisHidden?: boolean

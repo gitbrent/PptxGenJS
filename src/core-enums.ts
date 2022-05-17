@@ -3,7 +3,7 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
-import { BorderProps } from './core-interfaces'
+import { BorderProps, OptsChartGridLine } from './core-interfaces'
 
 // CONST
 export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
@@ -17,7 +17,8 @@ export const DEF_BULLET_MARGIN = 27
 export const DEF_CELL_BORDER: BorderProps = { type: 'solid', color: '666666', pt: 1 }
 export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style // DEPRECATED 3.8.0
 export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.1, 0.05, 0.1] // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
-export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
+export const DEF_CHART_BORDER: BorderProps = { type: 'solid', color: '363636', pt: 1 }
+export const DEF_CHART_GRIDLINE: OptsChartGridLine = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'
 export const DEF_FONT_SIZE: number = 12
 export const DEF_FONT_TITLE_SIZE: number = 18
@@ -38,7 +39,7 @@ export const AXIS_ID_SERIES_PRIMARY: string = '2094734556'
 
 export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 export type WRITE_OUTPUT_TYPE = JSZIP_OUTPUT_TYPE | 'STREAM'
-export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'bubble3D' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
 export type SCHEME_COLORS = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 
 export const LETTERS: Array<string> = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -110,6 +111,7 @@ export enum ChartType {
 	'bar' = 'bar',
 	'bar3d' = 'bar3D',
 	'bubble' = 'bubble',
+	'bubble3d' = 'bubble3D',
 	'doughnut' = 'doughnut',
 	'line' = 'line',
 	'pie' = 'pie',
@@ -696,6 +698,7 @@ export enum CHART_TYPE {
 	'BAR' = 'bar',
 	'BAR3D' = 'bar3D',
 	'BUBBLE' = 'bubble',
+	'BUBBLE3D' = 'bubble3D',
 	'DOUGHNUT' = 'doughnut',
 	'LINE' = 'line',
 	'PIE' = 'pie',
