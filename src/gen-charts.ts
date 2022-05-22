@@ -147,16 +147,11 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">'
 			} else {
 				// series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
-				const count       = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
+				const count = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
 				// series names + labels of one series + blank string (same for all label groups)
 				const uniqueCount = data.length + data[0].labels.length * data[0].labels[0].length + 1
 
-				strSharedStrings +=
-					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
-					(count) +
-					'" uniqueCount="' +
-					(uniqueCount) +
-					'">'
+				strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + count + '" uniqueCount="' + uniqueCount + '">'
 				// B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
 				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			}
@@ -216,7 +211,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					'" totalsRowShown="0">'
 				strTableXml += '<tableColumns count="' + (data.length + data[0].labels.length) + '">'
 				data[0].labels.forEach((_labelsGroup, idx) => {
-					strTableXml += '<tableColumn id="'+ (idx + 1) + '" name=" " />'
+					strTableXml += '<tableColumn id="' + (idx + 1) + '" name=" " />'
 				})
 				data.forEach((obj, idx) => {
 					strTableXml += '<tableColumn id="' + (idx + data[0].labels.length + 1) + '" name="' + encodeXmlEntities(obj.name) + '" />'
@@ -382,7 +377,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					// Leading cols are reserved for the label groups
 					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
 						strSheetXml += '<c r="' + getExcelColName(data[0].labels.length - 1 - idx2) + '' + (idx + 2) + '" t="s">'
-						strSheetXml += '<v>' + (data.length + idx + (idx2 * (data[0].labels[0].length)) + 1) + '</v>'
+						strSheetXml += '<v>' + (data.length + idx + idx2 * data[0].labels[0].length + 1) + '</v>'
 						strSheetXml += '</c>'
 					}
 
@@ -821,7 +816,9 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 					strXml += '  <c:spPr>'
 					strXml +=
 						'    <a:solidFill>' +
-						createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]) +
+						createColorElement(
+							opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]
+						) +
 						'</a:solidFill>'
 
 					strXml +=
@@ -908,7 +905,14 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				{
 					strXml += '<c:val>'
 					strXml += '  <c:numRef>'
-					strXml += '    <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$2:$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$' + (obj.labels[0].length + 1) + '</c:f>'
+					strXml +=
+						'    <c:f>Sheet1!$' +
+						getExcelColName(obj._dataIndex + obj.labels.length) +
+						'$2:$' +
+						getExcelColName(obj._dataIndex + obj.labels.length) +
+						'$' +
+						(obj.labels[0].length + 1) +
+						'</c:f>'
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
 					strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>'
