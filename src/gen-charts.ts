@@ -237,9 +237,8 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
 			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				strSheetXml += '<cols>'
-				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
-				strSheetXml += '</cols>'
+				strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
+
 				/* EX: INPUT: `data`
 				[
 					{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
@@ -256,7 +255,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSheetXml += '<sheetData>'
 
 				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-				strSheetXml += '<row r="1" spans="1:' + intBubbleCols + '">'
+				strSheetXml += `<row r="1" spans="1:${intBubbleCols}">`
 				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
 				for (let idx = 1; idx < intBubbleCols; idx++) {
 					strSheetXml += `<c r="${getExcelColName(idx)}1" t="s"><v>${idx}</v></c>` // NOTE: add `t="s"` for label cols!
@@ -266,8 +265,8 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// B: Add row for each X-Axis value (Y-Axis* value is optional)
 				data[0].values.forEach((val, idx) => {
 					// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + intBubbleCols + '">'
-					strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>'
+					strSheetXml += `<row r="${idx + 2}" spans="1:${intBubbleCols}">`
+					strSheetXml += `<c r="A${idx + 2}"><v>${val}</v></c>`
 					// Add Y-Axis 1->N (idy=0 = Xaxis)
 					let idxColLtr = 1
 					for (let idy = 1; idy < data.length; idy++) {
@@ -301,8 +300,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSheetXml += '<sheetData>'
 
 				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-				strSheetXml += '<row r="1" spans="1:' + data.length + '">'
-				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
+				strSheetXml += `<row r="1" spans="1:${data.length}"><c r="A1" t="s"><v>0</v></c>`
 				for (let idx = 1; idx < data.length; idx++) {
 					strSheetXml += `<c r="${getExcelColName(idx)}1" t="s"><v>${idx}</v></c>` // NOTE: add `t="s"` for label cols!
 				}
@@ -311,8 +309,8 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// B: Add row for each X-Axis value (Y-Axis* value is optional)
 				data[0].values.forEach((val, idx) => {
 					// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + data.length + '">'
-					strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>'
+					strSheetXml += `<row r="${idx + 2}" spans="1:${data.length}">`
+					strSheetXml += `<c r="A${idx + 2}"><v>${val}</v></c>`
 					// Add Y-Axis 1->N
 					for (let idy = 1; idy < data.length; idy++) {
 						strSheetXml += `<c r="${getExcelColName(idy)}${idx + 2}"><v>${
@@ -322,18 +320,15 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += '</row>'
 				})
 			} else {
-				strSheetXml += '<cols>'
-				strSheetXml += '<col min="1" max="1" width="11" customWidth="1" />'
-				//data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1" />' });
-				strSheetXml += '</cols>'
+				strSheetXml += '<cols><col min="1" max="1" width="11" customWidth="1" /></cols>'
 				strSheetXml += '<sheetData>'
 
 				/* EX: INPUT: `data`
-				[
-					{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
-					{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
-					{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
-				];
+					[
+						{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+						{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+						{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+					];
 				*/
 				/* EX: OUTPUT: lineChart Worksheet:
 					-|---A---|--B--|--C--|--D--|
@@ -347,46 +342,39 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				*/
 
 				// A: Create header row first
-				strSheetXml += '<row r="1" spans="1:' + (data.length + data[0].labels.length) + '">'
+				strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
 				data[0].labels.forEach((_labelsGroup, idx) => {
-					strSheetXml += '<c r="' + getExcelColName(idx + 1) + '1" t="s">'
-					strSheetXml += '<v>0</v>'
-					strSheetXml += '</c>'
+					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
 				})
 				for (let idx = 1; idx <= data.length; idx++) {
-					// FIXME: Max cols is 52
-					strSheetXml += '<c r="' + getExcelColName(idx + data[0].labels.length) + '1" t="s">' // NOTE: use `t="s"` for label cols!
-					strSheetXml += '<v>' + idx + '</v>'
-					strSheetXml += '</c>'
+					strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
 				}
 				strSheetXml += '</row>'
 
 				// B: Add data row(s) for each category
 				data[0].labels[0].forEach((_cat, idx) => {
-					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + data[0].labels.length) + '">'
+					strSheetXml += `<row r="${idx + 2}" spans="1:${data.length + data[0].labels.length}">`
 					// Leading cols are reserved for the label groups
 					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
-						strSheetXml += '<c r="' + getExcelColName(data[0].labels.length - idx2) + '' + (idx + 2) + '" t="s">'
-						strSheetXml += '<v>' + (data.length + idx + idx2 * data[0].labels[0].length + 1) + '</v>'
+						strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
+						strSheetXml += `<v>${data.length + idx + idx2 * data[0].labels[0].length + 1}</v>`
 						strSheetXml += '</c>'
 					}
-
 					for (let idy = 0; idy < data.length; idy++) {
-						strSheetXml += '<c r="' + getExcelColName(idy + data[0].labels.length) + '' + (idx + 2) + '">'
-						strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>'
-						strSheetXml += '</c>'
+						strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
 					}
 					strSheetXml += '</row>'
 				})
 			}
 			strSheetXml += '</sheetData>'
-			strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />'
+			strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>'
 			// Link the `table1.xml` file to define an actual Table in Excel
 			// NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
 			// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
 			// ....: Leaving this so nobody foolishly attempts to add this in the future
 			// strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
 			strSheetXml += '</worksheet>\n'
+
 			zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml)
 		}
 
@@ -636,15 +624,15 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 /**
  * Create XML string for any given chart type
- * @param {CHART_NAME} `chartType` chart type name
- * @param {OptsChartData[]} `data` chart data
- * @param {IChartOptsLib} `opts` chart options
- * @param {string} `valAxisId`
- * @param {string} `catAxisId`
- * @param {boolean} `isMultiTypeChart`
- * @example '<c:bubbleChart>'
+ * @param {CHART_NAME} chartType chart type name
+ * @param {IOptsChartData[]} data chart data
+ * @param {IChartOptsLib} opts chart options
+ * @param {string} valAxisId chart val axis id
+ * @param {string} catAxisId chart cat axis id
+ * @param {boolean} isMultiTypeChart is this a mutli-type chart?
+ * @example 'bubble' returns <c:bubbleChart></c>
  * @example '<c:lineChart>'
- * @return {string} XML
+ * @return {string} XML chart
  */
 function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
@@ -658,7 +646,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 		case CHART_TYPE.LINE:
 		case CHART_TYPE.RADAR:
 			// 1: Start Chart
-			strXml += '<c:' + chartType + 'Chart>'
+			strXml += `<c:${chartType}Chart>`
 			if (chartType === CHART_TYPE.AREA && opts.barGrouping === 'stacked') {
 				strXml += '<c:grouping val="' + opts.barGrouping + '"/>'
 			}
