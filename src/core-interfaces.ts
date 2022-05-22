@@ -1106,8 +1106,15 @@ export interface OptsDataLabelPosition {
 
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 export interface OptsChartData {
-	index?: number
-	labels?: string[]
+	_dataIndex?: number
+
+	/**
+	 * chart labels
+	 * @example ['Year 2000', 'Year 2010', 'Year 2020'] // single-level category axes labels
+	 * @example [['Year 2000', 'Year 2010', 'Year 2020'], ['Decades', '', '']] // multi-level category axes labels
+	 * @since `labels` string[][] type added v3.11.0
+	 */
+	labels?: string[] | string[][]
 	name?: string
 	sizes?: number[]
 	values?: number[]
@@ -1115,6 +1122,10 @@ export interface OptsChartData {
 	 * Override `chartColors`
 	 */
 	//color?: string // TODO: WIP: (Pull #727)
+}
+// Used internally, probably shouldn't be used by end users
+export interface IOptsChartData extends OptsChartData {
+	labels?: string[][]
 }
 export interface OptsChartGridLine {
 	/**
@@ -1231,6 +1242,8 @@ export interface IChartPropsAxisCat {
 	catAxisMinorTimeUnit?: string
 	catAxisMinorUnit?: string
 	catAxisMinVal?: number
+	/** @since v3.11.0 */
+	catAxisMultiLevelLabels?: boolean
 	catAxisOrientation?: 'minMax'
 	catAxisTitle?: string
 	catAxisTitleColor?: string
@@ -1490,7 +1503,7 @@ export interface IChartOptsLib extends IChartOpts {
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_NAME | IChartMulti[]
 	opts: IChartOptsLib
-	data: OptsChartData[]
+	data: IOptsChartData[]
 	// internal below
 	rId: number
 	Target: string

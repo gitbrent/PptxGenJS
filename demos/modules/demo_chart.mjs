@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.11.0
- * BLD.: 20220515
+ * BLD.: 20220521
  */
 
 import {
@@ -63,6 +63,8 @@ export function genSlides_Chart(pptx) {
 	genSlide16(pptx);
 	genSlide17(pptx);
 	genSlide18(pptx);
+	genSlide19(pptx);
+	genSlide20(pptx);
 }
 
 function initTestData() {
@@ -1640,11 +1642,115 @@ function genSlide16(pptx) {
 	}
 }
 
-// SLIDE 17: Multi-Type Charts
+// SLIDE 17: Multi-Level Category Axes
 function genSlide17(pptx) {
-	// powerpoint 2016 add secondary category axis labels
-	// https://peltiertech.com/chart-with-a-dual-category-axis/
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Multi-Level Category Axes", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
+	const arrDataRegions = [
+		{
+			name: "Mechanical",
+			labels: [
+				["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
+				["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
+			],
+			values: [11, 8, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+		},
+		{
+			name: "Electrical",
+			labels: [
+				["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
+				["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
+			],
+			values: [0, 0, 0, 19, 12, 11, 3, 2, 0, 0, 0],
+		},
+		{
+			name: "Hydraulic",
+			labels: [
+				["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
+				["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
+			],
+			values: [0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 1],
+		},
+	];
+
+	const opts1 = {
+		x: 0.5,
+		y: 0.6,
+		w: 6.0,
+		h: 3.0,
+		chartArea: { fill: { color: "F1F1F1" } },
+		catAxisMultiLevelLabels: true,
+	};
+
+	const opts2 = {
+		x: 6.8,
+		y: 0.6,
+		w: 6.0,
+		h: 3.0,
+		chartArea: { fill: { color: "F1F1F1" } },
+		catAxisMultiLevelLabels: true,
+		barDir: "col",
+	};
+
+	const opts3 = {
+		x: 0.5,
+		y: 4.0,
+		w: 6.0,
+		h: 3.0,
+		chartArea: { fill: { color: "F1F1F1" } },
+		catAxisMultiLevelLabels: true,
+		barDir: "col",
+	};
+
+	const opts4 = {
+		x: 6.8,
+		y: 4.0,
+		w: 6.0,
+		h: 3.0,
+		chartArea: { fill: { color: "F1F1F1" } },
+		catAxisMultiLevelLabels: true,
+	};
+
+	slide.addChart(pptx.charts.AREA, arrDataRegions, opts1);
+	slide.addChart(pptx.charts.BAR, arrDataRegions, opts2);
+	slide.addChart(pptx.charts.BAR3D, arrDataRegions, opts3);
+	slide.addChart(pptx.charts.LINE, arrDataRegions, opts4);
+}
+
+// SLIDE 18: Multi-Level Category Axes (3 Levels)
+function genSlide18(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Multi-Level Category Axes (3 Levels)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	const arrDataRegions = [
+		{
+			name: "Fruits",
+			labels: [
+				["1/3", "1/25", "6/5", "6/21", "7/27", "2/20", "3/17", "4/24", "6/23", "8/5", "4/16", "1/29", "2/23", "4/4", "7/15"],
+				["Apple", "", "", "", "", "Orange", "", "", "", "Orange", "", "Peach", "Pear", "", "", ""],
+				["2014", "", "", "", "", "", "", "", "", "2015", "", "", "", "", "", ""],
+			],
+			values: [734, 465, 656, 176, 434, 165, 613, 359, 279, 660, 307, 270, 539, 142, 554],
+		},
+	];
+
+	const opts1 = {
+		x: 0.5,
+		y: 0.6,
+		w: 12.3,
+		h: 6.5,
+		chartArea: { fill: { color: "F1F1F1" } },
+		catAxisMultiLevelLabels: true,
+	};
+
+	slide.addChart(pptx.charts.BAR, arrDataRegions, opts1);
+}
+
+// SLIDE 19: Multi-Type Charts
+function genSlide19(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Multi-Type Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
@@ -2066,8 +2172,8 @@ function genSlide17(pptx) {
 	//readmeExample();
 }
 
-// SLIDE 18: Charts Options: Shadow, Transparent Colors
-function genSlide18(pptx) {
+// SLIDE 20: Charts Options: Shadow, Transparent Colors
+function genSlide20(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Options: Shadow, Transparent Colors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
