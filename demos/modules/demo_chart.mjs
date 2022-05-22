@@ -1680,7 +1680,7 @@ function genSlide17(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
-		chartArea: { fill: { color: "F9F9F9" } },
+		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 	};
 
@@ -1689,7 +1689,7 @@ function genSlide17(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
-		chartArea: { fill: { color: "F9F9F9" } },
+		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 		barDir: "col",
 	};
@@ -1699,7 +1699,7 @@ function genSlide17(pptx) {
 		y: 4.0,
 		w: 6.0,
 		h: 3.0,
-		chartArea: { fill: { color: "F9F9F9" } },
+		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 		barDir: "col",
 	};
@@ -1709,7 +1709,7 @@ function genSlide17(pptx) {
 		y: 4.0,
 		w: 6.0,
 		h: 3.0,
-		chartArea: { fill: { color: "F9F9F9" } },
+		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 	};
 
@@ -1742,7 +1742,7 @@ function genSlide18(pptx) {
 		y: 0.6,
 		w: 12.3,
 		h: 6.5,
-		chartArea: { fill: { color: "F9F9F9" } },
+		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 	};
 
