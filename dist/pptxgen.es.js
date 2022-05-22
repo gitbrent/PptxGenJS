@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-05-15T21:10:29.880Z */
+/* PptxGenJS 3.11.0-beta @ 2022-05-22T19:04:12.437Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -3387,7 +3387,11 @@ function addChartDefinition(target, type, data, opt) {
         tmpOpt = opt;
     }
     tmpData.forEach(function (item, i) {
-        item.index = i;
+        item._dataIndex = i;
+        // Converts the 'labels' array from string[] to string[][] (or the respective primitive type), if needed
+        if (item.labels !== undefined && !Array.isArray(item.labels[0])) {
+            item.labels = [item.labels];
+        }
     });
     options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {};
     // STEP 1: TODO: check for reqd fields, correct type, etc
@@ -3567,7 +3571,12 @@ function addChartDefinition(target, type, data, opt) {
     //
     options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2;
     options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null;
-    options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero';
+    if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.LINE) {
+        options.catAxisMultiLevelLabels = !!options.catAxisMultiLevelLabels;
+    }
+    else {
+        delete options.catAxisMultiLevelLabels;
+    }
     // STEP 4: Set props
     resultObject._type = 'chart';
     resultObject.options = options;
@@ -4653,13 +4662,12 @@ function createExcelWorksheet(chartObject, zip) {
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">';
             }
             else {
-                strSharedStrings_1 +=
-                    '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
-                        (data[0].labels.length + data.length + 1) +
-                        '" uniqueCount="' +
-                        (data[0].labels.length + data.length + 1) +
-                        '">';
-                // B: Add 'blank' for A1
+                // series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
+                var count = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length;
+                // series names + labels of one series + blank string (same for all label groups)
+                var uniqueCount = data.length + data[0].labels.length * data[0].labels[0].length + 1;
+                strSharedStrings_1 += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + count + '" uniqueCount="' + uniqueCount + '">';
+                // B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
                 strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
             }
             // C: Add `name`/Series
@@ -4680,8 +4688,10 @@ function createExcelWorksheet(chartObject, zip) {
             }
             // D: Add `labels`/Categories
             if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
-                data[0].labels.forEach(function (label) {
-                    strSharedStrings_1 += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
+                data[0].labels.forEach(function (labelsGroup) {
+                    labelsGroup.forEach(function (label) {
+                        strSharedStrings_1 += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
+                    });
                 });
             }
             strSharedStrings_1 += '</sst>\n';
@@ -4705,13 +4715,15 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
-                        LETTERS[data.length] +
-                        (data[0].labels.length + 1) +
+                        getExcelColName(data.length + data[0].labels.length - 1) +
+                        (data[0].labels[0].length + 1) +
                         '" totalsRowShown="0">';
-                strTableXml_1 += '<tableColumns count="' + (data.length + 1) + '">';
-                strTableXml_1 += '<tableColumn id="1" name=" " />';
+                strTableXml_1 += '<tableColumns count="' + (data.length + data[0].labels.length) + '">';
+                data[0].labels.forEach(function (_labelsGroup, idx) {
+                    strTableXml_1 += '<tableColumn id="' + (idx + 1) + '" name=" " />';
+                });
                 data.forEach(function (obj, idx) {
-                    strTableXml_1 += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />';
+                    strTableXml_1 += '<tableColumn id="' + (idx + data[0].labels.length + 1) + '" name="' + encodeXmlEntities(obj.name) + '" />';
                 });
             }
             strTableXml_1 += '</tableColumns>';
@@ -4731,7 +4743,7 @@ function createExcelWorksheet(chartObject, zip) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
             }
             else {
-                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />';
+                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length + data[0].labels.length - 1] + (data[0].labels.length + 1) + '" />';
             }
             strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
             strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
@@ -4849,25 +4861,31 @@ function createExcelWorksheet(chartObject, zip) {
                     6|May-17 |   75|   93|  170|
                     -|-------|-----|-----|-----|
                 */
-                // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml_1 += '<row r="1" spans="1:' + (data.length + 1) + '">';
-                strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
+                // A: Create header row first
+                strSheetXml_1 += '<row r="1" spans="1:' + (data.length + data[0].labels.length) + '">';
+                data[0].labels.forEach(function (_labelsGroup, idx) {
+                    strSheetXml_1 += '<c r="' + getExcelColName(idx) + '1" t="s">';
+                    strSheetXml_1 += '<v>0</v>';
+                    strSheetXml_1 += '</c>';
+                });
                 for (var idx = 1; idx <= data.length; idx++) {
                     // FIXME: Max cols is 52
-                    strSheetXml_1 += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    strSheetXml_1 += '<c r="' + getExcelColName(idx + data[0].labels.length - 1) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
                     strSheetXml_1 += '<v>' + idx + '</v>';
                     strSheetXml_1 += '</c>';
                 }
                 strSheetXml_1 += '</row>';
                 // B: Add data row(s) for each category
-                data[0].labels.forEach(function (_cat, idx) {
-                    // Leading col is reserved for the label, so hard-code it, then loop over col values
-                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">';
-                    strSheetXml_1 += '<c r="A' + (idx + 2) + '" t="s">';
-                    strSheetXml_1 += '<v>' + (data.length + idx + 1) + '</v>';
-                    strSheetXml_1 += '</c>';
+                data[0].labels[0].forEach(function (_cat, idx) {
+                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + data[0].labels.length) + '">';
+                    // Leading cols are reserved for the label groups
+                    for (var idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
+                        strSheetXml_1 += '<c r="' + getExcelColName(data[0].labels.length - 1 - idx2) + '' + (idx + 2) + '" t="s">';
+                        strSheetXml_1 += '<v>' + (data.length + idx + idx2 * data[0].labels[0].length + 1) + '</v>';
+                        strSheetXml_1 += '</c>';
+                    }
                     for (var idy = 0; idy < data.length; idy++) {
-                        strSheetXml_1 += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<c r="' + getExcelColName(idy + data[0].labels.length) + '' + (idx + 2) + '">';
                         strSheetXml_1 += '<v>' + (data[idy].values[idx] || '') + '</v>';
                         strSheetXml_1 += '</c>';
                     }
@@ -5053,7 +5071,9 @@ function makeXmlCharts(rel) {
         // OPTION: Fill
         strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>';
         // OPTION: Border
-        strXml += rel.opts.plotArea.border ? "<a:ln w=\"".concat(valToPts(rel.opts.plotArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.plotArea.border.color), "</a:ln>") : '<a:ln><a:noFill/></a:ln>';
+        strXml += rel.opts.plotArea.border
+            ? "<a:ln w=\"".concat(valToPts(rel.opts.plotArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.plotArea.border.color), "</a:ln>")
+            : '<a:ln><a:noFill/></a:ln>';
         // Close shapeProp/plotArea before Legend
         strXml += '    <a:effectLst/>';
         strXml += '  </c:spPr>';
@@ -5095,7 +5115,9 @@ function makeXmlCharts(rel) {
     // D: CHARTSPACE SHAPE PROPS
     strXml += '<c:spPr>';
     strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>';
-    strXml += rel.opts.chartArea.border ? "<a:ln w=\"".concat(valToPts(rel.opts.chartArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.chartArea.border.color), "</a:ln>") : '<a:ln><a:noFill/></a:ln>';
+    strXml += rel.opts.chartArea.border
+        ? "<a:ln w=\"".concat(valToPts(rel.opts.chartArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.chartArea.border.color), "</a:ln>")
+        : '<a:ln><a:noFill/></a:ln>';
     strXml += '  <a:effectLst/>';
     strXml += '</c:spPr>';
     // E: DATA (Add relID)
@@ -5140,30 +5162,49 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             }
             strXml += '<c:varyColors val="0"/>';
             // 2: "Series" block for every data row
-            /* EX:
+            /* EX1:
                 data: [
                  {
                    name: 'Region 1',
-                   labels: ['April', 'May', 'June', 'July'],
+                   labels: [['April', 'May', 'June', 'July']],
                    values: [17, 26, 53, 96]
                  },
                  {
                    name: 'Region 2',
-                   labels: ['April', 'May', 'June', 'July'],
+                   labels: [['April', 'May', 'June', 'July']],
                    values: [55, 43, 70, 58]
                  }
                 ]
             */
+            /* EX2:
+                data: [
+                 {
+                   name: 'Region 1',
+                   labels: [
+                       ['April', 'May', 'June', 'April', 'May', 'June'],
+                       ['2020',     '',     '', '2021',     '',     '']
+                   ],
+                   values: [17, 26, 53, 96, 40, 33]
+                 },
+                 {
+                   name: 'Region 2',
+                   labels: [
+                       ['April', 'May', 'June', 'April', 'May', 'June'],
+                       ['2020',     '',     '', '2021',     '',     '']
+                   ],
+                   values: [55, 43, 70, 58, 78, 63]
+                 }
+                ]
+             */
             var colorIndex_1 = -1; // Maintain the color index by region
             data.forEach(function (obj) {
                 colorIndex_1++;
-                var idx = obj.index;
                 strXml += '<c:ser>';
-                strXml += '  <c:idx val="' + idx + '"/>';
-                strXml += '  <c:order val="' + idx + '"/>';
+                strXml += '  <c:idx val="' + obj._dataIndex + '"/>';
+                strXml += '  <c:order val="' + obj._dataIndex + '"/>';
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$1</c:f>';
+                strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$1</c:f>';
                 strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
@@ -5250,7 +5291,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  <c:spPr>';
                     strXml +=
                         '    <a:solidFill>' +
-                            createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
+                            createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]) +
                             '</a:solidFill>';
                     strXml +=
                         '    <a:ln w="' +
@@ -5302,26 +5343,30 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     if (opts.catLabelFormatCode) {
                         // Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
                         strXml += '  <c:numRef>';
-                        strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>';
+                        strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels[0].length + 1) + '</c:f>';
                         strXml += '    <c:numCache>';
                         strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>';
-                        strXml += '      <c:ptCount val="' + obj.labels.length + '"/>';
-                        obj.labels.forEach(function (label, idx) {
+                        strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>';
+                        obj.labels[0].forEach(function (label, idx) {
                             strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
                         });
                         strXml += '    </c:numCache>';
                         strXml += '  </c:numRef>';
                     }
                     else {
-                        strXml += '  <c:strRef>';
-                        strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>';
-                        strXml += '    <c:strCache>';
-                        strXml += '	     <c:ptCount val="' + obj.labels.length + '"/>';
-                        obj.labels.forEach(function (label, idx) {
-                            strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
+                        strXml += '  <c:multiLvlStrRef>';
+                        strXml += '    <c:f>Sheet1!$A$2:$' + getExcelColName(obj.labels.length - 1) + '$' + (obj.labels[0].length + 1) + '</c:f>';
+                        strXml += '    <c:multiLvlStrCache>';
+                        strXml += '	     <c:ptCount val="' + obj.labels[0].length + '"/>';
+                        obj.labels.forEach(function (labelsGroup) {
+                            strXml += '  <c:lvl>';
+                            labelsGroup.forEach(function (label, idx) {
+                                strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
+                            });
+                            strXml += '  </c:lvl>';
                         });
-                        strXml += '    </c:strCache>';
-                        strXml += '  </c:strRef>';
+                        strXml += '    </c:multiLvlStrCache>';
+                        strXml += '  </c:multiLvlStrRef>';
                     }
                     strXml += '</c:cat>';
                 }
@@ -5329,10 +5374,17 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 {
                     strXml += '<c:val>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>';
+                    strXml +=
+                        '    <c:f>Sheet1!$' +
+                            getExcelColName(obj._dataIndex + obj.labels.length) +
+                            '$2:$' +
+                            getExcelColName(obj._dataIndex + obj.labels.length) +
+                            '$' +
+                            (obj.labels[0].length + 1) +
+                            '</c:f>';
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>';
-                    strXml += '      <c:ptCount val="' + obj.labels.length + '"/>';
+                    strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>';
                     obj.values.forEach(function (value, idx) {
                         strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
                     });
@@ -5474,9 +5526,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Option: scatter data point labels
                 if (opts.showLabel) {
                     var chartUuid_1 = getUuid('-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
-                    if (obj.labels && (opts.dataLabelFormatScatter === 'custom' || opts.dataLabelFormatScatter === 'customXY')) {
+                    if (obj.labels[0] && (opts.dataLabelFormatScatter === 'custom' || opts.dataLabelFormatScatter === 'customXY')) {
                         strXml += '<c:dLbls>';
-                        obj.labels.forEach(function (label, idx) {
+                        obj.labels[0].forEach(function (label, idx) {
                             if (opts.dataLabelFormatScatter === 'custom' || opts.dataLabelFormatScatter === 'customXY') {
                                 strXml += '  <c:dLbl>';
                                 strXml += '    <c:idx val="' + idx + '"/>';
@@ -5882,7 +5934,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:spPr>';
             //strXml += '<c:explosion val="0"/>'
             // 2: "Data Point" block for every data row
-            obj.labels.forEach(function (_label, idx) {
+            obj.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dPt>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
                 strXml += ' <c:bubble3D val="0"/>';
@@ -5897,7 +5949,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             });
             // 3: "Data Label" block for every data Label
             strXml += '<c:dLbls>';
-            obj.labels.forEach(function (_label, idx) {
+            obj.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dLbl>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
                 strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
@@ -5944,10 +5996,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 2: "Categories"
             strXml += '<c:cat>';
             strXml += '  <c:strRef>';
-            strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>';
+            strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels[0].length + 1) + '</c:f>';
             strXml += '    <c:strCache>';
-            strXml += '	     <c:ptCount val="' + obj.labels.length + '"/>';
-            obj.labels.forEach(function (label, idx) {
+            strXml += '	     <c:ptCount val="' + obj.labels[0].length + '"/>';
+            obj.labels[0].forEach(function (label, idx) {
                 strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
             });
             strXml += '    </c:strCache>';
@@ -5956,9 +6008,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: Create vals
             strXml += '  <c:val>';
             strXml += '    <c:numRef>';
-            strXml += '      <c:f>Sheet1!$B$2:$B$' + (obj.labels.length + 1) + '</c:f>';
+            strXml += '      <c:f>Sheet1!$B$2:$B$' + (obj.labels[0].length + 1) + '</c:f>';
             strXml += '      <c:numCache>';
-            strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>';
+            strXml += '	       <c:ptCount val="' + obj.labels[0].length + '"/>';
             obj.values.forEach(function (value, idx) {
                 strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
             });
@@ -6062,10 +6114,10 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml += '  </a:p>';
     strXml += ' </c:txPr>';
     strXml += ' <c:crossAx val="' + valAxisId + '"/>';
-    strXml += ' <c:' + (typeof opts.valAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses') + ' val="' + opts.valAxisCrossesAt + '"/>';
+    strXml += " <c:".concat(typeof opts.valAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses', " val=\"").concat(opts.valAxisCrossesAt || 'autoZero', "\"/>");
     strXml += ' <c:auto val="1"/>';
     strXml += ' <c:lblAlgn val="ctr"/>';
-    strXml += ' <c:noMultiLvlLbl val="1"/>';
+    strXml += ' <c:noMultiLvlLbl val="' + (opts.catAxisMultiLevelLabels ? 0 : 1) + '"/>';
     if (opts.catAxisLabelFrequency)
         strXml += ' <c:tickLblSkip val="' + opts.catAxisLabelFrequency + '"/>';
     // Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
@@ -6110,8 +6162,6 @@ function makeCatAxis(opts, axisId, valAxisId) {
 function makeValAxis(opts, valAxisId) {
     var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't';
     var strXml = '';
-    var isRight = axisPos === 'r' || axisPos === 't';
-    var crosses = isRight ? 'max' : 'autoZero';
     var crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY;
     strXml += '<c:valAx>';
     strXml += '  <c:axId val="' + valAxisId + '"/>';
@@ -6177,7 +6227,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += '  </a:p>';
     strXml += ' </c:txPr>';
     strXml += ' <c:crossAx val="' + crossAxId + '"/>';
-    strXml += ' <c:crosses val="' + crosses + '"/>';
+    strXml += " <c:".concat(typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses', " val=\"").concat(opts.catAxisCrossesAt || 'autoZero', "\"/>");
     strXml +=
         ' <c:crossBetween val="' +
             (opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(function (type) { return type.type === CHART_TYPE.AREA; }).length > 0 ? true : false)
@@ -6527,7 +6577,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220515-1610';
+var VERSION = '3.11.0-beta-20220522-1401';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
