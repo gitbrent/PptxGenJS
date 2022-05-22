@@ -727,13 +727,12 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 			let colorIndex = -1 // Maintain the color index by region
 			data.forEach(obj => {
 				colorIndex++
-				let idx = obj.index
 				strXml += '<c:ser>'
-				strXml += '  <c:idx val="' + idx + '"/>'
-				strXml += '  <c:order val="' + idx + '"/>'
+				strXml += '  <c:idx val="' + obj._dataIndex + '"/>'
+				strXml += '  <c:order val="' + obj._dataIndex + '"/>'
 				strXml += '  <c:tx>'
 				strXml += '    <c:strRef>'
-				strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + obj.labels.length) + '$1</c:f>'
+				strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$1</c:f>'
 				strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>'
 				strXml += '    </c:strRef>'
 				strXml += '  </c:tx>'
@@ -822,7 +821,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 					strXml += '  <c:spPr>'
 					strXml +=
 						'    <a:solidFill>' +
-						createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
+						createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]) +
 						'</a:solidFill>'
 
 					strXml +=
@@ -909,7 +908,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				{
 					strXml += '<c:val>'
 					strXml += '  <c:numRef>'
-					strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + obj.labels.length) + '$2:$' + getExcelColName(idx + obj.labels.length) + '$' + (obj.labels[0].length + 1) + '</c:f>'
+					strXml += '    <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$2:$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$' + (obj.labels[0].length + 1) + '</c:f>'
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
 					strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>'

@@ -166,7 +166,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		tmpOpt = opt
 	}
 	tmpData.forEach((item, i) => {
-		item.index = i
+		item._dataIndex = i
 
 		// Converts the 'labels' array from string[] to string[][] (or the respective primitive type), if needed
 		if (item.labels !== undefined && !Array.isArray(item.labels[0])) {

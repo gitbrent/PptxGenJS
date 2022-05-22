@@ -1902,7 +1902,6 @@ declare namespace PptxGenJS {
 
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 	export interface OptsChartData {
-		index?: number
 		labels?: string[] | string[][]
 		name?: string
 		sizes?: number[]
