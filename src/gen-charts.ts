@@ -882,20 +882,13 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				{
 					strXml += '<c:val>'
 					strXml += '  <c:numRef>'
-					strXml +=
-						'    <c:f>Sheet1!$' +
-						getExcelColName(obj._dataIndex + obj.labels.length + 1) +
-						'$2:$' +
-						getExcelColName(obj._dataIndex + obj.labels.length + 1) +
-						'$' +
-						(obj.labels[0].length + 1) +
-						'</c:f>'
+					strXml += `<c:f>Sheet1!$${getExcelColName(obj._dataIndex + obj.labels.length + 1)}$2:$${getExcelColName(obj._dataIndex + obj.labels.length + 1)}$${
+						obj.labels[0].length + 1
+					}</c:f>`
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
 					strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>'
-					obj.values.forEach((value, idx) => {
-						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>'
-					})
+					obj.values.forEach((value, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${value || value === 0 ? value : ''}</c:v></c:pt>`))
 					strXml += '    </c:numCache>'
 					strXml += '  </c:numRef>'
 					strXml += '</c:val>'
@@ -953,12 +946,10 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 			}
 
 			// 5: Add axisId (NOTE: order matters! (category comes first))
-			strXml += '  <c:axId val="' + catAxisId + '"/>'
-			strXml += '  <c:axId val="' + valAxisId + '"/>'
-			strXml += '  <c:axId val="' + AXIS_ID_SERIES_PRIMARY + '"/>'
+			strXml += `<c:axId val="${catAxisId}"/><c:axId val="${valAxisId}"/><c:axId val="${AXIS_ID_SERIES_PRIMARY}"/>`
 
 			// 6: Close Chart tag
-			strXml += '</c:' + chartType + 'Chart>'
+			strXml += `</c:${chartType}Chart>`
 
 			// end switch
 			break
