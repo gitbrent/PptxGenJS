@@ -50,11 +50,8 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			zipExcel.file(
 				'[Content_Types].xml',
 				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
-					'  <Default Extension="xml" ContentType="application/xml"/>' +
 					'  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
-					//+ '  <Default Extension="jpeg" ContentType="image/jpg"/><Default Extension="png" ContentType="image/png"/>'
-					//+ '  <Default Extension="bmp" ContentType="image/bmp"/><Default Extension="gif" ContentType="image/gif"/><Default Extension="tif" ContentType="image/tif"/><Default Extension="pdf" ContentType="application/pdf"/><Default Extension="mov" ContentType="application/movie"/><Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>'
-					//+ '  <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>'
+					'  <Default Extension="xml" ContentType="application/xml"/>' +
 					'  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
 					'  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
 					'  <Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>' +
@@ -76,34 +73,36 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			zipExcel.file(
 				'docProps/app.xml',
 				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' +
-					'<Application>Microsoft Excel</Application>' +
+					'<Application>Microsoft Macintosh Excel</Application>' +
 					'<DocSecurity>0</DocSecurity>' +
 					'<ScaleCrop>false</ScaleCrop>' +
-					'<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>Sheet1</vt:lpstr></vt:vector></TitlesOfParts>' +
+					'<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs>' +
+					'<TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>Sheet1</vt:lpstr></vt:vector></TitlesOfParts>' +
+					'<Company></Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>' +
 					'</Properties>\n'
 			)
 			zipExcel.file(
 				'docProps/core.xml',
-				'<?xml version="1.0" encoding="UTF-8"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
 					'<dc:creator>PptxGenJS</dc:creator>' +
-					'<cp:lastModifiedBy>Ely, Brent</cp:lastModifiedBy>' +
+					'<cp:lastModifiedBy>PptxGenJS</cp:lastModifiedBy>' +
 					'<dcterms:created xsi:type="dcterms:W3CDTF">' +
 					new Date().toISOString() +
 					'</dcterms:created>' +
 					'<dcterms:modified xsi:type="dcterms:W3CDTF">' +
 					new Date().toISOString() +
 					'</dcterms:modified>' +
-					'</cp:coreProperties>\n'
+					'</cp:coreProperties>'
 			)
 			zipExcel.file(
 				'xl/_rels/workbook.xml.rels',
 				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 					'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
 					'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
-					'<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>' +
-					'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
 					'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
-					'</Relationships>\n'
+					'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+					'<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>' +
+					'</Relationships>'
 			)
 			zipExcel.file(
 				'xl/styles.xml',
@@ -117,13 +116,13 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			)
 			zipExcel.file(
 				'xl/workbook.xml',
-				'<?xml version="1.0" encoding="UTF-8"?>' +
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 					'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x15" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main">' +
-					'<fileVersion appName="xl" lastEdited="6" lowestEdited="6" rupBuild="14420"/>' +
-					'<workbookPr />' +
-					'<bookViews><workbookView xWindow="0" yWindow="0" windowWidth="15960" windowHeight="18080"/></bookViews>' +
-					'<sheets><sheet name="Sheet1" sheetId="1" r:id="rId1" /></sheets>' +
-					'<calcPr calcId="171026" concurrentCalc="0"/>' +
+					'<fileVersion appName="xl" lastEdited="7" lowestEdited="6" rupBuild="10507"/>' +
+					'<workbookPr/>' +
+					'<bookViews><workbookView xWindow="0" yWindow="500" windowWidth="20960" windowHeight="15960"/></bookViews>' +
+					'<sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>' +
+					'<calcPr calcId="0" concurrentCalc="0"/>' +
 					'</workbook>\n'
 			)
 			zipExcel.file(
@@ -153,7 +152,6 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 				strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + count + '" uniqueCount="' + uniqueCount + '">'
 				// B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
-				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			}
 
 			// C: Add `name`/Series
@@ -180,6 +178,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				})
 			}
 
+			strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			strSharedStrings += '</sst>\n'
 			zipExcel.file('xl/sharedStrings.xml', strSharedStrings)
 		}
@@ -199,7 +198,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					'" totalsRowShown="0">'
 				strTableXml += '<tableColumns count="' + data.length + '">'
 				data.forEach((_obj, idx) => {
-					strTableXml += '<tableColumn id="' + (idx + 1) + '" name="' + (idx === 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />'
+					strTableXml += '<tableColumn id="' + (idx + 1) + '" name="' + (idx === 0 ? 'X-Values' : 'Y-Value ' + idx) + '"/>'
 				})
 			} else {
 				strTableXml +=
@@ -209,14 +208,14 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					'" totalsRowShown="0">'
 				strTableXml += '<tableColumns count="' + (data.length + data[0].labels.length) + '">'
 				data[0].labels.forEach((_labelsGroup, idx) => {
-					strTableXml += '<tableColumn id="' + (idx + 1) + '" name=" " />'
+					strTableXml += `<tableColumn id="${idx + 1}" name="Column${idx + 1}"/>`
 				})
 				data.forEach((obj, idx) => {
-					strTableXml += '<tableColumn id="' + (idx + data[0].labels.length + 1) + '" name="' + encodeXmlEntities(obj.name) + '" />'
+					strTableXml += '<tableColumn id="' + (idx + data[0].labels.length + 1) + '" name="' + encodeXmlEntities(obj.name) + '"/>'
 				})
 			}
 			strTableXml += '</tableColumns>'
-			strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0" />'
+			strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>'
 			strTableXml += '</table>'
 			zipExcel.file('xl/tables/table1.xml', strTableXml)
 		}
@@ -226,16 +225,17 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			let strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
+
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				strSheetXml += '<dimension ref="A1:' + getExcelColName(intBubbleCols) + (data[0].values.length + 1) + '" />'
+				strSheetXml += `<dimension ref="A1:${getExcelColName(intBubbleCols)}${data[0].values.length + 1}"/>`
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-				strSheetXml += '<dimension ref="A1:' + getExcelColName(data.length) + (data[0].values.length + 1) + '" />'
+				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length)}${data[0].values.length + 1}"/>`
 			} else {
-				strSheetXml += '<dimension ref="A1:' + getExcelColName(data.length + data[0].labels.length) + (data[0].labels.length + 1) + '" />'
+				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length + 1)}${data[0].values.length + 1}"/>`
 			}
 
-			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
-			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
+			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>'
+			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultRowHeight="16"/>'
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
 
@@ -320,7 +320,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += '</row>'
 				})
 			} else {
-				strSheetXml += '<cols><col min="1" max="1" width="11" customWidth="1" /></cols>'
+				//strSheetXml += '<cols><col min="1" max="1" width="11" customWidth="1" /></cols>'
 				strSheetXml += '<sheetData>'
 
 				/* EX: INPUT: `data`
@@ -344,10 +344,10 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// A: Create header row first
 				strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
 				data[0].labels.forEach((_labelsGroup, idx) => {
-					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
+					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>${data[0].labels[0].length + 3}</v></c>`
 				})
-				for (let idx = 1; idx <= data.length; idx++) {
-					strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
+				for (let idx = 0; idx < data.length; idx++) {
+					strSheetXml += `<c r="${getExcelColName(idx + 1 + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
 				}
 				strSheetXml += '</row>'
 
@@ -357,7 +357,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					// Leading cols are reserved for the label groups
 					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
 						strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
-						strSheetXml += `<v>${data.length + idx + idx2 * data[0].labels[0].length + 1}</v>`
+						strSheetXml += `<v>${data.length + idx + idx2 * data[0].labels[0].length}</v>`
 						strSheetXml += '</c>'
 					}
 					for (let idy = 0; idy < data.length; idy++) {
@@ -372,9 +372,10 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			// NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
 			// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
 			// ....: Leaving this so nobody foolishly attempts to add this in the future
-			// strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
+			// FIXME: `CHART_TEST.js` works without this:
+			//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'
+			// FIXME: WIP: ^^^
 			strSheetXml += '</worksheet>\n'
-
 			zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml)
 		}
 
@@ -390,12 +391,10 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					'ppt/charts/_rels/' + chartObject.fileName + '.rels',
 					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 						'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-						'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet' +
-						chartObject.globalId +
-						'.xlsx"/>' +
+						`<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet${chartObject.globalId}.xlsx"/>` +
 						'</Relationships>'
 				)
-				zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject))
+				zip.file(`ppt/charts/${chartObject.fileName}`, makeXmlCharts(chartObject))
 
 				// 3: Done
 				resolve(null)
@@ -705,7 +704,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '  <c:order val="' + obj._dataIndex + '"/>'
 				strXml += '  <c:tx>'
 				strXml += '    <c:strRef>'
-				strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length) + '$1</c:f>'
+				strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length + 1) + '$1</c:f>'
 				strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>'
 				strXml += '    </c:strRef>'
 				strXml += '  </c:tx>'
@@ -713,7 +712,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 
 				// Fill and Border
 				// TODO: CURRENT: Pull#727
-				// WIP: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
+				// TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 				let seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 
 				strXml += '  <c:spPr>'
@@ -885,9 +884,9 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 					strXml += '  <c:numRef>'
 					strXml +=
 						'    <c:f>Sheet1!$' +
-						getExcelColName(obj._dataIndex + obj.labels.length) +
+						getExcelColName(obj._dataIndex + obj.labels.length + 1) +
 						'$2:$' +
-						getExcelColName(obj._dataIndex + obj.labels.length) +
+						getExcelColName(obj._dataIndex + obj.labels.length + 1) +
 						'$' +
 						(obj.labels[0].length + 1) +
 						'</c:f>'
