@@ -152,6 +152,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 				strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + count + '" uniqueCount="' + uniqueCount + '">'
 				// B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
+				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			}
 
 			// C: Add `name`/Series
@@ -178,7 +179,6 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				})
 			}
 
-			strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			strSharedStrings += '</sst>\n'
 			zipExcel.file('xl/sharedStrings.xml', strSharedStrings)
 		}
@@ -227,9 +227,9 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
 
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				strSheetXml += `<dimension ref="A1:${getExcelColName(intBubbleCols)}${data[0].values.length + 1}"/>`
+				strSheetXml += `<dimension ref="A1:${getExcelColName(intBubbleCols + 1)}${data[0].values.length + 1}"/>`
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length)}${data[0].values.length + 1}"/>`
+				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length + 1)}${data[0].values.length + 1}"/>`
 			} else {
 				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length + 1)}${data[0].values.length + 1}"/>`
 			}
@@ -344,20 +344,34 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// A: Create header row first
 				strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
 				data[0].labels.forEach((_labelsGroup, idx) => {
-					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>${data[0].labels[0].length + 3}</v></c>`
+					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
 				})
 				for (let idx = 0; idx < data.length; idx++) {
-					strSheetXml += `<c r="${getExcelColName(idx + 1 + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
+					strSheetXml += `<c r="${getExcelColName(idx + 1 + data[0].labels.length)}1" t="s"><v>${idx + 1}</v></c>` // NOTE: use `t="s"` for label cols!
 				}
 				strSheetXml += '</row>'
 
 				// B: Add data row(s) for each category
+
+				/** SAMPLES
+				 * @example 1: standard category labels (1)
+				 * labels: [ ["Category-1", "Category-2", "Category-3", "Category-4"] ]
+				 *
+				 * @example 2: multi-category labels (1-n)
+				 * labels: [
+				 *   ["Gear", "Bearing", "Motor", "Swch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
+				 *   ["Mech",        "",      "", "Elec",     "",     "",     "",     "", "Hydr",     "",      ""],
+				 * ]
+				 */
+				//console.log(data[0].labels)
+				// FIXME: below *DOES NOT WORK* with multi-cat axes!!! TODO: 20220524 (v3.11.0)
+
 				data[0].labels[0].forEach((_cat, idx) => {
 					strSheetXml += `<row r="${idx + 2}" spans="1:${data.length + data[0].labels.length}">`
 					// Leading cols are reserved for the label groups
 					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
 						strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
-						strSheetXml += `<v>${data.length + idx + idx2 * data[0].labels[0].length}</v>`
+						strSheetXml += `<v>${data.length + idx + 1}</v>`
 						strSheetXml += '</c>'
 					}
 					for (let idy = 0; idy < data.length; idy++) {
@@ -372,9 +386,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			// NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
 			// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
 			// ....: Leaving this so nobody foolishly attempts to add this in the future
-			// FIXME: `CHART_TEST.js` works without this:
 			//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'
-			// FIXME: WIP: ^^^
 			strSheetXml += '</worksheet>\n'
 			zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml)
 		}
