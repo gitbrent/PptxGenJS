@@ -116,6 +116,11 @@ function genSlide01(pptx) {
 			values: [1400, 2000, 2500, 3000, 3800],
 		},
 	];
+	let arrDataSersCats = [
+		{ name: "Series 1", labels: ["Category 1", "Category 2", "Category 3", "Category 4"], values: [4.3, 2.5, 3.5, 4.5] },
+		{ name: "Series 2", labels: ["Category 1", "Category 2", "Category 3", "Category 4"], values: [2.4, 4.4, 1.8, 2.8] },
+		{ name: "Series 3", labels: ["Category 1", "Category 2", "Category 3", "Category 4"], values: [2, 2, 3, 5] },
+	];
 
 	// TOP-LEFT: H/bar
 	let optsChartBar1 = {
@@ -127,8 +132,8 @@ function genSlide01(pptx) {
 		altText: "this is the alt text content",
 
 		barDir: "bar",
-		//plotArea: { border: { pt: "3", color: "00EE00" }, fill: { color: "F1F1F1" } },
-		border: { pt: "3", color: "00EE00" }, // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
+		//plotArea: { border: { pt: "3", color: "00CE00" }, fill: { color: "F1F1F1" } },
+		border: { pt: "3", color: "00CE00" }, // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
 		fill: "F1F1F1", // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
 
 		catAxisLabelColor: "CC0000",
@@ -146,7 +151,7 @@ function genSlide01(pptx) {
 		titleFontFace: "Helvetica Neue",
 		titleFontSize: 24,
 	};
-	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar1);
+	slide.addChart(pptx.charts.BAR, arrDataSersCats, optsChartBar1);
 
 	// TOP-RIGHT: V/col
 	let optsChartBar2 = {
