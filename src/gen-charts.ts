@@ -142,15 +142,14 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-				strSharedStrings +=
-					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">'
+				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${data.length}" uniqueCount="${data.length}">`
 			} else {
 				// series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
 				const count = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
 				// series names + labels of one series + blank string (same for all label groups)
 				const uniqueCount = data.length + data[0].labels.length * data[0].labels[0].length + 1
-
-				strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + count + '" uniqueCount="' + uniqueCount + '">'
+				// start `sst`
+				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${count}" uniqueCount="${uniqueCount}">`
 				// B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
 				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			}
@@ -229,7 +228,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				strSheetXml += `<dimension ref="A1:${getExcelColName(intBubbleCols + 1)}${data[0].values.length + 1}"/>`
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length + 1)}${data[0].values.length + 1}"/>`
+				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length)}${data[0].values.length + 1}"/>`
 			} else {
 				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length + 1)}${data[0].values.length + 1}"/>`
 			}
@@ -280,29 +279,31 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += '</row>'
 				})
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-				strSheetXml += '<cols>'
-				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
-				//data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
-				strSheetXml += '</cols>'
-				/* EX: INPUT: `data`
-				[
-					{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
-					{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9] },
-					{ name:'Y-Axis 2', values:[33,32,42,53,63] }
-				];
+				/* UNUSED:
+					strSheetXml += '<cols>'
+					strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
+					//data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
+					strSheetXml += '</cols>'
 				*/
-				/* EX: OUTPUT: scatterChart Worksheet:
-					-|----A-----|------B-----|
-					1| X-Values | Y-Values 1 |
-					2|    11    |     22     |
-					-|----------|------------|
+				/* EX: INPUT: `data`
+					[
+						{ name:'X-AxisA', values:[ 1, 2, 3, 4, 5] },
+						{ name:'Y-AxisB', values:[ 2,22,42,52,62] },
+						{ name:'Y-AxisC', values:[ 3,33,43,53,63] }
+					];
+				*/
+				/* EX: OUTPUT: sheet1.xml:
+					-|----A----|----B----|----C----|
+					1| X-AxisA | Y-AxisB | Y-AxisC |
+					2|    1    |    2    |    3    |
+					-|---------|---------|---------|
 				*/
 				strSheetXml += '<sheetData>'
 
-				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-				strSheetXml += `<row r="1" spans="1:${data.length}"><c r="A1" t="s"><v>0</v></c>`
-				for (let idx = 1; idx < data.length; idx++) {
-					strSheetXml += `<c r="${getExcelColName(idx)}1" t="s"><v>${idx}</v></c>` // NOTE: add `t="s"` for label cols!
+				// A: Create header row first (every `name` row provided)
+				strSheetXml += `<row r="1" spans="1:${data.length}">`
+				for (let idx = 0; idx < data.length; idx++) {
+					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>${idx}</v></c>` // NOTE: add `t="s"` for label cols!
 				}
 				strSheetXml += '</row>'
 
@@ -313,7 +314,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += `<c r="A${idx + 2}"><v>${val}</v></c>`
 					// Add Y-Axis 1->N
 					for (let idy = 1; idy < data.length; idy++) {
-						strSheetXml += `<c r="${getExcelColName(idy)}${idx + 2}"><v>${
+						strSheetXml += `<c r="${getExcelColName(idy + 1)}${idx + 2}"><v>${
 							data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : ''
 						}</v></c>`
 					}
@@ -433,6 +434,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml +=
 			'<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
 		strXml += '<c:date1904 val="0"/>' // ppt defaults to 1904 dates, excel to 1900
+		// FUTURE: (20220528) <c:roundedCorners val="0"/>
 		strXml += '<c:chart>'
 
 		// OPTION: Title
@@ -1209,7 +1211,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 					// Y-Axis vals are this object's `values`
 					strXml += '<c:yVal>'
 					strXml += '  <c:numRef>'
-					strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (data[0].values.length + 1) + '</c:f>'
+					strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$2:$' + getExcelColName(idx + 2) + '$' + (data[0].values.length + 1) + '</c:f>'
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>General</c:formatCode>'
 					// NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
