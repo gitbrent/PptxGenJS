@@ -145,11 +145,11 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${data.length}" uniqueCount="${data.length}">`
 			} else {
 				// series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
-				const count = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
+				const totCount = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
 				// series names + labels of one series + blank string (same for all label groups)
-				const uniqueCount = data.length + data[0].labels.length * data[0].labels[0].length + 1
+				const unqCount = data.length + data[0].labels.length * data[0].labels[0].length + 1
 				// start `sst`
-				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${count}" uniqueCount="${uniqueCount}">`
+				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${totCount}" uniqueCount="${unqCount}">`
 				// B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
 				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
 			}
@@ -173,7 +173,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
 				data[0].labels.forEach(labelsGroup => {
 					labelsGroup.forEach(label => {
-						strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
+						strSharedStrings += `<si><t>${encodeXmlEntities(label)}</t></si>`
 					})
 				})
 			}
@@ -991,7 +991,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '  <c:order val="' + idx + '"/>'
 				strXml += '  <c:tx>'
 				strXml += '    <c:strRef>'
-				strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$1</c:f>'
+				strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$1</c:f>'
 				strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + obj.name + '</c:v></c:pt></c:strCache>'
 				strXml += '    </c:strRef>'
 				strXml += '  </c:tx>'
@@ -1262,9 +1262,8 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '  </c:dLbls>'
 			}
 
-			// 4: Add axisId (NOTE: order matters! (category comes first))
-			strXml += '  <c:axId val="' + catAxisId + '"/>'
-			strXml += '  <c:axId val="' + valAxisId + '"/>'
+			// 4: Add axis Id (NOTE: order matters! - category comes first)
+			strXml += `<c:axId val="${catAxisId}"/><c:axId val="${valAxisId}"/>`
 
 			// 5: Close Chart tag
 			strXml += '</c:' + chartType + 'Chart>'
