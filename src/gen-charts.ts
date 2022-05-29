@@ -158,13 +158,13 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				data.forEach((objData, idx) => {
 					if (idx === 0) strSharedStrings += '<si><t>X-Axis</t></si>'
 					else {
-						strSharedStrings += '<si><t>' + encodeXmlEntities(objData.name || ' ') + '</t></si>'
-						strSharedStrings += '<si><t>' + encodeXmlEntities('Size ' + idx) + '</t></si>'
+						strSharedStrings += `<si><t>${encodeXmlEntities(objData.name || 'Y-Axis' + idx)}</t></si>`
+						strSharedStrings += `<si><t>${encodeXmlEntities('Size' + idx)}</t></si>`
 					}
 				})
 			} else {
 				data.forEach(objData => {
-					strSharedStrings += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>'
+					strSharedStrings += `<si><t>${encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values'))}</t></si>`
 				})
 			}
 
@@ -185,9 +185,20 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		{
 			let strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				//strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ getExcelColName(data.length-1) + (data[0].values.length+1) +'" totalsRowShown="0">';
-				//strTableXml += '<tableColumns count="' + (data.length) +'">';
-				//data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
+				strTableXml += `<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:${getExcelColName(
+					intBubbleCols
+				)}${intBubbleCols}" totalsRowShown="0">`
+				strTableXml += `<tableColumns count="${intBubbleCols}">`
+				let idxColLtr = 1
+				data.forEach(function (obj, idx) {
+					if (idx === 0) {
+						strTableXml += `<tableColumn id="${idx + 1}" name="X-Values"/>`
+					} else {
+						strTableXml += `<tableColumn id="${idx + idxColLtr}" name="${obj.name}"/>`
+						idxColLtr++
+						strTableXml += `<tableColumn id="${idx + idxColLtr}" name="${'Size' + idx}"/>`
+					}
+				})
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strTableXml +=
 					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
