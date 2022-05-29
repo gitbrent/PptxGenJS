@@ -1385,7 +1385,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				// E: '<c:bubbleSize>'
 				strXml += '  <c:bubbleSize>'
 				strXml += '    <c:numRef>'
-				strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr + 1) + '$2:$' + getExcelColName(idx + 3) + '$' + (obj.sizes.length + 1) + '</c:f>'
+				strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr + 1) + '$2:$' + getExcelColName(idxColLtr + 1) + '$' + (obj.sizes.length + 1) + '</c:f>'
 				idxColLtr++
 				strXml += '      <c:numCache>'
 				strXml += '        <c:formatCode>General</c:formatCode>'
