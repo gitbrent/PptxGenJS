@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-05-25T03:17:18.483Z */
+/* PptxGenJS 3.11.0-beta @ 2022-05-29T22:47:50.124Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -4653,19 +4653,18 @@ function createExcelWorksheet(chartObject, zip) {
             // A: Start XML
             var strSharedStrings_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
             if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                strSharedStrings_1 +=
-                    '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">';
+                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(intBubbleCols, "\" uniqueCount=\"").concat(intBubbleCols, "\">");
             }
             else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                strSharedStrings_1 +=
-                    '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">';
+                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(data.length, "\" uniqueCount=\"").concat(data.length, "\">");
             }
             else {
                 // series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
-                var count = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length;
+                var totCount = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length;
                 // series names + labels of one series + blank string (same for all label groups)
-                var uniqueCount = data.length + data[0].labels.length * data[0].labels[0].length + 1;
-                strSharedStrings_1 += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + count + '" uniqueCount="' + uniqueCount + '">';
+                var unqCount = data.length + data[0].labels.length * data[0].labels[0].length + 1;
+                // start `sst`
+                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(totCount, "\" uniqueCount=\"").concat(unqCount, "\">");
                 // B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
                 strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
             }
@@ -4689,7 +4688,7 @@ function createExcelWorksheet(chartObject, zip) {
             if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
                 data[0].labels.forEach(function (labelsGroup) {
                     labelsGroup.forEach(function (label) {
-                        strSharedStrings_1 += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
+                        strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities(label), "</t></si>");
                     });
                 });
             }
@@ -4736,10 +4735,10 @@ function createExcelWorksheet(chartObject, zip) {
             strSheetXml_1 +=
                 '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
             if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(intBubbleCols + 1)).concat(data[0].values.length + 1, "\"/>");
+                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(intBubbleCols)).concat(data[0].values.length + 1, "\"/>");
             }
             else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length + 1)).concat(data[0].values.length + 1, "\"/>");
+                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length)).concat(data[0].values.length + 1, "\"/>");
             }
             else {
                 strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length + 1)).concat(data[0].values.length + 1, "\"/>");
@@ -4747,7 +4746,7 @@ function createExcelWorksheet(chartObject, zip) {
             strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
             strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultRowHeight="16"/>';
             if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                strSheetXml_1 += "<cols><col min=\"1\" max=\"".concat(data.length, "\" width=\"11\" customWidth=\"1\" /></cols>");
+                // UNUSED: strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
                 /* EX: INPUT: `data`
                 [
                     { name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
@@ -4766,7 +4765,7 @@ function createExcelWorksheet(chartObject, zip) {
                 strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(intBubbleCols, "\">");
                 strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx < intBubbleCols; idx++) {
-                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
+                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
                 }
                 strSheetXml_1 += '</row>';
                 // B: Add row for each X-Axis value (Y-Axis* value is optional)
@@ -4775,7 +4774,7 @@ function createExcelWorksheet(chartObject, zip) {
                     strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(intBubbleCols, "\">");
                     strSheetXml_1 += "<c r=\"A".concat(idx + 2, "\"><v>").concat(val, "</v></c>");
                     // Add Y-Axis 1->N (idy=0 = Xaxis)
-                    var idxColLtr = 1;
+                    var idxColLtr = 2;
                     for (var idy = 1; idy < data.length; idy++) {
                         // y-value
                         strSheetXml_1 += "<c r=\"".concat(getExcelColName(idxColLtr)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || '', "</v></c>");
@@ -4788,28 +4787,30 @@ function createExcelWorksheet(chartObject, zip) {
                 });
             }
             else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                strSheetXml_1 += '<cols>';
-                strSheetXml_1 += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
-                //data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
-                strSheetXml_1 += '</cols>';
-                /* EX: INPUT: `data`
-                [
-                    { name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
-                    { name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9] },
-                    { name:'Y-Axis 2', values:[33,32,42,53,63] }
-                ];
+                /* UNUSED:
+                    strSheetXml += '<cols>'
+                    strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
+                    //data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
+                    strSheetXml += '</cols>'
                 */
-                /* EX: OUTPUT: scatterChart Worksheet:
-                    -|----A-----|------B-----|
-                    1| X-Values | Y-Values 1 |
-                    2|    11    |     22     |
-                    -|----------|------------|
+                /* EX: INPUT: `data`
+                    [
+                        { name:'X-AxisA', values:[ 1, 2, 3, 4, 5] },
+                        { name:'Y-AxisB', values:[ 2,22,42,52,62] },
+                        { name:'Y-AxisC', values:[ 3,33,43,53,63] }
+                    ];
+                */
+                /* EX: OUTPUT: sheet1.xml:
+                    -|----A----|----B----|----C----|
+                    1| X-AxisA | Y-AxisB | Y-AxisC |
+                    2|    1    |    2    |    3    |
+                    -|---------|---------|---------|
                 */
                 strSheetXml_1 += '<sheetData>';
-                // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length, "\"><c r=\"A1\" t=\"s\"><v>0</v></c>");
-                for (var idx = 1; idx < data.length; idx++) {
-                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
+                // A: Create header row first (every `name` row provided)
+                strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length, "\">");
+                for (var idx = 0; idx < data.length; idx++) {
+                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
                 }
                 strSheetXml_1 += '</row>';
                 // B: Add row for each X-Axis value (Y-Axis* value is optional)
@@ -4819,7 +4820,7 @@ function createExcelWorksheet(chartObject, zip) {
                     strSheetXml_1 += "<c r=\"A".concat(idx + 2, "\"><v>").concat(val, "</v></c>");
                     // Add Y-Axis 1->N
                     for (var idy = 1; idy < data.length; idy++) {
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idy)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : '', "</v></c>");
+                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : '', "</v></c>");
                     }
                     strSheetXml_1 += '</row>';
                 });
@@ -4925,6 +4926,7 @@ function makeXmlCharts(rel) {
         strXml +=
             '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
         strXml += '<c:date1904 val="0"/>'; // ppt defaults to 1904 dates, excel to 1900
+        // FUTURE: (20220528) <c:roundedCorners val="0"/>
         strXml += '<c:chart>';
         // OPTION: Title
         if (rel.opts.showTitle) {
@@ -5447,7 +5449,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  <c:order val="' + idx + '"/>';
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$1</c:f>';
+                strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$1</c:f>';
                 strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + obj.name + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
@@ -5662,7 +5664,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // Y-Axis vals are this object's `values`
                     strXml += '<c:yVal>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (data[0].values.length + 1) + '</c:f>';
+                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$2:$' + getExcelColName(idx + 2) + '$' + (data[0].values.length + 1) + '</c:f>';
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>General</c:formatCode>';
                     // NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
@@ -5710,9 +5712,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '    <c:showBubbleSize val="0"/>';
                 strXml += '  </c:dLbls>';
             }
-            // 4: Add axisId (NOTE: order matters! (category comes first))
-            strXml += '  <c:axId val="' + catAxisId + '"/>';
-            strXml += '  <c:axId val="' + valAxisId + '"/>';
+            // 4: Add axis Id (NOTE: order matters! - category comes first)
+            strXml += "<c:axId val=\"".concat(catAxisId, "\"/><c:axId val=\"").concat(valAxisId, "\"/>");
             // 5: Close Chart tag
             strXml += '</c:' + chartType + 'Chart>';
             // end switch
@@ -6556,7 +6557,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220524-2055';
+var VERSION = '3.11.0-beta-20220529-1740';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
