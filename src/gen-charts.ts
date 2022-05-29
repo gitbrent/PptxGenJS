@@ -139,8 +139,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			// A: Start XML
 			let strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				strSharedStrings +=
-					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
+				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${intBubbleCols}" uniqueCount="${intBubbleCols}">`
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${data.length}" uniqueCount="${data.length}">`
 			} else {
@@ -226,7 +225,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
 
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				strSheetXml += `<dimension ref="A1:${getExcelColName(intBubbleCols + 1)}${data[0].values.length + 1}"/>`
+				strSheetXml += `<dimension ref="A1:${getExcelColName(intBubbleCols)}${data[0].values.length + 1}"/>`
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strSheetXml += `<dimension ref="A1:${getExcelColName(data.length)}${data[0].values.length + 1}"/>`
 			} else {
@@ -236,7 +235,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>'
 			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultRowHeight="16"/>'
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-				strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
+				// UNUSED: strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
 
 				/* EX: INPUT: `data`
 				[
@@ -257,7 +256,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSheetXml += `<row r="1" spans="1:${intBubbleCols}">`
 				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
 				for (let idx = 1; idx < intBubbleCols; idx++) {
-					strSheetXml += `<c r="${getExcelColName(idx)}1" t="s"><v>${idx}</v></c>` // NOTE: add `t="s"` for label cols!
+					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>${idx}</v></c>` // NOTE: add `t="s"` for label cols!
 				}
 				strSheetXml += '</row>'
 
@@ -267,7 +266,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += `<row r="${idx + 2}" spans="1:${intBubbleCols}">`
 					strSheetXml += `<c r="A${idx + 2}"><v>${val}</v></c>`
 					// Add Y-Axis 1->N (idy=0 = Xaxis)
-					let idxColLtr = 1
+					let idxColLtr = 2
 					for (let idy = 1; idy < data.length; idy++) {
 						// y-value
 						strSheetXml += `<c r="${getExcelColName(idxColLtr)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
