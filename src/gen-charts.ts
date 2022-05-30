@@ -769,41 +769,24 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '  </c:spPr>'
 
 				// Data Labels per series
-				// [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
+				// NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
 				if (chartType !== CHART_TYPE.RADAR) {
-					strXml += '  <c:dLbls>'
-					strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
-					if (opts.dataLabelBkgrdColors) {
-						strXml += '    <c:spPr>'
-						strXml += '       <a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
-						strXml += '    </c:spPr>'
-					}
-					strXml += '    <c:txPr>'
-					strXml += '      <a:bodyPr/>'
-					strXml += '      <a:lstStyle/>'
-					strXml += '      <a:p><a:pPr>'
-					strXml +=
-						'        <a:defRPr b="' +
-						(opts.dataLabelFontBold ? 1 : 0) +
-						'" i="' +
-						(opts.dataLabelFontItalic ? 1 : 0) +
-						'" strike="noStrike" sz="' +
-						Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
-						'" u="none">'
-					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
-					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
-					strXml += '        </a:defRPr>'
-					strXml += '      </a:pPr></a:p>'
-					strXml += '    </c:txPr>'
-					if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
-					strXml += '    <c:showLegendKey val="0"/>'
-					strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
-					strXml += '    <c:showCatName val="0"/>'
-					strXml += '    <c:showSerName val="0"/>'
-					strXml += '    <c:showPercent val="0"/>'
-					strXml += '    <c:showBubbleSize val="0"/>'
-					strXml += `    <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
-					strXml += '  </c:dLbls>'
+					strXml += '<c:dLbls>'
+					strXml += `<c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+					if (opts.dataLabelBkgrdColors) strXml += `<c:spPr><a:solidFill>${createColorElement(seriesColor)}</a:solidFill></c:spPr>`
+					strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>'
+					strXml += `<a:defRPr b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" strike="noStrike" sz="${Math.round(
+						(opts.dataLabelFontSize || DEF_FONT_SIZE) * 100
+					)}" u="none">`
+					strXml += `<a:solidFill>${createColorElement(opts.dataLabelColor || DEF_FONT_COLOR)}</a:solidFill>`
+					strXml += `<a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
+					strXml += '</a:defRPr></a:pPr></a:p></c:txPr>'
+					if (opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
+					strXml += '<c:showLegendKey val="0"/>'
+					strXml += `<c:showVal val="${opts.showValue ? '1' : '0'}"/>`
+					strXml += '<c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>'
+					strXml += `<c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
+					strXml += '</c:dLbls>'
 				}
 
 				// 'c:marker' tag: `lineDataSymbol`
