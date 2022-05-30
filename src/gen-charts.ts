@@ -1404,43 +1404,29 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 
 			// 3: Data Labels
 			{
-				strXml += '  <c:dLbls>'
-				strXml += `    <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
-				strXml += '    <c:txPr>'
-				strXml += '      <a:bodyPr/>'
-				strXml += '      <a:lstStyle/>'
-				strXml += '      <a:p><a:pPr>'
-				strXml +=
-					'        <a:defRPr b="' +
-					(opts.dataLabelFontBold ? 1 : 0) +
-					'" i="' +
-					(opts.dataLabelFontItalic ? 1 : 0) +
-					'" strike="noStrike" sz="' +
-					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
-					'" u="none">'
-				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
-				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
-				strXml += '        </a:defRPr>'
-				strXml += '      </a:pPr></a:p>'
-				strXml += '    </c:txPr>'
-				if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
-				strXml += '    <c:showLegendKey val="0"/>'
-				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
-				strXml += '    <c:showCatName val="0"/>'
-				strXml += '    <c:showSerName val="0"/>'
-				strXml += '    <c:showPercent val="0"/>'
-				strXml += '    <c:showBubbleSize val="0"/>'
-				strXml += '  </c:dLbls>'
+				strXml += '<c:dLbls>'
+				strXml += `<c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+				strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>'
+				strXml += `<a:defRPr b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" strike="noStrike" sz="${Math.round(
+					Math.round(opts.dataLabelFontSize || DEF_FONT_SIZE) * 100
+				)}" u="none">`
+				strXml += `<a:solidFill>${createColorElement(opts.dataLabelColor || DEF_FONT_COLOR)}</a:solidFill>`
+				strXml += `<a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
+				strXml += '</a:defRPr></a:pPr></a:p></c:txPr>'
+				if (opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
+				strXml += '<c:showLegendKey val="0"/>'
+				strXml += `<c:showVal val="${opts.showValue ? '1' : '0'}"/>`
+				strXml += '<c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>'
+				strXml += '</c:dLbls>'
 			}
 
-			// 4: Add bubble options
+			// 4: Bubble options
 			//strXml += '  <c:bubbleScale val="100"/>';
 			//strXml += '  <c:showNegBubbles val="0"/>';
 			// Commented out to let it default to PPT until we create options
 
-			// 5: Add axisId (NOTE: order matters! (category comes first))
-			strXml += '  <c:axId val="' + catAxisId + '"/>'
-			strXml += '  <c:axId val="' + valAxisId + '"/>'
+			// 5: AxisId (NOTE: order matters! (category comes first))
+			strXml += `<c:axId val="${catAxisId}"/><c:axId val="${valAxisId}"/>`
 
 			// 6: Close Chart tag
 			strXml += '</c:bubbleChart>'
