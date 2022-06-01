@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>PptxGenJS :: Tools :: Chart Data Converter</title>
-	<link rel="stylesheet" href="./data_convert.css">
+	<title>PptxGenJS | Tools | Data to Chart</title>
+	<link rel="stylesheet" href="./data2chart.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/yeti/bootstrap.min.css"
 		integrity="sha512-weyvl9mBvXvMHAcN2LCuQ5w0i7ihzrg3EQy6HixwCP88lXKbkL8IRYG8K75sCx1bRTQRDBXLfpW3fKlYfAAsaw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
@@ -40,6 +40,7 @@
 			const tabDelimData = (document.getElementById(INPUT_ELE_ID).value || '').trim();
 			let dataLabels = [];
 			let chartData = [];
+			let strOutput = '';
 
 			// 1: build data
 			tabDelimData
@@ -71,16 +72,31 @@
 					});
 				});
 
-			// 3: show results
-			document.getElementById(OUTPUT_ELE_ID).innerHTML =
-				`const DATA_LABELS = ${JSON.stringify(dataLabels, "", 4)};\n` +
-				`const CHART_DATA = ${JSON.stringify(chartData, "", 4).replace(/\"dataLabels\"/gi, "DATA_LABELS")};\n` +
-				`slide.addChart(pptx.charts.LINE, CHART_DATA, {x:0.25, y:0.25, w:'95%', h:'90%', showLegend:true});`;
+			// 3: create javascript code
+			strOutput = "let pptx = new PptxGenJS();\n";
+			strOutput += "let slide = pptx.addSlide();\n";
+			strOutput += "\n";
+			strOutput += `const DATA_LABELS = ${JSON.stringify(dataLabels)};\n`;
+			strOutput += `const CHART_DATA = [\n`;
+			chartData.forEach((item) => {
+				strOutput += `  {\n`;
+				strOutput += `    "name": "${item.name}",\n`;
+				strOutput += `    "labels": DATA_LABELS,\n`;
+				strOutput += `    "values": ${JSON.stringify(item.values)},\n`;
+				strOutput += `  },\n`;
+			});
+			strOutput += `]\n`;
+			strOutput += "slide.addChart(pptx.charts.LINE, CHART_DATA, {x:0.25, y:0.25, w:'95%', h:'90%', showLegend:true});\n";
+			strOutput += "\n";
+			strOutput += "pptx.writeFile({ fileName: 'pptxgenjs-data2chart.pptx' });\n"
 
-			// 4: highlight code
+			// 4: show javascript code
+			document.getElementById(OUTPUT_ELE_ID).innerHTML = strOutput
+
+			// 5: highlight javascript code
 			Prism.highlightElement(document.getElementById(OUTPUT_ELE_ID));
 
-			// 5: show output tab
+			// LAST: set output tab to active
 			const someTabTriggerEl = document.querySelector('#nav-output')
 			const tab = new bootstrap.Tab(someTabTriggerEl)
 			tab.show()
@@ -104,10 +120,9 @@
 			window.getSelection().removeAllRanges();
 		}
 
-		function getOutputPowerPoint() {
+		function genOutputPowerPoint() {
 			const outputCode = document.getElementById(OUTPUT_ELE_ID).innerText;
-			console.log(outputCode);
-			alert('TODO:')
+			if (outputCode) eval(outputCode)
 		}
 
 		window.onload = (event) => { popDemoData() };
@@ -117,7 +132,8 @@
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
-				<img src="images/favicon.png" width="30" height="30" class="d-inline-block align-top me-2" alt="" />
+				<img src="https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/browser/images/favicon.png" width="30" height="30" class="d-inline-block align-top me-2"
+					alt="" />
 				PptxGenJS
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
@@ -171,22 +187,38 @@
 					<div class="col-auto">
 						<button type="button" class="btn btn-success px-5" onclick="convertInputData()"><i class="bi bi-gear me-2"></i>Convert Data</button>
 					</div>
+					<div class="col-auto">
+						<button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDocs" aria-controls="offcanvasDocs">
+							Documentation
+						</button>
+					</div>
 				</div>
 			</div>
 			<div class="tab-pane p-4 bg-light" id="tab-output" role="tabpanel" aria-labelledby="nav-output">
 				<h4 class="text-primary"><i class="bi bi-filetype-js me-2"></i>JavaScript Code</h4>
-				<pre class="bg-white text-sm" style="max-height: 400px;"><code id="outputTextArea" class="language-javascript"></code></pre>
+				<pre class="bg-black text-sm" style="max-height: 400px;"><code id="outputTextArea" class="language-javascript"></code></pre>
 				<div class="row gx-4 mt-4">
 					<div class="col-auto">
-						<button type="button" class="btn btn-primary px-5" onclick="copyOutputToClipboard()"><i class="bi bi-clipboard me-2"></i>Copy to Clipboard</button>
+						<button type="button" class="btn btn-success px-5" onclick="genOutputPowerPoint()"><i class="bi bi-file-ppt me-2"></i>Generate PowerPoint</button>
 					</div>
 					<div class="col-auto">
-						<button type="button" class="btn btn-primary px-5" onclick="getOutputPowerPoint()"><i class="bi bi-file-ppt me-2"></i>Generate PowerPoint</button>
+						<button type="button" class="btn btn-outline-success px-5" onclick="copyOutputToClipboard()"><i class="bi bi-clipboard me-2"></i>Copy to Clipboard</button>
 					</div>
 				</div>
 			</div>
+		</main>
 	</div>
-	</main>
+
+	<div class="offcanvas" tabindex="-1" id="offcanvasDocs" aria-labelledby="offcanvasDocsLabel">
+		<div class="offcanvas-header">
+			<h5 class="offcanvas-title" id="offcanvasDocsLabel">Documentation</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="offcanvas-body">
+			<div>
+				Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+			</div>
+		</div>
 	</div>
 </body>
 </html>
