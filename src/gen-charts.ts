@@ -227,10 +227,13 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>'
 			strTableXml += '</table>'
 			zipExcel.file('xl/tables/table1.xml', strTableXml)
+			console.log(strTableXml) // WIP: TODO:
 		}
 
 		// worksheets/sheet1.xml
 		{
+			const IS_MULTI_CAT_AXES = data[0] && data[0].labels && data[0].labels[0].length > 1
+
 			let strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
@@ -352,46 +355,67 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					-|-------|-----|-----|-----|
 				*/
 
-				// A: Create header row first
-				strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
-				data[0].labels.forEach((_labelsGroup, idx) => {
-					strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
-				})
-				for (let idx = 0; idx < data.length; idx++) {
-					strSheetXml += `<c r="${getExcelColName(idx + 1 + data[0].labels.length)}1" t="s"><v>${idx + 1}</v></c>` // NOTE: use `t="s"` for label cols!
-				}
-				strSheetXml += '</row>'
-
-				// B: Add data row(s) for each category
-
-				/** SAMPLES
-				 * @example 1: standard category labels (1)
-				 * labels: [ ["Category-1", "Category-2", "Category-3", "Category-4"] ]
-				 *
-				 * @example 2: multi-category labels (1-n)
-				 * labels: [
-				 *   ["Gear", "Bearing", "Motor", "Swch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
-				 *   ["Mech",        "",      "", "Elec",     "",     "",     "",     "", "Hydr",     "",      ""],
-				 * ]
-				 */
-				//console.log(data[0].labels)
-				// FIXME: below *DOES NOT WORK* with multi-cat axes!!! TODO: 20220524 (v3.11.0)
-
-				data[0].labels[0].forEach((_cat, idx) => {
-					strSheetXml += `<row r="${idx + 2}" spans="1:${data.length + data[0].labels.length}">`
-					// Leading cols are reserved for the label groups
-					for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
-						strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
-						strSheetXml += `<v>${data.length + idx + 1}</v>`
-						strSheetXml += '</c>'
-					}
-					for (let idy = 0; idy < data.length; idy++) {
-						strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+				if (!IS_MULTI_CAT_AXES) {
+					// A: Create header row first
+					strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
+					data[0].labels.forEach((_labelsGroup, idx) => {
+						strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
+					})
+					for (let idx = 0; idx < data.length; idx++) {
+						strSheetXml += `<c r="${getExcelColName(idx + 1 + data[0].labels.length)}1" t="s"><v>${idx + 1}</v></c>` // NOTE: use `t="s"` for label cols!
 					}
 					strSheetXml += '</row>'
-				})
+
+					// B: Add data row(s) for each category
+					data[0].labels[0].forEach((_cat, idx) => {
+						strSheetXml += `<row r="${idx + 2}" spans="1:${data.length + data[0].labels.length}">`
+						// Leading cols are reserved for the label groups
+						for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
+							strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
+							strSheetXml += `<v>${data.length + idx + 1}</v>`
+							strSheetXml += '</c>'
+						}
+						for (let idy = 0; idy < data.length; idy++) {
+							strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+						}
+						strSheetXml += '</row>'
+					})
+				} else {
+					// TODO: 20220524 (v3.11.0)
+					console.log(data[0].labels)
+					/**
+					 * @example multi-category labels (1-n)
+					 * labels: [
+					 *   ["Gear", "Bearing", "Motor", "Swch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
+					 *   ["Mech",        "",      "", "Elec",     "",     "",     "",     "", "Hydr",     "",      ""],
+					 * ]
+					 */
+
+					// A: create header row
+					strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
+					for (let idx = 0; idx < data[0].labels.length; idx++) {
+						strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
+					}
+					for (let idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length; idx++) {
+						strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
+					}
+					strSheetXml += '</row>'
+					// WIP: 20200531 = above WORKS - goto step 2 tomorrow...
+					console.log(strSheetXml)
+				}
 			}
 			strSheetXml += '</sheetData>'
+
+			// TODO: WIP: vvvvv support multi-level
+			if (IS_MULTI_CAT_AXES) {
+				strSheetXml += '<mergeCells count="3">'
+				strSheetXml += ' <mergeCell ref="A2:A4"/>'
+				strSheetXml += ' <mergeCell ref="A10:A12"/>'
+				strSheetXml += ' <mergeCell ref="A5:A9"/>'
+				strSheetXml += '</mergeCells>'
+			}
+			// TODO: WIP: ^^^^^ support multi-level
+
 			strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>'
 			// Link the `table1.xml` file to define an actual Table in Excel
 			// NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
@@ -400,6 +424,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'
 			strSheetXml += '</worksheet>\n'
 			zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml)
+			console.log(strSheetXml) // WIP: TODO:
 		}
 
 		// C: Add XLSX to PPTX export
