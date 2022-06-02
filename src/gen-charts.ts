@@ -33,8 +33,9 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 	let data = chartObject.data
 
 	return new Promise((resolve, reject) => {
-		let zipExcel = new JSZip()
-		let intBubbleCols = (data.length - 1) * 2 + 1 // 1 for "X-Values", then 2 for every Y-Axis
+		const zipExcel = new JSZip()
+		const intBubbleCols = (data.length - 1) * 2 + 1 // 1 for "X-Values", then 2 for every Y-Axis
+		const IS_MULTI_CAT_AXES = data[0] && data[0].labels && data[0].labels.length > 1
 
 		// A: Add folders
 		zipExcel.folder('_rels')
@@ -142,6 +143,11 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${intBubbleCols}" uniqueCount="${intBubbleCols}">`
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${data.length}" uniqueCount="${data.length}">`
+			} else if (IS_MULTI_CAT_AXES) {
+				let totCount = 0
+				data[0].labels.forEach(arrLabel => (totCount += arrLabel.filter(label => label && label !== '').length))
+				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${totCount}" uniqueCount="${totCount}">`
+				strSharedStrings += '<si><t/></si>'
 			} else {
 				// series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
 				const totCount = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
@@ -162,7 +168,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 						strSharedStrings += `<si><t>${encodeXmlEntities('Size' + idx)}</t></si>`
 					}
 				})
-			} else {
+			} else if (!IS_MULTI_CAT_AXES) {
 				data.forEach(objData => {
 					strSharedStrings += `<si><t>${encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values'))}</t></si>`
 				})
@@ -170,11 +176,17 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 			// D: Add `labels`/Categories
 			if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
-				data[0].labels.forEach(labelsGroup => {
-					labelsGroup.forEach(label => {
-						strSharedStrings += `<si><t>${encodeXmlEntities(label)}</t></si>`
+				// Use forEach backwards & check for '' to support multi-cat axes
+				data[0].labels
+					.slice()
+					.reverse()
+					.forEach(labelsGroup => {
+						labelsGroup
+							.filter(label => label && label !== '')
+							.forEach(label => {
+								strSharedStrings += `<si><t>${encodeXmlEntities(label)}</t></si>`
+							})
 					})
-				})
 			}
 
 			strSharedStrings += '</sst>\n'
@@ -227,13 +239,11 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>'
 			strTableXml += '</table>'
 			zipExcel.file('xl/tables/table1.xml', strTableXml)
-			console.log(strTableXml) // WIP: TODO:
+			console.log(strTableXml) // WIP: TODO: multi-cat works??
 		}
 
 		// worksheets/sheet1.xml
 		{
-			const IS_MULTI_CAT_AXES = data[0] && data[0].labels && data[0].labels[0].length > 1
-
 			let strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
@@ -381,6 +391,17 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 						strSheetXml += '</row>'
 					})
 				} else {
+					// A: create header row
+					strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
+					for (let idx = 0; idx < data[0].labels.length; idx++) {
+						strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
+					}
+					for (let idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length; idx++) {
+						strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
+					}
+					strSheetXml += '</row>'
+
+					// WIP: 20200531 = above WORKS - goto step 2 tomorrow...
 					// TODO: 20220524 (v3.11.0)
 					console.log(data[0].labels)
 					/**
@@ -391,17 +412,45 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					 * ]
 					 */
 
-					// A: create header row
-					strSheetXml += `<row r="1" spans="1:${data.length + data[0].labels.length}">`
-					for (let idx = 0; idx < data[0].labels.length; idx++) {
-						strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
-					}
-					for (let idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length; idx++) {
-						strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
-					}
-					strSheetXml += '</row>'
-					// WIP: 20200531 = above WORKS - goto step 2 tomorrow...
-					console.log(strSheetXml)
+					/* EXPECTED OUTPUT:
+						<row r="2" spans="1:5" x14ac:dyDescent="0.2">
+							<c r="A2" s="1" t="s">
+								<v>1</v>
+							</c>
+							<c r="B2" t="s">
+								<v>4</v>
+							</c>
+							<c r="C2">
+								<v>11</v>
+							</c>
+						</row>
+						<row r="3" spans="1:5" x14ac:dyDescent="0.2">
+							<c r="A3" s="1"/>
+							<c r="B3" t="s">
+								<v>5</v>
+							</c>
+							<c r="C3">
+								<v>8</v>
+							</c>
+						</row>
+					 */
+
+					// B: Add data row(s) for each category
+					data[0].labels.forEach((arrLabels, idx) => {
+						strSheetXml += `<row r="${idx + 2}" spans="1:${arrLabels.length}">`
+						// Leading cols are reserved for the label groups
+						for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
+							strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
+							strSheetXml += `<v>${data.length + idx + 1}</v>`
+							strSheetXml += '</c>'
+						}
+						for (let idy = 0; idy < data.length; idy++) {
+							strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+						}
+						strSheetXml += '</row>'
+					})
+
+					console.log(strSheetXml) // WIP: CHECK:
 				}
 			}
 			strSheetXml += '</sheetData>'
