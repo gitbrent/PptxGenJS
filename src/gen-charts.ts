@@ -397,43 +397,40 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					for (let idx = 0; idx < data[0].labels.length; idx++) {
 						strSheetXml += `<c r="${getExcelColName(idx + 1)}1" t="s"><v>0</v></c>`
 					}
-					for (let idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length; idx++) {
+					for (let idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length - 1; idx++) {
 						strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
 					}
 					strSheetXml += '</row>'
 
-					// WIP: 20200531 = above WORKS - goto step 2 tomorrow...
-
-					// TODO: 20220524 (v3.11.0)
+					// TODO: 20220524 (v3.11.0) // WIP:
 					console.log(data[0].labels)
 					/**
 					 * @example INPUT
-					 * {
-					 *  name: 'West',
-					 *  labels: [
-					 *   ["Gear", "Brng", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-					 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
-					 *  ]
-					 * },
-					 * { name: 'Ctrl', labels: [...] },
-					 * { name: 'East', labels: [...] },
-					 *
-					 * @example SHARED-STRINGS
-					 * 1=Mech, 2=Elec, 3=Mydr, 4=Gear, 5=Brng, [...], 12=Seal, 13=West, 14=Ctrl, 15=East
-					 *
+					 * const LABELS = [
+					 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+					 *   ["Mech", "", "", "Elec", "", "", "Hydr", "", ""],
+					 * ];
+					 * const arrDataRegions = [
+					 *   { name: "West", labels: LABELS, values: [11, 8, 3, 0, 11, 3, 0, 0, 0] },
+					 *   { name: "Ctrl", labels: LABELS, values: [0, 11, 6, 19, 12, 5, 0, 0, 0] },
+					 *   { name: "East", labels: LABELS, values: [0, 3, 2, 0, 0, 0, 4, 3, 1] },
+					 * ];
+					 */
+					/**
 					 * @example OUTPUT EXCEL SHEET
 					 * |/|---A--|---B--|---C--|---D--|---E--|
 					 * |1|      |      | West | Ctrl | East |
-					 * |2| Mech | Gear |   #  |   #  |   #  |
-					 * |3|      | Brng |   #  |   #  |   #  |
-					 * |4|      | Motr |   #  |   #  |   #  |
-					 * |5| Elec | Swch |   #  |   #  |   #  |
-					 * |6|      | Plug |   #  |   #  |   #  |
-					 * |7|      | Cord |   #  |   #  |   #  |
-					 * |8| Hydr | Pump |   #  |   #  |   #  |
-					 * |9|      | Leak |   #  |   #  |   #  |
-					 *|10|      | Seal |   #  |   #  |   #  |
-					 *
+					 * |2| Mech | Gear |  ##  |  ##  |  ##  |
+					 * |3|      | Brng |  ##  |  ##  |  ##  |
+					 * |4|      | Motr |  ##  |  ##  |  ##  |
+					 * |5| Elec | Swch |  ##  |  ##  |  ##  |
+					 * |6|      | Plug |  ##  |  ##  |  ##  |
+					 * |7|      | Cord |  ##  |  ##  |  ##  |
+					 * |8| Hydr | Pump |  ##  |  ##  |  ##  |
+					 * |9|      | Leak |  ##  |  ##  |  ##  |
+					 *|10|      | Seal |  ##  |  ##  |  ##  |
+					 */
+					/**
 					 * @example OUTPUT EXCEL SHEET XML
 					 * <row r="1" spans="1:5">
 					 *   <c r="A1" t="s"><v>0</v></c>
@@ -442,42 +439,69 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					 *   <c r="D1" t="s"><v>2</v></c>
 					 *   <c r="E1" t="s"><v>3</v></c>
 					 * </row>
-					 *
+					 * <row r="2" spans="1:5">
+					 * 	<c r="A2" t="s"><v>4</v></c>
+					 * 	<c r="B2" t="s"><v>7</v></c>
+					 * 	<c r="C2"      ><v>###</v></c>
+					 * </row>
+					 * <row r="3" spans="1:5">
+					 * 	<c r="A3" />
+					 * 	<c r="B3" t="s"><v>8</v></c>
+					 *  <c r="C3"      ><v>###</v></c>
+					 * </row>
 					 */
-
-					/* EXPECTED OUTPUT:
-
-						<row r="2" spans="1:5">
-							<c r="A2" s="1" t="s"><v>1</v></c>
-							<c r="B2"       t="s"><v>99</v></c>
-							<c r="C2"            ><v>99</v></c>
-						</row>
-						<row r="3" spans="1:5">
-							<c r="A3" s="1"/>
-							<c r="B3" t="s"><v>5</v></c>
-							<c r="C3"      ><v>8</v></c>
-						</row>
+					/**
+					 * @example SHARED-STRINGS
+					 * 1=West, 2=Ctrl, 3=East, 4=Mech, 5=Elec, 6=Mydr, 7=Gear, 8=Brng, [...], 15=Seal
 					 */
 
 					// B: Add data row(s) for each category
-					data[0].labels
-						.slice()
-						.reverse()
-						.forEach((arrLabels, idx) => {
-							strSheetXml += `<row r="${idx + 2}" spans="1:${arrLabels.length}">`
-							// Leading cols are reserved for the label groups
-							for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
-								strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
-								strSheetXml += `<v>${data.length + idx + 1}</v>`
-								strSheetXml += '</c>'
-							}
-							for (let idy = 0; idy < data.length; idy++) {
-								strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
-							}
-							strSheetXml += '</row>'
-						})
+					/**
+					 * const LABELS = [
+					 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+					 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+					 * ];
+					 */
+					const TOT_SER = data.length
+					const TOT_CAT = data[0].labels[0].length
+					const TOT_LVL = data[0].labels.length
+					// Iterate across labels/cats as these are the <row>'s
+					for (let idx = 0; idx < TOT_CAT; idx++) {
+						// A: start row
+						strSheetXml += `<row r="${idx + 2}" spans="1:${TOT_SER + TOT_LVL}">`
 
+						// B: add a col for each label/cat
+						data[0].labels
+							.slice()
+							.reverse()
+							.forEach(labelsGroup => {
+								/**
+								 * const LABELS = [
+								 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+								 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+								 *   ["2010",     "",     "",     "",     "",     "",     "",     "",     ""],
+								 * ];
+								 */
+								let unqLabels = labelsGroup.filter(label => label && label !== '').length // get unique label so we can add to get proper shared-string #
+								strSheetXml += `<c r="${getExcelColName(idx)}${idx + 2}" t="s"><v>${unqLabels}</v></c>`
+
+								console.log(labelsGroup)
+							})
+
+						for (let idy = 1; idy <= TOT_LVL; idy++) {
+							strSheetXml += `<c r="${getExcelColName(idy)}${idx + 2}" t="s"><v>${TOT_SER + idx + 1}</v></c>`
+						}
+
+						// C: add a col for each data value
+						for (let idy = 0; idy < TOT_SER; idy++) {
+							strSheetXml += `<c r="${getExcelColName(TOT_CAT + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+						}
+
+						// D: Done
+						strSheetXml += '</row>'
+					}
 					console.log(strSheetXml) // WIP: CHECK:
+					console.log(`---CHECK ABOVE---------------------`)
 				}
 			}
 			strSheetXml += '</sheetData>'
