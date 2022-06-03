@@ -144,7 +144,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${data.length}" uniqueCount="${data.length}">`
 			} else if (IS_MULTI_CAT_AXES) {
-				let totCount = 0
+				let totCount = data.length
 				data[0].labels.forEach(arrLabel => (totCount += arrLabel.filter(label => label && label !== '').length))
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${totCount}" uniqueCount="${totCount}">`
 				strSharedStrings += '<si><t/></si>'
@@ -168,7 +168,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 						strSharedStrings += `<si><t>${encodeXmlEntities('Size' + idx)}</t></si>`
 					}
 				})
-			} else if (!IS_MULTI_CAT_AXES) {
+			} else {
 				data.forEach(objData => {
 					strSharedStrings += `<si><t>${encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values'))}</t></si>`
 				})
@@ -189,6 +189,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					})
 			}
 
+			// DONE:
 			strSharedStrings += '</sst>\n'
 			zipExcel.file('xl/sharedStrings.xml', strSharedStrings)
 		}
@@ -402,53 +403,79 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += '</row>'
 
 					// WIP: 20200531 = above WORKS - goto step 2 tomorrow...
+
 					// TODO: 20220524 (v3.11.0)
 					console.log(data[0].labels)
 					/**
-					 * @example multi-category labels (1-n)
-					 * labels: [
-					 *   ["Gear", "Bearing", "Motor", "Swch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
-					 *   ["Mech",        "",      "", "Elec",     "",     "",     "",     "", "Hydr",     "",      ""],
-					 * ]
+					 * @example INPUT
+					 * {
+					 *  name: 'West',
+					 *  labels: [
+					 *   ["Gear", "Brng", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+					 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+					 *  ]
+					 * },
+					 * { name: 'Ctrl', labels: [...] },
+					 * { name: 'East', labels: [...] },
+					 *
+					 * @example SHARED-STRINGS
+					 * 1=Mech, 2=Elec, 3=Mydr, 4=Gear, 5=Brng, [...], 12=Seal, 13=West, 14=Ctrl, 15=East
+					 *
+					 * @example OUTPUT EXCEL SHEET
+					 * |/|---A--|---B--|---C--|---D--|---E--|
+					 * |1|      |      | West | Ctrl | East |
+					 * |2| Mech | Gear |   #  |   #  |   #  |
+					 * |3|      | Brng |   #  |   #  |   #  |
+					 * |4|      | Motr |   #  |   #  |   #  |
+					 * |5| Elec | Swch |   #  |   #  |   #  |
+					 * |6|      | Plug |   #  |   #  |   #  |
+					 * |7|      | Cord |   #  |   #  |   #  |
+					 * |8| Hydr | Pump |   #  |   #  |   #  |
+					 * |9|      | Leak |   #  |   #  |   #  |
+					 *|10|      | Seal |   #  |   #  |   #  |
+					 *
+					 * @example OUTPUT EXCEL SHEET XML
+					 * <row r="1" spans="1:5">
+					 *   <c r="A1" t="s"><v>0</v></c>
+					 *   <c r="B1" t="s"><v>0</v></c>
+					 *   <c r="C1" t="s"><v>1</v></c>
+					 *   <c r="D1" t="s"><v>2</v></c>
+					 *   <c r="E1" t="s"><v>3</v></c>
+					 * </row>
+					 *
 					 */
 
 					/* EXPECTED OUTPUT:
-						<row r="2" spans="1:5" x14ac:dyDescent="0.2">
-							<c r="A2" s="1" t="s">
-								<v>1</v>
-							</c>
-							<c r="B2" t="s">
-								<v>4</v>
-							</c>
-							<c r="C2">
-								<v>11</v>
-							</c>
+
+						<row r="2" spans="1:5">
+							<c r="A2" s="1" t="s"><v>1</v></c>
+							<c r="B2"       t="s"><v>99</v></c>
+							<c r="C2"            ><v>99</v></c>
 						</row>
-						<row r="3" spans="1:5" x14ac:dyDescent="0.2">
+						<row r="3" spans="1:5">
 							<c r="A3" s="1"/>
-							<c r="B3" t="s">
-								<v>5</v>
-							</c>
-							<c r="C3">
-								<v>8</v>
-							</c>
+							<c r="B3" t="s"><v>5</v></c>
+							<c r="C3"      ><v>8</v></c>
 						</row>
 					 */
 
 					// B: Add data row(s) for each category
-					data[0].labels.forEach((arrLabels, idx) => {
-						strSheetXml += `<row r="${idx + 2}" spans="1:${arrLabels.length}">`
-						// Leading cols are reserved for the label groups
-						for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
-							strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
-							strSheetXml += `<v>${data.length + idx + 1}</v>`
-							strSheetXml += '</c>'
-						}
-						for (let idy = 0; idy < data.length; idy++) {
-							strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
-						}
-						strSheetXml += '</row>'
-					})
+					data[0].labels
+						.slice()
+						.reverse()
+						.forEach((arrLabels, idx) => {
+							strSheetXml += `<row r="${idx + 2}" spans="1:${arrLabels.length}">`
+							// Leading cols are reserved for the label groups
+							for (let idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
+								strSheetXml += `<c r="${getExcelColName(data[0].labels.length - idx2)}${idx + 2}" t="s">`
+								strSheetXml += `<v>${data.length + idx + 1}</v>`
+								strSheetXml += '</c>'
+							}
+							for (let idy = 0; idy < data.length; idy++) {
+								strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+							}
+							strSheetXml += '</row>'
+						})
 
 					console.log(strSheetXml) // WIP: CHECK:
 				}
