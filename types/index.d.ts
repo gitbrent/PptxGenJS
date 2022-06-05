@@ -1902,9 +1902,27 @@ declare namespace PptxGenJS {
 
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 	export interface OptsChartData {
+		/**
+		 * category labels
+		 * @example ['Year 2000', 'Year 2010', 'Year 2020'] // single-level category axes labels
+		 * @example [['Year 2000', 'Year 2010', 'Year 2020'], ['Decades', '', '']] // multi-level category axes labels
+		 * @since `labels` string[][] type added v3.11.0
+		 */
 		labels?: string[] | string[][]
+		/**
+		 * series name
+		 * @example 'Locations'
+		 */
 		name?: string
+		/**
+		 * bubble sizes
+		 * @example [5, 1, 5, 1]
+		 */
 		sizes?: number[]
+		/**
+		 * category values
+		 * @example [2000, 2010, 2020]
+		 */
 		values?: number[]
 		/**
 		 * Override `chartColors`
