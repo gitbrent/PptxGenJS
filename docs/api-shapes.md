@@ -44,7 +44,7 @@ slide.addText("ShapeType.line", { shape: pres.ShapeType.line, line: { color: "FF
 | `flipV`      | boolean                                                                 | flip Vertical       | `true` or `false`                                 |
 | `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
 | `line`       | [ShapeLineProps](/PptxGenJS/docs/types#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
-| `rectRadius` | number                                                                  | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
+| `rectRadius` | float                                                                  | rounding radius     | 0-1. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
 | `rotate`     | number                                                                  | rotation (degrees)  | -360 to 360. Default: `0`                         |
 | `shadow`     | [ShadowProps](/PptxGenJS/docs/types#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
 | `shapeName`  | string                                                                  | optional shape name | Ex: "Customer Network Diagram 99"                 |
