@@ -240,7 +240,6 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>'
 			strTableXml += '</table>'
 			zipExcel.file('xl/tables/table1.xml', strTableXml)
-			console.log(strTableXml) // WIP: TODO: multi-cat works??
 		}
 
 		// worksheets/sheet1.xml
@@ -402,8 +401,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					}
 					strSheetXml += '</row>'
 
-					// TODO: 20220524 (v3.11.0) // WIP:
-					console.log(data[0].labels)
+					// FIXME: 20220524 (v3.11.0)
 					/**
 					 * @example INPUT
 					 * const LABELS = [
@@ -460,6 +458,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					 * const LABELS = [
 					 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
 					 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+					 *   ["2010",     "",     "",     "",     "",     "",     "",     "",     ""],
 					 * ];
 					 */
 					const TOT_SER = data.length
@@ -470,43 +469,41 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 						// A: start row
 						strSheetXml += `<row r="${idx + 2}" spans="1:${TOT_SER + TOT_LVL}">`
 
+						// WIP: FIXME:
 						// B: add a col for each label/cat
-						data[0].labels
-							.slice()
-							.reverse()
-							.forEach(labelsGroup => {
-								/**
-								 * const LABELS = [
-								 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-								 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
-								 *   ["2010",     "",     "",     "",     "",     "",     "",     "",     ""],
-								 * ];
-								 */
-								let unqLabels = labelsGroup.filter(label => label && label !== '').length // get unique label so we can add to get proper shared-string #
-								strSheetXml += `<c r="${getExcelColName(idx)}${idx + 2}" t="s"><v>${unqLabels}</v></c>`
+						let totLabels = TOT_SER
+						const revLabelGroups = data[0].labels.slice().reverse()
+						revLabelGroups.forEach((labelsGroup, idy) => {
+							/**
+							 * const LABELS_REVERSED = [
+							 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+							 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+							 * ];
+							 */
+							let colLabel = labelsGroup[idx]
+							if (colLabel) {
+								let totGrpLbls = idy === 0 ? 1 : revLabelGroups[idy - 1].filter(label => label && label !== '').length // get unique label so we can add to get proper shared-string #
+								totLabels += totGrpLbls
+								strSheetXml += `<c r="${getExcelColName(idx + 1 + idy)}${idx + 2}" t="s"><v>${totLabels}</v></c>`
+							}
+						})
 
-								console.log(labelsGroup)
-							})
-
-						for (let idy = 1; idy <= TOT_LVL; idy++) {
-							strSheetXml += `<c r="${getExcelColName(idy)}${idx + 2}" t="s"><v>${TOT_SER + idx + 1}</v></c>`
-						}
-
+						// WIP: FIXME:
 						// C: add a col for each data value
 						for (let idy = 0; idy < TOT_SER; idy++) {
-							strSheetXml += `<c r="${getExcelColName(TOT_CAT + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+							strSheetXml += `<c r="${getExcelColName(TOT_LVL + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || 0}</v></c>`
 						}
 
 						// D: Done
 						strSheetXml += '</row>'
 					}
-					console.log(strSheetXml) // WIP: CHECK:
-					console.log(`---CHECK ABOVE---------------------`)
+					//console.log(strSheetXml) // WIP: CHECK:
+					//console.log(`---CHECK ABOVE---------------------`)
 				}
 			}
 			strSheetXml += '</sheetData>'
 
-			// TODO: WIP: vvvvv support multi-level
+			/* FIXME: support multi-level
 			if (IS_MULTI_CAT_AXES) {
 				strSheetXml += '<mergeCells count="3">'
 				strSheetXml += ' <mergeCell ref="A2:A4"/>'
@@ -514,7 +511,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				strSheetXml += ' <mergeCell ref="A5:A9"/>'
 				strSheetXml += '</mergeCells>'
 			}
-			// TODO: WIP: ^^^^^ support multi-level
+			*/
 
 			strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>'
 			// Link the `table1.xml` file to define an actual Table in Excel
@@ -524,7 +521,6 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'
 			strSheetXml += '</worksheet>\n'
 			zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml)
-			console.log(strSheetXml) // WIP: TODO:
 		}
 
 		// C: Add XLSX to PPTX export
