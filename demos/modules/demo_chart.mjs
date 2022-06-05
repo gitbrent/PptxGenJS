@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.11.0
- * BLD.: 20220521
+ * BLD.: 20220605
  */
 
 import {
@@ -65,6 +65,13 @@ export function genSlides_Chart(pptx) {
 	genSlide18(pptx);
 	genSlide19(pptx);
 	genSlide20(pptx);
+
+	if (TESTMODE) {
+		pptx.addSection({ title: "Charts-DevTest" });
+		devSlide01(pptx);
+		devSlide02(pptx);
+		devSlide03(pptx);
+	}
 }
 
 function initTestData() {
@@ -720,8 +727,8 @@ function genSlide05(pptx) {
 		pptx.charts.BAR,
 		[
 			{
-				name: "Escaped XML Chars",
-				labels: ["Es", "cap", "ed", "XML", "Chars", "'", '"', "&", "<", ">"],
+				name: "Escaped XML chars",
+				labels: ["es", "cap", "ed", "XML", "chars", "'", '"', "&", "<", ">"],
 				values: [1.2, 2.3, 3.1, 4.25, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9],
 			},
 		],
@@ -1026,41 +1033,42 @@ function genSlide09(pptx) {
 	});
 }
 
-// SLIDE 10: Line Chart: Lots of Cats
 function genSlide10(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Line Chart: Lots of Lines", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	let MAXVAL = 20000;
-
-	let arrDataTimeline = [];
-	for (let idx = 0; idx < 15; idx++) {
-		let tmpObj = {
-			name: "Series" + idx,
-			labels: MONS,
-			values: [],
-		};
-
-		for (let idy = 0; idy < MONS.length; idy++) {
-			tmpObj.values.push(Math.floor(Math.random() * MAXVAL) + 1);
-		}
-
-		arrDataTimeline.push(tmpObj);
-	}
+	// data source: https://data.oecd.org/interest/long-term-interest-rates.htm
+	const YEARS = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"];
+	const LONG_TERM_INT_RATES = [
+		{ name: "Canada", labels: YEARS, values: [4.27, 3.61, 3.23, 3.24, 2.78, 1.87, 2.26, 2.23, 1.52, 1.25, 1.78, 2.28, 1.59, 0.75] },
+		{ name: "France", labels: YEARS, values: [4.3, 4.23, 3.65, 3.12, 3.32, 2.54, 2.2, 1.67, 0.84, 0.47, 0.81, 0.78, 0.13, -0.15] },
+		{ name: "Germany", labels: YEARS, values: [4.22, 3.98, 3.22, 2.74, 2.61, 1.5, 1.57, 1.16, 0.5, 0.09, 0.32, 0.4, -0.25, -0.51] },
+		{ name: "Italy", labels: YEARS, values: [4.49, 4.68, 4.31, 4.04, 5.42, 5.49, 4.32, 2.89, 1.71, 1.49, 2.11, 2.61, 1.95, 1.17] },
+		{ name: "Japan", labels: YEARS, values: [1.67, 1.47, 1.33, 1.15, 1.1, 0.84, 0.69, 0.52, 0.35, -0.07, 0.05, 0.07, -0.11, -0.01] },
+		{ name: "United Kingdom", labels: YEARS, values: [5.01, 4.59, 3.65, 3.62, 3.14, 1.92, 2.39, 2.57, 1.9, 1.31, 1.24, 1.46, 0.94, 0.37] },
+		{ name: "United States", labels: YEARS, values: [4.63, 3.67, 3.26, 3.21, 2.79, 1.8, 2.35, 2.54, 2.14, 1.84, 2.33, 2.91, 2.14, 0.89] },
+	];
 
 	// FULL SLIDE:
-	let optsChartLine1 = {
+	const OPTS_CHART = {
 		x: 0.5,
 		y: 0.6,
 		w: "95%",
 		h: "85%",
 		plotArea: { fill: { color: "F2F9FC" } },
-		valAxisMaxVal: MAXVAL,
+		//
 		showLegend: true,
 		legendPos: "r",
+		//
+		showTitle: true,
+		lineDataSymbol: "none",
+		title: "Long-Term Interest Rates (OECD)",
+		titleColor: "0088CC",
+		titleFontFace: "Arial",
+		titleFontSize: 18,
 	};
-	slide.addChart(pptx.charts.LINE, arrDataTimeline, optsChartLine1);
+	slide.addChart(pptx.charts.LINE, LONG_TERM_INT_RATES, OPTS_CHART);
 }
 
 // SLIDE 11: Area Chart: Misc
@@ -1144,16 +1152,6 @@ function genSlide12(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Pie Charts: Legends", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-
-	// [TEST][INTERNAL USE]: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
-	if (TESTMODE)
-		slide.addImage({
-			path: NODEJS ? IMAGE_PATHS.ccCopyRemix.path.replace(/http.+\/examples/, "../common") : IMAGE_PATHS.ccCopyRemix.path,
-			x: 0.5,
-			y: 1.0,
-			w: 1.2,
-			h: 1.2,
-		});
 
 	// TOP-LEFT
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
@@ -1653,29 +1651,24 @@ function genSlide17(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Multi-Level Category Axes", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
+	const arrDataLabels = [
+		["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
+		["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
+	];
 	const arrDataRegions = [
 		{
 			name: "Mechanical",
-			labels: [
-				["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
-				["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
-			],
+			labels: arrDataLabels,
 			values: [11, 8, 3, 0, 0, 0, 0, 0, 0, 0, 0],
 		},
 		{
 			name: "Electrical",
-			labels: [
-				["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
-				["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
-			],
+			labels: arrDataLabels,
 			values: [0, 0, 0, 19, 12, 11, 3, 2, 0, 0, 0],
 		},
 		{
 			name: "Hydraulic",
-			labels: [
-				["Gear", "Bearing", "Motor", "Switch", "Plug", "Cord", "Fuse", "Bulb", "Pump", "Leak", "Seals"],
-				["Mechanical", "", "", "Electrical", "", "", "", "", "Hydraulic", "", ""],
-			],
+			labels: arrDataLabels,
 			values: [0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 1],
 		},
 	];
@@ -1728,17 +1721,20 @@ function genSlide17(pptx) {
 function genSlide18(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Multi-Level Category Axes (3 Levels)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable(
+		[[{ text: "Chart Examples: Multi-Level Category Axes (3 Levels)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		BASE_TABLE_OPTS
+	);
 
 	const arrDataRegions = [
 		{
 			name: "Fruits",
 			labels: [
-				["1/3", "1/25", "6/5", "6/21", "7/27", "2/20", "3/17", "4/24", "6/23", "8/5", "4/16", "1/29", "2/23", "4/4", "7/15"],
-				["Apple", "", "", "", "", "Orange", "", "", "", "Orange", "", "Peach", "Pear", "", "", ""],
-				["2014", "", "", "", "", "", "", "", "", "2015", "", "", "", "", "", ""],
+				["Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4"],
+				["Apple", "", "", "", "Banana", "", "", "", "Apple", "", "", "", "Banana", "", "", ""],
+				["2014", "", "", "", "", "", "", "", "2015", "", "", "", "", "", "", ""],
 			],
-			values: [734, 465, 656, 176, 434, 165, 613, 359, 279, 660, 307, 270, 539, 142, 554],
+			values: [734, 465, 656, 176, 434, 165, 613, 359, 279, 660, 307, 270, 539, 142, 554, 405],
 		},
 	];
 
@@ -1749,6 +1745,7 @@ function genSlide18(pptx) {
 		h: 6.5,
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
+		chartColors: ["C0504D", "C0504D", "C0504D", "C0504D", "FFC000", "FFC000", "FFC000", "FFC000"],
 	};
 
 	slide.addChart(pptx.charts.BAR, arrDataRegions, opts1);
@@ -2310,4 +2307,103 @@ function genSlide20(pptx) {
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, pieOptions);
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar3);
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
+}
+
+// --------------------------------------------------------------------------------
+
+// DEV/TEST 01: escaped-XML
+function devSlide01(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "DEV-TEST: escaped-xml", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	// BOTTOM-RIGHT
+	slide.addChart(
+		pptx.charts.BAR,
+		[
+			{
+				name: "Escaped XML chars",
+				labels: ["escaped", "xml", "chars", "'", '"', "&", "<", ">"],
+				values: [1.2, 2.3, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9],
+			},
+		],
+		{
+			x: 0.5,
+			y: 0.6,
+			w: "90%",
+			h: "90%",
+			chartArea: { fill: { color: "404040" } },
+			catAxisLabelColor: "F1F1F1",
+			valAxisLabelColor: "F1F1F1",
+			valAxisLineColor: "7F7F7F",
+			valGridLine: { color: "7F7F7F" },
+			dataLabelColor: "B7B7B7",
+			barDir: "bar",
+			showValue: true,
+			chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384", "7D666A", "A3C961", "EF907B"],
+			barGapWidthPct: 25,
+			catAxisOrientation: "maxMin",
+			valAxisOrientation: "maxMin",
+			valAxisMaxVal: 10,
+			valAxisMajorUnit: 1,
+		}
+	);
+}
+
+// DEV/TEST 02: Line Chart: Lots of Cats
+function devSlide02(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "DEV-TEST: lots-of-lines", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	let MAXVAL = 20000;
+
+	let arrDataTimeline = [];
+	for (let idx = 0; idx < 15; idx++) {
+		let tmpObj = {
+			name: "Series" + idx,
+			labels: MONS,
+			values: [],
+		};
+
+		for (let idy = 0; idy < MONS.length; idy++) {
+			tmpObj.values.push(Math.floor(Math.random() * MAXVAL) + 1);
+		}
+
+		arrDataTimeline.push(tmpObj);
+	}
+
+	// FULL SLIDE:
+	let optsChartLine1 = {
+		x: 0.5,
+		y: 0.6,
+		w: "95%",
+		h: "85%",
+		plotArea: { fill: { color: "F2F9FC" } },
+		valAxisMaxVal: MAXVAL,
+		showLegend: true,
+		legendPos: "r",
+	};
+	slide.addChart(pptx.charts.LINE, arrDataTimeline, optsChartLine1);
+}
+
+// DEV/TEST 03: Pie Charts:
+function devSlide03(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "DEV-TEST: ref-test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	// TOP-MIDDLE
+	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
+		x: 5.6,
+		y: 0.5,
+		w: 3.2,
+		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+		showLegend: true,
+		legendPos: "t",
+	});
+
+	// [TEST][INTERNAL]: Used for ensuring ref counting works across mixed object types (eg: `rId` check/test)
+	if (TESTMODE) slide.addImage({ path: IMAGE_PATHS.ccCopyRemix.path, x: 0.5, y: 1.0, w: 1.2, h: 1.2 });
 }

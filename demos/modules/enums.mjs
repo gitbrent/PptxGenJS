@@ -4,8 +4,8 @@
  */
 
 // LIBRARY
-export const COMPRESS = true; //false; // TEST: `compression` write prop
-export const TESTMODE = false;
+export const TESTMODE = window && window.location && window.location.href.toLowerCase().indexOf("http://localhost:8000/") > -1;
+export const COMPRESS = true; // TEST: `compression` write prop
 
 // CONST
 export const CUST_NAME = "S.T.A.R. Laboratories";
