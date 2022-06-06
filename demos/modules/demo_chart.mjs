@@ -23,6 +23,10 @@ import {
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const QTRS = ["Q1", "Q2", "Q3", "Q4"];
+const ACCENT_COLORS = ["4472C4", "ED7D31", "FFC000", "70AD47"]; // 1,2,4,6
+const COLORS_SPECTRUM = ["56B4E4", "126CB0", "672C7E", "E92A31", "F06826", "E9AF1F", "51B747", "189247"]; // B-G spectrum wheel
+const COLORS_CHART = ["003f5c", "0077b6", "084c61", "177e89", "3066be", "00a9b5", "58508d", "bc5090", "db3a34", "ff6361", "ffa600"];
+const COLORS_VIVID = ["ff595e", "F38940", "ffca3a", "8ac926", "1982c4", "5FBDE1", "6a4c93"]; // (R, Y, G, B, P)
 
 const dataChartPieStat = [
 	{
@@ -33,7 +37,7 @@ const dataChartPieStat = [
 ];
 const dataChartPieLocs = [
 	{
-		name: "Location",
+		name: "Sales by Location",
 		labels: ["CN", "DE", "GB", "MX", "JP", "IN", "US"],
 		values: [69, 35, 40, 85, 38, 99, 101],
 	},
@@ -71,6 +75,7 @@ export function genSlides_Chart(pptx) {
 		devSlide01(pptx);
 		devSlide02(pptx);
 		devSlide03(pptx);
+		devSlide04(pptx);
 	}
 }
 
@@ -556,17 +561,17 @@ function genSlide03(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
 }
 
-// SLIDE 4: Bar Chart - Lots of Bars
+// SLIDE 4: Bar Chart: Title Options, Inverted Colors
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Lots of Bars (>26 letters)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Chart Examples: Title Options; invertedColors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let arrDataHighVals = [
 		{
-			name: "Single Data Set",
-			labels: LETTERS.concat(["AA", "AB", "AC", "AD"]),
-			values: [-5, -3, 0, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
+			name: "Series With Negative Values",
+			labels: ["N2", "N1", "ZERO", "P1", "P2", "P3", "P4", "P5", "P6", "P7"],
+			values: [-5, -3, 0, 3, 5, 6, 7, 8, 9, 10],
 		},
 	];
 
@@ -576,21 +581,23 @@ function genSlide04(pptx) {
 		w: "90%",
 		h: "90%",
 		barDir: "col",
-		title: "Chart With >26 Cols",
+		//
 		showTitle: true,
+		title: "Rotated Title",
 		titleFontSize: 20,
 		titleRotate: 10,
+		//
+		showLegend: true,
+		chartColors: ["00B050"],
+		invertedColors: ["C0504D"],
+		//
 		showCatAxisTitle: true,
-		catAxisTitle: "Letters",
+		catAxisTitle: "Cat Axis Title",
 		catAxisTitleColor: "4286f4",
 		catAxisTitleFontSize: 14,
-
-		showLegend: true,
-		chartColors: ["154384"],
-		invertedColors: ["0088CC"],
-
+		//
 		showValAxisTitle: true,
-		valAxisTitle: "Column Index",
+		valAxisTitle: "Val Axis Title",
 		valAxisTitleColor: "c11c13",
 		valAxisTitleFontSize: 16,
 	};
@@ -632,20 +639,24 @@ function genSlide05(pptx) {
 			w: "45%",
 			h: 3,
 			chartArea: { fill: { color: "404040" } },
-			catAxisLabelColor: "F1F1F1",
-			valAxisLabelColor: "F1F1F1",
-
 			barDir: "bar",
 			chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384"],
+			//
+			catAxisLabelColor: "F1F1F1",
 			catLabelFormatCode: "yyyy-mm",
+			/*
+			valAxisLabelColor: "F1F1F1",
 			valAxisMajorUnit: 15,
 			valAxisDisplayUnit: "hundreds",
 			valAxisMaxVal: 45,
 			valLabelFormatCode: "$0", // @since v3.3.0
+			*/
+			valAxisHidden: true,
+			//
 			showTitle: true,
-			titleFontSize: 14,
+			title: "Categories can be Multi-Color",
 			titleColor: "0088CC",
-			title: "Bar Charts Can Be Multi-Color",
+			titleFontSize: 14,
 		}
 	);
 
@@ -707,7 +718,7 @@ function genSlide05(pptx) {
 			valAxisLineColor: "7F7F7F",
 			valGridLine: { color: "7F7F7F" },
 			dataLabelColor: "B7B7B7",
-
+			valAxisHidden: true,
 			barDir: "col", // `col`(vert) | `bar`(horiz)
 			showValue: true,
 			dataLabelPosition: "outEnd",
@@ -727,9 +738,14 @@ function genSlide05(pptx) {
 		pptx.charts.BAR,
 		[
 			{
-				name: "Escaped XML chars",
-				labels: ["es", "cap", "ed", "XML", "chars", "'", '"', "&", "<", ">"],
-				values: [1.2, 2.3, 3.1, 4.25, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9],
+				name: "EV",
+				labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+				values: [102, 103, 121, 125, 135, 155],
+			},
+			{
+				name: "ICE",
+				labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+				values: [150, 153, 151, 125, 115, 105],
 			},
 		],
 		{
@@ -738,21 +754,21 @@ function genSlide05(pptx) {
 			w: "45%",
 			h: 3,
 			chartArea: { fill: { color: "404040" } },
+			barDir: "bar",
 			catAxisLabelColor: "F1F1F1",
 			valAxisLabelColor: "F1F1F1",
 			valAxisLineColor: "7F7F7F",
 			valGridLine: { color: "7F7F7F" },
 			dataLabelColor: "B7B7B7",
-
-			barDir: "bar",
-			showValue: true,
-			dataLabelPosition: "outEnd",
+			chartColorsOpacity: 50,
+			//showValue: true,
+			//dataLabelPosition: "outEnd",
 			chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384", "7D666A", "A3C961", "EF907B", "9BA0A3"],
 			barGapWidthPct: 25,
 			catAxisOrientation: "maxMin",
 			valAxisOrientation: "maxMin",
-			valAxisMaxVal: 10,
-			valAxisMajorUnit: 1,
+			valAxisMaxVal: 200,
+			valAxisMajorUnit: 25,
 		}
 	);
 }
@@ -795,18 +811,19 @@ function genSlide06(pptx) {
 		w: 6.0,
 		h: 3.0,
 		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
-
 		barDir: "bar",
-
+		//
 		catAxisLabelColor: pptx.colors.ACCENT2,
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
 		catAxisOrientation: "maxMin",
-
+		//
 		serAxisLabelColor: pptx.colors.ACCENT4,
 		serAxisLabelFontFace: "Arial",
 		serAxisLabelFontSize: 10,
 		serAxisLineColor: pptx.colors.ACCENT6,
+		//
+		valAxisHidden: true,
 	};
 	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar1);
 
@@ -937,8 +954,47 @@ function genSlide07(pptx) {
 	);
 }
 
-// SLIDE 8: Line Chart: Line Smoothing, Line Size, Symbol Size
+// SLIDE 8: Line Chart
 function genSlide08(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Line Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	// data source: https://data.oecd.org/interest/long-term-interest-rates.htm
+	const YEARS = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"];
+	const LONG_TERM_INT_RATES = [
+		{ name: "Canada", labels: YEARS, values: [4.27, 3.61, 3.23, 3.24, 2.78, 1.87, 2.26, 2.23, 1.52, 1.25, 1.78, 2.28, 1.59, 0.75] },
+		{ name: "France", labels: YEARS, values: [4.3, 4.23, 3.65, 3.12, 3.32, 2.54, 2.2, 1.67, 0.84, 0.47, 0.81, 0.78, 0.13, -0.15] },
+		{ name: "Germany", labels: YEARS, values: [4.22, 3.98, 3.22, 2.74, 2.61, 1.5, 1.57, 1.16, 0.5, 0.09, 0.32, 0.4, -0.25, -0.51] },
+		{ name: "Italy", labels: YEARS, values: [4.49, 4.68, 4.31, 4.04, 5.42, 5.49, 4.32, 2.89, 1.71, 1.49, 2.11, 2.61, 1.95, 1.17] },
+		{ name: "Japan", labels: YEARS, values: [1.67, 1.47, 1.33, 1.15, 1.1, 0.84, 0.69, 0.52, 0.35, -0.07, 0.05, 0.07, -0.11, -0.01] },
+		{ name: "United Kingdom", labels: YEARS, values: [5.01, 4.59, 3.65, 3.62, 3.14, 1.92, 2.39, 2.57, 1.9, 1.31, 1.24, 1.46, 0.94, 0.37] },
+		{ name: "United States", labels: YEARS, values: [4.63, 3.67, 3.26, 3.21, 2.79, 1.8, 2.35, 2.54, 2.14, 1.84, 2.33, 2.91, 2.14, 0.89] },
+	];
+
+	// FULL SLIDE:
+	const OPTS_CHART = {
+		x: 0.5,
+		y: 0.6,
+		w: "95%",
+		h: "85%",
+		plotArea: { fill: { color: "F2F9FC" } },
+		//
+		showLegend: true,
+		legendPos: "r",
+		//
+		showTitle: true,
+		lineDataSymbol: "none",
+		title: "Long-Term Interest Rates (OECD)",
+		titleColor: "0088CC",
+		titleFontFace: "Arial",
+		titleFontSize: 18,
+	};
+	slide.addChart(pptx.charts.LINE, LONG_TERM_INT_RATES, OPTS_CHART);
+}
+
+// SLIDE 9: Line Chart: Line Smoothing, Line Size, Symbol Size
+function genSlide09(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable(
@@ -1008,8 +1064,8 @@ function genSlide08(pptx) {
 	slide.addChart(pptx.charts.LINE, arrDataLineStat, optsChartLine4);
 }
 
-// SLIDE 9: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
-function genSlide09(pptx) {
+// SLIDE 10: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
+function genSlide10(pptx) {
 	let intWgap = 4.25;
 	let opts_lineDataSymbol = ["circle", "dash", "diamond", "dot", "none", "square", "triangle"];
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
@@ -1031,44 +1087,6 @@ function genSlide09(pptx) {
 			lineDataSymbolSize: idx == 5 ? 9 : idx == 6 ? 12 : null,
 		});
 	});
-}
-
-function genSlide10(pptx) {
-	let slide = pptx.addSlide({ sectionTitle: "Charts" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Line Chart: Lots of Lines", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-
-	// data source: https://data.oecd.org/interest/long-term-interest-rates.htm
-	const YEARS = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"];
-	const LONG_TERM_INT_RATES = [
-		{ name: "Canada", labels: YEARS, values: [4.27, 3.61, 3.23, 3.24, 2.78, 1.87, 2.26, 2.23, 1.52, 1.25, 1.78, 2.28, 1.59, 0.75] },
-		{ name: "France", labels: YEARS, values: [4.3, 4.23, 3.65, 3.12, 3.32, 2.54, 2.2, 1.67, 0.84, 0.47, 0.81, 0.78, 0.13, -0.15] },
-		{ name: "Germany", labels: YEARS, values: [4.22, 3.98, 3.22, 2.74, 2.61, 1.5, 1.57, 1.16, 0.5, 0.09, 0.32, 0.4, -0.25, -0.51] },
-		{ name: "Italy", labels: YEARS, values: [4.49, 4.68, 4.31, 4.04, 5.42, 5.49, 4.32, 2.89, 1.71, 1.49, 2.11, 2.61, 1.95, 1.17] },
-		{ name: "Japan", labels: YEARS, values: [1.67, 1.47, 1.33, 1.15, 1.1, 0.84, 0.69, 0.52, 0.35, -0.07, 0.05, 0.07, -0.11, -0.01] },
-		{ name: "United Kingdom", labels: YEARS, values: [5.01, 4.59, 3.65, 3.62, 3.14, 1.92, 2.39, 2.57, 1.9, 1.31, 1.24, 1.46, 0.94, 0.37] },
-		{ name: "United States", labels: YEARS, values: [4.63, 3.67, 3.26, 3.21, 2.79, 1.8, 2.35, 2.54, 2.14, 1.84, 2.33, 2.91, 2.14, 0.89] },
-	];
-
-	// FULL SLIDE:
-	const OPTS_CHART = {
-		x: 0.5,
-		y: 0.6,
-		w: "95%",
-		h: "85%",
-		plotArea: { fill: { color: "F2F9FC" } },
-		//
-		showLegend: true,
-		legendPos: "r",
-		//
-		showTitle: true,
-		lineDataSymbol: "none",
-		title: "Long-Term Interest Rates (OECD)",
-		titleColor: "0088CC",
-		titleFontFace: "Arial",
-		titleFontSize: 18,
-	};
-	slide.addChart(pptx.charts.LINE, LONG_TERM_INT_RATES, OPTS_CHART);
 }
 
 // SLIDE 11: Area Chart: Misc
@@ -1147,7 +1165,7 @@ function genSlide11(pptx) {
 	slide.addChart(pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4);
 }
 
-// SLIDE 12: Pie Charts: All 4 Legend Options
+// SLIDE 12: Pie Charts
 function genSlide12(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -1156,20 +1174,20 @@ function genSlide12(pptx) {
 	// TOP-LEFT
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
 		x: 0.5,
-		y: 0.5,
-		w: 4.2,
+		y: 0.6,
+		w: 4.0,
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
-
+		chartColors: ["FC0000", "FFCC00", "009900", "0088CC", "696969", "6600CC"],
+		dataBorder: { pt: "2", color: "F1F1F1" },
+		//
 		legendPos: "left",
 		legendFontFace: "Courier New",
 		showLegend: true,
-
+		//
 		showLeaderLines: true,
 		showPercent: false,
 		showValue: true,
-		chartColors: ["FC0000", "FFCC00", "009900", "0088CC", "696969", "6600CC"],
-		dataBorder: { pt: "2", color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontSize: 14,
 		dataLabelPosition: "bestFit", // 'bestFit' | 'outEnd' | 'inEnd' | 'ctr'
@@ -1177,46 +1195,24 @@ function genSlide12(pptx) {
 
 	// TOP-MIDDLE
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
-		x: 5.6,
-		y: 0.5,
-		w: 3.2,
+		x: 4.67,
+		y: 0.6,
+		w: 4.0,
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_SPECTRUM,
 		showLegend: true,
 		legendPos: "t",
 	});
 
-	// BTM-LEFT
+	// TOP-RIGHT (DEMO: `legendFontSize`, `titleAlign`, `titlePos`)
 	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
-		x: 0.5,
-		y: 4.0,
-		w: 4.2,
+		x: 8.83,
+		y: 0.6,
+		w: 4.0,
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
-		showLegend: true,
-		legendPos: "r",
-	});
-
-	// BTM-MIDDLE
-	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
-		x: 5.6,
-		y: 4.0,
-		w: 3.2,
-		h: 3.2,
-		chartArea: { fill: { color: "F1F1F1" } },
-		showLegend: true,
-		legendPos: "b",
-	});
-
-	// BOTH: TOP-RIGHT
-	// DEMO: `legendFontSize`, `titleAlign`, `titlePos`
-	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
-		x: 9.8,
-		y: 0.5,
-		w: 3.2,
-		h: 3.2,
-		chartArea: { fill: { color: "F1F1F1" } },
-
+		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
 		legendPos: "t",
@@ -1228,14 +1224,45 @@ function genSlide12(pptx) {
 		titlePos: { x: 0, y: 0 },
 	});
 
-	// BOTH: BTM-RIGHT
+	// BTM-LEFT
 	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
-		x: 9.8,
+		x: 0.5,
 		y: 4.0,
-		w: 3.2,
+		w: 4.0,
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_CHART,
+		dataBorder: { pt: "1", color: "F1F1F1" },
+		//
+		showValue: true,
+		showLabel: true,
+		showPercent: true,
+		//
+		dataLabelColor: "F1F1F1",
+		dataLabelFontSize: 10,
+	});
 
+	// BTM-MIDDLE
+	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
+		x: 4.67,
+		y: 4.0,
+		w: 4.0,
+		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
+		dataBorder: { pt: "1", color: "F1F1F1" },
+		chartColors: COLORS_SPECTRUM,
+		dataLabelColor: "F1F1F1",
+		showLegend: true,
+		legendPos: "b",
+	});
+
+	// BOTH: BTM-RIGHT
+	slide.addChart(pptx.charts.PIE, dataChartPieLocs, {
+		x: 8.83,
+		y: 4.0,
+		w: 4.0,
+		h: 3.2,
+		chartArea: { fill: { color: "F1F1F1" } },
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
 		legendPos: "b",
@@ -1253,26 +1280,23 @@ function genSlide13(pptx) {
 
 	let optsChartPie1 = {
 		x: 0.5,
-		y: 1.0,
+		y: 0.6,
 		w: 6.0,
-		h: 6.0,
+		h: 6.4,
 		chartArea: { fill: { color: "F1F1F1" } },
-
-		chartColors: ["FC0000", "FFCC00", "009900", "0088CC", "696969", "6600CC"],
-		dataBorder: { pt: "2", color: "F1F1F1" },
-		dataLabelColor: "FFFFFF",
-		dataLabelFontSize: 14,
-
-		legendPos: "r",
-
+		holeSize: 70,
 		showLabel: false,
 		showValue: false,
 		showPercent: true,
 		showLegend: true,
+		legendPos: "b",
+		//
+		chartColors: COLORS_SPECTRUM,
+		dataBorder: { pt: "2", color: "F1F1F1" },
+		dataLabelColor: "FFFFFF",
+		dataLabelFontSize: 14,
+		//
 		showTitle: false,
-
-		holeSize: 70,
-
 		title: "Project Status",
 		titleColor: "33CF22",
 		titleFontFace: "Helvetica Neue",
@@ -1281,16 +1305,22 @@ function genSlide13(pptx) {
 	slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1);
 
 	let optsChartPie2 = {
-		x: 7.0,
-		y: 1.0,
-		w: 6,
-		h: 6,
+		x: 6.83,
+		y: 0.6,
+		w: 6.0,
+		h: 6.4,
+		chartArea: { fill: { color: "404040" } },
+		chartColors: COLORS_VIVID,
 		dataBorder: { pt: "3", color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		showLabel: true,
 		showValue: true,
 		showPercent: true,
-		showLegend: false,
+		//
+		showLegend: true,
+		legendPos: "b",
+		legendColor: "F1F1F1",
+		//
 		showTitle: false,
 		title: "Resource Totals by Location",
 		shadow: {
@@ -2311,57 +2341,64 @@ function genSlide20(pptx) {
 
 // --------------------------------------------------------------------------------
 
-// DEV/TEST 01: escaped-XML
+// DEV/TEST 01: Bar Chart: Lots of Series
 function devSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "DEV-TEST: escaped-xml", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-
-	// BOTTOM-RIGHT
-	slide.addChart(
-		pptx.charts.BAR,
-		[
-			{
-				name: "Escaped XML chars",
-				labels: ["escaped", "xml", "chars", "'", '"', "&", "<", ">"],
-				values: [1.2, 2.3, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9],
-			},
-		],
-		{
-			x: 0.5,
-			y: 0.6,
-			w: "90%",
-			h: "90%",
-			chartArea: { fill: { color: "404040" } },
-			catAxisLabelColor: "F1F1F1",
-			valAxisLabelColor: "F1F1F1",
-			valAxisLineColor: "7F7F7F",
-			valGridLine: { color: "7F7F7F" },
-			dataLabelColor: "B7B7B7",
-			barDir: "bar",
-			showValue: true,
-			chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384", "7D666A", "A3C961", "EF907B"],
-			barGapWidthPct: 25,
-			catAxisOrientation: "maxMin",
-			valAxisOrientation: "maxMin",
-			valAxisMaxVal: 10,
-			valAxisMajorUnit: 1,
-		}
+	slide.addTable(
+		[[{ text: "DEV-TEST: lots-of-bars (>26 letters); negative val check", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		BASE_TABLE_OPTS
 	);
+
+	let arrDataHighVals = [
+		{
+			name: "Alphabet Letter Value",
+			labels: LETTERS.concat(["AA", "AB", "AC", "AD"]),
+			values: [-5, -3, 0, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
+		},
+	];
+
+	let optsChart = {
+		x: 0.5,
+		y: 0.5,
+		w: "90%",
+		h: "90%",
+		barDir: "col",
+		showLegend: true,
+		chartColors: ["154384"],
+		invertedColors: ["0088CC"],
+		//
+		title: "Chart With >26 Cols",
+		showTitle: true,
+		titleFontSize: 18,
+		//
+		showCatAxisTitle: true,
+		catAxisTitle: "Letters",
+		catAxisTitleColor: "4286f4",
+		catAxisTitleFontSize: 14,
+		//
+		showValAxisTitle: true,
+		valAxisTitle: "Column Index",
+		valAxisTitleColor: "c11c13",
+		valAxisTitleFontSize: 16,
+	};
+
+	// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
+	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 }
 
-// DEV/TEST 02: Line Chart: Lots of Cats
+// DEV/TEST 02: Line Chart: Lots of Series
 function devSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "DEV-TEST: lots-of-lines", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "DEV-TEST: lots-of-series", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let MAXVAL = 20000;
 
 	let arrDataTimeline = [];
 	for (let idx = 0; idx < 15; idx++) {
 		let tmpObj = {
-			name: "Series" + idx,
+			name: `Series ${idx}`,
 			labels: MONS,
 			values: [],
 		};
@@ -2387,8 +2424,46 @@ function devSlide02(pptx) {
 	slide.addChart(pptx.charts.LINE, arrDataTimeline, optsChartLine1);
 }
 
-// DEV/TEST 03: Pie Charts:
+// DEV/TEST 01: escaped-XML
 function devSlide03(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "DEV-TEST: escaped-xml", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	slide.addChart(
+		pptx.charts.BAR,
+		[
+			{
+				name: "Escaped XML chars",
+				labels: ["escaped", "xml", "chars", "'", '"', "&", "<", ">"],
+				values: [1.2, 2.3, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9],
+			},
+		],
+		{
+			x: 0.5,
+			y: 0.6,
+			w: "90%",
+			h: "90%",
+			chartArea: { fill: { color: "404040" } },
+			catAxisLabelColor: "F1F1F1",
+			valAxisLabelColor: "F1F1F1",
+			valAxisLineColor: "7F7F7F",
+			valGridLine: { color: "7F7F7F" },
+			dataLabelColor: "B7B7B7",
+			barDir: "bar",
+			showValue: true,
+			chartColors: [...ACCENT_COLORS, ...ACCENT_COLORS],
+			barGapWidthPct: 25,
+			catAxisOrientation: "maxMin",
+			valAxisOrientation: "maxMin",
+			valAxisMaxVal: 10,
+			valAxisMajorUnit: 1,
+		}
+	);
+}
+
+// DEV/TEST 05: ref-check
+function devSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "DEV-TEST: ref-test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
