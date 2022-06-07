@@ -85,7 +85,7 @@
 				strOutput += `    "values": ${JSON.stringify(item.values)},\n`;
 				strOutput += `  },\n`;
 			});
-			strOutput += `]\n`;
+			strOutput += `];\n`;
 			strOutput += "slide.addChart(pptx.charts.LINE, CHART_DATA, {x:0.25, y:0.25, w:'95%', h:'90%', showLegend:true});\n";
 			strOutput += "\n";
 			strOutput += "pptx.writeFile({ fileName: 'pptxgenjs-data2chart.pptx' });\n"
