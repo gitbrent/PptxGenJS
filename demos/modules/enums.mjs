@@ -32,6 +32,7 @@ export const BASE_TEXT_OPTS_R = {
 	text: "PptxGenJS",
 	options: { color: "9F9F9F", margin: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0], align: "right" },
 };
+export const FOOTER_TEXT_OPTS = { x: 0.0, y: 7.16, w: "100%", h: 0.3, margin: 3, color: "9F9F9F", align: "center", fontSize: 10 };
 export const BASE_CODE_OPTS = {
 	color: "9F9F9F",
 	margin: 3,
