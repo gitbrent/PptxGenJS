@@ -222,7 +222,7 @@ function genSlide01(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
 }
 
-// SLIDE 2: Bar Chart Grid/Axis Options
+// SLIDE 2: Bar Chart: Grid/Axis Options
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -386,7 +386,7 @@ function genSlide02(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
 }
 
-// SLIDE 3: Stacked Bar Chart
+// SLIDE 3: Bar Chart: Stacked
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -1010,15 +1010,15 @@ function genSlide09(pptx) {
 	slide.addChart(pptx.charts.LINE, arrDataLineStat, optsChartLine4);
 }
 
-// SLIDE 10: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
+// SLIDE 10: Line Chart: `lineDataSymbol` and `lineDataSymbolSize`
 function genSlide10(pptx) {
-	let intWgap = 4.25;
-	let opts_lineDataSymbol = ["circle", "dash", "diamond", "dot", "none", "square", "triangle"];
-	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	const intWgap = 4.25;
+	const opts_lineDataSymbol = ["circle", "dash", "diamond", "dot", "none", "square", "triangle"];
+	const slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Chart Examples: Line Chart: lineDataSymbol options", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	opts_lineDataSymbol.forEach(function (opt, idx) {
+	opts_lineDataSymbol.forEach((opt, idx) => {
 		slide.addChart(pptx.charts.LINE, arrDataLineStat, {
 			x: (idx < 3 ? idx * intWgap : idx < 6 ? (idx - 3) * intWgap : (idx - 6) * intWgap) + 0.3,
 			y: idx < 3 ? 0.5 : idx < 6 ? 2.85 : 5.1,
@@ -1032,7 +1032,7 @@ function genSlide10(pptx) {
 	});
 }
 
-// SLIDE 11: Area Chart: Misc
+// SLIDE 11: Area Chart
 function genSlide11(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -1118,7 +1118,7 @@ function genSlide11(pptx) {
 	slide.addChart(pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4);
 }
 
-// SLIDE 12: Pie Charts
+// SLIDE 12: Pie Chart
 function genSlide12(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -1383,7 +1383,7 @@ function genSlide14(pptx) {
 	slide.addChart(pptx.charts.SCATTER, arrDataScatter2, optsChartScat4);
 }
 
-// SLIDE 15: Bubble Charts
+// SLIDE 15: Bubble Chart
 function genSlide15(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -1629,7 +1629,7 @@ function genSlide16(pptx) {
 	}
 }
 
-// SLIDE 17: Multi-Level Category Axes
+// SLIDE 17: Multi-Level Category Axes (2 levels)
 function genSlide17(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
@@ -2054,11 +2054,11 @@ function genSlide19(pptx) {
 	doBarCol();
 }
 
-// SLIDE 20: Charts Options: Shadow, Transparent Colors
+// SLIDE 20: Misc Options
 function genSlide20(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Options: Shadow, Transparent Colors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Misc Options: Shadow, Transparent Colors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
