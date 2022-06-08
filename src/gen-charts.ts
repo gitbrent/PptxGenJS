@@ -644,7 +644,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			}
 			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.catAxes[1]) {
-				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY)
+				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY)
 			}
 		} else {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
@@ -1811,16 +1811,17 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
  */
 function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
-	let strXml = ''
+	if (valAxisId === AXIS_ID_VALUE_SECONDARY) axisPos = 'r' // default behavior for PPT is showing 2nd val axis on right (primary axis on left)
 	let isRight = axisPos === 'r' || axisPos === 't'
 	let crosses = isRight ? 'max' : 'autoZero'
 	let crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY
+	let strXml = ''
 
 	strXml += '<c:valAx>'
 	strXml += '  <c:axId val="' + valAxisId + '"/>'
 	strXml += '  <c:scaling>'
-	if (opts.valAxisLogScaleBase) strXml += `    <c:logBase val="${opts.valAxisLogScaleBase}"/>`
-	strXml += '    <c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>'
+	if (opts.valAxisLogScaleBase) strXml += `<c:logBase val="${opts.valAxisLogScaleBase}"/>`
+	strXml += '<c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>'
 	if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0) strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>'
 	if (opts.valAxisMinVal || opts.valAxisMinVal === 0) strXml += '<c:min val="' + opts.valAxisMinVal + '"/>'
 	strXml += '  </c:scaling>'
