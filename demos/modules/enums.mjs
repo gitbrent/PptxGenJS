@@ -19,12 +19,7 @@ export const TABLE_NAMES_L = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark
 export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=12.33
 
 // STYLES
-export const COLOR_RED = "FF0000";
-export const COLOR_AMB = "F2AF00";
-export const COLOR_GRN = "7AB800";
-export const COLOR_CRT = "AA0000";
 export const COLOR_BLU = "0088CC";
-export const COLOR_UNK = "A9A9A9";
 
 // OPTIONS
 export const BASE_TEXT_OPTS_L = { color: "9F9F9F", margin: 3, border: [null, null, { pt: "1", color: "CFCFCF" }, null] };

@@ -7,23 +7,12 @@
  * BLD.: 20220605
  */
 
-import {
-	BASE_TABLE_OPTS,
-	BASE_TEXT_OPTS_L,
-	BASE_TEXT_OPTS_R,
-	COLOR_AMB,
-	COLOR_BLU,
-	COLOR_GRN,
-	COLOR_RED,
-	COLOR_UNK,
-	FOOTER_TEXT_OPTS,
-	IMAGE_PATHS,
-	TESTMODE,
-} from "./enums.mjs";
+import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, FOOTER_TEXT_OPTS, IMAGE_PATHS, TESTMODE } from "./enums.mjs";
 import {
 	ACCENT_COLORS,
 	CHART_DATA,
 	COLORS_CHART,
+	COLORS_RYGU,
 	COLORS_SPECTRUM,
 	COLORS_VIVID,
 	LETTERS,
@@ -966,8 +955,7 @@ function genSlide09(pptx) {
 		w: 6.0,
 		h: 3.0,
 		chartArea: { fill: { color: "F1F1F1" } },
-
-		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
+		chartColors: COLORS_RYGU,
 		lineSize: 8,
 		lineSmooth: true,
 		showLegend: true,
@@ -981,7 +969,8 @@ function genSlide09(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
-		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
+		chartArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_RYGU,
 		lineSize: 16,
 		lineSmooth: true,
 		showLegend: true,
@@ -994,7 +983,8 @@ function genSlide09(pptx) {
 		y: 4.0,
 		w: 6.0,
 		h: 3.0,
-		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
+		chartArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_RYGU,
 		lineDataSymbolSize: 10,
 		shadow: { type: "none" },
 		//displayBlanksAs: 'gap', // NOTE: uncomment only for test - looks broken otherwise!
@@ -1010,7 +1000,8 @@ function genSlide09(pptx) {
 		y: 4.0,
 		w: 6.0,
 		h: 3.0,
-		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
+		chartArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_RYGU,
 		lineDataSymbolSize: 20,
 		shadow: shadowOpts,
 		showLegend: true,
@@ -1354,7 +1345,7 @@ function genSlide14(pptx) {
 		lineDataSymbolSize: 12,
 		lineDataSymbolLineColor: "FFFFFF",
 
-		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
+		chartColors: COLORS_RYGU,
 		chartColorsOpacity: 25,
 	};
 	slide.addChart(pptx.charts.SCATTER, arrDataScatter2, optsChartScat2);
@@ -1439,7 +1430,7 @@ function genSlide15(pptx) {
 		lineDataSymbolSize: 12,
 		lineDataSymbolLineColor: "FFFFFF",
 
-		chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK],
+		chartColors: COLORS_RYGU,
 		chartColorsOpacity: 25,
 	};
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble2);
@@ -1578,13 +1569,13 @@ function genSlide16(pptx) {
 			chartArea: { fill: { color: "F1F1F1" } },
 			//
 			radarStyle: "marker",
-			catAxisLabelColor: COLOR_BLU,
+			catAxisLabelColor: "0088CC",
 			catAxisLabelFontFace: "Courier",
 			catAxisLabelFontSize: 11,
 			//
-			chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN], // marker & line color
+			chartColors: COLORS_RYGU, // marker & line color
 			lineDataSymbol: "diamond", // marker type ('circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle')
-			lineDataSymbolLineColor: COLOR_BLU, // marker border color (hex)
+			lineDataSymbolLineColor: "0088CC", // marker border color (hex)
 			lineDataSymbolLineSize: 2, // marker border size (points)
 			lineDataSymbolSize: 12, // marker size (2-72)
 			lineSize: 3, // line size
@@ -1612,7 +1603,7 @@ function genSlide16(pptx) {
 			//
 			radarStyle: "filled",
 			//
-			chartColors: [COLOR_RED, COLOR_AMB, COLOR_GRN], // marker & line color
+			chartColors: COLORS_RYGU, // marker & line color
 			chartColorsOpacity: 25,
 			catAxisLabelColor: "404040",
 			catAxisLabelFontFace: "Segoe UI",
