@@ -28,16 +28,12 @@ import {
 	COLORS_VIVID,
 	LETTERS,
 	MONS,
-	QTRS,
+	arrDataLineStat,
 	dataChartPieLocs,
 	dataChartPieStat,
 } from "./enums_charts.mjs";
 
-let arrDataLineStat = [];
-
 export function genSlides_Chart(pptx) {
-	initTestData();
-
 	pptx.addSection({ title: "Charts" });
 
 	genSlide01(pptx);
@@ -69,25 +65,6 @@ export function genSlides_Chart(pptx) {
 		devSlide04(pptx);
 		devSlide05(pptx);
 	}
-}
-
-function initTestData() {
-	let tmpObjRed = { name: "Red", labels: QTRS, values: [] };
-	let tmpObjAmb = { name: "Amb", labels: QTRS, values: [] };
-	let tmpObjGrn = { name: "Grn", labels: QTRS, values: [] };
-	let tmpObjUnk = { name: "Unk", labels: QTRS, values: [] };
-
-	for (let idy = 0; idy < QTRS.length; idy++) {
-		tmpObjRed.values.push(Math.floor(Math.random() * 30) + 1);
-		tmpObjAmb.values.push(Math.floor(Math.random() * 50) + 1);
-		tmpObjGrn.values.push(Math.floor(Math.random() * 80) + 1);
-		tmpObjUnk.values.push(Math.floor(Math.random() * 10) + 1);
-	}
-
-	arrDataLineStat.push(tmpObjRed);
-	arrDataLineStat.push(tmpObjAmb);
-	arrDataLineStat.push(tmpObjGrn);
-	arrDataLineStat.push(tmpObjUnk);
 }
 
 // SLIDE 1: Bar Chart
@@ -1011,9 +988,6 @@ function genSlide09(pptx) {
 		legendPos: "r",
 	};
 	slide.addChart(pptx.charts.LINE, arrDataLineStat, optsChartLine2);
-
-	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
-	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
 
 	let optsChartLine3 = {
 		x: 0.5,
@@ -2457,3 +2431,9 @@ function devSlide05(pptx) {
 		h: 6.0,
 	});
 }
+
+/**
+ * TODO:
+ * 	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
+ *	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
+ */

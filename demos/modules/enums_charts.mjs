@@ -15,7 +15,7 @@ export const COLORS_VIVID = ["ff595e", "F38940", "ffca3a", "8ac926", "1982c4", "
 export const dataChartPieStat = [
 	{
 		name: "Project Status",
-		labels: ["Red", "Amber", "Green", "Complete", "Cancelled", "Unknown"],
+		labels: ["Red", "Yellow", "Green", "Complete", "Cancelled", "Unknown"],
 		values: [25, 5, 5, 5, 5, 5],
 	},
 ];
@@ -25,6 +25,13 @@ export const dataChartPieLocs = [
 		labels: ["CN", "DE", "GB", "MX", "JP", "IN", "US"],
 		values: [69, 35, 40, 85, 38, 99, 101],
 	},
+];
+
+export const arrDataLineStat = [
+	{ name: "Red", labels: QTRS, values: [1, 3, 5, 7] },
+	{ name: "Amb", labels: QTRS, values: [5, 26, 32, 30] },
+	{ name: "Grn", labels: QTRS, values: [7, 52, 18, 67] },
+	{ name: "Unk", labels: QTRS, values: [3, 5, 17, 1] },
 ];
 
 // LABELS
@@ -187,7 +194,7 @@ const BTC_LBLS = [
 export const CHART_DATA = {
 	EvSales_Vol: {
 		sourceUrl: "https://www.iea.org/data-and-statistics/charts/global-sales-and-sales-market-share-of-electric-cars-2010-2021",
-		chartTitle: "Electric Cars Sales and Market Share",
+		chartTitle: "Electric Vehicle Sales and Market Share",
 		chartData: [
 			{
 				name: "United States",
@@ -213,7 +220,7 @@ export const CHART_DATA = {
 	},
 	EvSales_Pct: {
 		sourceUrl: "https://www.iea.org/data-and-statistics/charts/global-sales-and-sales-market-share-of-electric-cars-2010-2021",
-		chartTitle: "Electric Cars Sales and Market Share",
+		chartTitle: "Electric Vehicle Sales and Market Share",
 		chartData: [
 			{
 				name: "Global Market Share (%)",
