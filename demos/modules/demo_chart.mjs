@@ -20,300 +20,19 @@ import {
 	IMAGE_PATHS,
 	TESTMODE,
 } from "./enums.mjs";
+import {
+	ACCENT_COLORS,
+	CHART_DATA,
+	COLORS_CHART,
+	COLORS_SPECTRUM,
+	COLORS_VIVID,
+	LETTERS,
+	MONS,
+	QTRS,
+	dataChartPieLocs,
+	dataChartPieStat,
+} from "./enums_charts.mjs";
 
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const QTRS = ["Q1", "Q2", "Q3", "Q4"];
-const ACCENT_COLORS = ["4472C4", "ED7D31", "FFC000", "70AD47"]; // 1,2,4,6
-const COLORS_SPECTRUM = ["56B4E4", "126CB0", "672C7E", "E92A31", "F06826", "E9AF1F", "51B747", "189247"]; // B-G spectrum wheel
-const COLORS_CHART = ["003f5c", "0077b6", "084c61", "177e89", "3066be", "00a9b5", "58508d", "bc5090", "db3a34", "ff6361", "ffa600"];
-const COLORS_VIVID = ["ff595e", "F38940", "ffca3a", "8ac926", "1982c4", "5FBDE1", "6a4c93"]; // (R, Y, G, B, P)
-
-const INTRATES_URL = "https://data.oecd.org/interest/long-term-interest-rates.htm";
-const INTRATES_TITLE = "Long Term Interest Rates";
-const INTRATES_LBLS = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"];
-const INTRATES_DATA = [
-	{ name: "Canada", labels: INTRATES_LBLS, values: [4.27, 3.61, 3.23, 3.24, 2.78, 1.87, 2.26, 2.23, 1.52, 1.25, 1.78, 2.28, 1.59, 0.75] },
-	{ name: "France", labels: INTRATES_LBLS, values: [4.3, 4.23, 3.65, 3.12, 3.32, 2.54, 2.2, 1.67, 0.84, 0.47, 0.81, 0.78, 0.13, -0.15] },
-	{ name: "Germany", labels: INTRATES_LBLS, values: [4.22, 3.98, 3.22, 2.74, 2.61, 1.5, 1.57, 1.16, 0.5, 0.09, 0.32, 0.4, -0.25, -0.51] },
-	{ name: "Italy", labels: INTRATES_LBLS, values: [4.49, 4.68, 4.31, 4.04, 5.42, 5.49, 4.32, 2.89, 1.71, 1.49, 2.11, 2.61, 1.95, 1.17] },
-	{ name: "Japan", labels: INTRATES_LBLS, values: [1.67, 1.47, 1.33, 1.15, 1.1, 0.84, 0.69, 0.52, 0.35, -0.07, 0.05, 0.07, -0.11, -0.01] },
-	{ name: "United Kingdom", labels: INTRATES_LBLS, values: [5.01, 4.59, 3.65, 3.62, 3.14, 1.92, 2.39, 2.57, 1.9, 1.31, 1.24, 1.46, 0.94, 0.37] },
-	{ name: "United States", labels: INTRATES_LBLS, values: [4.63, 3.67, 3.26, 3.21, 2.79, 1.8, 2.35, 2.54, 2.14, 1.84, 2.33, 2.91, 2.14, 0.89] },
-];
-
-const CEOPAY_URL = "https://www.epi.org/publication/ceo-pay-in-2020/";
-const CEOPAY_TITLE = "CEO-to-worker compensation ratio";
-const CEOPAY_LBLS = [
-	"1965",
-	"1966",
-	"1967",
-	"1968",
-	"1969",
-	"1970",
-	"1971",
-	"1972",
-	"1973",
-	"1974",
-	"1975",
-	"1976",
-	"1977",
-	"1978",
-	"1979",
-	"1980",
-	"1981",
-	"1982",
-	"1983",
-	"1984",
-	"1985",
-	"1986",
-	"1987",
-	"1988",
-	"1989",
-	"1990",
-	"1991",
-	"1992",
-	"1993",
-	"1994",
-	"1995",
-	"1996",
-	"1997",
-	"1998",
-	"1999",
-	"2000",
-	"2001",
-	"2002",
-	"2003",
-	"2004",
-	"2005",
-	"2006",
-	"2007",
-	"2008",
-	"2009",
-	"2010",
-	"2011",
-	"2012",
-	"2013",
-	"2014",
-	"2015",
-	"2016",
-	"2017",
-	"2018",
-	"2019",
-	"2020",
-];
-const CEOPAY_DATA = [
-	{
-		name: "Realized CEO compensation",
-		labels: CEOPAY_LBLS,
-		values: [
-			21.1, 22.3, 23.5, 24.8, 24.5, 24.3, 24, 23.7, 23.4, 24.9, 26.4, 27.9, 29.6, 31.4, 33.4, 35.5, 37.7, 40.1, 42.6, 45.3, 48.1, 51.1, 54.4,
-			57.8, 61.4, 74.3, 90, 109, 108.6, 87.4, 117.6, 150.6, 223.4, 297.4, 266.1, 365.7, 210.6, 186.8, 228.8, 265.7, 318.4, 328.2, 330.9, 206.7,
-			177.6, 213.1, 242.4, 371.7, 318.5, 326.6, 318.8, 271.6, 302.1, 293.3, 306.9, 351.1,
-		],
-	},
-	{
-		name: "Granted CEO compensation",
-		labels: CEOPAY_LBLS,
-		values: [
-			15.4, 16.3, 17.2, 18.2, 18, 17.8, 17.6, 17.4, 17.2, 18.2, 19.3, 20.5, 21.7, 23, 24.4, 26, 27.6, 29.3, 31.2, 33.1, 35.2, 37.4, 39.8, 42.3,
-			45, 54.4, 65.9, 79.8, 99.6, 116.6, 131, 177, 234.1, 293.4, 284.4, 386.1, 322.6, 235, 227, 235, 244.5, 244.1, 242, 219.4, 178.3, 202.8,
-			208.1, 201.3, 209.7, 217.2, 209.5, 205.8, 193.2, 212.3, 211.9, 202.7,
-		],
-	},
-];
-const CEOPAY_DATA2 = [
-	{
-		name: "Realized CEO compensation",
-		labels: CEOPAY_LBLS,
-		values: [
-			21.1, 22.3, 23.5, 24.8, 24.5, 24.3, 24, 23.7, 23.4, 24.9, 26.4, 27.9, 29.6, 31.4, 33.4, 35.5, 37.7, 40.1, 42.6, 45.3, 48.1, 51.1, 54.4,
-			57.8, 61.4, 74.3, 90, 109, 108.6, 87.4, 117.6, 150.6, 223.4, 297.4, 266.1, 365.7, 210.6, 186.8, 228.8, 265.7, 318.4, 328.2, 330.9, 206.7,
-			177.6, 213.1, 242.4, 371.7, 318.5, 326.6, 318.8, 271.6, 302.1, 293.3, 306.9, 351.1,
-		],
-	},
-];
-
-// @source: https://finance.yahoo.com/quote/BTC-USD/history
-const BTC_LBLS = [
-	"Oct-2014",
-	"Nov-2014",
-	"Dec-2014",
-	"Jan-2015",
-	"Feb-2015",
-	"Mar-2015",
-	"Apr-2015",
-	"May-2015",
-	"Jun-2015",
-	"Jul-2015",
-	"Aug-2015",
-	"Sep-2015",
-	"Oct-2015",
-	"Nov-2015",
-	"Dec-2015",
-	"Jan-2016",
-	"Feb-2016",
-	"Mar-2016",
-	"Apr-2016",
-	"May-2016",
-	"Jun-2016",
-	"Jul-2016",
-	"Aug-2016",
-	"Sep-2016",
-	"Oct-2016",
-	"Nov-2016",
-	"Dec-2016",
-	"Jan-2017",
-	"Feb-2017",
-	"Mar-2017",
-	"Apr-2017",
-	"May-2017",
-	"Jun-2017",
-	"Jul-2017",
-	"Aug-2017",
-	"Sep-2017",
-	"Oct-2017",
-	"Nov-2017",
-	"Dec-2017",
-	"Jan-2018",
-	"Feb-2018",
-	"Mar-2018",
-	"Apr-2018",
-	"May-2018",
-	"Jun-2018",
-	"Jul-2018",
-	"Aug-2018",
-	"Sep-2018",
-	"Oct-2018",
-	"Nov-2018",
-	"Dec-2018",
-	"Jan-2019",
-	"Feb-2019",
-	"Mar-2019",
-	"Apr-2019",
-	"May-2019",
-	"Jun-2019",
-	"Jul-2019",
-	"Aug-2019",
-	"Sep-2019",
-	"Oct-2019",
-	"Nov-2019",
-	"Dec-2019",
-	"Jan-2020",
-	"Feb-2020",
-	"Mar-2020",
-	"Apr-2020",
-	"May-2020",
-	"Jun-2020",
-	"Jul-2020",
-	"Aug-2020",
-	"Sep-2020",
-	"Oct-2020",
-	"Nov-2020",
-	"Dec-2020",
-	"Jan-2021",
-	"Feb-2021",
-	"Mar-2021",
-	"Apr-2021",
-	"May-2021",
-	"Jun-2021",
-	"Jul-2021",
-	"Aug-2021",
-	"Sep-2021",
-	"Oct-2021",
-	"Nov-2021",
-	"Dec-2021",
-	"Jan-2022",
-	"Feb-2022",
-	"Mar-2022",
-	"Apr-2022",
-	"May-2022",
-];
-const BTC_DATA_USD = [
-	{
-		name: "Close (USD)",
-		labels: BTC_LBLS,
-		values: [
-			338.32, 378.05, 320.19, 217.46, 254.26, 244.22, 236.15, 230.19, 263.07, 284.65, 230.06, 236.06, 314.17, 377.32, 430.57, 368.77, 437.7,
-			416.73, 448.32, 531.39, 673.34, 624.68, 575.47, 609.73, 700.97, 745.69, 963.74, 970.4, 1179.97, 1071.79, 1347.89, 2286.41, 2480.84,
-			2875.34, 4703.39, 4338.71, 6468.4, 10233.6, 14156.4, 10221.1, 10397.9, 6973.53, 9240.55, 7494.17, 6404, 7780.44, 7037.58, 6625.56,
-			6317.61, 4017.27, 3742.7, 3457.79, 3854.79, 4105.4, 5350.73, 8574.5, 10817.16, 10085.63, 9630.66, 8293.87, 9199.58, 7569.63, 7193.6,
-			9350.53, 8599.51, 6438.64, 8658.55, 9461.06, 9137.99, 11323.47, 11680.82, 10784.49, 13781, 19625.84, 29001.72, 33114.36, 45137.77,
-			58918.83, 57750.18, 37332.86, 35040.84, 41626.2, 47166.69, 43790.89, 61318.96, 57005.43, 46306.45, 38483.13, 43193.23, 45538.68, 37714.88,
-			31792.31,
-		],
-	},
-];
-const BTC_DATA_VOL = [
-	{
-		name: "Volume",
-		labels: BTC_LBLS,
-		values: [
-			902994450, 659733360, 553102310, 1098811912, 711518700, 959098300, 672338700, 568122600, 629780200, 999892200, 905192300, 603623900,
-			953279500, 2177623396, 2096250000, 1990880304, 1876238692, 2332852776, 1811475204, 2234432796, 4749702740, 3454186204, 2686220180,
-			2004401400, 2115443796, 2635773092, 3556763800, 5143971692, 4282761200, 10872455960, 9757448112, 34261856864, 44478140928, 32619956992,
-			63548016640, 55700949056, 58009357952, 140735010304, 410336495104, 416247858176, 229717780480, 193751709184, 196550010624, 197611709696,
-			130214179584, 141441939792, 132292770000, 129745370000, 118436880000, 158359524484, 168826809069, 167335706864, 199100675597,
-			297952790260, 445364556718, 724157870864, 675855385074, 676416326705, 533984971734, 480544963230, 595205134748, 676919523650,
-			633790373416, 852872174496, 1163376492768, 1290442059648, 1156127164831, 1286368141507, 650913318680, 545813339109, 708377092130,
-			1075949438431, 1050874546086, 1093144913227, 1212259707946, 2153473433571, 2267152936675, 1681184264687, 1844481772417, 1976593438572,
-			1189647451707, 819103381204, 1014674184428, 1102139678824, 1153077903534, 1053270271383, 957047184722, 923979037681, 671335993325,
-			830943838435, 830115888649, 1105689315990,
-		],
-	},
-];
-
-const EVSALES_URL = "https://www.iea.org/data-and-statistics/charts/global-sales-and-sales-market-share-of-electric-cars-2010-2021";
-const EVSALES_TITLE = "Electric Cars Sales and Market Share";
-const EVSALES_LBLS = ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021"];
-const EVSALES_DATA = [
-	{
-		name: "United States",
-		labels: EVSALES_LBLS,
-		values: [0, 0.02, 0.05, 0.1, 0.12, 0.12, 0.16, 0.2, 0.36, 0.33, 0.3, 0.67],
-	},
-	{
-		name: "Europe",
-		labels: EVSALES_LBLS,
-		values: [0, 0.01, 0.03, 0.07, 0.1, 0.2, 0.22, 0.31, 0.4, 0.59, 1.4, 2.29],
-	},
-	{
-		name: "China",
-		labels: EVSALES_LBLS,
-		values: [0, 0.01, 0.01, 0.02, 0.07, 0.22, 0.37, 0.65, 1.17, 1.1, 1.2, 3.35],
-	},
-	{
-		name: "Others",
-		labels: EVSALES_LBLS,
-		values: [0, 0.02, 0.03, 0.04, 0.04, 0.04, 0.05, 0.11, 0.19, 0.16, 0.17, 0.29],
-	},
-];
-const EVSALES_DATA_PCT = [
-	{
-		name: "Global Market Share (%)",
-		labels: EVSALES_LBLS,
-		values: [0.01, 0.07, 0.17, 0.27, 0.41, 0.67, 0.89, 1.36, 2.3, 2.49, 4.11, 8.57],
-	},
-];
-
-//
-//
-//
-
-const dataChartPieStat = [
-	{
-		name: "Project Status",
-		labels: ["Red", "Amber", "Green", "Complete", "Cancelled", "Unknown"],
-		values: [25, 5, 5, 5, 5, 5],
-	},
-];
-const dataChartPieLocs = [
-	{
-		name: "Sales by Location",
-		labels: ["CN", "DE", "GB", "MX", "JP", "IN", "US"],
-		values: [69, 35, 40, 85, 38, 99, 101],
-	},
-];
 let arrDataLineStat = [];
 
 export function genSlides_Chart(pptx) {
@@ -1232,7 +951,7 @@ function genSlide08(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Line Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-	slide.addText(`(${INTRATES_URL})`, FOOTER_TEXT_OPTS);
+	slide.addText(`(${CHART_DATA.LongTermIntRates.sourceUrl})`, FOOTER_TEXT_OPTS);
 
 	// FULL SLIDE:
 	const OPTS_CHART = {
@@ -1247,12 +966,12 @@ function genSlide08(pptx) {
 		//
 		showTitle: true,
 		lineDataSymbol: "none",
-		title: "Long-Term Interest Rates",
+		title: CHART_DATA.LongTermIntRates.chartTitle,
 		titleColor: "0088CC",
 		titleFontFace: "Arial",
 		titleFontSize: 18,
 	};
-	slide.addChart(pptx.charts.LINE, INTRATES_DATA, OPTS_CHART);
+	slide.addChart(pptx.charts.LINE, CHART_DATA.LongTermIntRates.chartData, OPTS_CHART);
 }
 
 // SLIDE 9: Line Chart: Line Smoothing, Line Size, Symbol Size
@@ -1332,10 +1051,7 @@ function genSlide10(pptx) {
 	let opts_lineDataSymbol = ["circle", "dash", "diamond", "dot", "none", "square", "triangle"];
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable(
-		[[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
-		BASE_TABLE_OPTS
-	);
+	slide.addTable([[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	opts_lineDataSymbol.forEach(function (opt, idx) {
 		slide.addChart(pptx.charts.LINE, arrDataLineStat, {
@@ -1388,7 +1104,7 @@ function genSlide11(pptx) {
 		chartColors: COLORS_VIVID,
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showTitle: true,
-		title: CEOPAY_TITLE,
+		title: CHART_DATA.CeoPayRatio_Comp.chartTitle,
 		titleFontSize: 11,
 		titleColor: "fc0000",
 		valAxisLabelFormatCode: "#-1",
@@ -1401,7 +1117,7 @@ function genSlide11(pptx) {
 		chartColorsOpacity: 25,
 		//showValue: true,
 	};
-	slide.addChart(pptx.charts.AREA, CEOPAY_DATA2, optsChartLine1);
+	slide.addChart(pptx.charts.AREA, CHART_DATA.CeoPayRatio_Comp.chartData, optsChartLine1);
 
 	// TOP-RIGHT (stacked area chart)
 	let optsChartLine2 = {
@@ -2024,10 +1740,7 @@ function genSlide17(pptx) {
 function genSlide18(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable(
-		[[{ text: "Chart Examples: Multi-Level Category Axes (3 Levels)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
-		BASE_TABLE_OPTS
-	);
+	slide.addTable([[{ text: "Chart Examples: Multi-Level Category Axes (3 Levels)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	const arrDataRegions = [
 		{
@@ -2054,11 +1767,11 @@ function genSlide18(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataRegions, opts1);
 }
 
-// SLIDE 19: Multi-Type Charts
+// SLIDE 19: Combo Charts
 function genSlide19(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Multi-Type Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Chart Examples: Combo Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP-L:
 	function doColumnAreaLine() {
@@ -2081,7 +1794,7 @@ function genSlide19(pptx) {
 			//
 			showTitle: true,
 			titleFontSize: 12,
-			title: EVSALES_TITLE,
+			title: CHART_DATA.EvSales_Vol.chartTitle,
 			//
 			valAxes: [
 				{
@@ -2104,21 +1817,16 @@ function genSlide19(pptx) {
 			catAxes: [{ catAxisTitle: "Year" }, { catAxisHidden: true }],
 		};
 
-		// FIXME:
-		console.log(!!multiProps.valAxes);
-		console.log(!!multiProps.catAxes);
-
 		const multiTypes = [
 			{
 				type: pptx.charts.BAR,
-				data: EVSALES_DATA,
+				data: CHART_DATA.EvSales_Vol.chartData,
 				options: { chartColors: COLORS_SPECTRUM, barGrouping: "stacked" },
 			},
 			{
 				type: pptx.charts.LINE,
-				data: EVSALES_DATA_PCT,
-				options: { chartColors: ["F38940"], secondaryValAxis: !!multiProps.valAxes, secondaryCatAxis: !!multiProps.catAxes },
-				//options: { chartColors: ["F38940"], secondaryValAxis: true, secondaryCatAxis: true },
+				data: CHART_DATA.EvSales_Pct.chartData,
+				options: { chartColors: ["F38940"], secondaryValAxis: true, secondaryCatAxis: true },
 			},
 		];
 		slide.addChart(multiTypes, multiProps);
@@ -2522,10 +2230,7 @@ function genSlide20(pptx) {
 function devSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable(
-		[[{ text: "DEV-TEST: lots-of-bars (>26 letters); negative val check", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
-		BASE_TABLE_OPTS
-	);
+	slide.addTable([[{ text: "DEV-TEST: lots-of-bars (>26 letters); negative val check", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let arrDataHighVals = [
 		{
@@ -2639,13 +2344,12 @@ function devSlide03(pptx) {
 	);
 }
 
-// DEV/TEST 04: multi-chart
+// DEV/TEST 04: Combo Chart
 function devSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "DEV-TEST: multi-chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "DEV-TEST: combo-chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	// multi-chart for README
 	let labels = ["Q1", "Q2", "Q3", "Q4", "OT"];
 	let chartTypes = [
 		{
@@ -2659,6 +2363,7 @@ function devSlide04(pptx) {
 			],
 			options: {
 				barDir: "col",
+				chartColors: COLORS_VIVID,
 			},
 		},
 		{
@@ -2717,17 +2422,38 @@ function devSlide05(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "DEV-TEST: ref-test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	// TOP-MIDDLE
-	slide.addChart(pptx.charts.PIE, dataChartPieStat, {
-		x: 5.6,
-		y: 0.5,
-		w: 3.2,
-		h: 3.2,
+	let optsChartPie1 = {
+		x: 0.5,
+		y: 0.6,
+		w: 6.0,
+		h: 6.4,
 		chartArea: { fill: { color: "F1F1F1" } },
+		holeSize: 70,
+		showLabel: false,
+		showValue: false,
+		showPercent: true,
 		showLegend: true,
-		legendPos: "t",
-	});
+		legendPos: "b",
+		//
+		chartColors: COLORS_SPECTRUM,
+		dataBorder: { pt: "2", color: "F1F1F1" },
+		dataLabelColor: "FFFFFF",
+		dataLabelFontSize: 14,
+		//
+		showTitle: false,
+		title: "Project Status",
+		titleColor: "33CF22",
+		titleFontFace: "Helvetica Neue",
+		titleFontSize: 24,
+	};
+	slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1);
 
 	// [TEST][INTERNAL]: Used for ensuring ref counting works across mixed object types (eg: `rId` check/test)
-	if (TESTMODE) slide.addImage({ path: IMAGE_PATHS.ccCopyRemix.path, x: 0.5, y: 1.0, w: 1.2, h: 1.2 });
+	slide.addImage({
+		path: IMAGE_PATHS.ccCopyRemix.path,
+		x: 6.83,
+		y: 0.6,
+		w: 6.0,
+		h: 6.0,
+	});
 }
