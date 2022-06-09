@@ -9,11 +9,12 @@ export const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Se
 export const QTRS = ["Q1", "Q2", "Q3", "Q4"];
 //
 export const COLOR_RED = "FF0000";
-export const COLOR_AMB = "F2AF00";
+export const COLOR_YLW = "F2AF00";
 export const COLOR_GRN = "7AB800";
 export const COLOR_UNK = "A9A9A9";
-export const COLOR_CRT = "AA0000";
-export const COLORS_RYGU = [COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK];
+export const COLOR_COMP = "4472C4";
+export const COLOR_CANC = "672C7E";
+export const COLORS_RYGU = [COLOR_RED, COLOR_YLW, COLOR_GRN, COLOR_COMP, COLOR_CANC, COLOR_UNK];
 //
 export const ACCENT_COLORS = ["4472C4", "ED7D31", "FFC000", "70AD47"]; // 1,2,4,6
 export const COLORS_SPECTRUM = ["56B4E4", "126CB0", "672C7E", "E92A31", "F06826", "E9AF1F", "51B747", "189247"]; // B-G spectrum wheel

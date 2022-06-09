@@ -1131,7 +1131,7 @@ function genSlide12(pptx) {
 		w: 4.0,
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
-		chartColors: ["FC0000", "FFCC00", "009900", "0088CC", "696969", "6600CC"],
+		chartColors: COLORS_RYGU,
 		dataBorder: { pt: "2", color: "F1F1F1" },
 		//
 		legendPos: "left",
@@ -1244,7 +1244,7 @@ function genSlide13(pptx) {
 		showLegend: true,
 		legendPos: "b",
 		//
-		chartColors: COLORS_SPECTRUM,
+		chartColors: COLORS_RYGU,
 		dataBorder: { pt: "2", color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontSize: 14,
@@ -1738,7 +1738,7 @@ function genSlide19(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Combo Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	// TOP-L:
+	// TOP-L: charts use same val axis (T-B)
 	function doColumnAreaLine() {
 		const multiProps = {
 			x: 0.5,
@@ -1797,7 +1797,7 @@ function genSlide19(pptx) {
 		slide.addChart(multiTypes, multiProps);
 	}
 
-	// TOP-R:
+	// TOP-R: charts use diff val axis (T-B, L-R)
 	function doStackedLine() {
 		let opts = {
 			x: 6.83,
