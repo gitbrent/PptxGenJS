@@ -642,19 +642,19 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
 				throw new Error('There must be the same number of value and category axes.')
 			}
-			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.catAxes[1]) {
 				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY)
 			}
+			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		} else {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		}
 
 		if (rel.opts.valAxes) {
-			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOptsLib, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.valAxes[1]) {
 				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOptsLib, AXIS_ID_VALUE_SECONDARY)
 			}
+			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOptsLib, AXIS_ID_VALUE_PRIMARY)
 		} else {
 			strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
 
