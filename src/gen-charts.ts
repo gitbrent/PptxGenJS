@@ -642,19 +642,16 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
 				throw new Error('There must be the same number of value and category axes.')
 			}
-			if (rel.opts.catAxes[1]) {
-				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY)
-			}
 			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		} else {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		}
 
 		if (rel.opts.valAxes) {
+			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOptsLib, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.valAxes[1]) {
 				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOptsLib, AXIS_ID_VALUE_SECONDARY)
 			}
-			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOptsLib, AXIS_ID_VALUE_PRIMARY)
 		} else {
 			strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
 
@@ -662,6 +659,11 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			if (rel.opts._type === CHART_TYPE.BAR3D) {
 				strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			}
+		}
+
+		// Combo Charts: Add secondary axes after all vals
+		if (rel.opts.catAxes && rel.opts.catAxes[1]) {
+			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY)
 		}
 	}
 
@@ -853,7 +855,6 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>'
 				strXml += '    </c:strRef>'
 				strXml += '  </c:tx>'
-				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Fill and Border
 				// TODO: CURRENT: Pull#727
@@ -888,6 +889,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
 
 				strXml += '  </c:spPr>'
+				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Data Labels per series
 				// NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
@@ -1726,9 +1728,9 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
 	if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
-		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>'
+		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="1"/>'
 	} else {
-		strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="0"/>'
+		strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="1"/>'
 	}
 	if (opts._type === CHART_TYPE.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
@@ -1813,7 +1815,6 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
 	if (valAxisId === AXIS_ID_VALUE_SECONDARY) axisPos = 'r' // default behavior for PPT is showing 2nd val axis on right (primary axis on left)
 	let isRight = axisPos === 'r' || axisPos === 't'
-	let crosses = isRight ? 'max' : 'autoZero'
 	let crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY
 	let strXml = ''
 
@@ -1876,7 +1877,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  </a:p>'
 	strXml += ' </c:txPr>'
 	strXml += ' <c:crossAx val="' + crossAxId + '"/>'
-	strXml += ` <c:${typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses'} val="${opts.catAxisCrossesAt || 'autoZero'}"/>`
+	strXml += ` <c:${typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses'} val="${isRight ? 'max' : opts.catAxisCrossesAt || 'autoZero'}"/>`
 	strXml +=
 		' <c:crossBetween val="' +
 		(opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0 ? true : false)
