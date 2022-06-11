@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-06-05T20:03:39.519Z */
+/* PptxGenJS 3.11.0-beta @ 2022-06-11T23:43:54.316Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5143,9 +5143,6 @@ function makeXmlCharts(rel) {
                 throw new Error('There must be the same number of value and category axes.');
             }
             strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
-            if (rel.opts.catAxes[1]) {
-                strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY);
-            }
         }
         else {
             strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
@@ -5162,6 +5159,10 @@ function makeXmlCharts(rel) {
             if (rel.opts._type === CHART_TYPE.BAR3D) {
                 strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY);
             }
+        }
+        // Combo Charts: Add secondary axes after all vals
+        if (rel.opts.catAxes && rel.opts.catAxes[1]) {
+            strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY);
         }
     }
     // C: Chart Properties and plotArea Options: Border, Data Table, Fill, Legend
@@ -5337,7 +5338,6 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
-                strXml += '  <c:invertIfNegative val="0"/>';
                 // Fill and Border
                 // TODO: CURRENT: Pull#727
                 // TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
@@ -5371,6 +5371,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
                 strXml += '  </c:spPr>';
+                strXml += '  <c:invertIfNegative val="0"/>';
                 // Data Labels per series
                 // NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
                 if (chartType !== CHART_TYPE.RADAR) {
@@ -6154,10 +6155,10 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     // NOTE: Adding Val Axis Formatting if scatter or bubble charts
     if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
-        strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="0"/>';
+        strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="1"/>';
     }
     else {
-        strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="0"/>';
+        strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="1"/>';
     }
     if (opts._type === CHART_TYPE.SCATTER) {
         strXml += '  <c:majorTickMark val="none"/>';
@@ -6244,14 +6245,17 @@ function makeCatAxis(opts, axisId, valAxisId) {
  */
 function makeValAxis(opts, valAxisId) {
     var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't';
-    var strXml = '';
+    if (valAxisId === AXIS_ID_VALUE_SECONDARY)
+        axisPos = 'r'; // default behavior for PPT is showing 2nd val axis on right (primary axis on left)
+    var isRight = axisPos === 'r' || axisPos === 't';
     var crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY;
+    var strXml = '';
     strXml += '<c:valAx>';
     strXml += '  <c:axId val="' + valAxisId + '"/>';
     strXml += '  <c:scaling>';
     if (opts.valAxisLogScaleBase)
-        strXml += "    <c:logBase val=\"".concat(opts.valAxisLogScaleBase, "\"/>");
-    strXml += '    <c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
+        strXml += "<c:logBase val=\"".concat(opts.valAxisLogScaleBase, "\"/>");
+    strXml += '<c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
     if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0)
         strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>';
     if (opts.valAxisMinVal || opts.valAxisMinVal === 0)
@@ -6310,7 +6314,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += '  </a:p>';
     strXml += ' </c:txPr>';
     strXml += ' <c:crossAx val="' + crossAxId + '"/>';
-    strXml += " <c:".concat(typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses', " val=\"").concat(opts.catAxisCrossesAt || 'autoZero', "\"/>");
+    strXml += " <c:".concat(typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses', " val=\"").concat(isRight ? 'max' : opts.catAxisCrossesAt || 'autoZero', "\"/>");
     strXml +=
         ' <c:crossBetween val="' +
             (opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(function (type) { return type.type === CHART_TYPE.AREA; }).length > 0 ? true : false)
@@ -6664,7 +6668,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220605-1212';
+var VERSION = '3.11.0-beta-20220611-1841';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
