@@ -45,6 +45,7 @@ export function genSlides_Chart(pptx) {
 	genSlide18(pptx);
 	genSlide19(pptx);
 	genSlide20(pptx);
+	genSlide21(pptx);
 
 	if (TESTMODE) {
 		pptx.addSection({ title: "Charts-DevTest" });
@@ -1025,9 +1026,10 @@ function genSlide10(pptx) {
 			w: 4.25,
 			h: 2.25,
 			lineDataSymbol: opt,
+			lineDataSymbolSize: idx == 5 ? 9 : idx == 6 ? 12 : null,
+			chartColors: COLORS_VIVID,
 			title: opt,
 			showTitle: true,
-			lineDataSymbolSize: idx == 5 ? 9 : idx == 6 ? 12 : null,
 		});
 	});
 }
@@ -1134,7 +1136,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_RYGU,
 		dataBorder: { pt: "2", color: "F1F1F1" },
 		//
-		legendPos: "left",
+		legendPos: "l",
 		legendFontFace: "Courier New",
 		showLegend: true,
 		//
@@ -1737,6 +1739,71 @@ function genSlide19(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Combo Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addText(`(${CHART_DATA.EvSales_Vol.sourceUrl})`, FOOTER_TEXT_OPTS);
+
+	const comboProps = {
+		x: 0.5,
+		y: 0.6,
+		w: 12.3,
+		h: "85%",
+		chartArea: { fill: { color: "F1F1F1" } },
+		barDir: "col",
+		barGrouping: "stacked",
+		//
+		catAxisLabelColor: "494949",
+		catAxisLabelFontFace: "Arial",
+		catAxisLabelFontSize: 10,
+		catAxisOrientation: "minMax",
+		//
+		showLegend: true,
+		legendPos: "b",
+		//
+		showTitle: true,
+		titleFontFace: "Calibri Light",
+		titleFontSize: 14,
+		title: CHART_DATA.EvSales_Vol.chartTitle,
+		//
+		valAxes: [
+			{
+				showValAxisTitle: true,
+				valAxisTitle: "Cars Produced (m)",
+				valAxisMaxVal: 10,
+				valAxisTitleColor: "1982c4",
+				valAxisLabelColor: "1982c4",
+			},
+			{
+				showValAxisTitle: true,
+				valAxisTitle: "Global Market Share (%)",
+				valAxisMaxVal: 10,
+				valAxisTitleColor: "F38940",
+				valAxisLabelColor: "F38940",
+				valGridLine: { style: "none" },
+			},
+		],
+		//
+		catAxes: [{ catAxisTitle: "Year" }, { catAxisHidden: true }],
+	};
+	const comboTypes = [
+		{
+			type: pptx.charts.BAR,
+			data: CHART_DATA.EvSales_Vol.chartData,
+			options: { chartColors: COLORS_SPECTRUM, barGrouping: "stacked" },
+		},
+		{
+			type: pptx.charts.LINE,
+			data: CHART_DATA.EvSales_Pct.chartData,
+			options: { chartColors: ["F38940"], secondaryValAxis: true, secondaryCatAxis: true },
+		},
+	];
+
+	slide.addChart(comboTypes, comboProps);
+}
+
+// SLIDE 19: Combo Charts
+function genSlide20(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Combo Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP-L: charts use same val axis (T-B)
 	function doColumnAreaLine() {
@@ -1755,7 +1822,7 @@ function genSlide19(pptx) {
 			catAxisOrientation: "minMax",
 			//
 			showLegend: true,
-			legendPos: "right",
+			legendPos: "r",
 			//
 			showTitle: true,
 			titleFontSize: 12,
@@ -2049,13 +2116,13 @@ function genSlide19(pptx) {
 	}
 
 	doColumnAreaLine();
-	//doStackedLine();
+	doStackedLine();
 	doStackedDot();
 	doBarCol();
 }
 
 // SLIDE 20: Misc Options
-function genSlide20(pptx) {
+function genSlide21(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Misc Options: Shadow, Transparent Colors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
