@@ -1964,6 +1964,15 @@ declare namespace PptxGenJS {
 		 */
 		fill?: ShapeFillProps
 	}
+	export interface IChartAreaProps extends IChartPropsFillLine {
+		/**
+		 * Whether the chart area has rounded corners
+		 * - only applies when either `fill` or `border` is used
+		 * @default true
+		 * @since v3.11
+		 */
+		roundedCorners?: boolean
+	}
 	export interface IChartPropsBase {
 		/**
 		 * Axis position
@@ -1999,15 +2008,16 @@ declare namespace PptxGenJS {
 
 		/**
 		 * PowerPoint: Format Chart Area (Fill & Border/Line)
+		 * @since v3.11
 		 */
-		chartArea?: IChartPropsFillLine
+		chartArea?: IChartAreaProps
 		/**
 		 * PowerPoint: Format Plot Area (Fill & Border/Line)
+		 * @since v3.11
 		 */
 		plotArea?: IChartPropsFillLine
 
 		/**
-		 * Whether "Fit to Shape?" is enabled
 		 * @deprecated v3.11.0 - use `plotArea.border`
 		 */
 		border?: BorderProps

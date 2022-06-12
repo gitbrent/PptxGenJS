@@ -565,7 +565,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml +=
 			'<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
 		strXml += '<c:date1904 val="0"/>' // ppt defaults to 1904 dates, excel to 1900
-		// FUTURE: (20220528) <c:roundedCorners val="0"/>
+		strXml += `<c:roundedCorners val="${rel.opts.chartArea.roundedCorners ? '1' : '0'}"/>`
 		strXml += '<c:chart>'
 
 		// OPTION: Title

@@ -323,6 +323,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 			pt: options.chartArea.border.pt || DEF_CHART_BORDER.pt,
 		}
 	}
+	options.chartArea.roundedCorners = typeof options.chartArea.roundedCorners === 'boolean' ? options.chartArea.roundedCorners : true
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75

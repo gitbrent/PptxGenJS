@@ -1726,7 +1726,7 @@ function genSlide18(pptx) {
 		y: 0.6,
 		w: 12.3,
 		h: 6.5,
-		chartArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: "F1F1F1" }, roundedCorners: false },
 		catAxisMultiLevelLabels: true,
 		chartColors: ["C0504D", "C0504D", "C0504D", "C0504D", "FFC000", "FFC000", "FFC000", "FFC000"],
 	};
@@ -1734,11 +1734,11 @@ function genSlide18(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataRegions, opts1);
 }
 
-// SLIDE 19: Combo Charts
+// SLIDE 19: Combo Chart
 function genSlide19(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Combo Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Chart Examples: Combo Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addText(`(${CHART_DATA.EvSales_Vol.sourceUrl})`, FOOTER_TEXT_OPTS);
 
 	const comboProps = {
@@ -1799,69 +1799,100 @@ function genSlide19(pptx) {
 	slide.addChart(comboTypes, comboProps);
 }
 
-// SLIDE 19: Combo Charts
+// SLIDE 20: Combo Chart: Various Options
 function genSlide20(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Combo Charts", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Chart Examples: Combo Chart Options", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP-L: charts use same val axis (T-B)
 	function doColumnAreaLine() {
-		const multiProps = {
-			x: 0.5,
+		let opts = {
+			x: 0.6,
 			y: 0.6,
-			w: 12.3,
+			w: 6.0,
 			h: 3.0,
-			chartArea: { fill: { color: "F1F1F1" } },
 			barDir: "col",
-			barGrouping: "stacked",
-			//
-			catAxisLabelColor: "494949",
+			catAxisLabelColor: "666666",
 			catAxisLabelFontFace: "Arial",
-			catAxisLabelFontSize: 10,
+			catAxisLabelFontSize: 12,
 			catAxisOrientation: "minMax",
-			//
-			showLegend: true,
-			legendPos: "r",
-			//
-			showTitle: true,
-			titleFontSize: 12,
-			title: CHART_DATA.EvSales_Vol.chartTitle,
-			//
+			showLegend: false,
+			showTitle: false,
+			valAxisMaxVal: 100,
+			valAxisMajorUnit: 10,
+
 			valAxes: [
 				{
 					showValAxisTitle: true,
-					valAxisTitle: "Cars Produced (m)",
-					valAxisMaxVal: 10,
-					valAxisTitleColor: "1982c4",
-					valAxisLabelColor: "1982c4",
+					valAxisTitle: "Primary Value Axis",
 				},
 				{
 					showValAxisTitle: true,
-					valAxisTitle: "Global Market Share (%)",
-					valAxisMaxVal: 10,
-					valAxisTitleColor: "F38940",
-					valAxisLabelColor: "F38940",
+					valAxisTitle: "Secondary Value Axis",
 					valGridLine: { style: "none" },
 				},
 			],
-			//
-			catAxes: [{ catAxisTitle: "Year" }, { catAxisHidden: true }],
+
+			catAxes: [
+				{
+					catAxisTitle: "Primary Category Axis",
+				},
+				{
+					catAxisHidden: true,
+				},
+			],
 		};
 
-		const multiTypes = [
+		let labels = ["April", "May", "June", "July", "August"];
+		let chartTypes = [
+			{
+				type: pptx.charts.AREA,
+				data: [
+					{
+						name: "Current",
+						labels: labels,
+						values: [1, 4, 7, 2, 3],
+					},
+				],
+				options: {
+					chartColors: ["00FFFF"],
+					barGrouping: "standard",
+					secondaryValAxis: !!opts.valAxes,
+					secondaryCatAxis: !!opts.catAxes,
+				},
+			},
 			{
 				type: pptx.charts.BAR,
-				data: CHART_DATA.EvSales_Vol.chartData,
-				options: { chartColors: COLORS_SPECTRUM, barGrouping: "stacked" },
+				data: [
+					{
+						name: "Bottom",
+						labels: labels,
+						values: [17, 26, 53, 10, 4],
+					},
+				],
+				options: {
+					chartColors: ["0000FF"],
+					barGrouping: "stacked",
+				},
 			},
 			{
 				type: pptx.charts.LINE,
-				data: CHART_DATA.EvSales_Pct.chartData,
-				options: { chartColors: ["F38940"], secondaryValAxis: true, secondaryCatAxis: true },
+				data: [
+					{
+						name: "Current",
+						labels: labels,
+						values: [5, 3, 2, 4, 7],
+					},
+				],
+				options: {
+					barGrouping: "standard",
+					secondaryValAxis: !!opts.valAxes,
+					secondaryCatAxis: !!opts.catAxes,
+				},
 			},
 		];
-		slide.addChart(multiTypes, multiProps);
+		slide.addChart(chartTypes, opts);
 	}
 
 	// TOP-R: charts use diff val axis (T-B, L-R)
@@ -2121,7 +2152,7 @@ function genSlide20(pptx) {
 	doBarCol();
 }
 
-// SLIDE 20: Misc Options
+// SLIDE 21: Misc Options
 function genSlide21(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
