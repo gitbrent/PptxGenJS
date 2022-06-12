@@ -38,9 +38,9 @@ export const dataChartPieLocs = [
 
 export const arrDataLineStat = [
 	{ name: "Red", labels: QTRS, values: [1, 3, 5, 7] },
-	{ name: "Amb", labels: QTRS, values: [5, 26, 32, 30] },
-	{ name: "Grn", labels: QTRS, values: [7, 52, 18, 67] },
-	{ name: "Unk", labels: QTRS, values: [3, 5, 17, 1] },
+	{ name: "Yellow", labels: QTRS, values: [5, 26, 32, 30] },
+	{ name: "Green", labels: QTRS, values: [7, 52, 18, 67] },
+	{ name: "Complete", labels: QTRS, values: [3, 5, 17, 1] },
 ];
 
 // LABELS
