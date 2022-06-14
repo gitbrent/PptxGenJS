@@ -238,6 +238,32 @@ export const CHART_DATA = {
 			},
 		],
 	},
+	MinWageByCountry: {
+		sourceUrl: "https://ilostat.ilo.org/topics/wages/",
+		chartTitle: "Monthly Minimum Wage (USD)",
+		chartData: [
+			{
+				name: "US $",
+				labels: [
+					"Australia",
+					"Germany",
+					"United Kingdom",
+					"France",
+					"Canada",
+					"Japan",
+					"United States",
+					"Brazil",
+					"Thailand",
+					"China",
+					"Viet Nam",
+					"Ukraine",
+					"Indonesia",
+					"India",
+				],
+				values: [2229.86, 1743.02, 1736.13, 1702.97, 1456.9, 1359.98, 1256.67, 253.01, 220.33, 217.13, 181.34, 161.46, 111.04, 51.03],
+			},
+		],
+	},
 	LongTermIntRates: {
 		sourceUrl: "https://data.oecd.org/interest/long-term-interest-rates.htm",
 		chartTitle: "Long-Term Interest Rates",
