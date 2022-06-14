@@ -99,28 +99,26 @@ function genSlide01(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		chartArea: { border: { color: COLORS_SPECTRUM[0], pt: 1 } },
+		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		//plotArea: { fill: { color: pptx.colors.BACKGROUND1 }, border: { color: pptx.colors.BACKGROUND2, pt: 1 } },
+		chartColors: COLORS_SPECTRUM,
+
 		objectName: "bar chart (top L)",
 		altText: "this is the alt text content",
-
 		barDir: "bar",
-		//plotArea: { border: { pt: "3", color: "00CE00" }, fill: { color: "F1F1F1" } },
-		border: { pt: "3", color: "00CE00" }, // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
-		fill: "F1F1F1", // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
 
-		catAxisLabelColor: "CC0000",
+		catAxisLabelColor: ACCENT_COLORS[0],
 		catAxisLabelFontFace: "Helvetica Neue",
-		catAxisLabelFontSize: 14,
+		catAxisLabelFontSize: 12,
 		catAxisOrientation: "maxMin",
 		catAxisMajorTickMark: "in",
 		catAxisMinorTickMark: "cross",
 
-		//valAxisCrossesAt: 100,
 		valAxisMajorTickMark: "cross",
 		valAxisMinorTickMark: "out",
-
-		titleColor: "33CF22",
-		titleFontFace: "Helvetica Neue",
-		titleFontSize: 24,
+		//valAxisLabelColor: ACCENT_COLORS[0],
+		//valAxisCrossesAt: 100,
 	};
 	slide.addChart(pptx.charts.BAR, arrDataSersCats, optsChartBar1);
 
@@ -130,24 +128,30 @@ function genSlide01(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		chartArea: { border: { color: COLORS_SPECTRUM[0], pt: 1 } },
+		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		//plotArea: { fill: { color: pptx.colors.BACKGROUND1 }, border: { color: pptx.colors.BACKGROUND2, pt: 1 } },
+		chartColors: COLORS_SPECTRUM,
+
 		objectName: "bar chart (top R)",
 		barDir: "col",
 
-		catAxisLabelColor: "0000CC",
-		catAxisLabelFontFace: "Courier",
-		catAxisLabelFontSize: 12,
+		catAxisLabelColor: ACCENT_COLORS[0],
+		catAxisLabelFontFace: "Arial",
+		catAxisLabelFontSize: 11,
 		catAxisOrientation: "minMax",
 		catAxisMajorTickMark: "none",
 		catAxisMinorTickMark: "none",
 
 		dataBorder: { pt: "1", color: "F1F1F1" },
-		dataLabelColor: "696969",
-		dataLabelFontFace: "Arial",
-		dataLabelFontSize: 11,
+		dataLabelColor: ACCENT_COLORS[0],
+		dataLabelFontFace: "Courier",
+		dataLabelFontSize: 10,
 		dataLabelPosition: "outEnd",
 		dataLabelFormatCode: "#.0",
 		showValue: true,
 
+		valAxisLabelColor: ACCENT_COLORS[0],
 		valAxisOrientation: "maxMin",
 		valAxisMajorTickMark: "none",
 		valAxisMinorTickMark: "none",
@@ -166,11 +170,12 @@ function genSlide01(pptx) {
 		h: 3.5,
 		barDir: "bar",
 
-		//chartArea: { fill: { color: "F1F1F1" } },
+		chartArea: { fill: { color: pptx.colors.BACKGROUND2 }, border: { color: pptx.colors.ACCENT3, pt: 2 } },
 		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
-		chartArea: { fill: { color: pptx.colors.BACKGROUND2 }, border: { color: pptx.colors.ACCENT3, pt: 3 } },
 		//chartArea: { fill: { color: "F1F1F1", transparency: 75 } },
-		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
+		//chartArea: { fill: { color: "F1F1F1" } },
+		plotArea: { fill: { color: "F2F9FC" } },
+		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
 		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } },
 
 		catAxisLabelColor: "CC0000",
@@ -194,31 +199,35 @@ function genSlide01(pptx) {
 		w: 6.0,
 		h: 3.5,
 		chartArea: { fill: { color: "F1F1F1" } },
-
+		plotArea: { fill: { color: "404040" } },
+		//
 		barDir: "col",
 		barGapWidthPct: 25,
-		chartColors: ["0088CC", "99FFCC"],
+		chartColors: ACCENT_COLORS,
 		chartColorsOpacity: 50,
-		valAxisMaxVal: 5000,
-
-		catAxisLabelColor: "0000CC",
-		catAxisLabelFontFace: "Times",
+		//
+		catAxisLabelColor: ACCENT_COLORS[0],
+		catAxisLabelFontFace: "Calibri",
 		catAxisLabelFontSize: 11,
-		catAxisOrientation: "minMax",
-
+		catAxisOrientation: "maxMin",
+		//
+		valAxisMaxVal: 5000,
+		valAxisLabelColor: ACCENT_COLORS[0],
+		//
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
 		dataLabelPosition: "ctr",
 		showValue: true,
-
-		showLegend: true,
-		legendPos: "t",
-		legendColor: "FF0000",
+		//
+		showLegend: false,
+		legendPos: "b",
+		legendColor: ACCENT_COLORS[1],
+		//
 		showTitle: true,
-		titleColor: "FF0000",
-		title: "Red Title and Legend",
+		title: "Rent Prices",
+		titleColor: ACCENT_COLORS[0],
 	};
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
 }
@@ -2526,3 +2535,38 @@ function devSlide05(pptx) {
  * 	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
  *	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
  */
+
+ /**
+  * TODO:
+  * let optsChartBar1 = {
+		x: 0.5,
+		y: 0.6,
+		w: 6.0,
+		h: 3.0,
+		chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		plotArea: { fill: { color: pptx.colors.BACKGROUND1 }, border: { color: pptx.colors.BACKGROUND2, pt: 1 } },
+		//
+		objectName: "bar chart (top L)",
+		altText: "this is the alt text content",
+		barDir: "bar",
+		border: { pt: "3", color: "00CE00" }, // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
+		fill: "F1F1F1", // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
+
+		catAxisLabelColor: "CC0000",
+		catAxisLabelFontFace: "Helvetica Neue",
+		catAxisLabelFontSize: 14,
+		catAxisOrientation: "maxMin",
+		catAxisMajorTickMark: "in",
+		catAxisMinorTickMark: "cross",
+
+		//valAxisCrossesAt: 100,
+		valAxisMajorTickMark: "cross",
+		valAxisMinorTickMark: "out",
+
+		titleColor: "33CF22",
+		titleFontFace: "Helvetica Neue",
+		titleFontSize: 24,
+	};
+	slide.addChart(pptx.charts.BAR, arrDataSersCats, optsChartBar1);
+
+  */
