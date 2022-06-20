@@ -18,6 +18,7 @@ import {
 	LETTERS,
 	MONS,
 	arrDataLineStat,
+	dataChartBar3Series,
 	dataChartPieLocs,
 	dataChartPieStat,
 } from "./enums_charts.mjs";
@@ -75,18 +76,6 @@ function genSlide01(pptx) {
 			values: [43.5, 70.3, 90.1, 80.05],
 		},
 	];
-	let arrDataHighVals = [
-		{
-			name: "California",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [2000, 2800, 3200, 4000, 5000],
-		},
-		{
-			name: "Texas",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [1400, 2000, 2500, 3000, 3800],
-		},
-	];
 	let arrDataSersCats = [
 		{ name: "Series 1", labels: ["Category 1", "Category 2", "Category 3", "Category 4"], values: [4.3, 2.5, 3.5, 4.5] },
 		{ name: "Series 2", labels: ["Category 1", "Category 2", "Category 3", "Category 4"], values: [2.4, 4.4, 1.8, 2.8] },
@@ -100,8 +89,8 @@ function genSlide01(pptx) {
 		w: 6.0,
 		h: 3.0,
 		chartArea: { border: { color: COLORS_SPECTRUM[0], pt: 1 } },
-		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
-		//plotArea: { fill: { color: pptx.colors.BACKGROUND1 }, border: { color: pptx.colors.BACKGROUND2, pt: 1 } },
+		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 }, border: { color: pptx.colors.BACKGROUND2, pt: 1 }  },
+		plotArea: { fill: { color: "DAE3F3" } },
 		chartColors: COLORS_SPECTRUM,
 
 		objectName: "bar chart (top L)",
@@ -130,6 +119,7 @@ function genSlide01(pptx) {
 		h: 3.0,
 		chartArea: { border: { color: COLORS_SPECTRUM[0], pt: 1 } },
 		//chartArea: { fill: { color: pptx.colors.BACKGROUND2 } },
+		plotArea: { fill: { color: "DAE3F3" } },
 		//plotArea: { fill: { color: pptx.colors.BACKGROUND1 }, border: { color: pptx.colors.BACKGROUND2, pt: 1 } },
 		chartColors: COLORS_SPECTRUM,
 
@@ -143,7 +133,7 @@ function genSlide01(pptx) {
 		catAxisMajorTickMark: "none",
 		catAxisMinorTickMark: "none",
 
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		dataLabelColor: ACCENT_COLORS[0],
 		dataLabelFontFace: "Courier",
 		dataLabelFontSize: 10,
@@ -175,8 +165,8 @@ function genSlide01(pptx) {
 		//chartArea: { fill: { color: "F1F1F1", transparency: 75 } },
 		//chartArea: { fill: { color: "F1F1F1" } },
 		plotArea: { fill: { color: "F2F9FC" } },
-		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
-		//plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } },
+		//plotArea: { border: { pt: 3, color: "CF0909" }, fill: { color: "F1C1C1" } },
+		//plotArea: { border: { pt: 3, color: "CF0909" }, fill: { color: "F1C1C1", transparency: 10 } },
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -190,7 +180,7 @@ function genSlide01(pptx) {
 		showTitle: true,
 		title: "Sales by Region",
 	};
-	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar3);
+	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar3);
 
 	// BTM-RIGHT: V/col - TITLE and LEGEND
 	let optsChartBar4 = {
@@ -214,7 +204,7 @@ function genSlide01(pptx) {
 		valAxisMaxVal: 5000,
 		valAxisLabelColor: ACCENT_COLORS[0],
 		//
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
@@ -229,7 +219,7 @@ function genSlide01(pptx) {
 		title: "Rent Prices",
 		titleColor: ACCENT_COLORS[0],
 	};
-	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
+	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar4);
 }
 
 // SLIDE 2: Bar Chart: Grid/Axis Options
@@ -301,7 +291,7 @@ function genSlide02(pptx) {
 		barDir: "col",
 		plotArea: { fill: { color: "E1F1FF" } },
 
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		dataLabelColor: "696969",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 11,
@@ -329,7 +319,7 @@ function genSlide02(pptx) {
 		h: 3.5,
 
 		chartArea: { fill: { color: "F1F1F1" } },
-		plotArea: { border: { pt: "3", color: "CF0909" }, fill: { color: "F1C1C1" } },
+		plotArea: { border: { pt: 3, color: "CF0909" }, fill: { color: "F1C1C1" } },
 
 		barDir: "bar",
 		barOverlapPct: -50,
@@ -379,7 +369,7 @@ function genSlide02(pptx) {
 		catAxisLabelFrequency: 1,
 		catAxisOrientation: "minMax",
 
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
@@ -461,16 +451,22 @@ function genSlide03(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		chartArea: { fill: { color: "0d0d0d" } },
+		plotArea: { fill: { color: "4d4d4d" } },
+		chartColors: COLORS_VIVID,
+		valGridLine: { color: "141414" },
+		valAxisLabelColor: "F1F1F1",
+		catAxisLabelColor: "F1F1F1",
+		dataLabelColor: "F1F1F1",
+
 		barDir: "col",
 		barGrouping: "stacked",
 
-		dataLabelColor: "FFFFFF",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 12,
 		dataLabelFontBold: true,
 		showValue: true,
 
-		catAxisLabelColor: "0000CC",
 		catAxisLabelFontFace: "Courier",
 		catAxisLabelFontSize: 12,
 		catAxisOrientation: "minMax",
@@ -478,7 +474,7 @@ function genSlide03(pptx) {
 		showLegend: false,
 		showTitle: false,
 	};
-	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar2);
+	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar2);
 
 	// BTM-LEFT: H/bar - 100% layout without axis labels
 	let optsChartBar3 = {
@@ -488,7 +484,7 @@ function genSlide03(pptx) {
 		h: 3.5,
 		barDir: "bar",
 		barGrouping: "percentStacked",
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		catAxisHidden: true,
 		valAxisHidden: true,
 		showTitle: false,
@@ -512,8 +508,6 @@ function genSlide03(pptx) {
 
 		barDir: "col",
 		barGrouping: "percentStacked",
-
-		catAxisLabelColor: "0000CC",
 		catAxisLabelFontFace: "Times",
 		catAxisLabelFontSize: 12,
 		catAxisOrientation: "minMax",
@@ -681,6 +675,7 @@ function genSlide05(pptx) {
 			w: "45%",
 			h: 3,
 			chartArea: { fill: { color: "404040" } },
+			plotArea: { fill: { color: "202020" } },
 			catAxisLabelColor: "F1F1F1",
 			valAxisLabelColor: "F1F1F1",
 			valAxisLineColor: "7F7F7F",
@@ -721,14 +716,14 @@ function genSlide05(pptx) {
 			y: 4,
 			w: "45%",
 			h: 3,
-			chartArea: { fill: { color: "404040" } },
+			chartArea: { fill: { color: "202020" } },
 			barDir: "bar",
 			catAxisLabelColor: "F1F1F1",
 			valAxisLabelColor: "F1F1F1",
 			valAxisLineColor: "7F7F7F",
 			valGridLine: { color: "7F7F7F" },
 			dataLabelColor: "B7B7B7",
-			chartColorsOpacity: 50,
+			chartColorsOpacity: 75,
 			//showValue: true,
 			//dataLabelPosition: "outEnd",
 			chartColors: ["0077BF", "4E9D2D", "ECAA00", "5FC4E3", "DE4216", "154384", "7D666A", "A3C961", "EF907B", "9BA0A3"],
@@ -860,7 +855,7 @@ function genSlide06(pptx) {
 		catAxisLabelFontSize: 11,
 		catAxisOrientation: "minMax",
 
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		dataLabelColor: "000000",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
@@ -1078,7 +1073,7 @@ function genSlide11(pptx) {
 		chartArea: { fill: { color: "e9e9e9" } },
 		plotArea: { fill: { color: "f2f9fc" } },
 		chartColors: COLORS_VIVID,
-		dataBorder: { pt: "1", color: "F1F1F1" },
+		dataBorder: { pt: 1, color: "F1F1F1" },
 		showTitle: true,
 		title: CHART_DATA.CeoPayRatio_Comp.chartTitle,
 		titleFontSize: 11,
@@ -1143,7 +1138,7 @@ function genSlide12(pptx) {
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
 		chartColors: COLORS_RYGU,
-		dataBorder: { pt: "2", color: "F1F1F1" },
+		dataBorder: { pt: 2, color: "F1F1F1" },
 		//
 		legendPos: "l",
 		legendFontFace: "Courier New",
@@ -1165,6 +1160,8 @@ function genSlide12(pptx) {
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
 		chartColors: COLORS_SPECTRUM,
+		dataBorder: { pt: 1, color: "404040" },
+		dataLabelColor: "f2f9fc",
 		showLegend: true,
 		legendPos: "t",
 	});
@@ -2508,7 +2505,7 @@ function devSlide05(pptx) {
 		legendPos: "b",
 		//
 		chartColors: COLORS_SPECTRUM,
-		dataBorder: { pt: "2", color: "F1F1F1" },
+		dataBorder: { pt: 2, color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontSize: 14,
 		//
@@ -2536,7 +2533,7 @@ function devSlide05(pptx) {
  *	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
  */
 
- /**
+/**
   * TODO:
   * let optsChartBar1 = {
 		x: 0.5,

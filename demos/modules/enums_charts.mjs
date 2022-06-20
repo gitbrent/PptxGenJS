@@ -36,6 +36,25 @@ export const dataChartPieLocs = [
 	},
 ];
 
+// WIP:
+export const dataChartBar3Series = [
+	{
+		name: "Americas",
+		labels: ["Phones", "Laptops", "Tablets", "Desktops"],
+		values: [1400, 2000, 2500, 3000],
+	},
+	{
+		name: "Asia",
+		labels: ["Phones", "Laptops", "Tablets", "Desktops"],
+		values: [2000, 2800, 3200, 5000],
+	},
+	{
+		name: "Europe",
+		labels: ["Phones", "Laptops", "Tablets", "Desktops"],
+		values: [1400, 2000, 3000, 3800],
+	},
+];
+
 export const arrDataLineStat = [
 	{ name: "Red", labels: QTRS, values: [1, 3, 5, 7] },
 	{ name: "Yellow", labels: QTRS, values: [5, 26, 32, 30] },
