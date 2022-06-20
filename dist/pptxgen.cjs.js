@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-06-11T23:43:54.316Z */
+/* PptxGenJS 3.11.0-beta @ 2022-06-20T02:59:08.743Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3558,6 +3558,7 @@ function addChartDefinition(target, type, data, opt) {
             pt: options.chartArea.border.pt || DEF_CHART_BORDER.pt,
         };
     }
+    options.chartArea.roundedCorners = typeof options.chartArea.roundedCorners === 'boolean' ? options.chartArea.roundedCorners : true;
     //
     options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
     if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
@@ -5067,7 +5068,7 @@ function makeXmlCharts(rel) {
         strXml +=
             '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
         strXml += '<c:date1904 val="0"/>'; // ppt defaults to 1904 dates, excel to 1900
-        // FUTURE: (20220528) <c:roundedCorners val="0"/>
+        strXml += "<c:roundedCorners val=\"".concat(rel.opts.chartArea.roundedCorners ? '1' : '0', "\"/>");
         strXml += '<c:chart>';
         // OPTION: Title
         if (rel.opts.showTitle) {
@@ -5574,7 +5575,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
                 strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$1</c:f>';
-                strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + obj.name + '</c:v></c:pt></c:strCache>';
+                strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
                 // 'c:spPr': Fill, Border, Line, LineStyle (dash, etc.), Shadow
@@ -5866,7 +5867,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
                 strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$1</c:f>';
-                strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + obj.name + '</c:v></c:pt></c:strCache>';
+                strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
                 // B: '<c:spPr>': Fill, Border, Line, LineStyle (dash, etc.), Shadow
@@ -6668,7 +6669,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220611-1841';
+var VERSION = '3.11.0-beta-20220619-2150';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
