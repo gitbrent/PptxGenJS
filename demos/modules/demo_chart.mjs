@@ -19,6 +19,7 @@ import {
 	MONS,
 	arrDataLineStat,
 	dataChartBar3Series,
+	dataChartBar8Series,
 	dataChartPieLocs,
 	dataChartPieStat,
 } from "./enums_charts.mjs";
@@ -55,6 +56,8 @@ export function genSlides_Chart(pptx) {
 		devSlide03(pptx);
 		devSlide04(pptx);
 		devSlide05(pptx);
+		devSlide06(pptx);
+		devSlide07(pptx);
 	}
 }
 
@@ -504,14 +507,15 @@ function genSlide03(pptx) {
 		y: 3.8,
 		w: 6.0,
 		h: 3.5,
-		chartArea: { fill: { color: "F1F1F1" } },
-
+		chartArea: { fill: { color: "f1f1f1" } },
+		plotArea: { fill: { color: "ffffff" } },
+		chartColors: COLORS_VIVID,
+		//
 		barDir: "col",
 		barGrouping: "percentStacked",
 		catAxisLabelFontFace: "Times",
 		catAxisLabelFontSize: 12,
 		catAxisOrientation: "minMax",
-		chartColors: ["5DA5DA", "FAA43A"],
 		showLegend: true,
 		legendPos: "t",
 		showDataTable: true,
@@ -520,7 +524,7 @@ function genSlide03(pptx) {
 		//dataTableFormatCode: '0.00%' // @since v3.3.0
 		//dataTableFormatCode: '$0.00' // @since v3.3.0
 	};
-	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
+	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar4);
 }
 
 // SLIDE 4: Bar Chart: Title Options, Inverted Colors
@@ -543,6 +547,7 @@ function genSlide04(pptx) {
 		w: "90%",
 		h: "90%",
 		barDir: "col",
+		barGrouping: "stacked",
 		//
 		showTitle: true,
 		title: "Rotated Title",
@@ -550,7 +555,8 @@ function genSlide04(pptx) {
 		titleRotate: 10,
 		//
 		showLegend: true,
-		chartColors: ["00B050"],
+		//chartColors: ["00B050"],
+		chartColors: COLORS_CHART,
 		invertedColors: ["C0504D"],
 		//
 		showCatAxisTitle: true,
@@ -565,7 +571,8 @@ function genSlide04(pptx) {
 	};
 
 	// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
-	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
+	//slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
+	slide.addChart(pptx.charts.BAR, dataChartBar8Series, optsChart);
 }
 
 // SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode
@@ -2533,9 +2540,20 @@ function devSlide05(pptx) {
  *	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
  */
 
-/**
-  * TODO:
-  * let optsChartBar1 = {
+function devSlide06(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "DEV-TEST: ref-test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	let arrDataHighVals = [
+		{
+			name: "Series With Negative Values",
+			labels: ["N2", "N1", "ZERO", "P1", "P2", "P3", "P4", "P5", "P6", "P7"],
+			values: [-5, -3, 0, 3, 5, 6, 7, 8, 9, 10],
+		},
+	];
+
+	let optsChartBar1 = {
 		x: 0.5,
 		y: 0.6,
 		w: 6.0,
@@ -2548,22 +2566,64 @@ function devSlide05(pptx) {
 		barDir: "bar",
 		border: { pt: "3", color: "00CE00" }, // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
 		fill: "F1F1F1", // @deprecated - legacy text only (dont use this syntax - use `plotArea`)
-
+		//
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
 		catAxisLabelFontSize: 14,
 		catAxisOrientation: "maxMin",
 		catAxisMajorTickMark: "in",
 		catAxisMinorTickMark: "cross",
-
+		//
 		//valAxisCrossesAt: 100,
 		valAxisMajorTickMark: "cross",
 		valAxisMinorTickMark: "out",
-
+		//
 		titleColor: "33CF22",
 		titleFontFace: "Helvetica Neue",
 		titleFontSize: 24,
 	};
-	slide.addChart(pptx.charts.BAR, arrDataSersCats, optsChartBar1);
+	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar1);
+}
 
-  */
+function devSlide07(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "DEV-TEST: Title Options; invertedColors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	let arrDataHighVals = [
+		{
+			name: "Series With Negative Values",
+			labels: ["N2", "N1", "ZERO", "P1", "P2", "P3", "P4", "P5", "P6", "P7"],
+			values: [-5, -3, 0, 3, 5, 6, 7, 8, 9, 10],
+		},
+	];
+
+	let optsChart = {
+		x: 0.5,
+		y: 0.5,
+		w: "90%",
+		h: "90%",
+		barDir: "col",
+		//
+		showTitle: true,
+		title: "Rotated Title",
+		titleFontSize: 20,
+		titleRotate: 10,
+		//
+		showLegend: true,
+		chartColors: COLORS_CHART,
+		invertedColors: ["C0504D"],
+		//
+		showCatAxisTitle: true,
+		catAxisTitle: "Cat Axis Title",
+		catAxisTitleColor: "4286f4",
+		catAxisTitleFontSize: 14,
+		//
+		showValAxisTitle: true,
+		valAxisTitle: "Val Axis Title",
+		valAxisTitleColor: "c11c13",
+		valAxisTitleFontSize: 16,
+	};
+
+	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
+}

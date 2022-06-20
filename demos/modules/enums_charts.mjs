@@ -35,8 +35,6 @@ export const dataChartPieLocs = [
 		values: [69, 35, 40, 85, 38, 99, 101],
 	},
 ];
-
-// WIP:
 export const dataChartBar3Series = [
 	{
 		name: "Americas",
@@ -54,12 +52,23 @@ export const dataChartBar3Series = [
 		values: [1400, 2000, 3000, 3800],
 	},
 ];
-
 export const arrDataLineStat = [
 	{ name: "Red", labels: QTRS, values: [1, 3, 5, 7] },
 	{ name: "Yellow", labels: QTRS, values: [5, 26, 32, 30] },
 	{ name: "Green", labels: QTRS, values: [7, 52, 18, 67] },
 	{ name: "Complete", labels: QTRS, values: [3, 5, 17, 1] },
+];
+
+const labels8Series = ["Product A", "Product B", "Product C", "Product D", "Product E", "Product F", "Product G"];
+export const dataChartBar8Series = [
+	{ name: "Strategy 1", labels: labels8Series, values: [100, 101, 140, 70, 54, 25, 100] },
+	{ name: "Strategy 2", labels: labels8Series, values: [105, 140, 144, 152, 35, 100, 44] },
+	{ name: "Strategy 3", labels: labels8Series, values: [120, 80, 160, 144, 20, 180, 60] },
+	{ name: "Strategy 4", labels: labels8Series, values: [90, 79, 162, 170, 99, 79, 16] },
+	{ name: "Strategy 5", labels: labels8Series, values: [118, 99, 137, 20, 181, 159, 13] },
+	{ name: "Strategy 6", labels: labels8Series, values: [18, 199, 117, 120, 131, 109, 43] },
+	{ name: "Strategy 7", labels: labels8Series, values: [92, 75, 127, 120, 21, 169, 33] },
+	{ name: "Strategy 8", labels: labels8Series, values: [118, 99, 137, 20, 181, 159, 13] },
 ];
 
 // LABELS
