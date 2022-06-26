@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - escape object name in chart xml [\#1122](https://github.com/gitbrent/PptxGenJS/pull/1122) ([mathbruyen](https://github.com/mathbruyen))
 - Several issues with charts embedded Excel sheets that prevented "Edit Data in Excel" from working ([gitbrent](https://github.com/gitbrent))
 - Issue with combo charts secondary axis on wrong side ([gitbrent](https://github.com/gitbrent))
+- Issue with chart prop `titlePos` not working ([gitbrent](https://github.com/gitbrent))
 
 ### Changed
 
