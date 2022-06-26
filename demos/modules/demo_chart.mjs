@@ -1667,6 +1667,8 @@ function genSlide17(pptx) {
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 		barDir: "col",
+		barGapWidthPct: 0,
+		//catAxisLabelColor: "696969",
 	};
 
 	const opts3 = {
