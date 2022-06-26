@@ -536,7 +536,7 @@ function genSlide04(pptx) {
 		//
 		showTitle: true,
 		title: "Chart Title",
-		titleFontFace: "Helvetica Neue",
+		titleFontFace: "Helvetica Neue Thin",
 		titleFontSize: 24,
 		titleColor: COLORS_ACCENT[0],
 		titlePos: { x: 1.5, y: 0 },
@@ -735,26 +735,14 @@ function genSlide06(pptx) {
 
 	let arrDataRegions = [
 		{
-			name: "Region 1 Sales",
+			name: "Region 1",
 			labels: ["Q1", "Q2", "Q3", "Q4"],
 			values: [26, 53, 80, 75],
 		},
 		{
-			name: "Region 2 Sales",
+			name: "Region 2",
 			labels: ["Q1", "Q2", "Q3", "Q4"],
 			values: [43.5, 70.3, 90.01, 80.05],
-		},
-	];
-	let arrDataHighVals = [
-		{
-			name: "California",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [2000, 2800, 3200, 4000, 5000],
-		},
-		{
-			name: "Texas",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [1400, 2000, 2500, 3000, 3800],
 		},
 	];
 
@@ -768,6 +756,7 @@ function genSlide06(pptx) {
 		barDir: "bar",
 		barGapWidthPct: 25,
 		chartColors: COLORS_SPECTRUM,
+		chartColorsOpacity: 80,
 		//
 		catAxisLabelColor: COLORS_SPECTRUM[1],
 		catAxisLineColor: COLORS_SPECTRUM[1],
@@ -784,6 +773,7 @@ function genSlide06(pptx) {
 		//valAxisHidden: true,
 		valAxisLabelColor: COLORS_SPECTRUM[0],
 		valAxisLineColor: COLORS_SPECTRUM[0],
+		valAxisLabelFontSize: 10,
 	};
 	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar1);
 
@@ -824,7 +814,6 @@ function genSlide06(pptx) {
 		bar3DShape: "pyramid",
 		barGrouping: "stacked",
 		//
-		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
 		//
@@ -833,8 +822,11 @@ function genSlide06(pptx) {
 		//
 		showTitle: true,
 		title: "Sales by Region",
+		titleFontFace: "Helvetica Neue Thin",
+		titleFontSize: 18,
+		titleColor: COLORS_ACCENT[0],
 	};
-	slide.addChart(pptx.charts.BAR3D, arrDataHighVals, optsChartBar3);
+	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar3);
 
 	// BTM-RIGHT: V/col - TITLE and LEGEND
 	let optsChartBar4 = {
@@ -843,30 +835,25 @@ function genSlide06(pptx) {
 		w: 6.0,
 		h: 3.5,
 		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
-
+		//
+		chartColors: COLORS_ACCENT,
 		barDir: "col",
 		bar3DShape: "coneToMax",
-		chartColors: ["0088CC", "99FFCC"],
-
-		catAxisLabelColor: "0000CC",
-		catAxisLabelFontFace: "Times",
+		//
+		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontSize: 11,
 		catAxisOrientation: "minMax",
-
+		//
+		serAxisLabelFontFace: "Helvetica Neue Thin",
+		serAxisLabelColor: COLORS_ACCENT[0],
+		//
 		dataBorder: { pt: 1, color: "F1F1F1" },
-		dataLabelColor: "000000",
+		dataLabelColor: "696969",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
 		dataLabelPosition: "ctr",
-
-		showLegend: true,
-		legendPos: "t",
-		legendColor: "FF0000",
-		showTitle: true,
-		titleColor: "FF0000",
-		title: "Red Title and Legend",
 	};
-	slide.addChart(pptx.charts.BAR3D, arrDataHighVals, optsChartBar4);
+	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar4);
 }
 
 // SLIDE 7: Tornado Chart
