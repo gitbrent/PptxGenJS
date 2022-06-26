@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-06-20T02:59:08.743Z */
+/* PptxGenJS 3.11.0-beta @ 2022-06-26T19:49:33.663Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5081,7 +5081,7 @@ function makeXmlCharts(rel) {
                 titleBold: rel.opts.titleBold,
                 titlePos: rel.opts.titlePos,
                 titleRotate: rel.opts.titleRotate,
-            });
+            }, rel.opts.x, rel.opts.y);
             strXml += '<c:autoTitleDeleted val="0"/>';
         }
         else {
@@ -6412,14 +6412,28 @@ function makeSerAxis(opts, axisId, valAxisId) {
  * @param {IChartPropsTitle} opts - options
  * @return {string} XML `<c:title>`
  */
-function genXmlTitle(opts) {
+function genXmlTitle(opts, chartX, chartY) {
     var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"".concat(opts.titleAlign.substring(0, 1), "\">") : "<a:pPr>";
     var rotate = opts.titleRotate ? "<a:bodyPr rot=\"".concat(convertRotationDegrees(opts.titleRotate), "\"/>") : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
     var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
     var titleBold = opts.titleBold === true ? 1 : 0;
-    var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
-        ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"".concat(opts.titlePos.x, "\"/><c:y val=\"").concat(opts.titlePos.y, "\"/></c:manualLayout></c:layout>")
-        : "<c:layout/>";
+    var layout = '<c:layout/>';
+    if (opts.titlePos && typeof opts.titlePos.x === 'number' && typeof opts.titlePos.y === 'number') {
+        // NOTE: manualLayout x/y vals are *relative to entire slide*
+        var totalX = opts.titlePos.x + chartX;
+        var totalY = opts.titlePos.y + chartY;
+        var valX = totalX === 0 ? 0 : (totalX * (totalX / 5)) / 10;
+        if (valX >= 1)
+            valX = valX / 10;
+        if (valX >= 0.1)
+            valX = valX / 10;
+        var valY = totalY === 0 ? 0 : (totalY * (totalY / 5)) / 10;
+        if (valY >= 1)
+            valY = valY / 10;
+        if (valY >= 0.1)
+            valY = valY / 10;
+        layout = "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"".concat(valX, "\"/><c:y val=\"").concat(valY, "\"/></c:manualLayout></c:layout>");
+    }
     return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      ".concat(rotate, "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        ").concat(align, "\n\t        <a:defRPr ").concat(sizeAttr, " b=\"").concat(titleBold, "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill>").concat(createColorElement(opts.color || DEF_FONT_COLOR), "</a:solidFill>\n\t          <a:latin typeface=\"").concat(opts.fontFace || 'Arial', "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr ").concat(sizeAttr, " b=\"").concat(titleBold, "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill>").concat(createColorElement(opts.color || DEF_FONT_COLOR), "</a:solidFill>\n\t          <a:latin typeface=\"").concat(opts.fontFace || 'Arial', "\"/>\n\t        </a:rPr>\n\t        <a:t>").concat(encodeXmlEntities(opts.title) || '', "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  ").concat(layout, "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>");
 }
 /**
@@ -6669,7 +6683,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220619-2150';
+var VERSION = '3.11.0-beta-20220626-1250';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
