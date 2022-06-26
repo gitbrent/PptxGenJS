@@ -9,7 +9,7 @@
 
 import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, FOOTER_TEXT_OPTS, IMAGE_PATHS, TESTMODE } from "./enums.mjs";
 import {
-	ACCENT_COLORS,
+	COLORS_ACCENT,
 	CHART_DATA,
 	COLORS_CHART,
 	COLORS_RYGU,
@@ -100,7 +100,7 @@ function genSlide01(pptx) {
 		altText: "this is the alt text content",
 		barDir: "bar",
 
-		catAxisLabelColor: ACCENT_COLORS[0],
+		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontFace: "Helvetica Neue",
 		catAxisLabelFontSize: 12,
 		catAxisOrientation: "maxMin",
@@ -109,7 +109,7 @@ function genSlide01(pptx) {
 
 		valAxisMajorTickMark: "cross",
 		valAxisMinorTickMark: "out",
-		//valAxisLabelColor: ACCENT_COLORS[0],
+		//valAxisLabelColor: COLORS_ACCENT[0],
 		//valAxisCrossesAt: 100,
 	};
 	slide.addChart(pptx.charts.BAR, arrDataSersCats, optsChartBar1);
@@ -129,7 +129,7 @@ function genSlide01(pptx) {
 		objectName: "bar chart (top R)",
 		barDir: "col",
 
-		catAxisLabelColor: ACCENT_COLORS[0],
+		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 11,
 		catAxisOrientation: "minMax",
@@ -137,14 +137,14 @@ function genSlide01(pptx) {
 		catAxisMinorTickMark: "none",
 
 		dataBorder: { pt: 1, color: "F1F1F1" },
-		dataLabelColor: ACCENT_COLORS[0],
+		dataLabelColor: COLORS_ACCENT[0],
 		dataLabelFontFace: "Courier",
 		dataLabelFontSize: 10,
 		dataLabelPosition: "outEnd",
 		dataLabelFormatCode: "#.0",
 		showValue: true,
 
-		valAxisLabelColor: ACCENT_COLORS[0],
+		valAxisLabelColor: COLORS_ACCENT[0],
 		valAxisOrientation: "maxMin",
 		valAxisMajorTickMark: "none",
 		valAxisMinorTickMark: "none",
@@ -196,16 +196,16 @@ function genSlide01(pptx) {
 		//
 		barDir: "col",
 		barGapWidthPct: 25,
-		chartColors: ACCENT_COLORS,
+		chartColors: COLORS_ACCENT,
 		chartColorsOpacity: 50,
 		//
-		catAxisLabelColor: ACCENT_COLORS[0],
+		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontFace: "Calibri",
 		catAxisLabelFontSize: 11,
 		catAxisOrientation: "maxMin",
 		//
 		valAxisMaxVal: 5000,
-		valAxisLabelColor: ACCENT_COLORS[0],
+		valAxisLabelColor: COLORS_ACCENT[0],
 		//
 		dataBorder: { pt: 1, color: "F1F1F1" },
 		dataLabelColor: "FFFFFF",
@@ -216,11 +216,11 @@ function genSlide01(pptx) {
 		//
 		showLegend: false,
 		legendPos: "b",
-		legendColor: ACCENT_COLORS[1],
+		legendColor: COLORS_ACCENT[1],
 		//
 		showTitle: true,
 		title: "Rent Prices",
-		titleColor: ACCENT_COLORS[0],
+		titleColor: COLORS_ACCENT[0],
 	};
 	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar4);
 }
@@ -264,7 +264,7 @@ function genSlide02(pptx) {
 		h: 3.0,
 		barDir: "bar",
 		plotArea: { fill: { color: "F1F1F1" } },
-		chartColors: ACCENT_COLORS,
+		chartColors: COLORS_ACCENT,
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -538,19 +538,19 @@ function genSlide04(pptx) {
 		title: "Chart Title",
 		titleFontFace: "Helvetica Neue",
 		titleFontSize: 24,
-		titleColor: ACCENT_COLORS[0],
+		titleColor: COLORS_ACCENT[0],
 		titlePos: { x: 1.5, y: 0 },
 		//titleRotate: 10,
 		//
 		showCatAxisTitle: true,
-		catAxisLabelColor: ACCENT_COLORS[1],
-		catAxisTitleColor: ACCENT_COLORS[1],
+		catAxisLabelColor: COLORS_ACCENT[1],
+		catAxisTitleColor: COLORS_ACCENT[1],
 		catAxisTitle: "Cat Axis Title",
 		catAxisTitleFontSize: 14,
 		//
 		showValAxisTitle: true,
-		valAxisLabelColor: ACCENT_COLORS[2],
-		valAxisTitleColor: ACCENT_COLORS[2],
+		valAxisLabelColor: COLORS_ACCENT[2],
+		valAxisTitleColor: COLORS_ACCENT[2],
 		valAxisTitle: "Val Axis Title",
 		valAxisTitleFontSize: 14,
 	};
@@ -735,14 +735,14 @@ function genSlide06(pptx) {
 
 	let arrDataRegions = [
 		{
-			name: "Region 1",
-			labels: ["May", "June", "July", "August"],
-			values: [26, 53, 100, 75],
+			name: "Region 1 Sales",
+			labels: ["Q1", "Q2", "Q3", "Q4"],
+			values: [26, 53, 80, 75],
 		},
 		{
-			name: "Region 2",
-			labels: ["May", "June", "July", "August"],
-			values: [43.5, 70.3, 90.1, 80.05],
+			name: "Region 2 Sales",
+			labels: ["Q1", "Q2", "Q3", "Q4"],
+			values: [43.5, 70.3, 90.01, 80.05],
 		},
 	];
 	let arrDataHighVals = [
@@ -766,18 +766,24 @@ function genSlide06(pptx) {
 		h: 3.0,
 		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
 		barDir: "bar",
+		barGapWidthPct: 25,
+		chartColors: COLORS_SPECTRUM,
 		//
-		catAxisLabelColor: pptx.colors.ACCENT2,
+		catAxisLabelColor: COLORS_SPECTRUM[1],
+		catAxisLineColor: COLORS_SPECTRUM[1],
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
 		catAxisOrientation: "maxMin",
 		//
-		serAxisLabelColor: pptx.colors.ACCENT4,
 		serAxisLabelFontFace: "Arial",
 		serAxisLabelFontSize: 10,
-		serAxisLineColor: pptx.colors.ACCENT6,
+		serAxisLabelColor: COLORS_SPECTRUM[1],
+		serAxisLineColor: COLORS_SPECTRUM[1],
+		//serAxisLineColor: pptx.colors.ACCENT6,
 		//
-		valAxisHidden: true,
+		//valAxisHidden: true,
+		valAxisLabelColor: COLORS_SPECTRUM[0],
+		valAxisLineColor: COLORS_SPECTRUM[0],
 	};
 	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar1);
 
@@ -788,13 +794,13 @@ function genSlide06(pptx) {
 		w: 6.0,
 		h: 3.0,
 		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
-
+		chartColors: COLORS_SPECTRUM,
 		barDir: "col",
 		bar3DShape: "cylinder",
 		catAxisLabelColor: "0000CC",
 		catAxisLabelFontFace: "Courier",
 		catAxisLabelFontSize: 12,
-
+		//
 		dataLabelColor: "000000",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 11,
@@ -812,18 +818,19 @@ function genSlide06(pptx) {
 		w: 6.0,
 		h: 3.5,
 		chartArea: { fill: { color: "F1F1F1", transparency: 50 } },
-
+		chartColors: COLORS_ACCENT,
+		//
 		barDir: "col",
 		bar3DShape: "pyramid",
 		barGrouping: "stacked",
-
+		//
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
-
+		//
 		showValue: true,
 		dataLabelBkgrdColors: true,
-
+		//
 		showTitle: true,
 		title: "Sales by Region",
 	};
@@ -2394,7 +2401,7 @@ function devSlide03(pptx) {
 			dataLabelColor: "B7B7B7",
 			barDir: "bar",
 			showValue: true,
-			chartColors: [...ACCENT_COLORS, ...ACCENT_COLORS],
+			chartColors: [...COLORS_ACCENT, ...COLORS_ACCENT],
 			barGapWidthPct: 25,
 			catAxisOrientation: "maxMin",
 			valAxisOrientation: "maxMin",

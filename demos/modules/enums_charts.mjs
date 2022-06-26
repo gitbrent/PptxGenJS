@@ -16,7 +16,7 @@ export const COLOR_COMP = "4472C4";
 export const COLOR_CANC = "672C7E";
 export const COLORS_RYGU = [COLOR_RED, COLOR_YLW, COLOR_GRN, COLOR_COMP, COLOR_CANC, COLOR_UNK];
 //
-export const ACCENT_COLORS = ["4472C4", "ED7D31", "FFC000", "70AD47"]; // 1,2,4,6
+export const COLORS_ACCENT = ["4472C4", "ED7D31", "FFC000", "70AD47"]; // 1,2,4,6
 export const COLORS_SPECTRUM = ["56B4E4", "126CB0", "672C7E", "E92A31", "F06826", "E9AF1F", "51B747", "189247"]; // B-G spectrum wheel
 export const COLORS_CHART = ["003f5c", "0077b6", "084c61", "177e89", "3066be", "00a9b5", "58508d", "bc5090", "db3a34", "ff6361", "ffa600"];
 export const COLORS_VIVID = ["ff595e", "F38940", "ffca3a", "8ac926", "1982c4", "5FBDE1", "6a4c93"]; // (R, Y, G, B, P)
@@ -226,6 +226,8 @@ const BTC_LBLS = [
 	"Apr-2022",
 	"May-2022",
 ];
+
+// WIP: https://www.globalpropertyguide.com/home-price-trends
 
 // EXPORTS
 export const CHART_DATA = {
