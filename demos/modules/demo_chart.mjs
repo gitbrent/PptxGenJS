@@ -211,7 +211,7 @@ function genSlide01(pptx) {
 		dataLabelColor: "FFFFFF",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
-		dataLabelPosition: "ctr",
+		dataLabelPosition: "inEnd",
 		showValue: true,
 		//
 		showLegend: false,
@@ -225,11 +225,11 @@ function genSlide01(pptx) {
 	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar4);
 }
 
-// SLIDE 2: Bar Chart: Grid/Axis Options
+// SLIDE 2: Bar Chart Options: Axis, DataLabel, Grid
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Bar Chart Grid/Axis Options", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Chart Examples: Bar Chart Options: Axis, DataLabel, Grid", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
@@ -264,6 +264,7 @@ function genSlide02(pptx) {
 		h: 3.0,
 		barDir: "bar",
 		plotArea: { fill: { color: "F1F1F1" } },
+		chartColors: ACCENT_COLORS,
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
@@ -281,7 +282,7 @@ function genSlide02(pptx) {
 		title: "catAxisHidden:true, valGridLine/valAxisLine:dash",
 		titleColor: "a9a9a9",
 		titleFontFace: "Helvetica Neue",
-		titleFontSize: 14,
+		titleFontSize: 11,
 	};
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar1);
 
@@ -329,11 +330,11 @@ function genSlide02(pptx) {
 
 		catAxisLabelColor: "CC0000",
 		catAxisLabelFontFace: "Helvetica Neue",
-		catAxisLabelFontSize: 14,
+		catAxisLabelFontSize: 10,
 		catAxisOrientation: "maxMin",
 		catAxisTitle: "Housing Type",
-		catAxisTitleColor: "428442",
-		catAxisTitleFontSize: 14,
+		catAxisTitleColor: "696969",
+		catAxisTitleFontSize: 10,
 		showCatAxisTitle: true,
 
 		catGridLine: { color: "cc6699", style: "dash", size: 1 },
@@ -358,6 +359,7 @@ function genSlide02(pptx) {
 		w: 6.0,
 		h: 3.5,
 		chartArea: { fill: { color: "F1F1F1" } },
+		plotArea: { fill: { color: "FFFFFF" } },
 
 		barDir: "col",
 		barGapWidthPct: 25,
@@ -373,10 +375,10 @@ function genSlide02(pptx) {
 		catAxisOrientation: "minMax",
 
 		dataBorder: { pt: 1, color: "F1F1F1" },
-		dataLabelColor: "FFFFFF",
+		dataLabelColor: "696969",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,
-		dataLabelPosition: "ctr",
+		dataLabelPosition: "inEnd",
 		showValue: true,
 
 		valAxisHidden: true,
@@ -394,7 +396,7 @@ function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable(
-		[[{ text: "Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		[[{ text: "Chart Examples: Bar Chart: Stacked/PercentStacked and DataTable", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
 		BASE_TABLE_OPTS
 	);
 
@@ -408,18 +410,6 @@ function genSlide03(pptx) {
 			name: "Region 4",
 			labels: ["April", "May", "June", "July", "August"],
 			values: [55, 43, 70, 90, 80],
-		},
-	];
-	let arrDataHighVals = [
-		{
-			name: "California",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [2000, 2800, 3200, 4000, 5000],
-		},
-		{
-			name: "Texas",
-			labels: ["Apartment", "Townhome", "Duplex", "House", "Big House"],
-			values: [1400, 2000, 2500, 3000, 3800],
 		},
 	];
 
@@ -531,15 +521,7 @@ function genSlide03(pptx) {
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Title Options; invertedColors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-
-	let arrDataHighVals = [
-		{
-			name: "Series With Negative Values",
-			labels: ["N2", "N1", "ZERO", "P1", "P2", "P3", "P4", "P5", "P6", "P7"],
-			values: [-5, -3, 0, 3, 5, 6, 7, 8, 9, 10],
-		},
-	];
+	slide.addTable([[{ text: "Chart Options: Chart Title, Cat/Val Axis Title", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let optsChart = {
 		x: 0.5,
@@ -548,30 +530,32 @@ function genSlide04(pptx) {
 		h: "90%",
 		barDir: "col",
 		barGrouping: "stacked",
-		//
-		showTitle: true,
-		title: "Rotated Title",
-		titleFontSize: 20,
-		titleRotate: 10,
-		//
-		showLegend: true,
-		//chartColors: ["00B050"],
 		chartColors: COLORS_CHART,
 		invertedColors: ["C0504D"],
+		showLegend: true,
+		//
+		showTitle: true,
+		title: "Chart Title",
+		titleFontFace: "Helvetica Neue",
+		titleFontSize: 24,
+		titleColor: ACCENT_COLORS[0],
+		titlePos: { x: 1.5, y: 0 },
+		//titleRotate: 10,
 		//
 		showCatAxisTitle: true,
+		catAxisLabelColor: ACCENT_COLORS[1],
+		catAxisTitleColor: ACCENT_COLORS[1],
 		catAxisTitle: "Cat Axis Title",
-		catAxisTitleColor: "4286f4",
 		catAxisTitleFontSize: 14,
 		//
 		showValAxisTitle: true,
+		valAxisLabelColor: ACCENT_COLORS[2],
+		valAxisTitleColor: ACCENT_COLORS[2],
 		valAxisTitle: "Val Axis Title",
-		valAxisTitleColor: "c11c13",
-		valAxisTitleFontSize: 16,
+		valAxisTitleFontSize: 14,
 	};
 
 	// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
-	//slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	slide.addChart(pptx.charts.BAR, dataChartBar8Series, optsChart);
 }
 
@@ -1187,7 +1171,7 @@ function genSlide12(pptx) {
 		legendFontSize: 14,
 		showLeaderLines: true,
 		showTitle: true,
-		title: "Right Title & Large Legend",
+		title: "Title Position {0,0}",
 		titleAlign: "right",
 		titlePos: { x: 0, y: 0 },
 	});
@@ -2534,16 +2518,11 @@ function devSlide05(pptx) {
 	});
 }
 
-/**
- * TODO:
- * 	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
- *	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
- */
-
+// DEV/TEST 06: legacy-tests
 function devSlide06(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "DEV-TEST: ref-test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "DEV-TEST: legacy-tests", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let arrDataHighVals = [
 		{
@@ -2585,10 +2564,11 @@ function devSlide06(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar1);
 }
 
+// DEV/TEST 07: title-options & inverted-colors
 function devSlide07(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts-DevTest" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "DEV-TEST: Title Options; invertedColors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "DEV-TEST: title-options & inverted-colors", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	let arrDataHighVals = [
 		{
@@ -2627,3 +2607,9 @@ function devSlide07(pptx) {
 
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 }
+
+/**
+ * TODO:
+ * 	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
+ *	//arrDataLineStat[2].values = [55, null, null, 55]; // NOTE: uncomment only for test - looks broken otherwise!
+ */
