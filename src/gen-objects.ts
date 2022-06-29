@@ -137,6 +137,10 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.')
 			delete glOpts.style
 		}
+		if (glOpts.cap && ['flat', 'square', 'round'].indexOf(glOpts.cap) < 0) {
+			console.warn('Warning: chart.gridLine.cap options: `flat`, `square`, `round`.')
+			delete glOpts.cap
+		}
 	}
 
 	let chartId = ++_chartCounter
