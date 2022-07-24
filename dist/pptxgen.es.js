@@ -1,7 +1,7 @@
-/* PptxGenJS 3.11.0-beta @ 2022-06-26T19:49:33.668Z */
+/* PptxGenJS 3.11.0-beta @ 2022-07-24T20:07:29.203Z */
 import JSZip from 'jszip';
 
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -3642,12 +3642,12 @@ function addImageDefinition(target, opt) {
     }
     // STEP 1: Set extension
     // NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-    var strImgExtn = strImagePath
+    var strImgExtn = (strImagePath
         .substring(strImagePath.lastIndexOf('/') + 1)
         .split('?')[0]
         .split('.')
         .pop()
-        .split('#')[0] || 'png';
+        .split('#')[0] || 'png').toLowerCase();
     // However, pre-encoded images can be whatever mime-type they want (and good for them!)
     if (strImageData && /image\/(\w+);/.exec(strImageData) && /image\/(\w+);/.exec(strImageData).length > 0) {
         strImgExtn = /image\/(\w+);/.exec(strImageData)[1];
@@ -6677,7 +6677,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0-beta-20220626-1250';
+var VERSION = '3.11.0-beta-20220724-1425';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
