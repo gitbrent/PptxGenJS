@@ -413,13 +413,14 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 
 	// STEP 1: Set extension
 	// NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-	let strImgExtn =
+	let strImgExtn = (
 		strImagePath
 			.substring(strImagePath.lastIndexOf('/') + 1)
 			.split('?')[0]
 			.split('.')
 			.pop()
 			.split('#')[0] || 'png'
+	).toLowerCase()
 
 	// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 	if (strImageData && /image\/(\w+);/.exec(strImageData) && /image\/(\w+);/.exec(strImageData).length > 0) {
