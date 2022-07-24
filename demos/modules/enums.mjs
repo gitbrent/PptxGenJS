@@ -4,8 +4,8 @@
  */
 
 // LIBRARY
-export const COMPRESS = true; //false; // TEST: `compression` write prop
-export const TESTMODE = false;
+export const TESTMODE = window && window.location && window.location.href.toLowerCase().indexOf("http://localhost:8000/") > -1;
+export const COMPRESS = true; // TEST: `compression` write prop
 
 // CONST
 export const CUST_NAME = "S.T.A.R. Laboratories";
@@ -16,15 +16,10 @@ export const CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/li
 // TABLES
 export const TABLE_NAMES_F = ["Markiplier", "Jack", "Brian", "Paul", "Ev", "Ann", "Michelle", "Jenny", "Lara", "Kathryn"];
 export const TABLE_NAMES_L = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark", "Griswold", "Hart", "Cube", "Malloy", "Capri"];
-export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=13.33
+export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=12.33
 
 // STYLES
-export const COLOR_RED = "FF0000";
-export const COLOR_AMB = "F2AF00";
-export const COLOR_GRN = "7AB800";
-export const COLOR_CRT = "AA0000";
 export const COLOR_BLU = "0088CC";
-export const COLOR_UNK = "A9A9A9";
 
 // OPTIONS
 export const BASE_TEXT_OPTS_L = { color: "9F9F9F", margin: 3, border: [null, null, { pt: "1", color: "CFCFCF" }, null] };
@@ -32,6 +27,7 @@ export const BASE_TEXT_OPTS_R = {
 	text: "PptxGenJS",
 	options: { color: "9F9F9F", margin: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0], align: "right" },
 };
+export const FOOTER_TEXT_OPTS = { x: 0.0, y: 7.16, w: "100%", h: 0.3, margin: 3, color: "9F9F9F", align: "center", fontSize: 10 };
 export const BASE_CODE_OPTS = {
 	color: "9F9F9F",
 	margin: 3,
@@ -47,6 +43,7 @@ export const DEMO_TITLE_OPTS = { fontSize: 13, color: "9F9F9F" };
 
 // PATHS
 export const IMAGE_PATHS = {
+	peace4: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/peace4.png" },
 	starlabsBkgd: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_bkgd.jpg" },
 	starlabsLogo: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_logo.png" },
 	wikimedia1: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/wiki-example.jpg" },
@@ -72,6 +69,7 @@ export const IMAGE_PATHS = {
 	sample_mp3: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mp3" },
 	sample_wav: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.wav" },
 	big_earth_mp4: { path: "/common/media/earth-big.mp4" },
+	UPPERCASE: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/UPPERCASE.PNG" },
 };
 
 // LOREM IPSUM

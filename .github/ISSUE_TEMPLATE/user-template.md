@@ -9,9 +9,9 @@ assignees: ''
 
 Thank you for reporting an issue, suggesting an enhancement, or asking a question. 
 
-We appreciate your feedback - to help the team understand your needs please complete the below template to ensure we have the details to help. Thanks!
+We appreciate your feedback - to help the team understand your needs please complete the following template to ensure we have the details to help.
 
-**Please check out the [Docs](https://gitbrent.github.io/PptxGenJS/docs/installation.html) to see if your question is already addressed there. This will help us ensure our documentation covers the most frequent questions.**
+**Please check out the [Docs](https://gitbrent.github.io/PptxGenJS/) to see if your question is already addressed there.**
 
 ### Category
 - [ ] Enhancement
@@ -25,7 +25,9 @@ Please specify what version of the library you are using: [         ]
 
 Please specify what version(s) of PowerPoint you are targeting: [         ]
 
-*If you are not using the latest release, please update and see if the issue is resolved before submitting an issue.*
+Please specify what web browser you are using: [         ]
+
+**If you are not using the latest release, please update and see if the issue is resolved before submitting an issue.**
 
 ### Expected / Desired Behavior / Question
 *If you are reporting an issue please describe the expected behavior. If you are suggesting an enhancement please describe thoroughly the enhancement, how it can be achieved, and expected benefit. If you are asking a question, ask away!*

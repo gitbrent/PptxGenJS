@@ -1,0 +1,9 @@
+.text-sm {
+  font-size: 0.8rem !important;
+}
+
+#outputTextArea:focus {
+  /* Chrome draws a super-annoying outline around *each line* in the <code> tag, so NOPE! */
+  outline: none;
+  /*-webkit-focus-ring-color auto 5px;*/
+}

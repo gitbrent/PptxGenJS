@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PptxGenJS | Tools | Data to Chart</title>
+	<link rel="stylesheet" href="./data2chart.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/yeti/bootstrap.min.css"
+		integrity="sha512-weyvl9mBvXvMHAcN2LCuQ5w0i7ihzrg3EQy6HixwCP88lXKbkL8IRYG8K75sCx1bRTQRDBXLfpW3fKlYfAAsaw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
+		integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"
+		integrity="sha512-axJX7DJduStuBB8ePC8ryGzacZPr3rdLaIDZitiEgWWk2gsXxEFlm4UW0iNzj2h3wp5mOylgHAzBzM4nRSvTZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+	<script>
+		const INPUT_ELE_ID = "inputTextArea";
+		const OUTPUT_ELE_ID = "outputTextArea";
+
+		/* INPUT:
+			|----|---------|-------|------|
+			|    |Australia|Belgium|Canada|
+			|1976|    10.25|  21.54| 18.07|
+			|1977|    10.23|  25.39| 19.21|
+			|1978|    10.80|  28.35| 20.62|
+			|1979|    12.82|  30.45| 23.89|
+			|1980|    13.64|  30.52| 25.02|
+		*/
+		/* OUTPUT:
+			const LABELS = ["1976", "1977", "1978", "1979", "1980"];
+			const CHART_DATA = [
+				{ name: "Australia", labels: LABELS, values: [5.01, 4.59, 3.65, 3.62, 3.14] },
+				{ name: "Belgium",   labels: LABELS, values: [4.63, 3.67, 3.26, 3.21, 2.79] },
+				{ name: "Canada",    labels: LABELS, values: [4.27, 3.61, 3.23, 3.24, 2.78] },
+			];
+		*/
+		function convertInputData() {
+			const tabDelimData = (document.getElementById(INPUT_ELE_ID).value || '').trim();
+			let dataLabels = [];
+			let chartData = [];
+			let strOutput = '';
+
+			// 1: build data
+			tabDelimData
+				.split("\n")
+				.filter((_item, idx) => idx === 0)
+				.forEach((row, _idx) => {
+					row.split("\t").forEach((cell, idx) => {
+						if (idx > 0) {
+							chartData.push({
+								name: cell,
+								labels: "dataLabels",
+								values: [],
+							});
+						}
+					});
+				});
+
+			// 2: add data
+			tabDelimData
+				.split("\n")
+				.filter((_item, idx) => idx > 0)
+				.forEach((row, idx) => {
+					row.split("\t").forEach((cell, idy) => {
+						if (idy === 0) {
+							dataLabels.push(cell);
+						} else {
+							chartData[idy - 1].values.push(Number(cell));
+						}
+					});
+				});
+
+			// 3: create javascript code
+			strOutput = "let pptx = new PptxGenJS();\n";
+			strOutput += "let slide = pptx.addSlide();\n";
+			strOutput += "\n";
+			strOutput += `const DATA_LABELS = ${JSON.stringify(dataLabels)};\n`;
+			strOutput += `const CHART_DATA = [\n`;
+			chartData.forEach((item) => {
+				strOutput += `  {\n`;
+				strOutput += `    "name": "${item.name}",\n`;
+				strOutput += `    "labels": DATA_LABELS,\n`;
+				strOutput += `    "values": ${JSON.stringify(item.values)},\n`;
+				strOutput += `  },\n`;
+			});
+			strOutput += `];\n`;
+			strOutput += "slide.addChart(pptx.charts.LINE, CHART_DATA, {x:0.25, y:0.25, w:'95%', h:'90%', showLegend:true});\n";
+			strOutput += "\n";
+			strOutput += "pptx.writeFile({ fileName: 'pptxgenjs-data2chart.pptx' });\n"
+
+			// 4: show javascript code
+			document.getElementById(OUTPUT_ELE_ID).innerHTML = strOutput
+
+			// 5: highlight javascript code
+			Prism.highlightElement(document.getElementById(OUTPUT_ELE_ID));
+
+			// LAST: set output tab to active
+			const someTabTriggerEl = document.querySelector('#nav-output')
+			const tab = new bootstrap.Tab(someTabTriggerEl)
+			tab.show()
+		}
+
+		function popDemoData() {
+			document.getElementById('inputTextArea').value =
+				`Mon-YY	CAN	GER	JAP	USA` + `\n` +
+				`Mar-01	291	284	306	220` + `\n` +
+				`Jun-01	185	179	199	299` + `\n` +
+				`Sep-01	110	096	136	249` + `\n` +
+				`Dec-01	110	100	128	217` + `\n`
+		}
+
+		function copyOutputToClipboard() {
+			let range = document.createRange();
+			range.selectNode(document.getElementById(OUTPUT_ELE_ID));
+			window.getSelection().removeAllRanges();
+			window.getSelection().addRange(range);
+			document.execCommand("copy");
+			window.getSelection().removeAllRanges();
+		}
+
+		function genOutputPowerPoint() {
+			const outputCode = document.getElementById(OUTPUT_ELE_ID).innerText;
+			if (outputCode) eval(outputCode)
+		}
+
+		window.onload = (event) => { popDemoData() };
+	</script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
+				<img src="https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/browser/images/favicon.png" width="30" height="30" class="d-inline-block align-top me-2"
+					alt="" />
+				PptxGenJS
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarColor01">
+				<ul class="navbar-nav me-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/demo/browser/index.html">
+							Demo Home <span class="sr-only">(current)</span>
+						</a>
+					</li>
+				</ul>
+				<form class="form-inline my-2 my-lg-0">
+					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS/releases')">
+						Download
+					</button>
+					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
+						GitHub Project
+					</button>
+					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation/')">
+						API Documentation
+					</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container my-4">
+		<header class="mb-4">
+			<h2 class="text-primary mb-0">PptxGenJS :: Tools :: Chart Data Converter</h2>
+		</header>
+
+		<ul class="nav nav-pills nav-justified text-nowrap" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link text-uppercase active" id="nav-input" data-bs-toggle="tab" data-bs-target="#tab-input" type="button" role="tab"
+					aria-controls="itab-ntroduction" aria-selected="true" onclick="location.href='#input'">Input</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link text-uppercase" id="nav-output" data-bs-toggle="tab" data-bs-target="#tab-output" type="button" role="tab" aria-controls="tab-output"
+					aria-selected="false" onclick="location.href='#output'">Output</button>
+			</li>
+		</ul>
+		<main class="tab-content mb-4">
+			<div class="tab-pane p-4 bg-light active" id="tab-input" role="tabpanel" aria-labelledby="nav-input">
+				<h4 class="text-primary"><i class="bi bi-table me-2"></i>Tabular Data</h4>
+				<textarea class="bg-white form-control font-monospace text-sm border" id="inputTextArea" rows="20"></textarea>
+				<div class="row justify-content-between mt-4">
+					<div class="col-auto">
+						<button type="button" class="btn btn-success px-5" onclick="convertInputData()"><i class="bi bi-gear me-2"></i>Convert Data</button>
+					</div>
+					<div class="col-auto">
+						<button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDocs" aria-controls="offcanvasDocs">
+							Documentation
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane p-4 bg-light" id="tab-output" role="tabpanel" aria-labelledby="nav-output">
+				<h4 class="text-primary"><i class="bi bi-filetype-js me-2"></i>JavaScript Code</h4>
+				<pre class="bg-black text-sm"
+					style="max-height: 400px;"><code id="outputTextArea" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
+				<div class="row gx-4 mt-4">
+					<div class="col-auto">
+						<button type="button" class="btn btn-success px-5" onclick="genOutputPowerPoint()"><i class="bi bi-file-ppt me-2"></i>Generate PowerPoint</button>
+					</div>
+					<div class="col-auto">
+						<button type="button" class="btn btn-outline-success px-5" onclick="copyOutputToClipboard()"><i class="bi bi-clipboard me-2"></i>Copy to Clipboard</button>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<!-- TRASH: doesnt work locally (at all?) -->
+	<div class="offcanvas" tabindex="-1" id="offcanvasDocs" aria-labelledby="offcanvasDocsLabel">
+		<div class="offcanvas-header">
+			<h5 class="offcanvas-title" id="offcanvasDocsLabel">Documentation</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="offcanvas-body">
+			<div>
+				Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+			</div>
+		</div>
+	</div>
+</body>
+</html>
