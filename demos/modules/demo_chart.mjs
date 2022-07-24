@@ -1657,6 +1657,7 @@ function genSlide17(pptx) {
 		h: 3.0,
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
+		catAxisLabelFontFace: "Helvetica Neue Thin",
 	};
 
 	const opts2 = {
@@ -1666,6 +1667,7 @@ function genSlide17(pptx) {
 		h: 3.0,
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
+		catAxisLabelFontFace: "Helvetica Neue Thin",
 		barDir: "col",
 		barGapWidthPct: 0,
 		//catAxisLabelColor: "696969",
