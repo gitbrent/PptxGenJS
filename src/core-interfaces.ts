@@ -58,6 +58,13 @@ export type DataOrPathProps = {
 	 */
 	path?: string
 	/**
+	 * file extension
+	 * - use when the path does not already have an extension, ex: "https://images.unsplash.com/photo-1618336753974-aae8e04506aa"
+	 *
+	 * @example 'jpg'
+	 */
+	extn?: string
+	/**
 	 * base64-encoded string
 	 * - Useful for avoiding potential path/server issues
 	 *
@@ -65,6 +72,7 @@ export type DataOrPathProps = {
 	 */
 	data?: string
 }
+
 export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	/**
 	 * Color (hex format)
@@ -542,13 +550,6 @@ export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @default "play button" image, gray background
 	 */
 	cover?: string
-	/**
-	 * media file extension
-	 * - use when the media file path does not already have an extension, ex: "/folder/SomeSong"
-	 * @since 3.9.0
-	 * @default extension from file provided
-	 */
-	extn?: string
 	/**
 	 * video embed link
 	 * - works with YouTube
