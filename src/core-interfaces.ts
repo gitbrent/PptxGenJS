@@ -87,6 +87,8 @@ export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 export type HexColor = string
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
+export type Gradient = { angle?: number; stops: GradientStops }
+export type GradientStops = { [key: number]: Color }
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
@@ -177,6 +179,14 @@ export interface ShapeFillProps {
 	 */
 	color?: Color
 	/**
+	 * Fill gradient
+	 * - Key inside object is the color position in percentage
+	 * - `HextColor` or `ThemeColor`
+	 * @example { angle:45, stops: { 0:'FF0000', 100:'00FF00' } }
+	 * @example { angle:90, stops: { 0:pptx.SchemeColor.accent1, 100:pptx.SchemeColor.accent1 } }
+	 */
+	gradient?: Gradient
+	/**
 	 * Transparency (percent)
 	 * - MS-PPT > Format Shape > Fill & Line > Fill > Transparency
 	 * - range: 0-100
@@ -187,7 +197,7 @@ export interface ShapeFillProps {
 	 * Fill type
 	 * @default 'solid'
 	 */
-	type?: 'none' | 'solid'
+	type?: 'none' | 'solid' | 'gradient'
 
 	/**
 	 * Transparency (percent)
