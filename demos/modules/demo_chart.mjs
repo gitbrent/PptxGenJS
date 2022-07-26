@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.11.0
- * BLD.: 20220724
+ * BLD.: 20220725
  */
 
 import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, FOOTER_TEXT_OPTS, IMAGE_PATHS, TESTMODE } from "./enums.mjs";
@@ -1401,9 +1401,17 @@ function genSlide15(pptx) {
 		w: "45%",
 		h: 3,
 		chartArea: { fill: { color: "F1F1F1" } },
-		chartColors: ["4477CC", "ED7D31"],
+		chartColors: COLORS_ACCENT,
 		chartColorsOpacity: 40,
 		dataBorder: { pt: 1, color: "FFFFFF" },
+		//valAxisCrossesAt: 4,
+		//catAxisCrossesAt: 4,
+		dataLabelFontFace: "Arial",
+		dataLabelFontSize: 10,
+		dataLabelColor: "363636",
+		dataLabelPosition: "r",
+		showSerName: true,
+		showLeaderLines: true,
 	};
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1);
 
@@ -1414,6 +1422,8 @@ function genSlide15(pptx) {
 		w: "45%",
 		h: 3,
 		plotArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_RYGU,
+		chartColorsOpacity: 25,
 
 		showLegend: true,
 		legendPos: "b",
@@ -1422,9 +1432,6 @@ function genSlide15(pptx) {
 		lineSmooth: true,
 		lineDataSymbolSize: 12,
 		lineDataSymbolLineColor: "FFFFFF",
-
-		chartColors: COLORS_RYGU,
-		chartColorsOpacity: 25,
 	};
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble2);
 
@@ -1457,7 +1464,7 @@ function genSlide15(pptx) {
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3);
 
 	// BOTTOM-RIGHT
-	let optsChartBubble4 = { x: 7.0, y: 4.0, w: "45%", h: 3, lineSize: 0 };
+	let optsChartBubble4 = { x: 7.0, y: 4.0, w: "45%", h: 3, lineSize: 0, chartColors: COLORS_RYGU };
 	slide.addChart(pptx.charts.BUBBLE3D, arrDataBubble2, optsChartBubble4);
 }
 
