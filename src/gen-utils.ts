@@ -239,3 +239,19 @@ export function genXmlColorSelection(props: Color | ShapeFillProps | ShapeLinePr
 export function getNewRelId(target: PresSlide): number {
 	return target._rels.length + target._relsChart.length + target._relsMedia.length + 1
 }
+
+/**
+ * Get the file extension from a path
+ * @param {string} path - file path or url e.g. 'path/brent.jpg?someParam=true'
+ * @returns {string} - the file extension e.g. 'jpg'
+ */
+export function getExtension(path: string, defaultExtn = 'png'): string {
+	return (
+		path
+			.substring(path.lastIndexOf('/') + 1)
+			.split('?')[0]
+			.split('.')
+			.pop()
+			.split('#')[0] || defaultExtn
+	).toLowerCase()
+}

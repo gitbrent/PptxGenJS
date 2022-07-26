@@ -45,7 +45,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
+import { encodeXmlEntities, getExtension, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -412,15 +412,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	}
 
 	// STEP 1: Set extension
-	// NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-	let strImgExtn = (
-		strImagePath
-			.substring(strImagePath.lastIndexOf('/') + 1)
-			.split('?')[0]
-			.split('.')
-			.pop()
-			.split('#')[0] || 'png'
-	).toLowerCase()
+	let strImgExtn = opt.extn || getExtension(strImagePath)
 
 	// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 	if (strImageData && /image\/(\w+);/.exec(strImageData) && /image\/(\w+);/.exec(strImageData).length > 0) {
@@ -1140,8 +1132,8 @@ export function addBackgroundDefinition(props: BackgroundProps, target: SlideLay
 	if (props && (props.path || props.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		props.path = props.path || 'preencoded.png'
-		let strImgExtn = (props.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
-		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+		let strImgExtn = props.extn || getExtension(props.path)
+		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct extension to avoid content warnings at PPT startup
 
 		target._relsMedia = target._relsMedia || []
 		let intRels = target._relsMedia.length + 1

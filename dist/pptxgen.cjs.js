@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-07-24T20:07:29.196Z */
+/* PptxGenJS 3.11.0-beta @ 2022-07-25T16:08:18.214Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -844,6 +844,20 @@ function genXmlColorSelection(props) {
  */
 function getNewRelId(target) {
     return target._rels.length + target._relsChart.length + target._relsMedia.length + 1;
+}
+/**
+ * Get the file extension from a path
+ * @param {string} path - file path or url e.g. 'path/brent.jpg?someParam=true'
+ * @returns {string} - the file extension e.g. 'jpg'
+ */
+function getExtension(path, defaultExtn) {
+    if (defaultExtn === void 0) { defaultExtn = 'png'; }
+    return (path
+        .substring(path.lastIndexOf('/') + 1)
+        .split('?')[0]
+        .split('.')
+        .pop()
+        .split('#')[0] || defaultExtn).toLowerCase();
 }
 
 /**
@@ -3647,13 +3661,7 @@ function addImageDefinition(target, opt) {
         return null;
     }
     // STEP 1: Set extension
-    // NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-    var strImgExtn = (strImagePath
-        .substring(strImagePath.lastIndexOf('/') + 1)
-        .split('?')[0]
-        .split('.')
-        .pop()
-        .split('#')[0] || 'png').toLowerCase();
+    var strImgExtn = opt.extn || getExtension(strImagePath);
     // However, pre-encoded images can be whatever mime-type they want (and good for them!)
     if (strImageData && /image\/(\w+);/.exec(strImageData) && /image\/(\w+);/.exec(strImageData).length > 0) {
         strImgExtn = /image\/(\w+);/.exec(strImageData)[1];
@@ -4341,9 +4349,9 @@ function addBackgroundDefinition(props, target) {
     if (props && (props.path || props.data)) {
         // Allow the use of only the data key (`path` isnt reqd)
         props.path = props.path || 'preencoded.png';
-        var strImgExtn = (props.path.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
+        var strImgExtn = props.extn || getExtension(props.path);
         if (strImgExtn === 'jpg')
-            strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+            strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct extension to avoid content warnings at PPT startup
         target._relsMedia = target._relsMedia || [];
         var intRels = target._relsMedia.length + 1;
         // NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
