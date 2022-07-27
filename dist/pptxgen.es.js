@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-07-27T07:06:36.454Z */
+/* PptxGenJS 3.11.0-beta @ 2022-07-27T09:15:10.513Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -902,12 +902,11 @@ function getNewRelId(target) {
  */
 function getExtension(path, defaultExtn) {
     if (defaultExtn === void 0) { defaultExtn = 'png'; }
-    return (path
-        .substring(path.lastIndexOf('/') + 1)
-        .split('?')[0]
-        .split('.')
-        .pop()
-        .split('#')[0] || defaultExtn).toLowerCase();
+    var extnRegex = /\.(\w{3,4})(?:$|\?)/;
+    var matches = path.match(extnRegex);
+    if (matches)
+        return matches[1];
+    return defaultExtn;
 }
 
 /**
