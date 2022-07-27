@@ -310,12 +310,8 @@ export function getNewRelId(target: PresSlide): number {
  * @returns {string} - the file extension e.g. 'jpg'
  */
 export function getExtension(path: string, defaultExtn = 'png'): string {
-	return (
-		path
-			.substring(path.lastIndexOf('/') + 1)
-			.split('?')[0]
-			.split('.')
-			.pop()
-			.split('#')[0] || defaultExtn
-	).toLowerCase()
+	const extnRegex = /\.(\w{3,4})(?:$|\?)/
+	const matches = path.match(extnRegex)
+	if (matches) return matches[1]
+	return defaultExtn
 }
