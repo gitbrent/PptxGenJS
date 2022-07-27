@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-07-25T16:08:18.214Z */
+/* PptxGenJS 3.11.0-beta @ 2022-07-27T07:06:36.451Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -804,6 +804,57 @@ function createGlowElement(options, defaults) {
     return strXml;
 }
 /**
+ * Create gradient elements i.e. `a:gsLst` and `a:lin`
+ * @param {Gradient} gradient
+ * @param {string} internalElements
+ * @see http://officeopenxml.com/drwSp-GradFill.php
+ * @returns XML string
+ */
+function createGradientElements(gradient, internalElements) {
+    var strXml = '', stops = gradient.stops;
+    if (!isGradient(gradient)) {
+        console.warn("This is not a valid gradient:", gradient);
+        console.warn("Fallback to default gradient with \"".concat(SchemeColor.background1, "\" and \"").concat(SchemeColor.background2, "\"."));
+        console.warn("Please provide a valid gradient e.g. { angle:0, stops: { 0:\"#FFFFFF\", 100:\"#000000\" } }.");
+        stops = { 0: SchemeColor.background1, 100: SchemeColor.background2 };
+    }
+    strXml += createGradientList(stops, internalElements);
+    strXml += createLinearGradient(gradient.angle);
+    return strXml;
+}
+/**
+ * Create gradient list element i.e. `a:gsLst`
+ * @param {Gradient} gradient
+ * @param {string} internalElements
+ * @returns XML string
+ */
+function createGradientList(stops, internalElements) {
+    var multiplier = 1000;
+    var res = Object.keys(stops).map(function (pos) { return "<a:gs pos=\"".concat(Number(pos) * multiplier, "\">").concat(createColorElement(stops[pos], internalElements), "</a:gs>"); });
+    return "<a:gsLst>".concat(res.join(''), "</a:gsLst>");
+}
+/**
+ * Create linear gradient element i.e. `a:lin`
+ * @param {number} angle
+ * @returns XML string
+ */
+function createLinearGradient(angle) {
+    if (angle === void 0) { angle = 0; }
+    var multiplier = 60000;
+    return "<a:lin ang=\"".concat(angle * multiplier, "\"/>");
+}
+/**
+ * Validate gradient
+ * @param {Gradient} gradient
+ * @returns boolean
+ */
+function isGradient(gradient) {
+    return Boolean((gradient === null || gradient === void 0 ? void 0 : gradient.stops) &&
+        typeof gradient.stops === 'object' &&
+        Object.keys(gradient.stops).length > 0 &&
+        Object.keys(gradient.stops).every(function (stop) { return Number.isFinite(Number(stop)); }));
+}
+/**
  * Create color selection
  * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
  * @returns XML string
@@ -819,6 +870,8 @@ function genXmlColorSelection(props) {
         else {
             if (props.type)
                 fillType = props.type;
+            if (props.gradient)
+                fillType = 'gradient';
             if (props.color)
                 colorVal = props.color;
             if (props.alpha)
@@ -829,6 +882,9 @@ function genXmlColorSelection(props) {
         switch (fillType) {
             case 'solid':
                 outText += "<a:solidFill>".concat(createColorElement(colorVal, internalElements), "</a:solidFill>");
+                break;
+            case 'gradient':
+                outText += "<a:gradFill>".concat(createGradientElements(props.gradient, internalElements), "</a:gradFill>");
                 break;
             default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
                 outText += '';
@@ -1606,7 +1662,7 @@ function slideObjectToXml(slide) {
     if (slide._bkgdImgRid) {
         strSlideXml += "<p:bg><p:bgPr><a:blipFill dpi=\"0\" rotWithShape=\"1\"><a:blip r:embed=\"rId".concat(slide._bkgdImgRid, "\"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>");
     }
-    else if (slide.background && slide.background.color) {
+    else if (slide.background && (slide.background.color || slide.background.gradient)) {
         strSlideXml += "<p:bg><p:bgPr>".concat(genXmlColorSelection(slide.background), "</p:bgPr></p:bg>");
     }
     else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {

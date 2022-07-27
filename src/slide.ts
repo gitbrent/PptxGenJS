@@ -95,6 +95,7 @@ export default class Slide {
 	 * @type {BackgroundProps}
 	 * @example solid color `background: { color:'FF0000' }`
 	 * @example color+trans `background: { color:'FF0000', transparency:0.5 }`
+	 * @example gradient `background: { gradient: { 0:'FF0000', 100:'00FFFF', angle:45 }`
 	 * @example base64 `background: { data:'image/png;base64,ABC[...]123' }`
 	 * @example url `background: { path:'https://some.url/image.jpg'}`
 	 * @since v3.3.0
