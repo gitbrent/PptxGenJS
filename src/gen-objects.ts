@@ -45,8 +45,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
-import { correctShadowOptions } from './gen-xml'
+import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts, correctShadowOptions } from './gen-utils'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter: number = 0
@@ -451,6 +450,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
 		objectName: objectName,
+		shadow: correctShadowOptions(opt.shadow),
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
