@@ -443,6 +443,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
 		objectName: objectName,
+		shadow: opt.shadow || null
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)

@@ -543,6 +543,12 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @example 25 // 25% transparent
 	 */
 	transparency?: number
+	
+	/** 
+	 * shadow options
+	 * TODO: add examples
+	 */
+	 shadow?: ShadowProps
 }
 /**
  * Add media (audio/video) to slide
@@ -573,10 +579,6 @@ export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @example '/sounds/simpsons_haha.mp3' // embed mp3 audio clip from local directory
 	 */
 	path?: string
-	/** shadow options
-	 * TODO: add examples
-	 */
-	shadow?: ShadowProps
 }
 
 // shapes =========================================================================================
