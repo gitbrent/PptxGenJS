@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-07-27T09:15:10.513Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-04T10:09:23.262Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -2135,6 +2135,24 @@ function slideObjectToXml(slide) {
                 strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>';
                 strSlideXml += ' </a:xfrm>';
                 strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>';
+                // UGH: COPY-PASTA FROM SHAPE
+                // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
+                if (slideItemObj.options.shadow) {
+                    slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
+                    slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8);
+                    slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4);
+                    slideItemObj.options.shadow.angle = Math.round((slideItemObj.options.shadow.angle || 270) * 60000);
+                    slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
+                    slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
+                    strSlideXml += '<a:effectLst>';
+                    strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
+                    strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" ';
+                    strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">';
+                    strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">';
+                    strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>';
+                    strSlideXml += '</a:outerShdw>';
+                    strSlideXml += '</a:effectLst>';
+                }
                 strSlideXml += '</p:spPr>';
                 strSlideXml += '</p:pic>';
                 break;
@@ -3739,6 +3757,7 @@ function addImageDefinition(target, opt) {
         flipH: opt.flipH || false,
         transparency: opt.transparency || 0,
         objectName: objectName,
+        shadow: opt.shadow || null
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {

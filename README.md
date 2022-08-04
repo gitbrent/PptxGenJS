@@ -277,3 +277,12 @@ If you find this library useful, please consider sponsoring us through a [donati
 Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)
+
+---
+
+# How to run your branch locally
+
+- Make sure you are using the correct node version (Check .nvmrc file)
+- Run the command `npm run ship` to bundle your changes
+- On your terminal, `cd` into `demos` folder then run `node browser_server.mjs`
+- Open [http://localhost:8000/browser/index.html](http://localhost:8000/browser/index.html) on your browser and test your changes in the sandbox
