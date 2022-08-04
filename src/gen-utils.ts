@@ -360,7 +360,7 @@ export function correctShadowOptions(ShadowProps: ShadowProps): ShadowProps | un
 	if (ShadowProps.color) {
 		// INCORRECT FORMAT
 		if (ShadowProps.color.startsWith('#')) {
-			console.warn('Warning: shadow.color should not include hash (#) character')
+			console.warn('Warning: shadow.color should have no hash character, e.g. "000000"')
 			ShadowProps.color = ShadowProps.color.replace('#', '')
 		}
 	}

@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-04T12:07:40.261Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-04T12:19:31.909Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -952,7 +952,7 @@ function correctShadowOptions(ShadowProps) {
     if (ShadowProps.color) {
         // INCORRECT FORMAT
         if (ShadowProps.color.startsWith('#')) {
-            console.warn('Warning: shadow.color should not include hash (#) character');
+            console.warn('Warning: shadow.color should have no hash character, e.g. "000000"');
             ShadowProps.color = ShadowProps.color.replace('#', '');
         }
     }
