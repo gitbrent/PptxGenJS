@@ -132,7 +132,7 @@ export interface HyperlinkProps {
 	 */
 	tooltip?: string
 }
-// used by: chart, text
+// used by: chart, text, image
 export interface ShadowProps {
 	/**
 	 * shadow type
@@ -545,8 +545,13 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	transparency?: number
 	
 	/** 
-	 * shadow options
-	 * TODO: add examples
+	 * Shadow Props
+	 * @example { type: 'outer',
+	 *            opacity: 0.5,
+	 *            blur: 20, 
+	 *            color: '000000',
+	 *            offset: 20, 
+	 *            angle: 270 }
 	 */
 	 shadow?: ShadowProps
 }
