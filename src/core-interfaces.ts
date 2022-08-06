@@ -1204,6 +1204,7 @@ export interface IChartPropsBase {
 	showLeaderLines?: boolean
 	showLegend?: boolean
 	showPercent?: boolean
+	showSerName?: boolean,
 	showTitle?: boolean
 	showValue?: boolean
 	/**

@@ -911,7 +911,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 					if (opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
 					strXml += '<c:showLegendKey val="0"/>'
 					strXml += `<c:showVal val="${opts.showValue ? '1' : '0'}"/>`
-					strXml += '<c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>'
+					strXml += `<c:showCatName val="0"/><c:showSerName val="${opts.showSerName ? '1' : '0'}"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>`
 					strXml += `<c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
 					strXml += '</c:dLbls>'
 				}
@@ -1060,7 +1060,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
-				strXml += '    <c:showSerName val="0"/>'
+				strXml += '    <c:showSerName val="' + (opts.showSerName ? '1' : '0') + '"/>'
 				strXml += '    <c:showPercent val="0"/>'
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += `    <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
@@ -1275,7 +1275,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 						strXml += '	<c:showLegendKey val="0"/>'
 						strXml += ` <c:showVal val="${opts.showLabel ? '1' : '0'}"/>`
 						strXml += ` <c:showCatName val="${opts.showLabel ? '1' : '0'}"/>`
-						strXml += '	<c:showSerName val="0"/>'
+						strXml += ` <c:showSerName val="${opts.showSerName ? '1' : '0'}"/>`
 						strXml += '	<c:showPercent val="0"/>'
 						strXml += '	<c:showBubbleSize val="0"/>'
 						strXml += '	<c:extLst>'
@@ -1376,7 +1376,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
-				strXml += '    <c:showSerName val="0"/>'
+				strXml += '    <c:showSerName val="' + (opts.showSerName ? '1' : '0') + '"/>'
 				strXml += '    <c:showPercent val="0"/>'
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbls>'
@@ -1526,7 +1526,12 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				if (opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
 				strXml += '<c:showLegendKey val="0"/>'
 				strXml += `<c:showVal val="${opts.showValue ? '1' : '0'}"/>`
-				strXml += '<c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>'
+				strXml += `<c:showCatName val="0"/><c:showSerName val="${opts.showSerName ? '1' : '0'}"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>`
+				strXml += '<c:extLst>'
+				strXml += '  <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">'
+				strXml += '    <c15:showLeaderLines val="' + (opts.showLeaderLines ? '1' : '0') + '"/>'
+				strXml += '  </c:ext>'
+				strXml += '</c:extLst>'
 				strXml += '</c:dLbls>'
 			}
 
@@ -1625,7 +1630,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>'
-				strXml += '    <c:showSerName val="0"/>'
+				strXml += '    <c:showSerName val="' + (opts.showSerName ? '1' : '0') + '"/>'
 				strXml += '    <c:showPercent val="' + (opts.showPercent ? '1' : '0') + '"/>'
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbl>'
@@ -1818,7 +1823,6 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
 	if (valAxisId === AXIS_ID_VALUE_SECONDARY) axisPos = 'r' // default behavior for PPT is showing 2nd val axis on right (primary axis on left)
-	let isRight = axisPos === 'r' || axisPos === 't'
 	let crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY
 	let strXml = ''
 
@@ -1881,7 +1885,15 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  </a:p>'
 	strXml += ' </c:txPr>'
 	strXml += ' <c:crossAx val="' + crossAxId + '"/>'
-	strXml += ` <c:${typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses'} val="${isRight ? 'max' : opts.catAxisCrossesAt || 'autoZero'}"/>`
+	if (typeof opts.catAxisCrossesAt === 'number') {
+		strXml += ' <c:crossesAt val="' + opts.catAxisCrossesAt + '"/>'
+	} else if (typeof opts.catAxisCrossesAt === 'string') {
+		strXml += ' <c:crosses val="' + opts.catAxisCrossesAt + '"/>'
+	} else {
+		let isRight = axisPos === 'r' || axisPos === 't'
+		let crosses = isRight ? 'max' : 'autoZero'
+		strXml += ' <c:crosses val="' + crosses + '"/>'
+	}
 	strXml +=
 		' <c:crossBetween val="' +
 		(opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0 ? true : false)
