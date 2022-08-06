@@ -1414,7 +1414,7 @@ declare namespace PptxGenJS {
 		 * Shape fill color properties
 		 * @example { color:'FF0000' } // hex color (red)
 		 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
-		 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
+		 * @example { color:pptx.SchemeColor.accent1 } // Theme color Accent1
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1994,6 +1994,7 @@ declare namespace PptxGenJS {
 		showLeaderLines?: boolean
 		showLegend?: boolean
 		showPercent?: boolean
+		showSerName?: boolean
 		showTitle?: boolean
 		showValue?: boolean
 		/**
@@ -2054,6 +2055,8 @@ declare namespace PptxGenJS {
 		catAxisMinorTimeUnit?: string
 		catAxisMinorUnit?: string
 		catAxisMinVal?: number
+		/** @since v3.11.0 */
+		catAxisMultiLevelLabels?: boolean
 		catAxisOrientation?: 'minMax'
 		catAxisTitle?: string
 		catAxisTitleColor?: string
@@ -2298,9 +2301,9 @@ declare namespace PptxGenJS {
 			IChartPropsDataTable,
 			IChartPropsLegend,
 			IChartPropsTitle,
+			ObjectNameProps,
 			OptsChartGridLine,
-			PositionProps,
-			ObjectNameProps {
+			PositionProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
