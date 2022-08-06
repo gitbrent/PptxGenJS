@@ -7533,10 +7533,10 @@
     "nanoid" "^3.1.25"
     "source-map-js" "^0.6.2"
 
-"pptxgenjs@^3.10.0":
-  "integrity" "sha512-9J4Lpj4nF88r1GWOcuZYgFgsL6PBSxmU8jU1htXQHQmpoQzFF4TIRqHBMFQ2H3q8u5YhRoCX8ZqOJ40URe+PGQ=="
-  "resolved" "https://registry.npmjs.org/pptxgenjs/-/pptxgenjs-3.10.0.tgz"
-  "version" "3.10.0"
+"pptxgenjs@^3.11.0":
+  "integrity" "sha512-jAbDwAY0d9sjNFiv5dzEaEbjGCTvdtSSMskPbmzSu2Hele/W3BMPj/6vD6Yj0fgA6wBdsc8so9/Had1Zt4eolA=="
+  "resolved" "https://registry.npmjs.org/pptxgenjs/-/pptxgenjs-3.11.0.tgz"
+  "version" "3.11.0"
   dependencies:
     "@types/node" "^17.0.21"
     "https" "^1.0.0"
