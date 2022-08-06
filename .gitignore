@@ -12,5 +12,5 @@ demo/react
 
 ### docusaurus
 .docusaurus
-/build
-/docs
+build
+docs
