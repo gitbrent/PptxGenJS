@@ -1,15 +1,15 @@
 # Dependencies
-/node_modules
+node_modules
 
 # Production
-/build
-/demos
+build
+demos
 
 # Generated files
-/.docusaurus
-/.cache-loader
-/.vscode
-/src/bld
+.docusaurus
+.cache-loader
+.vscode
+src/bld
 
 # Misc
 .DS_Store
