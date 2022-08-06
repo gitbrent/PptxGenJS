@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.9.0">
-	<meta name="updated" content="2021-12-12">
+	<meta name="version" content="3.11.0">
+	<meta name="updated" content="2022-08-06">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -27,10 +27,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
 		crossorigin="anonymous"></script>
 
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/modules/demos.mjs" type="module"></script>
 	<!-- RELEASE (CDN)
 	-->
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/modules/demos.mjs" type="module"></script>
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/dist/pptxgen.bundle.js"></script>
@@ -61,7 +61,8 @@
 		//
 		$('#numTab2SlideRows').change(() => buildDataTable());
 		$('#table2slides1').click(() => table2slides1());
-		$('#table2slides2').click(() => table2slides2());
+		$('#table2slides2').click(() => table2slides2(false));
+		$('#table2slides3').click(() => table2slides2(true));
 		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle', { fill: { color: 'f1f1f1' } }));
 		$('#tab2slides_tabInheritStyle').click(() => table2slidesDemoForTab('tabInheritStyle', { fill: { color: 'f1f1f1' } }));
 		$('#tab2slides_tabColspan').click(() => table2slidesDemoForTab('tabColspan'));
@@ -297,7 +298,10 @@
 										<button id="table2slides1" type="button" class="btn btn-success w-100">Demo Table (as shown)</button>
 									</div>
 									<div class="col">
-										<button id="table2slides2" type="button" class="btn btn-outline-success w-100">Demo Table (add dynamic-text)</button>
+										<button id="table2slides2" type="button" class="btn btn-outline-success w-100">Demo Table (addText)</button>
+									</div>
+									<div class="col">
+										<button id="table2slides3" type="button" class="btn btn-outline-success w-100">Demo Table (addImage)</button>
 									</div>
 								</div>
 							</section>
@@ -595,21 +599,21 @@
 						</div>
 					</div>
 					<div class="card-body">
-						<div class="row row-cols-3 g-4 text-sm mb-4">
+						<div class="row row-cols-4 g-4 text-sm mb-4">
 							<div class="col">
 								<h6 class="text-primary">Bar Chart</h6>
 								<ul class="mb-0">
-									<li>Slide 1: vertical and horizontal bars</li>
-									<li>Slide 2: grid and axis options</li>
-									<li>Slide 3: stacked and percent-stacked bars</li>
-									<li>Slide 4: lots of bars</li>
-									<li>Slide 5: colors, units, formats</li>
+									<li>Slide 1: Chart title, axis props</li>
+									<li>Slide 2: Vertical and Horizontal</li>
+									<li>Slide 3: Grid and axis options</li>
+									<li>Slide 4: Stacked & PercentStacked</li>
+									<li>Slide 5: Colors, units, formats</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6 class="text-primary">3D Bar Chart</h6>
 								<ul class="mb-0">
-									<li>Slide 6: bar, cone, cylinder, pyramid</li>
+									<li>Slide 6: 3D Bar, 3D Cone, 3D Cylinder, 3D Pyramid</li>
 								</ul>
 							</div>
 							<div class="col">
@@ -658,15 +662,23 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6 class="text-primary">Multi-Type Chart</h6>
+								<h6 class="text-primary">Multi-Level Category Axes</h6>
 								<ul class="mb-0">
-									<li>Slide 17 - Various Options</li>
+									<li>Slide 17 - Multiple Chart Types</li>
+									<li>Slide 18 - Three Level Axes</li>
 								</ul>
 							</div>
 							<div class="col">
-								<h6 class="text-primary">Chart Options</h6>
+								<h6 class="text-primary">Combo Chart</h6>
 								<ul class="mb-0">
-									<li>Slide 18 - Shadows and Transparent Color</li>
+									<li>Slide 19 - Example</li>
+									<li>Slide 20 - Various Options</li>
+								</ul>
+							</div>
+							<div class="col">
+								<h6 class="text-primary">Misc Options</h6>
+								<ul class="mb-0">
+									<li>Slide 21 - Shadows and Transparent Color</li>
 								</ul>
 							</div>
 						</div>
