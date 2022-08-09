@@ -543,7 +543,6 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @example 25 // 25% transparent
 	 */
 	transparency?: number
-	
 	/** 
 	 * Shadow Props
 	 * @example { type: 'outer',
@@ -553,7 +552,19 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 *            offset: 20, 
 	 *            angle: 270 }
 	 */
-	 shadow?: ShadowProps
+	shadow?: ShadowProps
+	/**
+	 * Overlay Props
+	 * - Transparency range: 0-100 where 0 is completely visible
+	 * - Color: Hex strings without hash (#) character
+	 * @default null
+	 * @example { color: 'FF0000',
+	 *            transparency: 25 }
+	 */
+	overlay?: {
+		color: string
+		transparency: number
+	}
 }
 /**
  * Add media (audio/video) to slide
