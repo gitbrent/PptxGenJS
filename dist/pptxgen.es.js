@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-09T09:42:17.692Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-09T09:56:11.735Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5512,7 +5512,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, overlay = slideItemObj.options.overlay, overlayXmlString = "<a:fillOverlay blend=\"darken\">\n                      <a:solidFill>\n                          <a:srgbClr val=\"".concat(overlay.color, "\">\n                          <a:alpha val=\"").concat(Math.round((100 - overlay.transparency) * 1000), "\"/>\n                         </a:srgbClr>\n                      </a:solidFill>\n                      </a:fillOverlay>");
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, overlayXmlString = slideItemObj.options.overlay ? "<a:fillOverlay blend=\"darken\">\n                      <a:solidFill>\n                          <a:srgbClr val=\"".concat(slideItemObj.options.overlay.color, "\">\n                          <a:alpha val=\"").concat(Math.round((100 - slideItemObj.options.overlay.transparency) * 1000), "\"/>\n                         </a:srgbClr>\n                      </a:solidFill>\n                      </a:fillOverlay>") : '';
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
                 strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
@@ -5530,7 +5530,7 @@ function slideObjectToXml(slide) {
                     (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0]['extn'] === 'svg') {
                     strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
                     strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
-                    strSlideXml += overlay ? overlayXmlString : '';
+                    strSlideXml += overlayXmlString;
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
                     strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
@@ -5541,7 +5541,7 @@ function slideObjectToXml(slide) {
                 else {
                     strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">';
                     strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
-                    strSlideXml += overlay ? overlayXmlString : '';
+                    strSlideXml += overlayXmlString;
                     strSlideXml += '</a:blip>';
                 }
                 if (sizing && sizing.type) {

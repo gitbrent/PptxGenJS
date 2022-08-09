@@ -565,15 +565,16 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				let sizing = slideItemObj.options.sizing,
 					rounding = slideItemObj.options.rounding,
 					width = cx,
-                    height = cy,
-                    overlay = slideItemObj.options.overlay,
-                    overlayXmlString = `<a:fillOverlay blend="darken">
+					height = cy,
+					overlayXmlString = slideItemObj.options.overlay
+						? `<a:fillOverlay blend="darken">
                       <a:solidFill>
-                          <a:srgbClr val="${overlay.color}">
-                          <a:alpha val="${Math.round((100 - overlay.transparency) * 1000)}"/>
+                          <a:srgbClr val="${slideItemObj.options.overlay.color}">
+                          <a:alpha val="${Math.round((100 - slideItemObj.options.overlay.transparency) * 1000)}"/>
                          </a:srgbClr>
                       </a:solidFill>
                       </a:fillOverlay>`
+						: ''
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
@@ -600,7 +601,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				) {
 					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
 					strSlideXml += slideItemObj.options.transparency ? ` <a:alphaModFix amt="${Math.round((100 - slideItemObj.options.transparency) * 1000)}"/>` : ''
-                    strSlideXml += overlay ? overlayXmlString : ''
+					strSlideXml += overlayXmlString
 					strSlideXml += ' <a:extLst>'
 					strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">'
 					strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>'
@@ -610,7 +611,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				} else {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">'
 					strSlideXml += slideItemObj.options.transparency ? ` <a:alphaModFix amt="${Math.round((100 - slideItemObj.options.transparency) * 1000)}"/>` : ''
-                    strSlideXml += overlay ? overlayXmlString : ''
+					strSlideXml += overlayXmlString
 					strSlideXml += '</a:blip>'
 				}
 				if (sizing && sizing.type) {
@@ -650,7 +651,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>'
 					strSlideXml += '</a:outerShdw>'
 					strSlideXml += '</a:effectLst>'
-				}				
+				}
 				strSlideXml += '</p:spPr>'
 				strSlideXml += '</p:pic>'
 				break
