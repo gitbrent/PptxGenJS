@@ -726,7 +726,7 @@ export function addTableDefinition(
 	presLayout: PresLayout,
 	addSlide: Function,
 	getSlide: Function
-) {
+): PresSlide[] {
 	let slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
 	let opt: TableProps = options && typeof options === 'object' ? options : {}
 	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.table).length}`
@@ -933,6 +933,9 @@ export function addTableDefinition(
 		})
 	})
 
+	// If autoPage = true, we need to return references to newly created slides if any
+	const newAutoPagedSlides: PresSlide[] = []
+
 	// STEP 6: Auto-Paging: (via {options} and used internally)
 	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
 	if (opt && opt.autoPage === false) {
@@ -967,9 +970,13 @@ export function addTableDefinition(
 
 				// Add rows to new slide
 				newSlide.addTable(slide.rows, Object.assign({}, opt))
+
+				// Add reference to the new slide so it can be returned, but don't add the first one because the user already has a reference to that one.
+				if (idx > 0) newAutoPagedSlides.push(newSlide)
 			}
 		})
 	}
+	return newAutoPagedSlides
 }
 
 /**

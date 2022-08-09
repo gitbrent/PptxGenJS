@@ -594,7 +594,7 @@ function genSlide07(pptx) {
 
 	// EX-3: "Master Page with Auto-Paging"
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_AUTO_PAGE_TABLE_PLACEHOLDER" });
 		slide.addText(
 			[
 				{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
@@ -602,7 +602,9 @@ function genSlide07(pptx) {
 			],
 			{ x: 0.5, y: 0.13, w: "90%" }
 		);
+		slide.addText("Auto-Paging table", { placeholder: "footer" });
 		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
+		slide.newAutoPagedSlides.forEach((slide) => slide.addText("Auto-Paging table continued...", { placeholder: "footer" }));
 	}
 
 	// EX-4: "Auto-Paging Disabled"
