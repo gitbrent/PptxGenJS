@@ -567,7 +567,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					width = cx,
 					height = cy,
 					overlayXmlString = slideItemObj.options.overlay
-						? `<a:fillOverlay blend="darken">
+						? `<a:fillOverlay blend="screen">
                       <a:solidFill>
                           <a:srgbClr val="${slideItemObj.options.overlay.color}">
                           <a:alpha val="${Math.round((100 - slideItemObj.options.overlay.transparency) * 1000)}"/>

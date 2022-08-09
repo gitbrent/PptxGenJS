@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-09T09:56:11.735Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-09T10:28:22.711Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5512,7 +5512,9 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, overlayXmlString = slideItemObj.options.overlay ? "<a:fillOverlay blend=\"darken\">\n                      <a:solidFill>\n                          <a:srgbClr val=\"".concat(slideItemObj.options.overlay.color, "\">\n                          <a:alpha val=\"").concat(Math.round((100 - slideItemObj.options.overlay.transparency) * 1000), "\"/>\n                         </a:srgbClr>\n                      </a:solidFill>\n                      </a:fillOverlay>") : '';
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, overlayXmlString = slideItemObj.options.overlay
+                    ? "<a:fillOverlay blend=\"screen\">\n                      <a:solidFill>\n                          <a:srgbClr val=\"".concat(slideItemObj.options.overlay.color, "\">\n                          <a:alpha val=\"").concat(Math.round((100 - slideItemObj.options.overlay.transparency) * 1000), "\"/>\n                         </a:srgbClr>\n                      </a:solidFill>\n                      </a:fillOverlay>")
+                    : '';
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
                 strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
