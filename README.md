@@ -16,12 +16,17 @@
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
+	- [Works Everywhere](#works-everywhere)
+	- [Full Featured](#full-featured)
+	- [Simple and Powerful](#simple-and-powerful)
+	- [Export Your Way](#export-your-way)
+	- [HTML to PowerPoint](#html-to-powerpoint)
 - [Live Demos](#live-demos)
 - [Installation](#installation)
-	- [CDN](#cdn)
-	- [Download](#download)
 	- [Npm](#npm)
 	- [Yarn](#yarn)
+	- [CDN](#cdn)
+	- [Download](#download)
 	- [Additional Builds](#additional-builds)
 - [Documentation](#documentation)
 	- [Quick Start Guide](#quick-start-guide)
@@ -42,31 +47,31 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 # Features
 
-**Works Everywhere**
+## Works Everywhere
 
 - Every modern desktop and mobile browser is supported
 - Integrates with Node, Angular, React, and Electron
 - Compatible with PowerPoint, Keynote, and more
 
-**Full Featured**
+## Full Featured
 
 - All major object types are available (charts, shapes, tables, etc.)
 - Master Slides for academic/corporate branding
 - SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts
 
-**Simple And Powerful**
+## Simple and Powerful
 
 - The absolute easiest PowerPoint library to use
 - Learn as you code will full typescript definitions included
 - Tons of demo code comes included (over 75 slides of features)
 
-**Export Your Way**
+## Export Your Way
 
 - Exports files direct to client browsers with proper MIME-type
 - Other export formats available: base64, blob, stream, etc.
 - Presentation compression options and more
 
-**HTML to PowerPoint**
+## HTML to PowerPoint
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
@@ -78,6 +83,20 @@ Visit the demos page to create a simple presentation to see how easy it is to us
 
 # Installation
 
+## Npm
+
+[PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
+
+```bash
+npm install pptxgenjs --save
+```
+
+## Yarn
+
+```bash
+yarn add pptxgenjs
+```
+
 ## CDN
 
 [jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
@@ -85,14 +104,14 @@ Visit the demos page to create a simple presentation to see how easy it is to us
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download
@@ -112,20 +131,6 @@ Min files: Modern Browsers
 ```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
-```
-
-## Npm
-
-[PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
-
-```bash
-npm install pptxgenjs --save
-```
-
-## Yarn
-
-```bash
-yarn add pptxgenjs
 ```
 
 ## Additional Builds

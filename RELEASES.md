@@ -1,8 +1,5 @@
 # PptxGenJS Release Checklist
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [PptxGenJS Release Checklist](#pptxgenjs-release-checklist)
 	- [Build Library, Update Files](#build-library-update-files)
 	- [Run Platform Tests](#run-platform-tests)
@@ -14,8 +11,6 @@
 		- [GitHub](#github)
 		- [NPM](#npm)
 	- [Post-Release Tasks](#post-release-tasks)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Build Library, Update Files
 
@@ -41,11 +36,11 @@
 2. Run various tests
 
 ```bash
-$ cd ~/GitHub/PptxGenJS/demos/node
-$ npm run demo
-$ npm run demo-all
-$ npm run demo-text
-$ npm run demo-stream
+cd ~/GitHub/PptxGenJS/demos/node
+npm run demo
+npm run demo-all
+npm run demo-text
+npm run demo-stream
 ```
 
 ### React/TypeScript
@@ -57,20 +52,21 @@ Test
 3. Open `demos/react-demo/src/tstest/Test.tsx`, check for typescript errors/warnings: use auto-complete, "pptxgen.ChartType." etc.
 
 ```bash
-$ cd ~/GitHub/PptxGenJS/demos/react-demo
-$ npm run start
+cd ~/GitHub/PptxGenJS/demos/react-demo
+npm run build
+npm run start
 ```
 
 1. Go to [React Test](http://localhost:3000) on iMac, run demo tests
-2. Go to http://192.168.1.x:3000 on iPhone, run demo tests
-3. Go to http://192.168.1.x:3000 on Android, run demo tests
+2. Go to <http://192.168.254.x:3000> on iPhone, run demo tests
+3. Go to <http://192.168.254.x:3000> on Android, run demo tests
 4. Open exports on each device to ensure MIME type is correct, looks right, etc.
 5. Note: Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
 
 Build
 
-1. Run `~/GitHub/PptxGenJS/demos/react-demo/npm run build`
-2. Copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build
+1. Run `npm run build`
+2. Copy entire "build" folder to Downloads to use when updating "gh-pages" branch after release is complete
 3. Note: **DO NOT** use the deploy script offered onscreen!
 
 ## Release New Version
@@ -92,8 +88,8 @@ Build
 ### NPM
 
 ```bash
-$ cd ~/GitHub/PptxGenJS
-$ npm publish
+cd ~/GitHub/PptxGenJS
+npm publish
 ```
 
 ## Post-Release Tasks
