@@ -32,13 +32,13 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 - Chart type can be any one of `pptx.ChartType`
 - Currently: `pptx.ChartType.area`, `pptx.ChartType.bar`, `pptx.ChartType.bar3d`, `pptx.ChartType.bubble`, `pptx.ChartType.bubble3d`, `pptx.ChartType.doughnut`, `pptx.ChartType.line`, `pptx.ChartType.pie`, `pptx.ChartType.radar`, `pptx.ChartType.scatter`
 
-### Multi-Type Charts
+### Combo Charts
 
 - Chart types can be any one of `pptx.ChartType`, although `pptx.ChartType.area`, `pptx.ChartType.bar`, and `pptx.ChartType.line` will give the best results.
 - There should be at least two chart-types. There should always be two value axes and category axes.
-- Multi Charts have a different function signature than standard. There are two parameters:
-- `chartTypes`: Array of objects, each with `type`, `data`, and `options` objects.
-- `options`: Standard options as used with single charts. Can include axes options.
+- Combo charts have a different function signature than standard. There are two parameters:
+  - `chartTypes`: Array of objects, each with `type`, `data`, and `options` objects.
+  - `options`: Standard options as used with single charts. Can include axes options.
 - Columns makes the most sense in general. Line charts cannot be rotated to match up with horizontal bars (a PowerPoint limitation).
 - Can optionally have a secondary value axis.
 - If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
@@ -104,67 +104,66 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 
 ### Cat Axis (`IChartPropsAxisCat`) and Val Axis (`IChartPropsAxisVal`)
 
-| Option                    | Type    | Default      | Description                         | Possible Values                                                                                                                    |
-| :------------------------ | :------ | :----------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
-| `catAxes`                 | object  |              | Multi-Chart prop: array of cat axes | `IChartPropsAxisCat[]`                                                                                                             |
-| `catAxisBaseTimeUnit`     | string  |              | category-axis base time unit        | `days` `months` or `years`                                                                                                         |
-| `catAxisCrossesAt`        | multi   |              | category-axis crosses at            | `number` or `autoZero`                                                                                                             |
-| `catAxisHidden`           | boolean | `false`      | hide category-axis                  | `true` or `false`                                                                                                                  |
-| `catAxisLabelColor`       | string  | `000000`     | category-axis color                 | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`                                                                               |
-| `catAxisLabelFontBold`    | boolean | `false`      | make cat axis label bold            | `true` or `false`                                                                                                                  |
-| `catAxisLabelFontFace`    | string  | `Arial`      | category-axis font face             | font name. Ex: `{ titleFontFace:'Arial' }`                                                                                         |
-| `catAxisLabelFontSize`    | integer | `18`         | category-axis font size             | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
-| `catAxisLabelFrequency`   | integer |              | PPT "Interval Between Labels"       | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`                                                                                            |
-| `catAxisLabelPos`         | string  | `nextTo`     | category-axis label position        | `low`, `high`, or `nextTo` . Ex: `{ catAxisLabelPos: 'low' }`                                                                      |
-| `catAxisLabelRotate`      | integer |              | category-axis rotation (degrees)    | 0-360. Ex: `{ catAxisLabelRotate:45 }`                                                                                             |
-| `catAxisLineColor`        | string  | `000000`     | category-axis line color            | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }`                                                                               |
-| `catAxisLineShow`         | boolean | `true`       | show/hide category-axis line        | `true` or `false`                                                                                                                  |
-| `catAxisLineSize`         | integer | `18`         | category-axis font size             | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
-| `catAxisLineStyle`        | string  | `solid`      | category-axis line style            | `solid`, `dash`, `dot`                                                                                                             |
-| `catAxisMajorTickMark`    | string  |              | category-axis major tick mark       | `none`, `inside`, `outside`, `cross`                                                                                               |
-| `catAxisMajorTimeUnit`    | string  |              | category-axis major time unit       | `days`, `months` or `years`                                                                                                        |
-| `catAxisMaxVal`           | integer |              | category-axis max value             | Integer. Ex: `{ catAxisMaxVal:10 }`                                                                                                |
-| `catAxisMinVal`           | integer |              | category-axis min value             | Integer. Ex: `{ catAxisMinVal:0 }`                                                                                                 |
-| `catAxisMinorTickMark`    | string  |              | category-axis minor tick mark       | `none`, `inside`, `outside`, `cross`                                                                                               |
-| `catAxisMinorTimeUnit`    | string  |              | category-axis minor time unit       | `days`, `months` or `years`                                                                                                        |
-| `catAxisMajorUnit`        | integer |              | category-axis major unit            | Positive integer. Ex: `{ catAxisMajorUnit:12 }`                                                                                    |
-| `catAxisMinorUnit`        | integer |              | category-axis minor unit            | Positive integer. Ex: `{ catAxisMinorUnit:1 }`                                                                                     |
-| `catAxisMultiLevelLabels` | boolean | `false`      | show multi-level labels             | `true` or `false`. Ex:`{ catAxisMultiLevelLabels:true }`                                                                           |
-| `catAxisOrientation`      | string  | `minMax`     | category-axis orientation           | `maxMin` (high->low) or `minMax` (low->high)                                                                                       |
-| `catAxisTitle`            | string  | `Axis Title` | axis title                          | a string. Ex: `{ catAxisTitle:'Regions' }`                                                                                         |
-| `catAxisTitleColor`       | string  | `000000`     | title color                         | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }`                                                                               |
-| `catAxisTitleFontFace`    | string  | `Arial`      | font face                           | font name. Ex: `{ catAxisTitleFontFace:'Arial' }`                                                                                  |
-| `catAxisTitleFontSize`    | integer |              | font size                           | 1-256. Ex: `{ catAxisTitleFontSize:12 }`                                                                                           |
-| `catAxisTitleRotate`      | integer |              | title rotation (degrees)            | 0-360. Ex: `{ catAxisTitleRotate:45 }`                                                                                             |
-| `catGridLine`             | object  | `none`       | category grid line style            | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide                       |
-| `showCatAxisTitle`        | boolean | `false`      | show category (vert) title          | `true` or `false`. Ex:`{ showCatAxisTitle:true }`                                                                                  |
-| `showSerName`             | boolean | `false`      | show serie name                     | `true` or `false`. Ex:`{ showSerName:true }`                                                                                       |
-| `showValAxisTitle`        | boolean | `false`      | show values (horiz) title           | `true` or `false`. Ex:`{ showValAxisTitle:true }`                                                                                  |
-| `valAxisCrossesAt`        | multi   |              | value-axis crosses at               | `number` or `autoZero`                                                                                                             |
-| `valAxisDisplayUnit`      | string  |              | display units                       | `billions`, `hundredMillions`, `hundreds`, `hundredThousands`, `millions`, `tenMillions`, `tenThousands`, `thousands`, `trillions` |
-| `valAxisHidden`           | boolean | `false`      | hide value-axis                     | `true` or `false`                                                                                                                  |
-| `valAxisLabelColor`       | string  | `000000`     | value-axis color                    | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }`                                                                               |
-| `valAxisLabelFontBold`    | boolean | `false`      | make val axis label bold            | `true` or `false`                                                                                                                  |
-| `valAxisLabelFontFace`    | string  | `Arial`      | value-axis font face                | font name. Ex: `{ titleFontFace:'Arial' }`                                                                                         |
-| `valAxisLabelFontSize`    | integer | `18`         | value-axis font size                | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
-| `valAxisLabelFormatCode`  | string  | `General`    | value-axis number format            | format string. Ex: `{ axisLabelFormatCode:'#,##0' }`                                                                               |
-| `valAxisLineColor`        | string  | `000000`     | value-axis line color               | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }`                                                                               |
-| `valAxisLineShow`         | boolean | `true`       | show/hide value-axis line           | `true` or `false`                                                                                                                  |
-| `valAxisLineSize`         | integer | `18`         | value-axis font size                | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
-| `valAxisLineStyle`        | string  | `solid`      | value-axis line style               | `solid`, `dash`, `dot`                                                                                                             |
-| `valAxisLogScaleBase`     | number  |              | logarithmic scale                   | 2-99                                                                                                                               |
-| `valAxisMajorTickMark`    | string  |              | value-axis major tick mark          | `none`, `inside`, `outside`, `cross`                                                                                               |
-| `valAxisMajorUnit`        | number  | `1.0`        | value-axis tick steps               | Float or whole number. Ex: `{ majorUnit:0.2 }`                                                                                     |
-| `valAxisMaxVal`           | number  |              | value-axis maximum value            | 1-N. Ex: `{ valAxisMaxVal:125 }`                                                                                                   |
-| `valAxisMinVal`           | number  |              | value-axis minimum value            | 1-N. Ex: `{ valAxisMinVal: -10 }`                                                                                                  |
-| `valAxisMinorTickMark`    | string  |              | value-axis minor tick mark          | `none`, `inside`, `outside`, `cross`                                                                                               |
-| `valAxisOrientation`      | string  | `minMax`     | value-axis orientation              | `maxMin` (high->low) or `minMax` (low->high)                                                                                       |
-| `valAxisTitle`            | string  | `Axis Title` | axis title                          | a string. Ex: `{ valAxisTitle:'Sales (USD)' }`                                                                                     |
-| `valAxisTitleColor`       | string  | `000000`     | title color                         | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }`                                                                               |
-| `valAxisTitleFontFace`    | string  | `Arial`      | font face                           | font name. Ex: `{ valAxisTitleFontFace:'Arial' }`                                                                                  |
-| `valAxisTitleFontSize`    | number  |              | font size                           | 1-256. Ex: `{ valAxisTitleFontSize:12 }`                                                                                           |
-| `valAxisTitleRotate`      | integer |              | title rotation (degrees)            | 0-360. Ex: `{ valAxisTitleRotate:45 }`                                                                                             |
-| `valGridLine`             | object  |              | value grid line style               | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide                       |
+| Option                    | Type    | Default      | Description                      | Possible Values                                                                                                                    |
+| :------------------------ | :------ | :----------- | :------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
+| `catAxisBaseTimeUnit`     | string  |              | category-axis base time unit     | `days` `months` or `years`                                                                                                         |
+| `catAxisCrossesAt`        | multi   |              | category-axis crosses at         | `number` or `autoZero`                                                                                                             |
+| `catAxisHidden`           | boolean | `false`      | hide category-axis               | `true` or `false`                                                                                                                  |
+| `catAxisLabelColor`       | string  | `000000`     | category-axis color              | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`                                                                               |
+| `catAxisLabelFontBold`    | boolean | `false`      | make cat axis label bold         | `true` or `false`                                                                                                                  |
+| `catAxisLabelFontFace`    | string  | `Arial`      | category-axis font face          | font name. Ex: `{ titleFontFace:'Arial' }`                                                                                         |
+| `catAxisLabelFontSize`    | integer | `18`         | category-axis font size          | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
+| `catAxisLabelFrequency`   | integer |              | PPT "Interval Between Labels"    | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`                                                                                            |
+| `catAxisLabelPos`         | string  | `nextTo`     | category-axis label position     | `low`, `high`, or `nextTo` . Ex: `{ catAxisLabelPos: 'low' }`                                                                      |
+| `catAxisLabelRotate`      | integer |              | category-axis rotation (degrees) | 0-360. Ex: `{ catAxisLabelRotate:45 }`                                                                                             |
+| `catAxisLineColor`        | string  | `000000`     | category-axis line color         | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }`                                                                               |
+| `catAxisLineShow`         | boolean | `true`       | show/hide category-axis line     | `true` or `false`                                                                                                                  |
+| `catAxisLineSize`         | integer | `18`         | category-axis font size          | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
+| `catAxisLineStyle`        | string  | `solid`      | category-axis line style         | `solid`, `dash`, `dot`                                                                                                             |
+| `catAxisMajorTickMark`    | string  |              | category-axis major tick mark    | `none`, `inside`, `outside`, `cross`                                                                                               |
+| `catAxisMajorTimeUnit`    | string  |              | category-axis major time unit    | `days`, `months` or `years`                                                                                                        |
+| `catAxisMaxVal`           | integer |              | category-axis max value          | Integer. Ex: `{ catAxisMaxVal:10 }`                                                                                                |
+| `catAxisMinVal`           | integer |              | category-axis min value          | Integer. Ex: `{ catAxisMinVal:0 }`                                                                                                 |
+| `catAxisMinorTickMark`    | string  |              | category-axis minor tick mark    | `none`, `inside`, `outside`, `cross`                                                                                               |
+| `catAxisMinorTimeUnit`    | string  |              | category-axis minor time unit    | `days`, `months` or `years`                                                                                                        |
+| `catAxisMajorUnit`        | integer |              | category-axis major unit         | Positive integer. Ex: `{ catAxisMajorUnit:12 }`                                                                                    |
+| `catAxisMinorUnit`        | integer |              | category-axis minor unit         | Positive integer. Ex: `{ catAxisMinorUnit:1 }`                                                                                     |
+| `catAxisMultiLevelLabels` | boolean | `false`      | show multi-level labels          | `true` or `false`. Ex:`{ catAxisMultiLevelLabels:true }`                                                                           |
+| `catAxisOrientation`      | string  | `minMax`     | category-axis orientation        | `maxMin` (high->low) or `minMax` (low->high)                                                                                       |
+| `catAxisTitle`            | string  | `Axis Title` | axis title                       | a string. Ex: `{ catAxisTitle:'Regions' }`                                                                                         |
+| `catAxisTitleColor`       | string  | `000000`     | title color                      | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }`                                                                               |
+| `catAxisTitleFontFace`    | string  | `Arial`      | font face                        | font name. Ex: `{ catAxisTitleFontFace:'Arial' }`                                                                                  |
+| `catAxisTitleFontSize`    | integer |              | font size                        | 1-256. Ex: `{ catAxisTitleFontSize:12 }`                                                                                           |
+| `catAxisTitleRotate`      | integer |              | title rotation (degrees)         | 0-360. Ex: `{ catAxisTitleRotate:45 }`                                                                                             |
+| `catGridLine`             | object  | `none`       | category grid line style         | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide                       |
+| `showCatAxisTitle`        | boolean | `false`      | show category (vert) title       | `true` or `false`. Ex:`{ showCatAxisTitle:true }`                                                                                  |
+| `showSerName`             | boolean | `false`      | show serie name                  | `true` or `false`. Ex:`{ showSerName:true }`                                                                                       |
+| `showValAxisTitle`        | boolean | `false`      | show values (horiz) title        | `true` or `false`. Ex:`{ showValAxisTitle:true }`                                                                                  |
+| `valAxisCrossesAt`        | multi   |              | value-axis crosses at            | `number` or `autoZero`                                                                                                             |
+| `valAxisDisplayUnit`      | string  |              | display units                    | `billions`, `hundredMillions`, `hundreds`, `hundredThousands`, `millions`, `tenMillions`, `tenThousands`, `thousands`, `trillions` |
+| `valAxisHidden`           | boolean | `false`      | hide value-axis                  | `true` or `false`                                                                                                                  |
+| `valAxisLabelColor`       | string  | `000000`     | value-axis color                 | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }`                                                                               |
+| `valAxisLabelFontBold`    | boolean | `false`      | make val axis label bold         | `true` or `false`                                                                                                                  |
+| `valAxisLabelFontFace`    | string  | `Arial`      | value-axis font face             | font name. Ex: `{ titleFontFace:'Arial' }`                                                                                         |
+| `valAxisLabelFontSize`    | integer | `18`         | value-axis font size             | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
+| `valAxisLabelFormatCode`  | string  | `General`    | value-axis number format         | format string. Ex: `{ axisLabelFormatCode:'#,##0' }`                                                                               |
+| `valAxisLineColor`        | string  | `000000`     | value-axis line color            | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }`                                                                               |
+| `valAxisLineShow`         | boolean | `true`       | show/hide value-axis line        | `true` or `false`                                                                                                                  |
+| `valAxisLineSize`         | integer | `18`         | value-axis font size             | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                  |
+| `valAxisLineStyle`        | string  | `solid`      | value-axis line style            | `solid`, `dash`, `dot`                                                                                                             |
+| `valAxisLogScaleBase`     | number  |              | logarithmic scale                | 2-99                                                                                                                               |
+| `valAxisMajorTickMark`    | string  |              | value-axis major tick mark       | `none`, `inside`, `outside`, `cross`                                                                                               |
+| `valAxisMajorUnit`        | number  | `1.0`        | value-axis tick steps            | Float or whole number. Ex: `{ majorUnit:0.2 }`                                                                                     |
+| `valAxisMaxVal`           | number  |              | value-axis maximum value         | 1-N. Ex: `{ valAxisMaxVal:125 }`                                                                                                   |
+| `valAxisMinVal`           | number  |              | value-axis minimum value         | 1-N. Ex: `{ valAxisMinVal: -10 }`                                                                                                  |
+| `valAxisMinorTickMark`    | string  |              | value-axis minor tick mark       | `none`, `inside`, `outside`, `cross`                                                                                               |
+| `valAxisOrientation`      | string  | `minMax`     | value-axis orientation           | `maxMin` (high->low) or `minMax` (low->high)                                                                                       |
+| `valAxisTitle`            | string  | `Axis Title` | axis title                       | a string. Ex: `{ valAxisTitle:'Sales (USD)' }`                                                                                     |
+| `valAxisTitleColor`       | string  | `000000`     | title color                      | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }`                                                                               |
+| `valAxisTitleFontFace`    | string  | `Arial`      | font face                        | font name. Ex: `{ valAxisTitleFontFace:'Arial' }`                                                                                  |
+| `valAxisTitleFontSize`    | number  |              | font size                        | 1-256. Ex: `{ valAxisTitleFontSize:12 }`                                                                                           |
+| `valAxisTitleRotate`      | integer |              | title rotation (degrees)         | 0-360. Ex: `{ valAxisTitleRotate:45 }`                                                                                             |
+| `valGridLine`             | object  |              | value grid line style            | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide                       |
 
 ### Bar (`IChartPropsChartBar`), Data Label (`IChartPropsDataLabel`), Line (`IChartPropsChartLine`)
 
@@ -238,7 +237,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 | `offset`  | number | points  | `1.8`    | offset size  | 1-256. Ex: `{ offset:2 }`                  |
 | `opacity` | number | percent | `0.35`   | opacity      | 0-1. Ex: `{ opacity:0.35 }`                |
 
-### Multi-Type Options
+### Combo Chart Options
 
 | Option             | Type    | Default | Description                                             | Possible Values   |
 | :----------------- | :------ | :------ | :------------------------------------------------------ | :---------------- |
