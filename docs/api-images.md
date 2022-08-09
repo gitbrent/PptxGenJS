@@ -64,17 +64,17 @@ It takes CPU time to read and encode images! The more images you include and the
 
 ### Image Props ([ImageProps](/PptxGenJS/docs/types#image-props-imageprops))
 
-| Option        | Type                                                                   | Default | Description        | Possible Values                        |
-| :------------ | :--------------------------------------------------------------------- | :------ | :----------------- | :------------------------------------- |
-| `altText`     | string                                                                 |         | alt text value     | description of what image shows        |
-| `flipH`       | boolean                                                                | `false` | Flip horizontally? | `true`, `false`                        |
-| `flipV`       | boolean                                                                | `false` | Flip vertical?     | `true`, `false`                        |
-| `hyperlink`   | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops) |         | add hyperlink      | object with `url` or `slide`           |
-| `placeholder` | string                                                                 |         | image placeholder  | Placeholder location: `title`, `body`  |
-| `rotate`      | integer                                                                | `0`     | rotation (degrees) | Rotation degress: `0`-`359`            |
-| `rounding`    | boolean                                                                | `false` | image rounding     | Shapes an image into a circle          |
-| `sizing`      | object                                                                 |         | transforms image   | See [Image Sizing](#sizing-properties) |
-| `transparency` | number | `0` | changes opacity of an image | `0`-`100` where `0` means image is completely visible |
+| Option         | Type                                                                   | Default | Description                 | Possible Values                                       |
+| :------------- | :--------------------------------------------------------------------- | :------ | :-------------------------- | :---------------------------------------------------- |
+| `altText`      | string                                                                 |         | alt text value              | description of what image shows                       |
+| `flipH`        | boolean                                                                | `false` | Flip horizontally?          | `true`, `false`                                       |
+| `flipV`        | boolean                                                                | `false` | Flip vertical?              | `true`, `false`                                       |
+| `hyperlink`    | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops) |         | add hyperlink               | object with `url` or `slide`                          |
+| `placeholder`  | string                                                                 |         | image placeholder           | Placeholder location: `title`, `body`                 |
+| `rotate`       | integer                                                                | `0`     | rotation (degrees)          | Rotation degress: `0`-`359`                           |
+| `rounding`     | boolean                                                                | `false` | image rounding              | Shapes an image into a circle                         |
+| `sizing`       | object                                                                 |         | transforms image            | See [Image Sizing](#sizing-properties)                |
+| `transparency` | number                                                                 | `0`     | changes opacity of an image | `0`-`100` where `0` means image is completely visible |
 
 ## Sizing Properties
 
