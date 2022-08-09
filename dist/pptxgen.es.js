@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-09T10:28:22.711Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-09T13:21:11.754Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5512,8 +5512,13 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, overlayXmlString = slideItemObj.options.overlay
-                    ? "<a:fillOverlay blend=\"screen\">\n                      <a:solidFill>\n                          <a:srgbClr val=\"".concat(slideItemObj.options.overlay.color, "\">\n                          <a:alpha val=\"").concat(Math.round((100 - slideItemObj.options.overlay.transparency) * 1000), "\"/>\n                         </a:srgbClr>\n                      </a:solidFill>\n                      </a:fillOverlay>")
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, transparency = slideItemObj.options.transparency, overlay = slideItemObj.options.overlay, alphaModFixVal = (overlay === null || overlay === void 0 ? void 0 : overlay.transparency) || 100 - transparency, 
+                /**
+                 * When overlay and image transparency are both applied,
+                 * a secondary alpha setting must be changed on the solidFill
+                 */
+                alphaVal = overlay && transparency ? Math.round((100 - transparency) * 1000) : 100000, overlayColor = overlay
+                    ? " <a:solidFill>\n                    <a:srgbClr val=\"".concat(overlay.color, "\">\n                      <a:alpha val=\"").concat(alphaVal, "\"/>\n                    </a:srgbClr>\n                  </a:solidFill>")
                     : '';
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
@@ -5531,8 +5536,7 @@ function slideObjectToXml(slide) {
                 if ((slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0] &&
                     (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0]['extn'] === 'svg') {
                     strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
-                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
-                    strSlideXml += overlayXmlString;
+                    strSlideXml += alphaModFixVal ? " <a:alphaModFix amt=\"".concat(Math.round(alphaModFixVal * 1000), "\"/>") : '';
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
                     strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
@@ -5542,8 +5546,7 @@ function slideObjectToXml(slide) {
                 }
                 else {
                     strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">';
-                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
-                    strSlideXml += overlayXmlString;
+                    strSlideXml += alphaModFixVal ? " <a:alphaModFix amt=\"".concat(Math.round(alphaModFixVal * 1000), "\"/>") : '';
                     strSlideXml += '</a:blip>';
                 }
                 if (sizing && sizing.type) {
@@ -5562,6 +5565,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>';
                 strSlideXml += ' </a:xfrm>';
                 strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>';
+                strSlideXml += overlayColor;
                 // UGH: COPY-PASTA FROM SHAPE
                 // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
                 if (slideItemObj.options.shadow) {
