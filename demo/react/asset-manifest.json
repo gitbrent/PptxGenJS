@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/PptxGenJS/demo/react/static/css/main.6b44277d.css",
-    "main.js": "/PptxGenJS/demo/react/static/js/main.5b7bd444.js",
-    "static/js/787.ece98cc6.chunk.js": "/PptxGenJS/demo/react/static/js/787.ece98cc6.chunk.js",
+    "main.css": "/PptxGenJS/demo/react/static/css/main.b100e6da.chunk.css",
+    "main.js": "/PptxGenJS/demo/react/static/js/main.1908e6ba.chunk.js",
+    "main.js.map": "/PptxGenJS/demo/react/static/js/main.1908e6ba.chunk.js.map",
+    "runtime-main.js": "/PptxGenJS/demo/react/static/js/runtime-main.ef8e4322.js",
+    "runtime-main.js.map": "/PptxGenJS/demo/react/static/js/runtime-main.ef8e4322.js.map",
+    "static/js/2.cbcf5821.chunk.js": "/PptxGenJS/demo/react/static/js/2.cbcf5821.chunk.js",
+    "static/js/2.cbcf5821.chunk.js.map": "/PptxGenJS/demo/react/static/js/2.cbcf5821.chunk.js.map",
     "index.html": "/PptxGenJS/demo/react/index.html",
-    "main.6b44277d.css.map": "/PptxGenJS/demo/react/static/css/main.6b44277d.css.map",
-    "main.5b7bd444.js.map": "/PptxGenJS/demo/react/static/js/main.5b7bd444.js.map",
-    "787.ece98cc6.chunk.js.map": "/PptxGenJS/demo/react/static/js/787.ece98cc6.chunk.js.map"
-  },
-  "entrypoints": [
-    "static/css/main.6b44277d.css",
-    "static/js/main.5b7bd444.js"
-  ]
+    "precache-manifest.f0fec2bd7e0398d872a3bfe3ab34ae86.js": "/PptxGenJS/demo/react/precache-manifest.f0fec2bd7e0398d872a3bfe3ab34ae86.js",
+    "service-worker.js": "/PptxGenJS/demo/react/service-worker.js",
+    "static/css/main.b100e6da.chunk.css.map": "/PptxGenJS/demo/react/static/css/main.b100e6da.chunk.css.map",
+    "static/media/logo.svg": "/PptxGenJS/demo/react/static/media/logo.bcad93ae.svg"
+  }
 }
