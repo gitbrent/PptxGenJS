@@ -74,6 +74,7 @@ It takes CPU time to read and encode images! The more images you include and the
 | `rotate`      | integer                                                                | `0`     | rotation (degrees) | Rotation degress: `0`-`359`            |
 | `rounding`    | boolean                                                                | `false` | image rounding     | Shapes an image into a circle          |
 | `sizing`      | object                                                                 |         | transforms image   | See [Image Sizing](#sizing-properties) |
+| `transparency` | number | `0` | changes opacity of an image | `0`-`100` where `0` means image is completely visible |
 
 ## Sizing Properties
 
