@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-09T13:21:11.754Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-10T10:29:38.097Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -944,13 +944,56 @@ function correctShadowOptions(ShadowProps) {
     }
     // OPT: `color`
     if (ShadowProps.color) {
-        // INCORRECT FORMAT
-        if (ShadowProps.color.startsWith('#')) {
-            console.warn('Warning: shadow.color should have no hash character, e.g. "000000"');
-            ShadowProps.color = ShadowProps.color.replace('#', '');
-        }
+        ShadowProps.color = validateColorOpt(ShadowProps.color, 'shadow');
     }
     return ShadowProps;
+}
+function validateColorOpt(color, propType) {
+    // INCORRECT FORMAT
+    if (color.startsWith('#')) {
+        console.warn("Warning: ".concat(propType, ".color should have no hash character, e.g. \"FF0000\""));
+        return color.replace('#', '');
+    }
+    return color;
+}
+function validateTransparencyOpt(transparency, propType) {
+    // A: REALITY-CHECK
+    if (isNaN(Number(transparency)) || transparency < 0 || transparency > 100) {
+        console.warn("Warning: ".concat(propType, ".transparency can only be 0-100"));
+        return 0;
+    }
+    // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+    return Number(transparency);
+}
+function validateColorAndTransparency(props, propType) {
+    if (propType === void 0) { propType = 'solidFill'; }
+    if (!props || typeof props !== 'object' || !props.color) {
+        return null;
+    }
+    if (props.color) {
+        props.color = validateColorOpt(props.color, propType);
+    }
+    if (!props.transparency) {
+        props.transparency = 0;
+    }
+    if (props.transparency) {
+        props.transparency = validateTransparencyOpt(props.transparency, propType);
+    }
+    return props;
+}
+function validateFillOverlayProps(props) {
+    var blendModes = ['darken', 'lighten', 'mult', 'screen', 'over'];
+    props = validateColorAndTransparency(props, 'fillOverlay');
+    // If no blend mode was passed, set to default 'over'
+    if (props && !props.blend) {
+        props.blend = 'over';
+    }
+    // If blend mode is invalid, set to default 'over'
+    if (props && blendModes.indexOf(props === null || props === void 0 ? void 0 : props.blend) === -1) {
+        console.warn("Warning: fillOverlay.blend mode was invalid and is now set to default 'over'\nValid modes are 'darken', 'lighten', 'mult', 'screen', 'over'");
+        props.blend = 'over';
+    }
+    return props;
 }
 
 /**
@@ -2078,7 +2121,8 @@ function addImageDefinition(target, opt) {
         transparency: opt.transparency || 0,
         objectName: objectName,
         shadow: correctShadowOptions(opt.shadow),
-        overlay: opt.overlay || null
+        fillOverlay: validateFillOverlayProps(opt.fillOverlay),
+        solidFill: validateColorAndTransparency(opt.solidFill),
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
@@ -5512,14 +5556,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, transparency = slideItemObj.options.transparency, overlay = slideItemObj.options.overlay, alphaModFixVal = (overlay === null || overlay === void 0 ? void 0 : overlay.transparency) || 100 - transparency, 
-                /**
-                 * When overlay and image transparency are both applied,
-                 * a secondary alpha setting must be changed on the solidFill
-                 */
-                alphaVal = overlay && transparency ? Math.round((100 - transparency) * 1000) : 100000, overlayColor = overlay
-                    ? " <a:solidFill>\n                    <a:srgbClr val=\"".concat(overlay.color, "\">\n                      <a:alpha val=\"").concat(alphaVal, "\"/>\n                    </a:srgbClr>\n                  </a:solidFill>")
-                    : '';
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, fillOverlayXmlString = genXmlFillOverlay(slideItemObj.options.fillOverlay), solidFillXmlString = genXmlImgSolidFill(slideItemObj.options.solidFill);
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
                 strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
@@ -5536,7 +5573,8 @@ function slideObjectToXml(slide) {
                 if ((slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0] &&
                     (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0]['extn'] === 'svg') {
                     strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
-                    strSlideXml += alphaModFixVal ? " <a:alphaModFix amt=\"".concat(Math.round(alphaModFixVal * 1000), "\"/>") : '';
+                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
+                    strSlideXml += fillOverlayXmlString;
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
                     strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
@@ -5546,7 +5584,8 @@ function slideObjectToXml(slide) {
                 }
                 else {
                     strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">';
-                    strSlideXml += alphaModFixVal ? " <a:alphaModFix amt=\"".concat(Math.round(alphaModFixVal * 1000), "\"/>") : '';
+                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
+                    strSlideXml += fillOverlayXmlString;
                     strSlideXml += '</a:blip>';
                 }
                 if (sizing && sizing.type) {
@@ -5565,7 +5604,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>';
                 strSlideXml += ' </a:xfrm>';
                 strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>';
-                strSlideXml += overlayColor;
+                strSlideXml += solidFillXmlString;
                 // UGH: COPY-PASTA FROM SHAPE
                 // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
                 if (slideItemObj.options.shadow) {
@@ -6106,6 +6145,24 @@ function genXmlBodyProperties(slideObject) {
     }
     // LAST: Return Close _bodyProp
     return slideObject._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties;
+}
+/**
+ * Generate XML for fill overlay effect for an image
+ * @param FillOverlayProps
+ */
+function genXmlFillOverlay(fillOverlay) {
+    return fillOverlay
+        ? " <a:fillOverlay blend=\"".concat(fillOverlay.blend, "\">\n      <a:solidFill>\n          <a:srgbClr val=\"").concat(fillOverlay.color, "\">\n            <a:alpha val=\"").concat(Math.round((100 - (fillOverlay.transparency || 0)) * 1000), "\"/>\n         </a:srgbClr>\n      </a:solidFill>\n      </a:fillOverlay>")
+        : '';
+}
+/**
+ * Generate XML for solid fill beneath an image
+ * @param SolidFillProps
+ */
+function genXmlImgSolidFill(solidFill) {
+    return solidFill
+        ? " <a:solidFill>\n                <a:srgbClr val=\"".concat(solidFill.color, "\">\n                    <a:alpha val=\"").concat(Math.round((100 - solidFill.transparency) * 1000), "\"/>\n                </a:srgbClr>\n            </a:solidFill>")
+        : '';
 }
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
