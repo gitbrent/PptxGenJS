@@ -17,6 +17,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
+	FillOverlayProps,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -26,6 +27,7 @@ import {
 	PresSlide,
 	ShadowProps,
 	SlideLayout,
+	SolidFillProps,
 	TableCell,
 	TableCellProps,
 	TextProps,
@@ -565,7 +567,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				let sizing = slideItemObj.options.sizing,
 					rounding = slideItemObj.options.rounding,
 					width = cx,
-					height = cy
+					height = cy,
+					fillOverlayXmlString = genXmlFillOverlay(slideItemObj.options.fillOverlay),
+					solidFillXmlString = genXmlImgSolidFill(slideItemObj.options.solidFill)
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
@@ -592,6 +596,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				) {
 					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
 					strSlideXml += slideItemObj.options.transparency ? ` <a:alphaModFix amt="${Math.round((100 - slideItemObj.options.transparency) * 1000)}"/>` : ''
+					strSlideXml += fillOverlayXmlString
 					strSlideXml += ' <a:extLst>'
 					strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">'
 					strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>'
@@ -601,6 +606,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				} else {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">'
 					strSlideXml += slideItemObj.options.transparency ? ` <a:alphaModFix amt="${Math.round((100 - slideItemObj.options.transparency) * 1000)}"/>` : ''
+					strSlideXml += fillOverlayXmlString
 					strSlideXml += '</a:blip>'
 				}
 				if (sizing && sizing.type) {
@@ -622,6 +628,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 				strSlideXml += ' </a:xfrm>'
 				strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>'
+				strSlideXml += solidFillXmlString
 				// UGH: COPY-PASTA FROM SHAPE
 				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
 				if (slideItemObj.options.shadow) {
@@ -640,7 +647,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>'
 					strSlideXml += '</a:outerShdw>'
 					strSlideXml += '</a:effectLst>'
-				}				
+				}
 				strSlideXml += '</p:spPr>'
 				strSlideXml += '</p:pic>'
 				break
@@ -1184,6 +1191,36 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 
 	// LAST: Return Close _bodyProp
 	return slideObject._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties
+}
+
+/**
+ * Generate XML for fill overlay effect for an image
+ * @param FillOverlayProps
+ */
+function genXmlFillOverlay(fillOverlay: FillOverlayProps): string {
+	return fillOverlay
+		? ` <a:fillOverlay blend="${fillOverlay.blend}">
+      <a:solidFill>
+          <a:srgbClr val="${fillOverlay.color}">
+            <a:alpha val="${Math.round((100 - (fillOverlay.transparency || 0)) * 1000)}"/>
+         </a:srgbClr>
+      </a:solidFill>
+      </a:fillOverlay>`
+		: ''
+}
+
+/**
+ * Generate XML for solid fill beneath an image
+ * @param SolidFillProps
+ */
+function genXmlImgSolidFill(solidFill: SolidFillProps): string {
+	return solidFill
+		? ` <a:solidFill>
+                <a:srgbClr val="${solidFill.color}">
+                    <a:alpha val="${Math.round((100 - solidFill.transparency) * 1000)}"/>
+                </a:srgbClr>
+            </a:solidFill>`
+		: ''
 }
 
 /**

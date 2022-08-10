@@ -45,7 +45,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { encodeXmlEntities, getExtension, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
+import { encodeXmlEntities, getExtension, getNewRelId, getSmartParseNumber, inch2Emu, validateColorAndTransparency, validateFillOverlayProps, valToPts } from './gen-utils'
 import { correctShadowOptions } from './gen-utils'
 
 /** counter for included charts (used for index in their filenames) */
@@ -298,8 +298,8 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
 		: options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
-			? PIECHART_COLORS
-			: BARCHART_COLORS
+		? PIECHART_COLORS
+		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
 	// DEPRECATED: v3.11.0 - use `plotArea.border` vvv
 	options.border = options.border && typeof options.border === 'object' ? options.border : null
@@ -443,7 +443,9 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
 		objectName: objectName,
-		shadow: correctShadowOptions(opt.shadow)
+		shadow: correctShadowOptions(opt.shadow),
+		fillOverlay: validateFillOverlayProps(opt.fillOverlay),
+		solidFill: validateColorAndTransparency(opt.solidFill),
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -1096,7 +1098,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
  */
 export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 	// Add all placeholders on this Slide that dont already exist
-	; (slide._slideLayout._slideObjects || []).forEach(slideLayoutObj => {
+	;(slide._slideLayout._slideObjects || []).forEach(slideLayoutObj => {
 		if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
 			// A: Search for this placeholder on Slide before we add
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide

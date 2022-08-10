@@ -457,6 +457,33 @@ export type ObjectNameProps = {
 	objectName?: string
 }
 
+export interface SolidFillProps {
+	/**
+	 * Solid Fill Prop is used as a color underlay for an image
+	 * Combined with `ImageProp.transparency` , a color mask effect can be achieved
+	 */
+
+	/**
+	 * Color: Hex strings without hash (#) character
+	 * @example '00FF00'
+	 */
+	color: string
+	/**
+	 * Transparency: range 0-100 where 0 is completely visible
+	 * @default transparency: 0
+	 */
+	transparency?: number
+}
+export interface FillOverlayProps extends SolidFillProps {
+	/* Fill Overlay applies a color blend effect on an image */
+
+	/**
+	 * Blend modes: darken, lighten, mult, screen, over
+	 * @default 'over'
+	 */
+	blend?: 'darken' | 'lighten' | 'mult' | 'screen' | 'over'
+}
+
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
 
@@ -543,17 +570,31 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @example 25 // 25% transparent
 	 */
 	transparency?: number
-	
-	/** 
+	/**
 	 * Shadow Props
 	 * @example { type: 'outer',
 	 *            opacity: 0.5,
-	 *            blur: 20, 
+	 *            blur: 20,
 	 *            color: '000000',
-	 *            offset: 20, 
+	 *            offset: 20,
 	 *            angle: 270 }
 	 */
-	 shadow?: ShadowProps
+	shadow?: ShadowProps
+	/**
+	 * Fill Overlay Props
+	 * @default null
+	 * @example { color: 'FF0000',
+	 *            transparency: 25,
+	 * 			  blend: 'screen' }
+	 */
+	fillOverlay?: FillOverlayProps
+	/**
+	 * Solid Fill Props
+	 * @default null
+	 * @example { color: '00FF00',
+	 *            transparency: 25 }
+	 */
+	solidFill?: SolidFillProps
 }
 /**
  * Add media (audio/video) to slide

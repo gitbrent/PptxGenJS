@@ -3,7 +3,22 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, Gradient, GradientStops, ShadowProps } from './core-interfaces'
+import {
+	IChartOpts,
+	PresLayout,
+	TextGlowProps,
+	PresSlide,
+	ShapeFillProps,
+	Color,
+	ShapeLineProps,
+	Coord,
+	Gradient,
+	GradientStops,
+	ShadowProps,
+	SolidFillProps,
+	FillOverlayProps,
+} from './core-interfaces'
+import { makeXmlPresProps } from './gen-xml'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -252,9 +267,9 @@ function createLinearGradient(angle = 0): string {
 function isGradient(gradient?: Gradient): boolean {
 	return Boolean(
 		gradient?.stops &&
-		typeof gradient.stops === 'object' &&
-		Object.keys(gradient.stops).length > 0 &&
-		Object.keys(gradient.stops).every(stop => Number.isFinite(Number(stop)))
+			typeof gradient.stops === 'object' &&
+			Object.keys(gradient.stops).length > 0 &&
+			Object.keys(gradient.stops).every(stop => Number.isFinite(Number(stop)))
 	)
 }
 
@@ -358,12 +373,68 @@ export function correctShadowOptions(ShadowProps: ShadowProps): ShadowProps | un
 
 	// OPT: `color`
 	if (ShadowProps.color) {
-		// INCORRECT FORMAT
-		if (ShadowProps.color.startsWith('#')) {
-			console.warn('Warning: shadow.color should have no hash character, e.g. "000000"')
-			ShadowProps.color = ShadowProps.color.replace('#', '')
-		}
+		ShadowProps.color = validateColorOpt(ShadowProps.color, 'shadow')
 	}
 
 	return ShadowProps
+}
+
+function validateColorOpt(color: string, propType: string): string {
+	// INCORRECT FORMAT
+	if (color.startsWith('#')) {
+		console.warn(`Warning: ${propType}.color should have no hash character, e.g. "FF0000"`)
+		return color.replace('#', '')
+	}
+
+	return color
+}
+
+function validateTransparencyOpt(transparency: number, propType): number {
+	// A: REALITY-CHECK
+	if (isNaN(Number(transparency)) || transparency < 0 || transparency > 100) {
+		console.warn(`Warning: ${propType}.transparency can only be 0-100`)
+		return 0
+	}
+
+	// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+	return Number(transparency)
+}
+
+export function validateColorAndTransparency(props: SolidFillProps, propType = 'solidFill'): SolidFillProps | null {
+	if (!props || typeof props !== 'object' || !props.color) {
+		return null
+	}
+
+	if (props.color) {
+		props.color = validateColorOpt(props.color, propType)
+	}
+
+	if (!props.transparency) {
+		props.transparency = 0
+	}
+
+	if (props.transparency) {
+		props.transparency = validateTransparencyOpt(props.transparency, propType)
+	}
+
+	return props
+}
+
+export function validateFillOverlayProps(props: FillOverlayProps): FillOverlayProps | null {
+	const blendModes = ['darken', 'lighten', 'mult', 'screen', 'over']
+
+	props = validateColorAndTransparency(props, 'fillOverlay')
+
+	// If no blend mode was passed, set to default 'over'
+	if (props && !props.blend) {
+		props.blend = 'over'
+	}
+
+	// If blend mode is invalid, set to default 'over'
+	if (props && blendModes.indexOf(props?.blend) === -1) {
+		console.warn(`Warning: fillOverlay.blend mode was invalid and is now set to default 'over'\nValid modes are 'darken', 'lighten', 'mult', 'screen', 'over'`)
+		props.blend = 'over'
+	}
+
+	return props
 }
