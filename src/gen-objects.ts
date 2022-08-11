@@ -446,6 +446,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		shadow: correctShadowOptions(opt.shadow),
 		fillOverlay: validateFillOverlayProps(opt.fillOverlay),
 		solidFill: validateColorAndTransparency(opt.solidFill),
+		blur: opt.blur || null,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
