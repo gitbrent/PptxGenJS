@@ -524,7 +524,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				}
 
 				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
-				if (slideItemObj.options.shadow) {
+				if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
 					slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer'
 					slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8)
 					slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4)
@@ -533,12 +533,13 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color
 
 					strSlideXml += '<a:effectLst>'
-					strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" '
-					strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" '
+					strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw'
+					strSlideXml += slideItemObj.options.shadow.type === 'outer' ? ' sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : ''
+					strSlideXml += ' blurRad="' + slideItemObj.options.shadow.blur + '"'
 					strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">'
 					strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">'
 					strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>'
-					strSlideXml += '</a:outerShdw>'
+					strSlideXml += '</a:' + slideItemObj.options.shadow.type + 'Shdw>'
 					strSlideXml += '</a:effectLst>'
 				}
 
@@ -628,10 +629,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 				strSlideXml += ' </a:xfrm>'
 				strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>'
-				strSlideXml += solidFillXmlString
-				// UGH: COPY-PASTA FROM SHAPE
+
 				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
-				if (slideItemObj.options.shadow) {
+				if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
 					slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer'
 					slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8)
 					slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4)
@@ -640,12 +640,13 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color
 
 					strSlideXml += '<a:effectLst>'
-					strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" '
-					strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" '
+					strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw'
+					strSlideXml += slideItemObj.options.shadow.type === 'outer' ? ' sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : ''
+					strSlideXml += ' blurRad="' + slideItemObj.options.shadow.blur + '"'
 					strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">'
 					strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">'
 					strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>'
-					strSlideXml += '</a:outerShdw>'
+					strSlideXml += '</a:' + slideItemObj.options.shadow.type + 'Shdw>'
 					strSlideXml += '</a:effectLst>'
 				}
 				strSlideXml += '</p:spPr>'
