@@ -659,6 +659,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 					// EFFECTS > BLUR REF: @see http://officeopenxml.com/drwPic-effects.php
 					// Blur grow has to be applied to the bounding shape
+					// But should minimize compounding the blur effect on the image
 					if (imgBlur?.grow) {
 						imgBlur.radius = valToPts(imgBlur.radius / 10 || 8)
 						strSlideXml += `<a:blur rad="${imgBlur.radius}" grow="1"/>`

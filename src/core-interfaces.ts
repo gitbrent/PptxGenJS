@@ -601,8 +601,8 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 */
 	blur?: {
 		/**
-		 * radius (points)
-		 * - range: 0-100
+		 * radius (EMUs)
+		 * see ref http://officeopenxml.com/drwPic-effects.php
 		 * @default 0
 		 */
 		radius: number
