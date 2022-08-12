@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-11T11:14:27.837Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-12T07:03:34.818Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -2123,6 +2123,7 @@ function addImageDefinition(target, opt) {
         shadow: correctShadowOptions(opt.shadow),
         fillOverlay: validateFillOverlayProps(opt.fillOverlay),
         solidFill: validateColorAndTransparency(opt.solidFill),
+        blur: opt.blur || null,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
@@ -5557,7 +5558,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, fillOverlayXmlString = genXmlFillOverlay(slideItemObj.options.fillOverlay); genXmlImgSolidFill(slideItemObj.options.solidFill);
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, fillOverlayXmlString = genXmlFillOverlay(slideItemObj.options.fillOverlay), solidFillXmlString = genXmlImgSolidFill(slideItemObj.options.solidFill), hasEffects = slideItemObj.options.shadow || slideItemObj.options.blur, imgBlur = slideItemObj.options.blur;
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
                 strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
@@ -5576,6 +5577,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
                     strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
                     strSlideXml += fillOverlayXmlString;
+                    strSlideXml += imgBlur ? "<a:blur rad=\"".concat(imgBlur.radius, "\"/>") : '';
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
                     strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
@@ -5587,6 +5589,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">';
                     strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
                     strSlideXml += fillOverlayXmlString;
+                    strSlideXml += imgBlur ? "<a:blur rad=\"".concat(imgBlur.radius, "\"/>") : '';
                     strSlideXml += '</a:blip>';
                 }
                 if (sizing && sizing.type) {
@@ -5605,22 +5608,32 @@ function slideObjectToXml(slide) {
                 strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>';
                 strSlideXml += ' </a:xfrm>';
                 strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>';
-                // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
-                if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
-                    slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
-                    slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8);
-                    slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4);
-                    slideItemObj.options.shadow.angle = Math.round((slideItemObj.options.shadow.angle || 270) * 60000);
-                    slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
-                    slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
+                strSlideXml += solidFillXmlString;
+                // EFFECTS
+                if (hasEffects) {
                     strSlideXml += '<a:effectLst>';
-                    strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw';
-                    strSlideXml += slideItemObj.options.shadow.type === 'outer' ? ' sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '';
-                    strSlideXml += ' blurRad="' + slideItemObj.options.shadow.blur + '"';
-                    strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">';
-                    strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">';
-                    strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>';
-                    strSlideXml += '</a:' + slideItemObj.options.shadow.type + 'Shdw>';
+                    // EFFECTS > SHADOW REF: @see http://officeopenxml.com/drwSp-effects.php
+                    if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
+                        slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
+                        slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8);
+                        slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4);
+                        slideItemObj.options.shadow.angle = Math.round((slideItemObj.options.shadow.angle || 270) * 60000);
+                        slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
+                        slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
+                        strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw';
+                        strSlideXml += slideItemObj.options.shadow.type === 'outer' ? ' sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '';
+                        strSlideXml += ' blurRad="' + slideItemObj.options.shadow.blur + '"';
+                        strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">';
+                        strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">';
+                        strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>';
+                        strSlideXml += '</a:' + slideItemObj.options.shadow.type + 'Shdw>';
+                    }
+                    // EFFECTS > BLUR REF: @see http://officeopenxml.com/drwPic-effects.php
+                    // Blur grow has to be applied to the bounding shape
+                    if (imgBlur === null || imgBlur === void 0 ? void 0 : imgBlur.grow) {
+                        imgBlur.radius = valToPts(imgBlur.radius / 10 || 8);
+                        strSlideXml += "<a:blur rad=\"".concat(imgBlur.radius, "\" grow=\"1\"/>");
+                    }
                     strSlideXml += '</a:effectLst>';
                 }
                 strSlideXml += '</p:spPr>';
