@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-12T07:03:34.800Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-12T09:49:47.957Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5636,6 +5636,7 @@ function slideObjectToXml(slide) {
                     }
                     // EFFECTS > BLUR REF: @see http://officeopenxml.com/drwPic-effects.php
                     // Blur grow has to be applied to the bounding shape
+                    // But should minimize compounding the blur effect on the image
                     if (imgBlur === null || imgBlur === void 0 ? void 0 : imgBlur.grow) {
                         imgBlur.radius = valToPts(imgBlur.radius / 10 || 8);
                         strSlideXml += "<a:blur rad=\"".concat(imgBlur.radius, "\" grow=\"1\"/>");
