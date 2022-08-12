@@ -595,6 +595,24 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 *            transparency: 25 }
 	 */
 	solidFill?: SolidFillProps
+	/**
+	 * Image Blur
+	 * @default null
+	 */
+	blur?: {
+		/**
+		 * radius (EMUs)
+		 * see ref http://officeopenxml.com/drwPic-effects.php
+		 * @default 0
+		 */
+		radius: number
+		/**
+		 * specifies whether the blur effect should extend
+		 * beyond the original bounds of the image
+		 * @default false
+		 */
+		grow?: boolean
+	}
 }
 /**
  * Add media (audio/video) to slide
