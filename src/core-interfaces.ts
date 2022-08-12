@@ -1486,6 +1486,7 @@ export interface IChartPropsLegend {
 	legendFontFace?: string
 	legendFontSize?: number
 	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
+	legendLayout?: PositionProps
 }
 export interface IChartPropsTitle extends TextBaseProps {
 	title?: string

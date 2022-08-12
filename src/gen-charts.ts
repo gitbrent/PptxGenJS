@@ -722,11 +722,23 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += '</c:plotArea>'
 
 		// OPTION: Legend
-		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+		// RECOMMENDED: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
 		if (rel.opts.showLegend) {
 			strXml += '<c:legend>'
-			strXml += '<c:legendPos val="' + rel.opts.legendPos + '"/>'
-			//strXml += '<c:layout/>'
+			if (rel.opts.legendLayout) {
+				strXml += '<c:layout>'
+				strXml += ' <c:manualLayout>'
+				strXml += '  <c:xMode val="edge" />'
+				strXml += '  <c:yMode val="edge" />'
+				strXml += '  <c:x val="' + (rel.opts.legendLayout.x || 0) + '" />'
+				strXml += '  <c:y val="' + (rel.opts.legendLayout.y || 0) + '" />'
+				strXml += '  <c:w val="' + (rel.opts.legendLayout.w || 1) + '" />'
+				strXml += '  <c:h val="' + (rel.opts.legendLayout.h || 0.25) + '" />'
+				strXml += ' </c:manualLayout>'
+				strXml += '</c:layout>'
+			} else {
+				strXml += '<c:legendPos val="' + rel.opts.legendPos + '"/>'
+			}
 			strXml += '<c:overlay val="0"/>'
 			if (rel.opts.legendFontFace || rel.opts.legendFontSize || rel.opts.legendColor) {
 				strXml += '<c:txPr>'
