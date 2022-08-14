@@ -32,7 +32,7 @@
     "path": false
   },
   "dependencies": {
-    "@types/node": "^17.0.21",
+    "@types/node": "^18.7.3",
     "https": "^1.0.0",
     "image-size": "^1.0.0",
     "jszip": "^3.7.1"
