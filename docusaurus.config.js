@@ -48,7 +48,9 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 			liveCodeBlock: {
 				playgroundPosition: "bottom",
 			},
-			hideableSidebar: true,
+			docs: {
+				sidebar: { hideable: true },
+			},
 			colorMode: {
 				defaultMode: "light",
 				disableSwitch: false,
