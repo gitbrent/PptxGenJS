@@ -198,9 +198,15 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 					href: "https://github.com/gitbrent/PptxGenJS",
 				},
 			},
-			gtag: {
-				trackingID: "G-4F7ZC3PH3Y",
-			},
+			plugins: [
+				[
+					"@docusaurus/plugin-google-gtag",
+					{
+						trackingID: "G-4F7ZC3PH3Y",
+						anonymizeIP: true,
+					},
+				],
+			],
 		},
 	}
 );
