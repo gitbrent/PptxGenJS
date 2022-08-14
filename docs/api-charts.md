@@ -3,7 +3,7 @@ id: api-charts
 title: Charts
 ---
 
-Charts of almost any type can be added to Slides. See [demos/modules/demo_chart.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_chart.mjs) for the charts shown below.
+Charts of almost any type can be added to Slides, including combo and 3D charts. See [demos/modules/demo_chart.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_chart.mjs) for the working code used to create the charts shown below.
 
 ![PptxGenJS Chart Samples](./assets/demo-all-charts.png)
 
