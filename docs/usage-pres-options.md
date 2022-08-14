@@ -5,8 +5,6 @@ title: Presentation Options
 
 ## Metadata
 
-**************************************************************************************************
-
 ### Metadata Properties
 
 There are several optional PowerPoint metadata properties that can be set.
@@ -25,7 +23,6 @@ pptx.title = 'PptxGenJS Sample Presentation';
 
 ## Slide Layouts (Sizes)
 
-**************************************************************************************************
 Layout Option applies to all the Slides in the current Presentation.
 
 ### Slide Layout Syntax
@@ -36,12 +33,12 @@ pptx.layout = 'LAYOUT_NAME';
 
 ### Standard Slide Layouts
 
-| Layout Name    | Default  | Layout Slide Size   |
-| :------------- | :------- | :------------------ |
-| `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches   |
-| `LAYOUT_16x10` | No       | 10 x 6.25 inches    |
-| `LAYOUT_4x3`   | No       | 10 x 7.5 inches     |
-| `LAYOUT_WIDE`  | No       | 13.3 x 7.5 inches   |
+| Layout Name    | Default | Layout Slide Size |
+| :------------- | :------ | :---------------- |
+| `LAYOUT_16x9`  | Yes     | 10 x 5.625 inches |
+| `LAYOUT_16x10` | No      | 10 x 6.25 inches  |
+| `LAYOUT_4x3`   | No      | 10 x 7.5 inches   |
+| `LAYOUT_WIDE`  | No      | 13.3 x 7.5 inches |
 
 ### Custom Slide Layouts
 
@@ -61,8 +58,6 @@ pptx.layout = 'A3'
 ```
 
 ## Text Direction
-
-**************************************************************************************************
 
 ### Text Direction Options
 

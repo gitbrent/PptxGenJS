@@ -48,7 +48,9 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 			liveCodeBlock: {
 				playgroundPosition: "bottom",
 			},
-			hideableSidebar: true,
+			docs: {
+				sidebar: { hideable: true },
+			},
 			colorMode: {
 				defaultMode: "light",
 				disableSwitch: false,
@@ -198,9 +200,15 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 					href: "https://github.com/gitbrent/PptxGenJS",
 				},
 			},
-			gtag: {
-				trackingID: "G-4F7ZC3PH3Y",
-			},
+			plugins: [
+				[
+					"@docusaurus/plugin-google-gtag",
+					{
+						trackingID: "G-4F7ZC3PH3Y",
+						anonymizeIP: true,
+					},
+				],
+			],
 		},
 	}
 );
