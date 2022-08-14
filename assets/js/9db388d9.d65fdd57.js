@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpptxgenjs_gh_pages=self.webpackChunkpptxgenjs_gh_pages||[]).push([[7341],{6300:e=>{e.exports=JSON.parse('{"permalink":"/PptxGenJS/blog/tags/hola","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

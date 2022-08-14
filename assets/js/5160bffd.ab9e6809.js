@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpptxgenjs_gh_pages=self.webpackChunkpptxgenjs_gh_pages||[]).push([[4994],{9578:e=>{e.exports=JSON.parse('{"label":"facebook","permalink":"/PptxGenJS/blog/tags/facebook","allTagsPath":"/PptxGenJS/blog/tags","count":1}')}}]);
