@@ -16,7 +16,7 @@ import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALI
  * @example '75%' // coordinate as percentage of slide size
  */
 export type Coord = number | `${number}%`
-export type PositionProps = {
+export interface PositionProps {
 	/**
 	 * Horizontal position
 	 * - inches or percentage
@@ -49,7 +49,7 @@ export type PositionProps = {
 /**
  * Either `data` or `path` is required
  */
-export type DataOrPathProps = {
+export interface DataOrPathProps {
 	/**
 	 * URL or relative path
 	 *
@@ -259,80 +259,80 @@ export interface TextBaseProps {
 	 * @default false
 	 */
 	bullet?:
-		| boolean
-		| {
-				/**
-				 * Bullet type
-				 * @default bullet
-				 */
-				type?: 'bullet' | 'number'
-				/**
-				 * Bullet character code (unicode)
-				 * @since v3.3.0
-				 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
-				 */
-				characterCode?: string
-				/**
-				 * Indentation (space between bullet and text) (points)
-				 * @since v3.3.0
-				 * @default 27 // DEF_BULLET_MARGIN
-				 * @example 10 // Indents text 10 points from bullet
-				 */
-				indent?: number
-				/**
-				 * Number type
-				 * @since v3.3.0
-				 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
-				 */
-				numberType?:
-					| 'alphaLcParenBoth'
-					| 'alphaLcParenR'
-					| 'alphaLcPeriod'
-					| 'alphaUcParenBoth'
-					| 'alphaUcParenR'
-					| 'alphaUcPeriod'
-					| 'arabicParenBoth'
-					| 'arabicParenR'
-					| 'arabicPeriod'
-					| 'arabicPlain'
-					| 'romanLcParenBoth'
-					| 'romanLcParenR'
-					| 'romanLcPeriod'
-					| 'romanUcParenBoth'
-					| 'romanUcParenR'
-					| 'romanUcPeriod'
-				/**
-				 * Number bullets start at
-				 * @since v3.3.0
-				 * @default 1
-				 * @example 10 // numbered bullets start with 10
-				 */
-				numberStartAt?: number
+	| boolean
+	| {
+		/**
+		 * Bullet type
+		 * @default bullet
+		 */
+		type?: 'bullet' | 'number'
+		/**
+		 * Bullet character code (unicode)
+		 * @since v3.3.0
+		 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+		 */
+		characterCode?: string
+		/**
+		 * Indentation (space between bullet and text) (points)
+		 * @since v3.3.0
+		 * @default 27 // DEF_BULLET_MARGIN
+		 * @example 10 // Indents text 10 points from bullet
+		 */
+		indent?: number
+		/**
+		 * Number type
+		 * @since v3.3.0
+		 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
+		 */
+		numberType?:
+		| 'alphaLcParenBoth'
+		| 'alphaLcParenR'
+		| 'alphaLcPeriod'
+		| 'alphaUcParenBoth'
+		| 'alphaUcParenR'
+		| 'alphaUcPeriod'
+		| 'arabicParenBoth'
+		| 'arabicParenR'
+		| 'arabicPeriod'
+		| 'arabicPlain'
+		| 'romanLcParenBoth'
+		| 'romanLcParenR'
+		| 'romanLcPeriod'
+		| 'romanUcParenBoth'
+		| 'romanUcParenR'
+		| 'romanUcPeriod'
+		/**
+		 * Number bullets start at
+		 * @since v3.3.0
+		 * @default 1
+		 * @example 10 // numbered bullets start with 10
+		 */
+		numberStartAt?: number
 
-				// DEPRECATED
+		// DEPRECATED
 
-				/**
-				 * Bullet code (unicode)
-				 * @deprecated v3.3.0 - use `characterCode`
-				 */
-				code?: string
-				/**
-				 * Margin between bullet and text
-				 * @since v3.2.1
-				 * @deplrecated v3.3.0 - use `indent`
-				 */
-				marginPt?: number
-				/**
-				 * Number to start with (only applies to type:number)
-				 * @deprecated v3.3.0 - use `numberStartAt`
-				 */
-				startAt?: number
-				/**
-				 * Number type
-				 * @deprecated v3.3.0 - use `numberType`
-				 */
-				style?: string
-		  }
+		/**
+		 * Bullet code (unicode)
+		 * @deprecated v3.3.0 - use `characterCode`
+		 */
+		code?: string
+		/**
+		 * Margin between bullet and text
+		 * @since v3.2.1
+		 * @deplrecated v3.3.0 - use `indent`
+		 */
+		marginPt?: number
+		/**
+		 * Number to start with (only applies to type:number)
+		 * @deprecated v3.3.0 - use `numberStartAt`
+		 */
+		startAt?: number
+		/**
+		 * Number type
+		 * @deprecated v3.3.0 - use `numberType`
+		 */
+		style?: string
+	}
 	/**
 	 * Text color
 	 * - `HexColor` or `ThemeColor`
@@ -379,7 +379,7 @@ export interface TextBaseProps {
 	 * - PowerPoint: Paragraph > Tabs > Tab stop position
 	 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
 	 */
-	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+	tabStops?: Array<{ position: number, alignment?: 'l' | 'r' | 'ctr' | 'dec' }>
 	/**
 	 * Transparency (percent)
 	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Transparency
@@ -394,23 +394,23 @@ export interface TextBaseProps {
 	 */
 	underline?: {
 		style?:
-			| 'dash'
-			| 'dashHeavy'
-			| 'dashLong'
-			| 'dashLongHeavy'
-			| 'dbl'
-			| 'dotDash'
-			| 'dotDashHeave'
-			| 'dotDotDash'
-			| 'dotDotDashHeavy'
-			| 'dotted'
-			| 'dottedHeavy'
-			| 'heavy'
-			| 'none'
-			| 'sng'
-			| 'wavy'
-			| 'wavyDbl'
-			| 'wavyHeavy'
+		| 'dash'
+		| 'dashHeavy'
+		| 'dashLong'
+		| 'dashLongHeavy'
+		| 'dbl'
+		| 'dotDash'
+		| 'dotDashHeave'
+		| 'dotDotDash'
+		| 'dotDotDashHeavy'
+		| 'dotted'
+		| 'dottedHeavy'
+		| 'heavy'
+		| 'none'
+		| 'sng'
+		| 'wavy'
+		| 'wavyDbl'
+		| 'wavyHeavy'
 		color?: Color
 	}
 	/**
@@ -427,7 +427,7 @@ export interface PlaceholderProps extends PositionProps, TextBaseProps {
 	 */
 	margin?: Margin
 }
-export type ObjectNameProps = {
+export interface ObjectNameProps {
 	/**
 	 * Object name
 	 * - used instead of default "Object N" name
@@ -625,11 +625,11 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * @example [{ x: 0, y: 0 }, { x: 10, y: 10 }] // draw a line between those two points
 	 */
 	points?: Array<
-		| { x: Coord; y: Coord; moveTo?: boolean }
-		| { x: Coord; y: Coord; curve: { type: 'arc'; hR: Coord; wR: Coord; stAng: number; swAng: number } }
-		| { x: Coord; y: Coord; curve: { type: 'cubic'; x1: Coord; y1: Coord; x2: Coord; y2: Coord } }
-		| { x: Coord; y: Coord; curve: { type: 'quadratic'; x1: Coord; y1: Coord } }
-		| { close: true }
+	| { x: Coord, y: Coord, moveTo?: boolean }
+	| { x: Coord, y: Coord, curve: { type: 'arc', hR: Coord, wR: Coord, stAng: number, swAng: number } }
+	| { x: Coord, y: Coord, curve: { type: 'cubic', x1: Coord, y1: Coord, x2: Coord, y2: Coord } }
+	| { x: Coord, y: Coord, curve: { type: 'quadratic', x1: Coord, y1: Coord } }
+	| { close: true }
 	>
 	/**
 	 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
@@ -677,7 +677,7 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 
 export interface TableToSlidesProps extends TableProps {
 	_arrObjTabHeadRows?: TableRow[]
-	//_masterSlide?: SlideLayout
+	// _masterSlide?: SlideLayout
 
 	/**
 	 * Add an image to slide(s) created during autopaging
@@ -685,19 +685,19 @@ export interface TableToSlidesProps extends TableProps {
 	 * - see `DataOrPathProps` for details on `image` props
 	 * - see `PositionProps` for details on `options` props
 	 */
-	addImage?: { image: DataOrPathProps; options: PositionProps }
+	addImage?: { image: DataOrPathProps, options: PositionProps }
 	/**
 	 * Add a shape to slide(s) created during autopaging
 	 */
-	addShape?: { shape: any; options: {} }
+	addShape?: { shape: any, options: {} }
 	/**
 	 * Add a table to slide(s) created during autopaging
 	 */
-	addTable?: { rows: any[]; options: {} }
+	addTable?: { rows: any[], options: {} }
 	/**
 	 * Add a text object to slide(s) created during autopaging
 	 */
-	addText?: { text: any[]; options: {} }
+	addText?: { text: any[], options: {} }
 	/**
 	 * Whether to enable auto-paging
 	 * - auto-paging creates new slides as content overflows a slide
@@ -1016,7 +1016,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
 	 */
 	margin?: Margin
-	outline?: { color: Color; size: number }
+	outline?: { color: Color, size: number }
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
@@ -1133,7 +1133,7 @@ export interface OptsChartData {
 	/**
 	 * Override `chartColors`
 	 */
-	//color?: string // TODO: WIP: (Pull #727)
+	// color?: string // TODO: WIP: (Pull #727)
 }
 // Used internally, probably shouldn't be used by end users
 export interface IOptsChartData extends OptsChartData {
@@ -1204,7 +1204,7 @@ export interface IChartPropsBase {
 	showLeaderLines?: boolean
 	showLegend?: boolean
 	showPercent?: boolean
-	showSerName?: boolean,
+	showSerName?: boolean
 	showTitle?: boolean
 	showValue?: boolean
 	/**
@@ -1494,26 +1494,26 @@ export interface IChartPropsTitle extends TextBaseProps {
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
-	titlePos?: { x: number; y: number }
+	titlePos?: { x: number, y: number }
 	titleRotate?: number
 }
 export interface IChartOpts
 	extends IChartPropsAxisCat,
-		IChartPropsAxisSer,
-		IChartPropsAxisVal,
-		IChartPropsBase,
-		IChartPropsChartBar,
-		IChartPropsChartDoughnut,
-		IChartPropsChartLine,
-		IChartPropsChartPie,
-		IChartPropsChartRadar,
-		IChartPropsDataLabel,
-		IChartPropsDataTable,
-		IChartPropsLegend,
-		IChartPropsTitle,
-		ObjectNameProps,
-		OptsChartGridLine,
-		PositionProps {
+	IChartPropsAxisSer,
+	IChartPropsAxisVal,
+	IChartPropsBase,
+	IChartPropsChartBar,
+	IChartPropsChartDoughnut,
+	IChartPropsChartLine,
+	IChartPropsChartPie,
+	IChartPropsChartRadar,
+	IChartPropsDataLabel,
+	IChartPropsDataTable,
+	IChartPropsLegend,
+	IChartPropsTitle,
+	ObjectNameProps,
+	OptsChartGridLine,
+	PositionProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
@@ -1557,7 +1557,7 @@ export interface ISlideRelMedia {
 	/** used to indicate that a media file has already been read/enocded (PERF) */
 	isDuplicate?: boolean
 	isSvgPng?: boolean
-	svgSize?: { w: number; h: number }
+	svgSize?: { w: number, h: number }
 	rId: number
 	Target: string
 }
@@ -1645,23 +1645,21 @@ export interface SlideMasterProps {
 	background?: BackgroundProps
 	margin?: Margin
 	slideNumber?: SlideNumberProps
-	objects?: (
-		| { chart: {} }
-		| { image: {} }
-		| { line: {} }
-		| { rect: {} }
-		| { text: TextProps }
-		| {
-				placeholder: {
-					options: PlaceholderProps
-					/**
-					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-					 */
-					text?: string
-				}
-		  }
-	)[]
+	objects?: Array< | { chart: Record<string, never> }
+	| { image: {} }
+	| { line: {} }
+	| { rect: {} }
+	| { text: TextProps }
+	| {
+		placeholder: {
+			options: PlaceholderProps
+			/**
+						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+						 */
+			text?: string
+		}
+	}>
 
 	/**
 	 * @deprecated v3.3.0 - use `background`
