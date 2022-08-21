@@ -158,6 +158,7 @@ export interface ShadowProps {
 	 * @example 'FF3399'
 	 */
 	color?: HexColor
+	rotateWithShape?: boolean
 }
 // used by: shape, table, text
 export interface ShapeFillProps {
@@ -689,15 +690,15 @@ export interface TableToSlidesProps extends TableProps {
 	/**
 	 * Add a shape to slide(s) created during autopaging
 	 */
-	addShape?: { shape: any, options: {} }
+	addShape?: { shape: ShapeProps, options: ShapeProps }
 	/**
 	 * Add a table to slide(s) created during autopaging
 	 */
-	addTable?: { rows: any[], options: {} }
+	addTable?: { rows: TableRow[], options: TableProps }
 	/**
 	 * Add a text object to slide(s) created during autopaging
 	 */
-	addText?: { text: any[], options: {} }
+	addText?: { text: TextProps[], options: TextPropsOptions }
 	/**
 	 * Whether to enable auto-paging
 	 * - auto-paging creates new slides as content overflows a slide
@@ -927,12 +928,14 @@ export interface TextGlowProps {
 	 * @example 0.5
 	 * 50% opaque
 	 */
-	opacity: number
+	opacity?: number
 	/**
 	 * size (points)
 	 */
 	size: number
 }
+
+export interface IShadowTextGlow extends ShadowProps, TextGlowProps {}
 
 export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
 	_bodyProp?: {
@@ -1157,8 +1160,8 @@ export interface OptsChartGridLine {
 // TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
 	type: CHART_NAME
-	data: any[]
-	options: {}
+	data: IOptsChartData[]
+	options: IChartOptsLib
 }
 export interface IChartPropsFillLine {
 	/**
@@ -1645,18 +1648,18 @@ export interface SlideMasterProps {
 	background?: BackgroundProps
 	margin?: Margin
 	slideNumber?: SlideNumberProps
-	objects?: Array< | { chart: Record<string, never> }
-	| { image: {} }
-	| { line: {} }
-	| { rect: {} }
+	objects?: Array< | { chart: IChartOpts }
+	| { image: ImageProps }
+	| { line: ShapeProps }
+	| { rect: ShapeProps }
 	| { text: TextProps }
 	| {
 		placeholder: {
 			options: PlaceholderProps
 			/**
-						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-						 */
+			 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+			 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+			 */
 			text?: string
 		}
 	}>
@@ -1707,13 +1710,13 @@ export interface PresSlide extends SlideBaseProps {
 	_slideLayout: SlideLayout
 	_slideId: number
 
-	addChart: Function
-	addImage: Function
-	addMedia: Function
-	addNotes: Function
-	addShape: Function
-	addTable: Function
-	addText: Function
+	addChart: (type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts) => PresSlide
+	addImage: (options: ImageProps) => PresSlide
+	addMedia: (options: MediaProps) => PresSlide
+	addNotes: (notes: string) => PresSlide
+	addShape: (shapeName: SHAPE_NAME, options?: ShapeProps) => PresSlide
+	addTable: (tableRows: TableRow[], options?: TableProps) => PresSlide
+	addText: (text: string | TextProps[], options?: TextPropsOptions) => PresSlide
 
 	/**
 	 * Background color or image (`color` | `path` | `data`)
