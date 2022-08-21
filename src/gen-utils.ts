@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, IShadowTextGlow } from './core-interfaces'
+import { Coord, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -53,23 +53,6 @@ export function getUuid (uuidFormat: string): string {
 		const v = c === 'x' ? r : (r & 0x3) | 0x8
 		return v.toString(16)
 	})
-}
-
-/**
- * Shallow mix obejct
- * @returns new object
- */
-export function getMix (obj1: ShadowProps | TextGlowProps, obj2: ShadowProps | TextGlowProps): IShadowTextGlow {
-	const objMix = {
-		// eslint-disable-next-line @typescript-eslint/dot-notation
-		type: obj1['type'] || 'none',
-		size: 0,
-	}
-	return {
-		...objMix,
-		...obj1,
-		...obj2
-	}
 }
 
 /**
@@ -187,7 +170,7 @@ export function createColorElement (colorStr: string | SCHEME_COLORS, innerEleme
  */
 export function createGlowElement (options: TextGlowProps, defaults: TextGlowProps): string {
 	let strXml = ''
-	const opts = getMix(defaults, options)
+	const opts = { ...defaults, ...options }
 	const size = Math.round(opts.size * ONEPT)
 	const color = opts.color
 	const opacity = Math.round(opts.opacity * 100000)

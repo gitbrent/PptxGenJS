@@ -935,8 +935,6 @@ export interface TextGlowProps {
 	size: number
 }
 
-export interface IShadowTextGlow extends ShadowProps, TextGlowProps {}
-
 export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
 	_bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing

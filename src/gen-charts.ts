@@ -20,7 +20,7 @@ import {
 	ONEPT,
 } from './core-enums'
 import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData } from './core-interfaces'
-import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getUuid, valToPts } from './gen-utils'
 import JSZip from 'jszip'
 
 /**
@@ -29,7 +29,7 @@ import JSZip from 'jszip'
  * @param {JSZip} zip - file that the resulting XLSX should be added to
  * @return {Promise} promise of generating the XLSX file
  */
-export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JSZip): Promise<any> {
+export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JSZip): Promise<string> {
 	const data = chartObject.data
 
 	return await new Promise((resolve, reject) => {
@@ -540,7 +540,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				zip.file(`ppt/charts/${chartObject.fileName}`, makeXmlCharts(chartObject))
 
 				// 3: Done
-				resolve(null)
+				resolve('')
 			})
 			.catch(strErr => {
 				reject(strErr)
@@ -645,7 +645,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 			if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
 				throw new Error('There must be the same number of value and category axes.')
 			}
-			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
+			strXml += makeCatAxis({ ...rel.opts, ...rel.opts.catAxes[0] }, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		} else {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		}
@@ -653,7 +653,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 		if (rel.opts.valAxes) {
 			strXml += makeValAxis({ ...rel.opts, ...rel.opts.valAxes[0] }, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.valAxes[1]) {
-				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOptsLib, AXIS_ID_VALUE_SECONDARY)
+				strXml += makeValAxis({ ...rel.opts, ...rel.opts.valAxes[1] }, AXIS_ID_VALUE_SECONDARY)
 			}
 		} else {
 			strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
@@ -665,8 +665,8 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 		}
 
 		// Combo Charts: Add secondary axes after all vals
-		if (rel.opts.catAxes && rel.opts.catAxes[1]) {
-			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY)
+		if (rel.opts?.catAxes && rel.opts?.catAxes[1]) {
+			strXml += makeCatAxis({ ...rel.opts, ...rel.opts.catAxes[1] }, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY)
 		}
 	}
 
@@ -2073,7 +2073,7 @@ function createShadowElement (options: ShadowProps, defaults: object): string {
 	}
 
 	let strXml = '<a:effectLst>'
-	const opts = getMix(defaults, options)
+	const opts = { ...defaults, ...options }
 	const type = opts.type || 'outer'
 	const blur = valToPts(opts.blur)
 	const offset = valToPts(opts.offset)
