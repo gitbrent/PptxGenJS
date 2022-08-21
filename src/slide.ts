@@ -32,7 +32,7 @@ export default class Slide {
 	private readonly _setSlideNum: (value: SlideNumberProps) => void
 
 	public addSlide: (masterName?: string) => Slide
-	public getSlide: () => Slide
+	public getSlide: (slideNumber: number) => Slide
 	public _name: string
 	public _presLayout: PresLayout
 	public _rels: ISlideRel[]
