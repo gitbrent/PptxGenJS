@@ -4,34 +4,34 @@
 
 import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
+	AddSlideProps,
 	BackgroundProps,
 	HexColor,
 	IChartMulti,
 	IChartOpts,
 	IChartOptsLib,
-	ImageProps,
-	PresLayout,
-	SlideLayout,
-	SlideNumberProps,
+	IOptsChartData,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
+	ImageProps,
+	MediaProps,
+	PresLayout,
+	ShapeProps,
+	SlideLayout,
+	SlideNumberProps,
 	TableProps,
+	TableRow,
 	TextProps,
 	TextPropsOptions,
-	MediaProps,
-	ShapeProps,
-	TableRow,
-	AddSlideProps,
-	IOptsChartData,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
 export default class Slide {
 	private readonly _setSlideNum: (value: SlideNumberProps) => void
 
-	public addSlide: (options?: AddSlideProps) => Slide
+	public addSlide: (masterName?: string) => Slide
 	public getSlide: () => Slide
 	public _name: string
 	public _presLayout: PresLayout

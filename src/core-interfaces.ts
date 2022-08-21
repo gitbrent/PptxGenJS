@@ -71,6 +71,12 @@ export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
+
+	/**
+	 * source URL
+	 * @deprecated v3.6.0 - use `DataOrPathProps` instead - remove in v4.0.0
+	 */
+	src?: string
 }
 /**
  * Color in Hex format
