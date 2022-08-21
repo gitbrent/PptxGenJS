@@ -696,7 +696,7 @@ export interface TableToSlidesProps extends TableProps {
 	/**
 	 * Add a shape to slide(s) created during autopaging
 	 */
-	addShape?: { shape: ShapeProps, options: ShapeProps }
+	addShape?: { shapeName: SHAPE_NAME, options: ShapeProps }
 	/**
 	 * Add a table to slide(s) created during autopaging
 	 */
@@ -1714,7 +1714,7 @@ export interface PresSlide extends SlideBaseProps {
 	_slideLayout: SlideLayout
 	_slideId: number
 
-	addChart: (type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts) => PresSlide
+	addChart: (type: CHART_NAME | IChartMulti[], data: IOptsChartData[], options?: IChartOpts) => PresSlide
 	addImage: (options: ImageProps) => PresSlide
 	addMedia: (options: MediaProps) => PresSlide
 	addNotes: (notes: string) => PresSlide
