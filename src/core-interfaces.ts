@@ -893,6 +893,8 @@ export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProp
 	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
+
+	placeholder?: string
 }
 export interface TableCell {
 	_type: SLIDE_OBJECT_TYPES.tablecell
