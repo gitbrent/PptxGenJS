@@ -532,7 +532,6 @@ export default class PptxGenJS implements IPresentationProps {
 			this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 
 			// E: Wait for Promises (if any) then generate the PPTX file
-			// @ts-expect-error
 			return await Promise.all(arrChartPromises).then(async () => {
 				if (props.outputType === 'STREAM') {
 					// A: stream file
