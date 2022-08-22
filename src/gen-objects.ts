@@ -24,6 +24,7 @@ import {
 	TEXT_VALIGN,
 } from './core-enums'
 import {
+	AddSlideProps,
 	BackgroundProps,
 	IChartMulti,
 	IChartOptsLib,
@@ -721,7 +722,7 @@ export function addTableDefinition (
 	options: TableProps,
 	slideLayout: SlideLayout,
 	presLayout: PresLayout,
-	addSlide: (masterName?: string) => PresSlide,
+	addSlide: (options?: AddSlideProps) => PresSlide,
 	getSlide: (slideNumber: number) => PresSlide
 ): void {
 	const slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
@@ -945,7 +946,7 @@ export function addTableDefinition (
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-			if (!getSlide(target._slideNum + idx)) slides.push(addSlide(slideLayout?._name || null))
+			if (!getSlide(target._slideNum + idx)) slides.push(addSlide({ masterName: slideLayout?._name || null }))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])

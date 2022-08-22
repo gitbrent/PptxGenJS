@@ -18,6 +18,7 @@ import {
 	ImageProps,
 	MediaProps,
 	PresLayout,
+	PresSlide,
 	ShapeProps,
 	SlideLayout,
 	SlideNumberProps,
@@ -31,8 +32,8 @@ import * as genObj from './gen-objects'
 export default class Slide {
 	private readonly _setSlideNum: (value: SlideNumberProps) => void
 
-	public addSlide: (masterName?: string) => Slide
-	public getSlide: (slideNumber: number) => Slide
+	public addSlide: (options?: AddSlideProps) => PresSlide
+	public getSlide: (slideNum: number) => PresSlide
 	public _name: string
 	public _presLayout: PresLayout
 	public _rels: ISlideRel[]
@@ -46,8 +47,8 @@ export default class Slide {
 	public _slideObjects: ISlideObject[]
 
 	constructor (params: {
-		addSlide: (options?: AddSlideProps) => Slide
-		getSlide: () => Slide
+		addSlide: (options?: AddSlideProps) => PresSlide
+		getSlide: (slideNum: number) => PresSlide
 		presLayout: PresLayout
 		setSlideNum: (value: SlideNumberProps) => void
 		slideId: number
