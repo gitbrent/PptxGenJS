@@ -66,9 +66,11 @@ slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 | `strike`              | string             |         |         | text strikethrough        | `dblStrike` or `sngStrike`                                                                                                     |
 | `subscript`           | boolean            |         | `false` | subscript text            | `true` or `false`                                                                                                              |
 | `superscript`         | boolean            |         | `false` | superscript text          | `true` or `false`                                                                                                              |
+| `transparency`        | number             |         | `0`     | transparency              | Percentage: 0-100                                                                                                              |
 | `underline`           | TextUnderlineProps |         |         | underline color/style     | [TextUnderlineProps](/PptxGenJS/docs/types#text-underline-props-textunderlineprops)                                            |
 | `valign`              | string             |         |         | vertical alignment        | `top` or `middle` or `bottom`                                                                                                  |
 | `vert`                | string             |         | `horz`  | text direction            | `eaVert` or `horz` or `mongolianVert` or `vert` or `vert270` or `wordArtVert` or `wordArtVertRtl`                              |
+| `wrap`                | boolean            |         | `true`  | text wrapping             | `true` or `false`                                                                                                              |
 
 ### Shadow Properties (`ShadowProps`)
 
