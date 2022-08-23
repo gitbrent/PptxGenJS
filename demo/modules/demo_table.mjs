@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.7.2
- * BLD.: 20210807
+ * VER.: 3.10.0
+ * BLD.: 20220220
  */
 
 import {
@@ -101,7 +101,7 @@ function genSlide01(pptx) {
 		],
 		[
 			{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
-			{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
+			{ text: "Underline", options: { fill: { color: "336699" }, underline: { style: "sng" } } },
 			{ text: "0.15 margin", options: { fill: { color: "6699CC" }, margin: 0.15 } },
 		],
 	];
@@ -210,47 +210,47 @@ function genSlide02(pptx) {
 	let tabOpts3 = {
 		x: 0.5,
 		y: 5.15,
-		w: 6.25,
+		w: 6.0,
 		h: 2,
 		margin: 0.05,
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
-		border: { pt: "1", color: "c7c7c7" },
+		border: { pt: "2", color: pptx.colors.TEXT2 },
 		fill: { color: "F1F1F1" },
 	};
 	let arrTabRows3 = [
 		[
-			{ text: "A1\nA2\nA3", options: { rowspan: 3, fill: { color: "FFFCCC" } } },
-			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: "FFFCCC" } } },
-			"C1",
+			{ text: "A1\nA2\nA3", options: { rowspan: 3, fill: { color: pptx.colors.ACCENT6 } } },
+			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: pptx.colors.ACCENT2 } } },
+			{ text: "C1", options: { fill: { color: pptx.colors.ACCENT4 } } },
 		],
-		["C2"],
-		[{ text: "B3 -> C3", options: { colspan: 2, fill: { color: "99FFCC" } } }],
+		[{ text: "C2", options: { fill: { color: pptx.colors.ACCENT4 } } }],
+		[{ text: "B3 -> C3", options: { colspan: 2, fill: { color: pptx.colors.ACCENT5 } } }],
 	];
 	slide.addTable(arrTabRows3, tabOpts3);
 
 	// BTM-RIGHT
 	let tabOpts4 = {
-		x: 7.4,
+		x: 6.93,
 		y: 5.15,
-		w: 5.5,
+		w: 6.0,
 		h: 2,
 		margin: 0,
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
-		border: { pt: "1", color: "c7c7c7" },
+		border: { pt: "1", color: pptx.colors.TEXT2 },
 		fill: { color: "f2f9fc" },
 	};
 	let arrTabRows4 = [
 		[
-			"A1",
-			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: "FFFCCC" } } },
-			{ text: "C1\nC2\nC3", options: { rowspan: 3, fill: { color: "FFFCCC" } } },
+			{ text: "A1", options: { fill: { color: pptx.colors.ACCENT4, transparency: 25 } } },
+			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: pptx.colors.ACCENT2, transparency: 25 } } },
+			{ text: "C1\nC2\nC3", options: { rowspan: 3, fill: { color: pptx.colors.ACCENT6, transparency: 25 } } },
 		],
-		["A2"],
-		[{ text: "A3 -> B3", options: { colspan: 2, fill: { color: "99FFCC" } } }],
+		[{ text: "A2", options: { fill: { color: pptx.colors.ACCENT4, transparency: 25 } } }],
+		[{ text: "A3 -> B3", options: { colspan: 2, fill: { color: pptx.colors.ACCENT5, transparency: 25 } } }],
 	];
 	slide.addTable(arrTabRows4, tabOpts4);
 }
@@ -357,7 +357,7 @@ function genSlide04(pptx) {
 		[
 			{ text: "Text Objects", options: { color: "99ABCC", align: "right" } },
 			{ text: "2nd cell", options: { color: "0000EE", align: "center" } },
-			{ text: 3, options: { color: "0088CC", align: "left" } },
+			{ text: "Hyperlink", options: { hyperlink: { url: "https://github.com/gitbrent/pptxgenjs" } } },
 		],
 	];
 	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 8, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } }); // DEPRECATED: `margin` in points

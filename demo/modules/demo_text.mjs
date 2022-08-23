@@ -39,7 +39,8 @@ function genSlide01(pptx) {
 	slide.addText(
 		[
 			{ text: "Textbox align (center/middle)", options: { fontSize: 32, breakLine: true } },
-			{ text: "Character Spacing 16", options: { fontSize: 16, charSpacing: 16 } },
+			{ text: "Character Spacing 16", options: { fontSize: 16, charSpacing: 16, breakLine: true } },
+			{ text: "Transparency 50%", options: { fontSize: 16, transparency: 50 } },
 		],
 		{ x: 0.5, y: 0.75, w: 8.5, h: 2.5, color: "FFFFFF", fill: { color: "0000FF" }, valign: "middle", align: "center", isTextBox: true }
 	);
@@ -48,14 +49,14 @@ function genSlide01(pptx) {
 			{ text: "(left/top)", options: { fontSize: 12, breakLine: true } },
 			{ text: "Textbox", options: { bold: true } },
 		],
-		{ x: 10, y: 0.75, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "00FF00" }, valign: "top", align: "left", margin: 15 }
+		{ x: 10, y: 0.75, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "00B050" }, valign: "top", align: "left", margin: 15 }
 	);
 	slide.addText(
 		[
-			{ text: "Textbox", breakLine: true },
+			{ text: "Textbox", options: { breakLine: true } },
 			{ text: "(right/bottom)", options: { fontSize: 12 } },
 		],
-		{ x: 10, y: 2.25, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "FF0000" }, valign: "bottom", align: "right", margin: 0 }
+		{ x: 10, y: 2.25, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "C00000" }, valign: "bottom", align: "right", margin: 0 }
 	);
 
 	slide.addText("^ (50%/50%)", { x: "50%", y: "50%", w: 2 });
@@ -444,18 +445,15 @@ function genSlide05(pptx) {
 		[
 			{ text: "NOTE", options: { fontSize: 16, bold: true, breakLine: true } },
 			{
-				text:
-					"- both 'Shrink' and 'Resize' are only applied once text is editted or the shape is resized after creation using PowerPoint/Keynote/et al.",
+				text: "- both 'Shrink' and 'Resize' are only applied once text is editted or the shape is resized after creation using PowerPoint/Keynote/et al.",
 				options: { breakLine: true },
 			},
 			{
-				text:
-					"- PowerPoint calculates a scaling factor and applies it dynamically when a shape is updated - something that cannot be triggered by PptxGenJS",
+				text: "- PowerPoint calculates a scaling factor and applies it dynamically when a shape is updated - something that cannot be triggered by PptxGenJS",
 				options: { breakLine: true },
 			},
 			{
-				text:
-					"- the textboxes above have their shrink & resize props set already, just add a space or resize them to trigger shrink and resize behavior",
+				text: "- the textboxes above have their shrink & resize props set already, just add a space or resize them to trigger shrink and resize behavior",
 			},
 		],
 		{ x: 0.5, y: 6.0, w: 12, h: 1.1, margin: 10, fontSize: 12, color: "393939", fill: { color: "fffccc" } }
