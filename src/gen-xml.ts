@@ -118,8 +118,6 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 		let strXml: string = null
 		const sizing: ObjectOptions['sizing'] = slideItemObj.options?.sizing
 		const rounding = slideItemObj.options?.rounding
-		let imgWidth = cx
-		let imgHeight = cy
 
 		if (
 			(slide as PresSlide)._slideLayout !== undefined &&
@@ -139,6 +137,10 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 		if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout)
 		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
 		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
+
+		// Set w/h now that smart parse is done
+		let imgWidth = cx
+		let imgHeight = cy
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
