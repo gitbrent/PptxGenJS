@@ -1207,12 +1207,30 @@ export interface IChartPropsBase {
 	lang?: string
 	layout?: PositionProps
 	shadow?: ShadowProps
+	/**
+	 * @default false
+	 */
 	showLabel?: boolean
 	showLeaderLines?: boolean
+	/**
+	 * @default false
+	 */
 	showLegend?: boolean
+	/**
+	 * @default false
+	 */
 	showPercent?: boolean
+	/**
+	 * @default false
+	 */
 	showSerName?: boolean
+	/**
+	 * @default false
+	 */
 	showTitle?: boolean
+	/**
+	 * @default false
+	 */
 	showValue?: boolean
 	/**
 	 * 3D perspecitve
@@ -1482,6 +1500,10 @@ export interface IChartPropsDataTable {
 	 * @example '$0.00' // shows values as '$0.00'
 	 */
 	dataTableFormatCode?: string
+	/**
+	 * Whether to show a data table adjacent to the chart
+	 * @default false
+	 */
 	showDataTable?: boolean
 	showDataTableHorzBorder?: boolean
 	showDataTableKeys?: boolean

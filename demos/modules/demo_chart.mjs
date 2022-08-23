@@ -1151,6 +1151,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: 1, color: "404040" },
 		dataLabelColor: "f2f9fc",
+		showPercent: true,
 		showLegend: true,
 		legendPos: "t",
 	});
@@ -1165,6 +1166,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
+		showPercent: true,
 		legendPos: "t",
 		legendFontSize: 14,
 		showLeaderLines: true,
@@ -1202,6 +1204,7 @@ function genSlide12(pptx) {
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		chartColors: COLORS_SPECTRUM,
 		dataLabelColor: "F1F1F1",
+		showPercent: true,
 		showLegend: true,
 		legendPos: "b",
 	});
@@ -1214,6 +1217,7 @@ function genSlide12(pptx) {
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
 		dataBorder: { pt: "1", color: "F1F1F1" },
+		showPercent: true,
 		showLegend: true,
 		legendPos: "b",
 		showTitle: true,
@@ -2236,6 +2240,12 @@ function genSlide21(pptx) {
 		showTitle: true,
 		title: "Rotated cyan shadow",
 		dataLabelColor: "FFFFFF",
+		/* NOTE: following are optional and default to `false`, leavign chart "plain" (without labels, etc.)
+		dataLabelFontSize: 9,
+		showLabel: true,
+		showValue: true,
+		showPercent: true,
+		*/
 		shadow: {
 			type: "outer",
 			blur: 10,
