@@ -762,6 +762,10 @@ function genSlide06(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		chartColorsOpacity: 80,
 		//
+		v3DRotX: 20,
+		v3DRotY: 10,
+		v3DRAngAx: false,
+		//
 		catAxisLabelColor: COLORS_SPECTRUM[1],
 		catAxisLineColor: COLORS_SPECTRUM[1],
 		catAxisLabelFontFace: "Arial",
@@ -791,6 +795,11 @@ function genSlide06(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		barDir: "col",
 		bar3DShape: "cylinder",
+		//
+		v3DRotX: 10,
+		v3DRotY: 20,
+		v3DRAngAx: false,
+		//
 		catAxisLabelColor: "0000CC",
 		catAxisLabelFontFace: "Courier",
 		catAxisLabelFontSize: 12,
@@ -817,6 +826,7 @@ function genSlide06(pptx) {
 		barDir: "col",
 		bar3DShape: "pyramid",
 		barGrouping: "stacked",
+		v3DRAngAx: true,
 		//
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
@@ -843,6 +853,7 @@ function genSlide06(pptx) {
 		chartColors: COLORS_ACCENT,
 		barDir: "col",
 		bar3DShape: "coneToMax",
+		v3DRAngAx: true,
 		//
 		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontSize: 11,
@@ -1696,6 +1707,7 @@ function genSlide17(pptx) {
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 		barDir: "col",
+		v3DRAngAx: true,
 	};
 
 	const opts4 = {
