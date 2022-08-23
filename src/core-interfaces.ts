@@ -1233,13 +1233,31 @@ export interface IChartPropsBase {
 	 */
 	showValue?: boolean
 	/**
-	 * 3D perspecitve
-	 * - range: 0-100
+	 * 3D Perspecitve
+	 * - range: 0-120
 	 * @default 30
 	 */
 	v3DPerspective?: number
+	/**
+	 * Right Angle Axes
+	 * - Shows chart from first-person perspective
+	 * - Overrides `v3DPerspective` when true
+	 * - PowerPoint: Chart Options > 3-D Rotation
+	 * @default false
+	 */
 	v3DRAngAx?: boolean
+	/**
+	 * X Rotation
+	 * - PowerPoint: Chart Options > 3-D Rotation
+	 * - range: 0-359.9
+	 * @default 30
+	 */
 	v3DRotX?: number
+	/**
+	 * Y Rotation
+	 * - range: 0-359.9
+	 * @default 30
+	 */
 	v3DRotY?: number
 
 	/**
