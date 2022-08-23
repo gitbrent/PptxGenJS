@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2022-08-23T03:33:14.882Z */
+/* PptxGenJS 3.12.0-beta @ 2022-08-23T04:44:18.553Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5123,7 +5123,7 @@ function createExcelWorksheet(chartObject, zip) {
  * @return {string} XML
  */
 function makeXmlCharts(rel) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
     var usesSecondaryValAxis = false;
     // STEP 1: Create chart
@@ -5264,7 +5264,7 @@ function makeXmlCharts(rel) {
         }
         strXml += '  <c:spPr>';
         // OPTION: Fill
-        strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>';
+        strXml += ((_c = rel.opts.plotArea.fill) === null || _c === void 0 ? void 0 : _c.color) ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>';
         // OPTION: Border
         strXml += rel.opts.plotArea.border
             ? "<a:ln w=\"".concat(valToPts(rel.opts.plotArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.plotArea.border.color), "</a:ln>")
@@ -5309,7 +5309,7 @@ function makeXmlCharts(rel) {
     strXml += '</c:chart>';
     // D: CHARTSPACE SHAPE PROPS
     strXml += '<c:spPr>';
-    strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>';
+    strXml += ((_d = rel.opts.chartArea.fill) === null || _d === void 0 ? void 0 : _d.color) ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>';
     strXml += rel.opts.chartArea.border
         ? "<a:ln w=\"".concat(valToPts(rel.opts.chartArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.chartArea.border.color), "</a:ln>")
         : '<a:ln><a:noFill/></a:ln>';
@@ -5336,6 +5336,9 @@ function makeXmlCharts(rel) {
 function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeChart) {
     // NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
     // ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
+    var colorIndex = -1; // Maintain the color index by region
+    var idxColLtr = 1;
+    var optsChartData = null;
     var strXml = '';
     switch (chartType) {
         case CHART_TYPE.AREA:
@@ -5391,9 +5394,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                  }
                 ]
              */
-            var colorIndex_1 = -1; // Maintain the color index by region
             data.forEach(function (obj) {
-                colorIndex_1++;
+                var _a;
+                colorIndex++;
                 strXml += '<c:ser>';
                 strXml += '  <c:idx val="' + obj._dataIndex + '"/>';
                 strXml += '  <c:order val="' + obj._dataIndex + '"/>';
@@ -5406,7 +5409,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Fill and Border
                 // TODO: CURRENT: Pull#727
                 // TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
-                var seriesColor = opts.chartColors ? opts.chartColors[colorIndex_1 % opts.chartColors.length] : null;
+                var seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null;
                 strXml += '  <c:spPr>';
                 if (seriesColor === 'transparent') {
                     strXml += '<a:noFill/>';
@@ -5485,7 +5488,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
                 if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
                     data.length === 1 &&
-                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors && opts.invertedColors.length))) {
+                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || ((_a = opts.invertedColors) === null || _a === void 0 ? void 0 : _a.length))) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5630,9 +5633,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:scatterStyle val="lineMarker"/>';
             strXml += '<c:varyColors val="0"/>';
             // 2: Series: (One for each Y-Axis)
-            colorIndex_1 = -1;
+            colorIndex = -1;
             data.filter(function (_obj, idx) { return idx > 0; }).forEach(function (obj, idx) {
-                colorIndex_1++;
+                colorIndex++;
                 strXml += '<c:ser>';
                 strXml += '  <c:idx val="' + idx + '"/>';
                 strXml += '  <c:order val="' + idx + '"/>';
@@ -5645,7 +5648,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // 'c:spPr': Fill, Border, Line, LineStyle (dash, etc.), Shadow
                 strXml += '  <c:spPr>';
                 {
-                    var tmpSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
+                    var tmpSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
                     if (tmpSerColor === 'transparent') {
                         strXml += '<a:noFill/>';
                     }
@@ -5683,7 +5686,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         '    <a:ln w="' +
                             opts.lineDataSymbolLineSize +
                             '" cap="flat"><a:solidFill>' +
-                            createColorElement(opts.lineDataSymbolLineColor || opts.chartColors[colorIndex_1 % opts.chartColors.length]) +
+                            createColorElement(opts.lineDataSymbolLineColor || opts.chartColors[colorIndex % opts.chartColors.length]) +
                             '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
                     strXml += '    <a:effectLst/>';
                     strXml += '  </c:spPr>';
@@ -5920,24 +5923,23 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:bubbleChart>';
             strXml += '<c:varyColors val="0"/>';
             // 2: Series: (One for each Y-Axis)
-            colorIndex_1 = -1;
-            var idxColLtr_2 = 1;
+            colorIndex = -1;
             data.filter(function (_obj, idx) { return idx > 0; }).forEach(function (obj, idx) {
-                colorIndex_1++;
+                colorIndex++;
                 strXml += '<c:ser>';
                 strXml += '  <c:idx val="' + idx + '"/>';
                 strXml += '  <c:order val="' + idx + '"/>';
                 // A: `<c:tx>`
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$1</c:f>';
+                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr + 1) + '$1</c:f>';
                 strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
                 // B: '<c:spPr>': Fill, Border, Line, LineStyle (dash, etc.), Shadow
                 {
                     strXml += '<c:spPr>';
-                    var tmpSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
+                    var tmpSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
                     if (tmpSerColor === 'transparent') {
                         strXml += '<a:noFill/>';
                     }
@@ -5986,8 +5988,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // Y-Axis vals are this object's `values`
                     strXml += '<c:yVal>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$2:$' + getExcelColName(idxColLtr_2 + 1) + '$' + (data[0].values.length + 1) + '</c:f>';
-                    idxColLtr_2++;
+                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idxColLtr + 1) + '$2:$' + getExcelColName(idxColLtr + 1) + '$' + (data[0].values.length + 1) + '</c:f>';
+                    idxColLtr++;
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>General</c:formatCode>';
                     // NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
@@ -6002,8 +6004,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // E: '<c:bubbleSize>'
                 strXml += '  <c:bubbleSize>';
                 strXml += '    <c:numRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$2:$' + getExcelColName(idxColLtr_2 + 1) + '$' + (obj.sizes.length + 1) + '</c:f>';
-                idxColLtr_2++;
+                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr + 1) + '$2:$' + getExcelColName(idxColLtr + 1) + '$' + (obj.sizes.length + 1) + '</c:f>';
+                idxColLtr++;
                 strXml += '      <c:numCache>';
                 strXml += '        <c:formatCode>General</c:formatCode>';
                 strXml += '	       <c:ptCount val="' + obj.sizes.length + '"/>';
@@ -6051,7 +6053,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPE.DOUGHNUT:
         case CHART_TYPE.PIE:
             // Use the same let name so code blocks from barChart are interchangeable
-            var obj = data[0];
+            optsChartData = data[0];
             /* EX:
                 data: [
                  {
@@ -6072,7 +6074,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '      <c:f>Sheet1!$B$1</c:f>';
             strXml += '      <c:strCache>';
             strXml += '        <c:ptCount val="1"/>';
-            strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt>';
+            strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(optsChartData.name) + '</c:v></c:pt>';
             strXml += '      </c:strCache>';
             strXml += '    </c:strRef>';
             strXml += '  </c:tx>';
@@ -6088,7 +6090,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:spPr>';
             // strXml += '<c:explosion val="0"/>'
             // 2: "Data Point" block for every data row
-            obj.labels[0].forEach(function (_label, idx) {
+            optsChartData.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dPt>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
                 strXml += ' <c:bubble3D val="0"/>';
@@ -6103,7 +6105,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             });
             // 3: "Data Label" block for every data Label
             strXml += '<c:dLbls>';
-            obj.labels[0].forEach(function (_label, idx) {
+            optsChartData.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dLbl>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
                 strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
@@ -6150,10 +6152,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 2: "Categories"
             strXml += '<c:cat>';
             strXml += '  <c:strRef>';
-            strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels[0].length + 1) + '</c:f>';
+            strXml += '    <c:f>Sheet1!$A$2:$A$' + (optsChartData.labels[0].length + 1) + '</c:f>';
             strXml += '    <c:strCache>';
-            strXml += '	     <c:ptCount val="' + obj.labels[0].length + '"/>';
-            obj.labels[0].forEach(function (label, idx) {
+            strXml += '	     <c:ptCount val="' + optsChartData.labels[0].length + '"/>';
+            optsChartData.labels[0].forEach(function (label, idx) {
                 strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
             });
             strXml += '    </c:strCache>';
@@ -6162,10 +6164,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: Create vals
             strXml += '  <c:val>';
             strXml += '    <c:numRef>';
-            strXml += '      <c:f>Sheet1!$B$2:$B$' + (obj.labels[0].length + 1) + '</c:f>';
+            strXml += '      <c:f>Sheet1!$B$2:$B$' + (optsChartData.labels[0].length + 1) + '</c:f>';
             strXml += '      <c:numCache>';
-            strXml += '	       <c:ptCount val="' + obj.labels[0].length + '"/>';
-            obj.values.forEach(function (value, idx) {
+            strXml += '	       <c:ptCount val="' + optsChartData.labels[0].length + '"/>';
+            optsChartData.values.forEach(function (value, idx) {
                 strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
             });
             strXml += '      </c:numCache>';
@@ -6450,7 +6452,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '    <a:lstStyle/>';
     strXml += '    <a:p>';
     strXml += '    <a:pPr>';
-    strXml += "    <a:defRPr sz=\"".concat(Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.serAxisLabelFontBold || 0, "\" i=\"").concat(opts.serAxisLabelFontItalic || 0, "\" u=\"none\" strike=\"noStrike\">");
+    strXml += "    <a:defRPr sz=\"".concat(Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.serAxisLabelFontBold ? '1' : '0', "\" i=\"").concat(opts.serAxisLabelFontItalic ? '1' : '0', "\" u=\"none\" strike=\"noStrike\">");
     strXml += '      <a:solidFill>' + createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
