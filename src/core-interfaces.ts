@@ -1830,6 +1830,7 @@ export interface AddSlideProps {
 export interface PresentationProps {
 	author: string
 	company: string
+	fonts: PresFont[]
 	layout: string
 	masterSlide: PresSlide
 	/**
@@ -1851,4 +1852,27 @@ export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
+}
+
+export interface FontProps {
+	name: string
+	styles: FontStyleProps[]
+}
+
+export interface FontStyleProps {
+	name: 'regular' | 'bold' | 'italic' | 'boldItalic'
+	data?: string | ArrayBuffer
+	path?: string
+}
+
+export interface PresFontStyle extends FontStyleProps {
+	rel: {
+		id: string
+		target: string
+	}
+}
+
+export interface PresFont {
+	name: string
+	styles: PresFontStyle[]
 }
