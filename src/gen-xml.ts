@@ -24,6 +24,7 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ObjectOptions,
+	PresFont,
 	PresSlide,
 	ShadowProps,
 	SlideLayout,
@@ -1639,7 +1640,7 @@ export function makeXmlCore(title: string, subject: string, author: string, revi
  * @param {PresSlide[]} slides - Presenation Slides
  * @returns XML
  */
-export function makeXmlPresentationRels(slides: Array<PresSlide>): string {
+export function makeXmlPresentationRels(slides: Array<PresSlide>, fonts: Array<PresFont>): string {
 	let intRelNum = 1
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -1648,24 +1649,33 @@ export function makeXmlPresentationRels(slides: Array<PresSlide>): string {
 		strXml +=
 			'<Relationship Id="rId' + ++intRelNum + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide' + idx + '.xml"/>'
 	}
-	intRelNum++
+
 	strXml +=
 		'<Relationship Id="rId' +
-		intRelNum +
+		intRelNum++ +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>' +
 		'<Relationship Id="rId' +
-		(intRelNum + 1) +
+		intRelNum++ +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>' +
 		'<Relationship Id="rId' +
-		(intRelNum + 2) +
+		intRelNum++ +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>' +
 		'<Relationship Id="rId' +
-		(intRelNum + 3) +
+		intRelNum++ +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
 		'<Relationship Id="rId' +
-		(intRelNum + 4) +
-		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>' +
-		'</Relationships>'
+		intRelNum++ +
+		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>'
+
+	// add font rels
+	fonts.forEach(font => {
+		font.variants.forEach(variant => {
+			variant.rId = `rId${intRelNum}`
+			strXml += `<Relationship Id="rId${intRelNum++}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/font" Target="${variant.target}"/>`
+		})
+	})
+
+	strXml += '</Relationships>'
 
 	return strXml
 }
@@ -1948,6 +1958,23 @@ export function makeXmlPresentation(pres: IPresentationProps): string {
 	// STEP 4: Add sizes
 	strXml += `<p:sldSz cx="${pres.presLayout.width}" cy="${pres.presLayout.height}"/>`
 	strXml += `<p:notesSz cx="${pres.presLayout.height}" cy="${pres.presLayout.width}"/>`
+
+	// STEP: Add embedded fonts
+
+	if (pres.fonts.length > 0) {
+		strXml += '<p:embeddedFontLst>'
+
+		pres.fonts.forEach(font => {
+			strXml += '<p:embeddedFont>'
+			strXml += `<p:font typeface="${font.name}"/>`
+			font.variants.forEach(variant => {
+				strXml += `<p:${variant.type} r:id="${variant.rId}"/>`
+			})
+			strXml += '</p:embeddedFont>'
+		})
+
+		strXml += '</p:embeddedFontLst>'
+	}
 
 	// STEP 5: Add text styles
 	strXml += '<p:defaultTextStyle>'

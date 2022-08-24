@@ -80,6 +80,7 @@ import {
 import {
 	AddSlideProps,
 	IPresentationProps,
+	PresFont,
 	PresLayout,
 	PresSlide,
 	SectionProps,
@@ -92,6 +93,7 @@ import {
 	WriteProps,
 } from './core-interfaces'
 import * as genCharts from './gen-charts'
+import * as genFonts from './gen-fonts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
@@ -229,6 +231,12 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._slideLayouts
 	}
 
+	/** this Presentation's fonts */
+	private _fonts: PresFont[]
+	public get fonts(): PresFont[] {
+		return this._fonts
+	}
+
 	private LAYOUTS: { [key: string]: PresLayout }
 
 	// Exposed class props
@@ -298,6 +306,7 @@ export default class PptxGenJS implements IPresentationProps {
 		this._revision = '1' // Note: Must be a whole number
 		this._subject = 'PptxGenJS Presentation'
 		this._title = 'PptxGenJS Presentation'
+
 		// PptxGenJS props
 		this._presLayout = {
 			name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
@@ -307,6 +316,7 @@ export default class PptxGenJS implements IPresentationProps {
 			height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 		}
 		this._rtlMode = false
+		this._fonts = []
 		//
 		this._slideLayouts = [
 			{
@@ -408,6 +418,27 @@ export default class PptxGenJS implements IPresentationProps {
 		})
 	}
 
+	private createFontRels = (zip: JSZip, fonts: PresFont[]) => {
+		fonts
+			.map(font => font.variants)
+			.flat()
+			.forEach(variant => {
+				// A: Loop vars
+				let data: string = variant.data && typeof variant.data === 'string' ? variant.data : ''
+
+				// // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+				if (data.indexOf(',') === -1 && data.indexOf(';') === -1) data = 'application/octet-stream;base64,' + data
+				else if (data.indexOf(',') === -1) data = 'application/octet-stream;base64,' + data
+				else if (data.indexOf(';') === -1) data = 'application/octet-stream;' + data
+
+				console.log('data', data.split(',').pop())
+				console.log('target', `ppt/${variant.target}`)
+
+				// C: Add font
+				zip.file(`ppt/${variant.target}`, data.split(',').pop(), { base64: true })
+			})
+	}
+
 	/**
 	 * Create and export the .pptx file
 	 * @param {string} exportName - output file type
@@ -458,6 +489,7 @@ export default class PptxGenJS implements IPresentationProps {
 			arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(layout))
 		})
 		arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(this.masterSlide))
+		arrMediaPromises = arrMediaPromises.concat(genFonts.encodePresFontRels(this.fonts))
 
 		// STEP 2: Wait for Promises (if any) then generate the PPTX file
 		return Promise.all(arrMediaPromises).then(() => {
@@ -465,7 +497,6 @@ export default class PptxGenJS implements IPresentationProps {
 			this.slides.forEach(slide => {
 				if (slide._slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
 			})
-
 			// B: Add all required folders and files
 			zip.folder('_rels')
 			zip.folder('docProps')
@@ -483,7 +514,7 @@ export default class PptxGenJS implements IPresentationProps {
 			zip.file('_rels/.rels', genXml.makeXmlRootRels())
 			zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company)) // TODO: pass only `this` like below! 20200206
 			zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision)) // TODO: pass only `this` like below! 20200206
-			zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
+			zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides, this.fonts))
 			zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
 			zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this))
 			zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
@@ -515,6 +546,7 @@ export default class PptxGenJS implements IPresentationProps {
 				this.createChartMediaRels(slide, zip, arrChartPromises)
 			})
 			this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
+			this.createFontRels(zip, this.fonts)
 
 			// E: Wait for Promises (if any) then generate the PPTX file
 			// @ts-ignore
@@ -680,6 +712,19 @@ export default class PptxGenJS implements IPresentationProps {
 		}
 
 		return newSlide
+	}
+
+	addFonts(fonts) {
+		// TODO validate format of fonts
+
+		// add target
+		this._fonts = fonts.map(font => ({
+			...font,
+			variants: font.variants.map(variant => ({
+				...variant,
+				target: `fonts/${font.name}-${variant.type}.fntdata`,
+			})),
+		}))
 	}
 
 	/**
