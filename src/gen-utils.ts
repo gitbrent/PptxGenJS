@@ -81,7 +81,6 @@ export function inch2Emu (inches: number | string): number {
 
 /**
  * Convert `pt` into points (using `ONEPT`)
- *
  * @param {number|string} pt
  * @returns {number} value in points (`ONEPT`)
  */
@@ -92,9 +91,8 @@ export function valToPts (pt: number | string): number {
 
 /**
  * Convert degrees (0..360) to PowerPoint `rot` value
- *
- * @param {number} d - degrees
- * @returns {number} rot - value
+ * @param {number} d degrees
+ * @returns {number} calculated `rot` value
  */
 export function convertRotationDegrees (d: number): number {
 	d = d || 0
