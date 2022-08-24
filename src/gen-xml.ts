@@ -152,7 +152,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 		//
 		if (slideItemObj.options.flipH) locationAttr += ' flipH="1"'
 		if (slideItemObj.options.flipV) locationAttr += ' flipV="1"'
-		if (slideItemObj.options.rotate) locationAttr += ` rot="${convertRotationDegrees(slideItemObj.options.rotate)} "`
+		if (slideItemObj.options.rotate) locationAttr += ` rot="${convertRotationDegrees(slideItemObj.options.rotate)}"`
 
 		// B: Add OBJECT to the current Slide
 		switch (slideItemObj._type) {
