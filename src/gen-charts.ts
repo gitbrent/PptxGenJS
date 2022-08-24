@@ -217,17 +217,13 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 					strTableXml += `<tableColumn id="${idx + 1}" name="${idx === 0 ? 'X-Values' : 'Y-Value '}${idx}"/>`
 				})
 			} else {
-				strTableXml +=
-					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
-					getExcelColName(data.length + data[0].labels.length) +
-					(data[0].labels[0].length + 1) +
-					'" totalsRowShown="0">'
-				strTableXml += '<tableColumns count="' + (data.length + data[0].labels.length) + '">'
+				strTableXml += `<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:${getExcelColName(data.length + data[0].labels.length)}${data[0].labels[0].length + 1}'" totalsRowShown="0">`
+				strTableXml += `<tableColumns count="${data.length + data[0].labels.length}">`
 				data[0].labels.forEach((_labelsGroup, idx) => {
 					strTableXml += `<tableColumn id="${idx + 1}" name="Column${idx + 1}"/>`
 				})
 				data.forEach((obj, idx) => {
-					strTableXml += '<tableColumn id="' + (idx + data[0].labels.length + 1) + '" name="' + encodeXmlEntities(obj.name) + '"/>'
+					strTableXml += `<tableColumn id="${idx + data[0].labels.length + 1}" name="${encodeXmlEntities(obj.name)}"/>`
 				})
 			}
 			strTableXml += '</tableColumns>'
@@ -586,12 +582,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
          * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
          */
 		if (rel.opts._type === CHART_TYPE.BAR3D) {
-			strXml += '<c:view3D>'
-			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>'
-			strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>'
-			strXml += ' <c:rAngAx val="' + (!rel.opts.v3DRAngAx ? 0 : 1) + '"/>'
-			strXml += ' <c:perspective val="' + rel.opts.v3DPerspective + '"/>'
-			strXml += '</c:view3D>'
+			strXml += `<c:view3D><c:rotX val="${rel.opts.v3DRotX}"/><c:rotY val="${rel.opts.v3DRotY}"/><c:rAngAx val="${!rel.opts.v3DRAngAx ? 0 : 1}"/><c:perspective val="${rel.opts.v3DPerspective}"/></c:view3D>`
 		}
 
 		strXml += '<c:plotArea>'
@@ -669,14 +660,13 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 		// NOTE: DataTable goes between '</c:valAx>' and '<c:spPr>'
 		if (rel.opts.showDataTable) {
 			strXml += '<c:dTable>'
-			strXml += '  <c:showHorzBorder val="' + (!rel.opts.showDataTableHorzBorder ? 0 : 1) + '"/>'
+			strXml += `  <c:showHorzBorder val="${!rel.opts.showDataTableHorzBorder ? 0 : 1}"/>`
 			strXml += '  <c:showVertBorder val="' + (!rel.opts.showDataTableVertBorder ? 0 : 1) + '"/>'
 			strXml += '  <c:showOutline    val="' + (!rel.opts.showDataTableOutline ? 0 : 1) + '"/>'
 			strXml += '  <c:showKeys       val="' + (!rel.opts.showDataTableKeys ? 0 : 1) + '"/>'
 			strXml += '  <c:spPr>'
 			strXml += '    <a:noFill/>'
-			strXml +=
-				'    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln>'
+			strXml += '    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln>'
 			strXml += '    <a:effectLst/>'
 			strXml += '  </c:spPr>'
 			strXml += '  <c:txPr>'
@@ -684,9 +674,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 			strXml += '   <a:lstStyle/>'
 			strXml += '   <a:p>'
 			strXml += '     <a:pPr rtl="0">'
-			strXml += `       <a:defRPr sz="${Math.round(
-				(rel.opts.dataTableFontSize || DEF_FONT_SIZE) * 100
-			)}" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">`
+			strXml += `       <a:defRPr sz="${Math.round((rel.opts.dataTableFontSize || DEF_FONT_SIZE) * 100)}" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">`
 			strXml += '         <a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>'
 			strXml += '         <a:latin typeface="+mn-lt"/>'
 			strXml += '         <a:ea typeface="+mn-ea"/>'
@@ -846,8 +834,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 			data.forEach(obj => {
 				colorIndex++
 				strXml += '<c:ser>'
-				strXml += '  <c:idx val="' + obj._dataIndex + '"/>'
-				strXml += '  <c:order val="' + obj._dataIndex + '"/>'
+				strXml += `  <c:idx val="${obj._dataIndex}"/><c:order val="${obj._dataIndex}"/>`
 				strXml += '  <c:tx>'
 				strXml += '    <c:strRef>'
 				strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length + 1) + '$1</c:f>'
@@ -982,9 +969,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 						strXml += '    <c:numCache>'
 						strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>'
 						strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>'
-						obj.labels[0].forEach((label, idx) => {
-							strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
-						})
+						obj.labels[0].forEach((label, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${encodeXmlEntities(label)}</c:v></c:pt>`))
 						strXml += '    </c:numCache>'
 						strXml += '  </c:numRef>'
 					} else {
@@ -993,11 +978,9 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 						strXml += '    <c:multiLvlStrCache>'
 						strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>'
 						obj.labels.forEach(labelsGroup => {
-							strXml += '  <c:lvl>'
-							labelsGroup.forEach((label, idx) => {
-								strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
-							})
-							strXml += '  </c:lvl>'
+							strXml += '<c:lvl>'
+							labelsGroup.forEach((label, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${encodeXmlEntities(label)}</c:v></c:pt>`))
+							strXml += '</c:lvl>'
 						})
 						strXml += '    </c:multiLvlStrCache>'
 						strXml += '  </c:multiLvlStrRef>'
@@ -1429,12 +1412,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else if (opts.dataBorder) {
-						strXml +=
-						    '<a:ln w="' +
-						    valToPts(opts.dataBorder.pt) +
-						    '" cap="flat"><a:solidFill>' +
-						    createColorElement(opts.dataBorder.color) +
-						    '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
+						strXml += '<a:ln w="' + valToPts(opts.dataBorder.pt) + '" cap="flat"><a:solidFill>' + createColorElement(opts.dataBorder.color) + '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					} else {
 						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
@@ -1751,14 +1729,7 @@ function makeCatAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
 	strXml += '    <a:lstStyle/>'
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'
-	strXml +=
-        '    <a:defRPr sz="' +
-        Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-        '" b="' +
-        (opts.catAxisLabelFontBold ? 1 : 0) +
-        '" i="' +
-        (opts.catAxisLabelFontItalic ? 1 : 0) +
-        '" u="none" strike="noStrike">'
+	strXml += `      <a:defRPr sz="${Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.catAxisLabelFontBold ? 1 : 0}" i="${opts.catAxisLabelFontItalic ? 1 : 0}" u="none" strike="noStrike">`
 	strXml += '      <a:solidFill>' + createColorElement(opts.catAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'
@@ -1820,10 +1791,10 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  <c:scaling>'
 	if (opts.valAxisLogScaleBase) strXml += `<c:logBase val="${opts.valAxisLogScaleBase}"/>`
 	strXml += '<c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>'
-	if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0) strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>'
-	if (opts.valAxisMinVal || opts.valAxisMinVal === 0) strXml += '<c:min val="' + opts.valAxisMinVal + '"/>'
+	if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0) strXml += `<c:max val="${opts.valAxisMaxVal}"/>`
+	if (opts.valAxisMinVal || opts.valAxisMinVal === 0) strXml += `<c:min val="${opts.valAxisMinVal}"/>`
 	strXml += '  </c:scaling>'
-	strXml += '  <c:delete val="' + (opts.valAxisHidden ? 1 : 0) + '"/>'
+	strXml += `  <c:delete val="${opts.valAxisHidden ? 1 : 0}"/>`
 	strXml += '  <c:axPos val="' + axisPos + '"/>'
 	if (opts.valGridLine.style !== 'none') strXml += createGridLineElement(opts.valGridLine)
 	// '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
@@ -1847,25 +1818,18 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
 		strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || (opts.barDir === 'col' ? 'nextTo' : 'low')) + '"/>'
 	}
 	strXml += ' <c:spPr>'
-	strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">'
+	strXml += `   <a:ln w="${opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT}" cap="flat">`
 	strXml += !opts.valAxisLineShow ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>'
 	strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || 'solid') + '"/>'
 	strXml += '     <a:round/>'
 	strXml += '   </a:ln>'
 	strXml += ' </c:spPr>'
 	strXml += ' <c:txPr>'
-	strXml += '  <a:bodyPr' + (opts.valAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
+	strXml += `  <a:bodyPr${opts.valAxisLabelRotate ? (' rot="' + convertRotationDegrees(opts.valAxisLabelRotate).toString() + '"') : ''}/>` // don't specify rot 0 so we get the auto behavior
 	strXml += '  <a:lstStyle/>'
 	strXml += '  <a:p>'
 	strXml += '    <a:pPr>'
-	strXml +=
-        '      <a:defRPr sz="' +
-        Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-        '" b="' +
-        (opts.valAxisLabelFontBold ? 1 : 0) +
-        '" i="' +
-        (opts.valAxisLabelFontItalic ? 1 : 0) +
-        '" u="none" strike="noStrike">'
+	strXml += `      <a:defRPr sz="${Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.valAxisLabelFontBold ? 1 : 0}" i="${opts.valAxisLabelFontItalic ? 1 : 0}" u="none" strike="noStrike">`
 	strXml += '        <a:solidFill>' + createColorElement(opts.valAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 	strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '      </a:defRPr>'
@@ -1875,7 +1839,7 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
 	strXml += ' </c:txPr>'
 	strXml += ' <c:crossAx val="' + crossAxId + '"/>'
 	if (typeof opts.catAxisCrossesAt === 'number') {
-		strXml += ' <c:crossesAt val="' + opts.catAxisCrossesAt + '"/>'
+		strXml += ` <c:crossesAt val="${opts.catAxisCrossesAt}"/>`
 	} else if (typeof opts.catAxisCrossesAt === 'string') {
 		strXml += ' <c:crosses val="' + opts.catAxisCrossesAt + '"/>'
 	} else {
@@ -1887,7 +1851,7 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
         ' <c:crossBetween val="' +
         (opts._type === CHART_TYPE.SCATTER || (!!(Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0)) ? 'midCat' : 'between') +
         '"/>'
-	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>'
+	if (opts.valAxisMajorUnit) strXml += ` <c:majorUnit val="${opts.valAxisMajorUnit}"/>`
 	if (opts.valAxisDisplayUnit) { strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/>${opts.valAxisDisplayUnitLabel ? '<c:dispUnitsLbl/>' : ''}</c:dispUnits>` }
 
 	strXml += '</c:valAx>'
@@ -1925,10 +1889,10 @@ function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
 	strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.serLabelFormatCode) || 'General'}" sourceLinked="0"/>`
 	strXml += '  <c:majorTickMark val="out"/>'
 	strXml += '  <c:minorTickMark val="none"/>'
-	strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>'
+	strXml += `  <c:tickLblPos val="${opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo'}"/>`
 	strXml += '  <c:spPr>'
 	strXml += '    <a:ln w="12700" cap="flat">'
-	strXml += !opts.serAxisLineShow ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.serAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>'
+	strXml += !opts.serAxisLineShow ? '<a:noFill/>' : `<a:solidFill>${createColorElement(opts.serAxisLineColor || DEF_CHART_GRIDLINE.color)}</a:solidFill>`
 	strXml += '      <a:prstDash val="solid"/>'
 	strXml += '      <a:round/>'
 	strXml += '    </a:ln>'
@@ -1939,8 +1903,8 @@ function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'
 	strXml += `    <a:defRPr sz="${Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.serAxisLabelFontBold ? '1' : '0'}" i="${opts.serAxisLabelFontItalic ? '1' : '0'}" u="none" strike="noStrike">`
-	strXml += '      <a:solidFill>' + createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
-	strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>'
+	strXml += `      <a:solidFill>${createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR)}</a:solidFill>`
+	strXml += `      <a:latin typeface="${opts.serAxisLabelFontFace || 'Arial'}"/>`
 	strXml += '   </a:defRPr>'
 	strXml += '  </a:pPr>'
 	strXml += '  <a:endParaRPr lang="' + (opts.lang || 'en-US') + '"/>'
@@ -1959,11 +1923,11 @@ function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
 				opts[opt] = null
 			}
 		})
-		if (opts.serAxisBaseTimeUnit) strXml += ' <c:baseTimeUnit  val="' + opts.serAxisBaseTimeUnit.toLowerCase() + '"/>'
-		if (opts.serAxisMajorTimeUnit) strXml += ' <c:majorTimeUnit val="' + opts.serAxisMajorTimeUnit.toLowerCase() + '"/>'
-		if (opts.serAxisMinorTimeUnit) strXml += ' <c:minorTimeUnit val="' + opts.serAxisMinorTimeUnit.toLowerCase() + '"/>'
-		if (opts.serAxisMajorUnit) strXml += ' <c:majorUnit     val="' + opts.serAxisMajorUnit + '"/>'
-		if (opts.serAxisMinorUnit) strXml += ' <c:minorUnit     val="' + opts.serAxisMinorUnit + '"/>'
+		if (opts.serAxisBaseTimeUnit) strXml += ` <c:baseTimeUnit  val="${opts.serAxisBaseTimeUnit.toLowerCase()}"/>`
+		if (opts.serAxisMajorTimeUnit) strXml += ` <c:majorTimeUnit val="${opts.serAxisMajorTimeUnit.toLowerCase()}"/>`
+		if (opts.serAxisMinorTimeUnit) strXml += ` <c:minorTimeUnit val="${opts.serAxisMinorTimeUnit.toLowerCase()}"/>`
+		if (opts.serAxisMajorUnit) strXml += ` <c:majorUnit val="${opts.serAxisMajorUnit}"/>`
+		if (opts.serAxisMinorUnit) strXml += ` <c:minorUnit val="${opts.serAxisMinorUnit}"/>`
 	}
 
 	// Close ser axis tag
@@ -1980,7 +1944,7 @@ function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
 function genXmlTitle (opts: IChartPropsTitle, chartX?: number, chartY?: number): string {
 	const align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : '<a:pPr>'
 	const rotate = opts.titleRotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.titleRotate)}"/>` : '<a:bodyPr/>' // don't specify rotation to get default (ex. vertical for cat axis)
-	const sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : '' // only set the font size if specified.  Powerpoint will handle the default size
+	const sizeAttr = opts.fontSize ? `sz="${Math.round(opts.fontSize * 100)}"` : '' // only set the font size if specified.  Powerpoint will handle the default size
 	const titleBold = opts.titleBold ? 1 : 0
 
 	let layout = '<c:layout/>'
@@ -2070,14 +2034,12 @@ function createShadowElement (options: ShadowProps, defaults: object): string {
 	const angle = Math.round(opts.angle * 60000)
 	const color = opts.color
 	const opacity = Math.round(opts.opacity * 100000)
-	const rotateWithShape = opts.rotateWithShape ? 1 : 0
+	const rotShape = opts.rotateWithShape ? 1 : 0
 
-	strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" '
-	strXml += 'rotWithShape="' + +rotateWithShape + '"'
-	strXml += ' dist="' + offset + '" dir="' + angle + '">'
-	strXml += '<a:srgbClr val="' + color + '">'
-	strXml += '<a:alpha val="' + opacity + '"/></a:srgbClr>'
-	strXml += '</a:' + type + 'Shdw>'
+	strXml += `<a:${type}Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="${blur}" rotWithShape="${rotShape}" dist="${offset}" dir="${angle}">`
+	strXml += `<a:srgbClr val="${color}">`
+	strXml += `<a:alpha val="${opacity}"/></a:srgbClr>`
+	strXml += `</a:${type}Shdw>`
 	strXml += '</a:effectLst>'
 
 	return strXml
@@ -2091,7 +2053,7 @@ function createShadowElement (options: ShadowProps, defaults: object): string {
 function createGridLineElement (glOpts: OptsChartGridLine): string {
 	let strXml = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
-	strXml += '  <a:ln w="' + valToPts(glOpts.size || DEF_CHART_GRIDLINE.size) + '" cap="flat">'
+	strXml += `  <a:ln w="${valToPts(glOpts.size || DEF_CHART_GRIDLINE.size)}" cap="flat">`
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in [Pull #135]
 	strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>'
 	strXml += '  </a:ln>'
