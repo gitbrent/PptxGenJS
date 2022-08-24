@@ -1306,7 +1306,7 @@ export interface IChartPropsAxisCat {
 	catAxisMaxVal?: number
 	catAxisMinorTickMark?: ChartAxisTickMark
 	catAxisMinorTimeUnit?: string
-	catAxisMinorUnit?: string
+	catAxisMinorUnit?: number
 	catAxisMinVal?: number
 	/** @since v3.11.0 */
 	catAxisMultiLevelLabels?: boolean
