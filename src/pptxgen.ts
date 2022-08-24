@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.12.0-beta-20220822-2213'
+const VERSION = '3.12.0-beta-20220823-2150'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -379,7 +379,7 @@ export default class PptxGenJS implements IPresentationProps {
 
 		options.sectionTitle = sectAlreadyInUse ? this.sections[this.sections.length - 1].title : null
 
-		return this.addNewSlide(options)
+		return this.addSlide(options)
 	}
 
 	/**
