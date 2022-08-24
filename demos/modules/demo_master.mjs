@@ -69,6 +69,8 @@ function genSlide04(pptx) {
 	slide.addImage({
 		placeholder: "body",
 		path: IMAGE_PATHS.starlabsBkgd.path,
+		w: 12.0,
+		h: 5.25,
 	});
 }
 
