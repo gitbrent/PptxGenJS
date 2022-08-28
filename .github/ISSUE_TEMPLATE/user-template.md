@@ -11,6 +11,7 @@ We appreciate your feedback - to help the team understand your needs please comp
 
 ### Submission Guidelines
 
+- **If you are not using the latest release, please update and see if the issue is resolved before submitting an issue**
 - General questions or high-level topics should be posted in [Discussions](https://github.com/gitbrent/PptxGenJS/discussions)
 - Please browse the online [Documentation](https://gitbrent.github.io/PptxGenJS/) to see if your question is already addressed there
 
@@ -26,8 +27,6 @@ We appreciate your feedback - to help the team understand your needs please comp
 - Please specify what version of the library you are using......: [        ]
 - Please specify what version(s) of PowerPoint you are targeting: [        ]
 - Please specify what web browser you are using.................: [        ]
-
-**If you are not using the latest release, please update and see if the issue is resolved before submitting an issue.**
 
 ### Desired Behavior
 <!--- If you are reporting an issue please describe the expected behavior. -->
