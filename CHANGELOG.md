@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed gh-pages text api docs: transparency + wrap [\#1153](https://github.com/gitbrent/PptxGenJS/pull/1153) ([tjinauyeung](https://github.com/tjinauyeung))
 - Fixed 3D chart options not working correctly (and updated demo) ([gitbrent](https://github.com/gitbrent))
 
 ### Changed
