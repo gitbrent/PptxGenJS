@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
+## [3.12.0] - 2022-10-??
+
+### Fixed
+
+- Fixed 3D chart options not working correctly (and updated demo) ([gitbrent](https://github.com/gitbrent))
+
+### Changed
+
+- [Internal] migrate library from tslint to eslint [\#1155](https://github.com/gitbrent/PptxGenJS/pull/1155) ([gitbrent](https://github.com/gitbrent))
+
 ## [3.11.0] - 2022-08-06
 
 ### Added
