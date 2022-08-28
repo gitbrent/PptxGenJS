@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@types/node": "^18.7.3",
-    "@typescript-eslint/parser": "^5.33.0",
     "https": "^1.0.0",
     "image-size": "^1.0.0",
     "jszip": "^3.7.1"
@@ -42,6 +41,7 @@
     "@rollup/plugin-commonjs": "^21.0.2",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.0",
     "doctoc": "^2.0.1",
     "eslint": "^8.22.0",
     "eslint-config-standard-with-typescript": "^22.0.0",
