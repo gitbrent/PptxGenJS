@@ -26,7 +26,6 @@ module.exports = {
 		"@typescript-eslint/strict-boolean-expressions": 0,
 		"comma-dangle": ["error", "only-multiline"],
 		"no-lone-blocks": 0,
-		//"no-tabs": 0, // TEMP: WIP: suppressing for now as chart.ts has a shit ton
 		"no-tabs": ["error", { allowIndentationTabs: true }],
 		indent: ["error", "tab", { "SwitchCase": 1, "ImportDeclaration": 1 }],
 		quotes: ["error", "single"],
