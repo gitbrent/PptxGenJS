@@ -4,33 +4,36 @@
 
 import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
+	AddSlideProps,
 	BackgroundProps,
 	HexColor,
 	IChartMulti,
 	IChartOpts,
 	IChartOptsLib,
-	ImageProps,
-	PresLayout,
-	SlideLayout,
-	SlideNumberProps,
+	IOptsChartData,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
+	ImageProps,
+	MediaProps,
+	PresLayout,
+	PresSlide,
+	ShapeProps,
+	SlideLayout,
+	SlideNumberProps,
 	TableProps,
+	TableRow,
 	TextProps,
 	TextPropsOptions,
-	MediaProps,
-	ShapeProps,
-	TableRow,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
 export default class Slide {
-	private _setSlideNum: Function
+	private readonly _setSlideNum: (value: SlideNumberProps) => void
 
-	public addSlide: Function
-	public getSlide: Function
+	public addSlide: (options?: AddSlideProps) => PresSlide
+	public getSlide: (slideNum: number) => PresSlide
 	public _name: string
 	public _presLayout: PresLayout
 	public _rels: ISlideRel[]
@@ -43,11 +46,11 @@ export default class Slide {
 	public _slideNumberProps: SlideNumberProps
 	public _slideObjects: ISlideObject[]
 
-	constructor(params: {
-		addSlide: Function
-		getSlide: Function
+	constructor (params: {
+		addSlide: (options?: AddSlideProps) => PresSlide
+		getSlide: (slideNum: number) => PresSlide
 		presLayout: PresLayout
-		setSlideNum: Function
+		setSlideNum: (value: SlideNumberProps) => void
 		slideId: number
 		slideRId: number
 		slideNumber: number
@@ -55,7 +58,7 @@ export default class Slide {
 	}) {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide
-		this._name = 'Slide ' + params.slideNumber
+		this._name = `Slide ${params.slideNumber}`
 		this._presLayout = params.presLayout
 		this._rId = params.slideRId
 		this._rels = []
@@ -70,7 +73,7 @@ export default class Slide {
 		 * `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		 * so, lastly, add to the Slide now.
 		 */
-		this._slideNumberProps = this._slideLayout && this._slideLayout._slideNumberProps ? this._slideLayout._slideNumberProps : null
+		this._slideNumberProps = this._slideLayout?._slideNumberProps ? this._slideLayout._slideNumberProps : null
 	}
 
 	/**
@@ -79,14 +82,15 @@ export default class Slide {
 	 * @deprecated in v3.3.0 - use `background` instead
 	 */
 	private _bkgd: string | BackgroundProps
-	public set bkgd(value: string | BackgroundProps) {
+	public set bkgd (value: string | BackgroundProps) {
 		this._bkgd = value
 		if (!this._background || !this._background.color) {
 			if (!this._background) this._background = {}
 			if (typeof value === 'string') this._background.color = value
 		}
 	}
-	public get bkgd(): string | BackgroundProps {
+
+	public get bkgd (): string | BackgroundProps {
 		return this._bkgd
 	}
 
@@ -100,12 +104,13 @@ export default class Slide {
 	 * @since v3.3.0
 	 */
 	private _background: BackgroundProps
-	public set background(props: BackgroundProps) {
+	public set background (props: BackgroundProps) {
 		this._background = props
 		// Add background (image data/path must be captured before `exportPresentation()` is called)
 		if (props) genObj.addBackgroundDefinition(props, this)
 	}
-	public get background(): BackgroundProps {
+
+	public get background (): BackgroundProps {
 		return this._background
 	}
 
@@ -114,10 +119,11 @@ export default class Slide {
 	 * @type {HexColor}
 	 */
 	private _color: HexColor
-	public set color(value: HexColor) {
+	public set color (value: HexColor) {
 		this._color = value
 	}
-	public get color(): HexColor {
+
+	public get color (): HexColor {
 		return this._color
 	}
 
@@ -125,22 +131,24 @@ export default class Slide {
 	 * @type {boolean}
 	 */
 	private _hidden: boolean
-	public set hidden(value: boolean) {
+	public set hidden (value: boolean) {
 		this._hidden = value
 	}
-	public get hidden(): boolean {
+
+	public get hidden (): boolean {
 		return this._hidden
 	}
 
 	/**
 	 * @type {SlideNumberProps}
 	 */
-	public set slideNumber(value: SlideNumberProps) {
+	public set slideNumber (value: SlideNumberProps) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this._slideNumberProps = value
 		this._setSlideNum(value)
 	}
-	public get slideNumber(): SlideNumberProps {
+
+	public get slideNumber (): SlideNumberProps {
 		return this._slideNumberProps
 	}
 
@@ -151,10 +159,10 @@ export default class Slide {
 	 * @param {IChartOpts} options - chart options
 	 * @return {Slide} this Slide
 	 */
-	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
+	addChart (type: CHART_NAME | IChartMulti[], data: IOptsChartData[], options?: IChartOpts): Slide {
 		// FUTURE: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOptsLib as its what is used as object is passed around
-		let optionsWithType: IChartOptsLib = options || {}
+		const optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
 		genObj.addChartDefinition(this, type, data, options)
 		return this
@@ -165,7 +173,7 @@ export default class Slide {
 	 * @param {ImageProps} options - image options
 	 * @return {Slide} this Slide
 	 */
-	addImage(options: ImageProps): Slide {
+	addImage (options: ImageProps): Slide {
 		genObj.addImageDefinition(this, options)
 		return this
 	}
@@ -175,7 +183,7 @@ export default class Slide {
 	 * @param {MediaProps} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: MediaProps): Slide {
+	addMedia (options: MediaProps): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}
@@ -186,7 +194,7 @@ export default class Slide {
 	 * @param {string} notes - notes to add to slide
 	 * @return {Slide} this Slide
 	 */
-	addNotes(notes: string): Slide {
+	addNotes (notes: string): Slide {
 		genObj.addNotesDefinition(this, notes)
 		return this
 	}
@@ -197,12 +205,12 @@ export default class Slide {
 	 * @param {ShapeProps} options - shape options
 	 * @return {Slide} this Slide
 	 */
-	addShape(shapeName: SHAPE_NAME, options?: ShapeProps): Slide {
+	addShape (shapeName: SHAPE_NAME, options?: ShapeProps): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
 		// But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
 		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
 		// TypeScript => `pptxgen.shapes.RECTANGLE` [string] "rect" ... shapeName = 'rect'
-		//let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
+		// let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
 		genObj.addShapeDefinition(this, shapeName, options)
 		return this
 	}
@@ -213,7 +221,7 @@ export default class Slide {
 	 * @param {TableProps} options - table options
 	 * @return {Slide} this Slide
 	 */
-	addTable(tableRows: TableRow[], options?: TableProps): Slide {
+	addTable (tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
 		return this
@@ -225,8 +233,8 @@ export default class Slide {
 	 * @param {TextPropsOptions} options - text options
 	 * @return {Slide} this Slide
 	 */
-	addText(text: string | TextProps[], options?: TextPropsOptions): Slide {
-		let textParam = typeof text === 'string' || typeof text === 'number' ? [{ text: text, options: options } as TextProps] : text
+	addText (text: string | TextProps[], options?: TextPropsOptions): Slide {
+		const textParam = typeof text === 'string' || typeof text === 'number' ? [{ text, options }] : text
 		genObj.addTextDefinition(this, textParam, options, false)
 		return this
 	}
