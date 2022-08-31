@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-12T09:49:47.960Z */
+/* PptxGenJS 3.11.0-beta @ 2022-08-31T13:02:42.071Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -4941,6 +4941,38 @@ function createGridLineElement(glOpts) {
     return strXml;
 }
 
+var encodePresFontRels = function (fonts) {
+    return fonts
+        .map(function (f) { return f.styles; })
+        .flat()
+        .filter(function (v) { return !v.data && v.path; })
+        .map(loadFontStyle);
+};
+var loadFontStyle = function (style) {
+    return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                style.data = reader.result;
+                resolve('done');
+            };
+            reader.readAsDataURL(xhr.response);
+        };
+        xhr.onerror = function (ex) {
+            reject("ERROR! Unable to load font (xhr.onerror): ".concat(style.path));
+        };
+        xhr.open('GET', style.path);
+        xhr.responseType = 'blob';
+        xhr.send();
+    });
+};
+var validStyles = ['regular', 'bold', 'italic', 'boldItalic'];
+var isValidStyle = function (style) { return typeof style === 'object' && validStyles.includes(style.name) && (style.path || style.data); };
+var isValidStyles = function (styles) { return Array.isArray(styles) && styles.every(isValidStyle); };
+var isValidFont = function (font) { return typeof font === 'object' && font.name !== '' && isValidStyles(font.styles); };
+var isValidFonts = function (fonts) { return Array.isArray(fonts) && fonts.every(isValidFont); };
+
 /**
  * PptxGenJS: Media Methods
  */
@@ -6403,6 +6435,7 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     strXml += '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
     strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>';
     strXml += '<Default Extension="jpg" ContentType="image/jpg"/>';
+    strXml += '<Default Extension="fntdata" ContentType="application/x-fontdata"/>';
     // STEP 1: Add standard/any media types used in Presentation
     strXml += '<Default Extension="png" ContentType="image/png"/>';
     strXml += '<Default Extension="gif" ContentType="image/gif"/>';
@@ -6499,7 +6532,7 @@ function makeXmlCore(title, subject, author, revision) {
  * @param {PresSlide[]} slides - Presenation Slides
  * @returns XML
  */
-function makeXmlPresentationRels(slides) {
+function makeXmlPresentationRels(slides, fonts) {
     var intRelNum = 1;
     var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
     strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
@@ -6511,21 +6544,27 @@ function makeXmlPresentationRels(slides) {
     intRelNum++;
     strXml +=
         '<Relationship Id="rId' +
-            intRelNum +
+            intRelNum++ +
             '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>' +
             '<Relationship Id="rId' +
-            (intRelNum + 1) +
+            intRelNum++ +
             '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>' +
             '<Relationship Id="rId' +
-            (intRelNum + 2) +
+            intRelNum++ +
             '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>' +
             '<Relationship Id="rId' +
-            (intRelNum + 3) +
+            intRelNum++ +
             '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
             '<Relationship Id="rId' +
-            (intRelNum + 4) +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>' +
-            '</Relationships>';
+            intRelNum++ +
+            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>';
+    fonts.forEach(function (font) {
+        font.styles.forEach(function (style) {
+            style.rel.id = "rId".concat(intRelNum); // populate rel id
+            strXml += "<Relationship Id=\"rId".concat(intRelNum++, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/font\" Target=\"").concat(style.rel.target, "\"/>");
+        });
+    });
+    strXml += '</Relationships>';
     return strXml;
 }
 // XML-GEN: Functions that run 1-N times (once for each Slide)
@@ -6768,6 +6807,19 @@ function makeXmlPresentation(pres) {
     // STEP 4: Add sizes
     strXml += "<p:sldSz cx=\"".concat(pres.presLayout.width, "\" cy=\"").concat(pres.presLayout.height, "\"/>");
     strXml += "<p:notesSz cx=\"".concat(pres.presLayout.height, "\" cy=\"").concat(pres.presLayout.width, "\"/>");
+    // STEP: Add embedded fonts
+    if (pres.fonts.length > 0) {
+        strXml += '<p:embeddedFontLst>';
+        pres.fonts.forEach(function (font) {
+            strXml += '<p:embeddedFont>';
+            strXml += "<p:font typeface=\"".concat(font.name, "\"/>");
+            font.styles.forEach(function (style) {
+                strXml += "<p:".concat(style.name, " r:id=\"").concat(style.rel.id, "\"/>");
+            });
+            strXml += '</p:embeddedFont>';
+        });
+        strXml += '</p:embeddedFontLst>';
+    }
     // STEP 5: Add text styles
     strXml += '<p:defaultTextStyle>';
     for (var idy = 1; idy < 10; idy++) {
@@ -6931,6 +6983,23 @@ var PptxGenJS = /** @class */ (function () {
             });
         };
         /**
+         * Create font rels for this Presentation
+         * @param {JSZip} zip - JSZip instance
+         * @param {PresFont[]} fonts - presentation fonts
+         */
+        this.createFontRels = function (zip, fonts) {
+            fonts
+                .map(function (font) { return font.styles; })
+                .flat()
+                .forEach(function (style) {
+                var opts = { base64: true };
+                var loc = 'ppt/' + style.rel.target;
+                var base64 = typeof style.data === 'string' ? style.data : '';
+                var data = base64.split(',').pop();
+                zip.file(loc, data, opts);
+            });
+        };
+        /**
          * Create and export the .pptx file
          * @param {string} exportName - output file type
          * @param {Blob} blobContent - Blob content
@@ -6975,6 +7044,7 @@ var PptxGenJS = /** @class */ (function () {
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(layout));
             });
             arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(_this.masterSlide));
+            arrMediaPromises = arrMediaPromises.concat(encodePresFontRels(_this.fonts));
             // STEP 2: Wait for Promises (if any) then generate the PPTX file
             return Promise.all(arrMediaPromises).then(function () {
                 // A: Add empty placeholder objects to slides that don't already have them
@@ -6999,7 +7069,7 @@ var PptxGenJS = /** @class */ (function () {
                 zip.file('_rels/.rels', makeXmlRootRels());
                 zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company)); // TODO: pass only `this` like below! 20200206
                 zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision)); // TODO: pass only `this` like below! 20200206
-                zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(_this.slides));
+                zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(_this.slides, _this.fonts));
                 zip.file('ppt/theme/theme1.xml', makeXmlTheme());
                 zip.file('ppt/presentation.xml', makeXmlPresentation(_this));
                 zip.file('ppt/presProps.xml', makeXmlPresProps());
@@ -7029,6 +7099,7 @@ var PptxGenJS = /** @class */ (function () {
                     _this.createChartMediaRels(slide, zip, arrChartPromises);
                 });
                 _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
+                _this.createFontRels(zip, _this.fonts);
                 // E: Wait for Promises (if any) then generate the PPTX file
                 // @ts-ignore
                 return Promise.all(arrChartPromises).then(function () {
@@ -7069,6 +7140,7 @@ var PptxGenJS = /** @class */ (function () {
             height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
         };
         this._rtlMode = false;
+        this._fonts = [];
         //
         this._slideLayouts = [
             {
@@ -7216,6 +7288,13 @@ var PptxGenJS = /** @class */ (function () {
     Object.defineProperty(PptxGenJS.prototype, "slideLayouts", {
         get: function () {
             return this._slideLayouts;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "fonts", {
+        get: function () {
+            return this._fonts;
         },
         enumerable: false,
         configurable: true
@@ -7432,6 +7511,17 @@ var PptxGenJS = /** @class */ (function () {
                 });
         }
         return newSlide;
+    };
+    PptxGenJS.prototype.addFonts = function (fonts) {
+        if (!isValidFonts(fonts)) {
+            console.warn('addFonts: received invalid fonts:', fonts);
+            console.warn("\n\t\t\t\tUsage example:\n\n\t\t\t\tpptx.addFonts([\n\t\t\t\t\t{\n\t\t\t\t\t\tname: \"Roboto\",\n\t\t\t\t\t\tstyles: [\n\t\t\t\t\t\t\t{ name: \"regular\", path: \"http://path.to.font/roboto-regular.fntdata\" },\n\t\t\t\t\t\t\t{ name: \"italic\", path: \"http://path.to.font/roboto-italic.fntdata\" },\n\t\t\t\t\t\t\t{ name: \"bold\", path: \"http://path.to.font/roboto-bold.fntdata\" },\n\t\t\t\t\t\t\t{ name: \"boldItalic\", path: \"http://path.to.font/roboto-bold-italic.fntdata\" }\n\t\t\t\t\t\t]\n\t\t\t\t  }\n\t\t\t\t])\n\t\t\t");
+            return;
+        }
+        this._fonts = fonts.map(function (font) { return (__assign(__assign({}, font), { styles: font.styles.map(function (style) { return (__assign(__assign({}, style), { rel: {
+                    id: '',
+                    target: "fonts/".concat(font.name.replace(/ /g, ''), "-").concat(style.name, ".fntdata"),
+                } })); }) })); });
     };
     /**
      * Create a custom Slide Layout in any size
