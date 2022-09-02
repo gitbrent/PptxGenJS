@@ -741,7 +741,7 @@ export default class PptxGenJS implements IPresentationProps {
 				...style,
 				rel: {
 					id: '', // populated in `genXml.makeXmlPresentationRels`
-					target: `fonts/${font.name}-${style.name}.fntdata`,
+					target: `fonts/${font.name.replace(/ /g,'')}-${style.name}.fntdata`,
 				},
 			})),
 		}))
