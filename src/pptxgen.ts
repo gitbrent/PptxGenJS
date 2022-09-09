@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.12.0-beta-20220828-1650'
+const VERSION = '3.12.0-beta-20220908-2210'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -679,7 +679,7 @@ export default class PptxGenJS implements IPresentationProps {
 			const sect = this.sections.filter(section => section.title === options.sectionTitle)[0]
 			if (!sect) console.warn(`addSlide: unable to find section with title: "${options.sectionTitle}"`)
 			else sect._slides.push(newSlide)
-		} else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
+		} else if (this.sections && this.sections.length > 0 && (!options?.sectionTitle)) {
 			const lastSect = this._sections[this.sections.length - 1]
 
 			// CASE 1: The latest section is a default type - just add this one
