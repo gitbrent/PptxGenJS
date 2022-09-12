@@ -1406,8 +1406,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			Object.entries(opts).forEach(([key, val]) => {
 				// RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
 				if (textObj.options.hyperlink && key === 'color') null
-				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-				else if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
+				// NOTE: This loop will pick up unnecessary keys (`x`, etc.), but it doesnt hurt anything
+				else if (key !== 'bullet' && textObj.options?.[key] === undefined) textObj.options[key] = val
 			})
 
 			// D: Add formatted textrun
