@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-08-31T13:02:42.064Z */
+/* PptxGenJS 3.11.0-beta @ 2022-09-12T16:11:36.295Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6368,12 +6368,13 @@ function genXmlTextBody(slideObj) {
             // NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
             // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
             Object.entries(opts).forEach(function (_a) {
+                var _b;
                 var key = _a[0], val = _a[1];
                 // RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
                 if (textObj.options.hyperlink && key === 'color')
                     ;
-                // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-                else if (key !== 'bullet' && !textObj.options[key])
+                // NOTE: This loop will pick up unnecessary keys (`x`, etc.), but it doesnt hurt anything
+                else if (key !== 'bullet' && ((_b = textObj.options) === null || _b === void 0 ? void 0 : _b[key]) === undefined)
                     textObj.options[key] = val;
             });
             // D: Add formatted textrun
