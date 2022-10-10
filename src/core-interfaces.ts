@@ -1519,6 +1519,7 @@ export interface IChartPropsChartPie {
 	 * @default 0
 	 */
 	firstSliceAng?: number
+	chartPieExplosion?: number
 }
 export interface IChartPropsChartRadar {
 	/**

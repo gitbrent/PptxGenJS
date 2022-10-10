@@ -1563,6 +1563,9 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 			strXml += '<c:' + chartType + 'Chart>'
 			strXml += '  <c:varyColors val="1"/>'
 			strXml += '<c:ser>'
+			if (opts.chartPieExplosion) {
+				strXml += '  <c:explosion val="' + opts.chartPieExplosion + '"/>'
+			}			
 			strXml += '  <c:idx val="0"/>'
 			strXml += '  <c:order val="0"/>'
 			strXml += '  <c:tx>'
@@ -1583,7 +1586,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
 			}
 			strXml += '  </c:spPr>'
-			//strXml += '<c:explosion val="0"/>'
+			// strXml += '<c:explosion val="0"/>'
 
 			// 2: "Data Point" block for every data row
 			obj.labels[0].forEach((_label, idx) => {
