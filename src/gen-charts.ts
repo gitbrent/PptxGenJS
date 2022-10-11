@@ -1563,7 +1563,7 @@ function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: ICha
 			strXml += '<c:' + chartType + 'Chart>'
 			strXml += '  <c:varyColors val="1"/>'
 			strXml += '<c:ser>'
-			if (opts.chartPieExplosion) {
+			if (opts.chartPieExplosion && Number.isInteger(opts.chartPieExplosion)) {
 				strXml += '  <c:explosion val="' + opts.chartPieExplosion + '"/>'
 			}			
 			strXml += '  <c:idx val="0"/>'
