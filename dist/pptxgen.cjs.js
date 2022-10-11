@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-09-12T16:11:36.295Z */
+/* PptxGenJS 3.11.0-beta @ 2022-10-10T07:28:41.526Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4444,6 +4444,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:' + chartType + 'Chart>';
             strXml += '  <c:varyColors val="1"/>';
             strXml += '<c:ser>';
+            if (opts.chartPieExplosion) {
+                strXml += '  <c:explosion val="' + opts.chartPieExplosion + '"/>';
+            }
             strXml += '  <c:idx val="0"/>';
             strXml += '  <c:order val="0"/>';
             strXml += '  <c:tx>';
@@ -4465,7 +4468,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
             }
             strXml += '  </c:spPr>';
-            //strXml += '<c:explosion val="0"/>'
+            // strXml += '<c:explosion val="0"/>'
             // 2: "Data Point" block for every data row
             obj.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dPt>';

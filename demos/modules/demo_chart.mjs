@@ -1135,6 +1135,7 @@ function genSlide12(pptx) {
 		dataLabelColor: "FFFFFF",
 		dataLabelFontSize: 14,
 		dataLabelPosition: "bestFit", // 'bestFit' | 'outEnd' | 'inEnd' | 'ctr'
+		chartPieExplosion: 50
 	});
 
 	// TOP-MIDDLE
