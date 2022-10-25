@@ -6,11 +6,11 @@
 import { BorderProps, OptsChartGridLine } from './core-interfaces'
 
 // CONST
-export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
-export const ONEPT: number = 12700 // One (1) point (pt)
-export const CRLF: string = '\r\n' // AKA: Chr(13) & Chr(10)
-export const LAYOUT_IDX_SERIES_BASE: number = 2147483649
-export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/
+export const EMU = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
+export const ONEPT = 12700 // One (1) point (pt)
+export const CRLF = '\r\n' // AKA: Chr(13) & Chr(10)
+export const LAYOUT_IDX_SERIES_BASE = 2147483649
+export const REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/
 export const LINEH_MODIFIER = 1.67 // AKA: Golden Ratio Typography
 
 export const DEF_BULLET_MARGIN = 27
@@ -19,9 +19,9 @@ export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3]
 export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.1, 0.05, 0.1] // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
 export const DEF_CHART_BORDER: BorderProps = { type: 'solid', color: '363636', pt: 1 }
 export const DEF_CHART_GRIDLINE: OptsChartGridLine = { color: '888888', style: 'solid', size: 1 }
-export const DEF_FONT_COLOR: string = '000000'
-export const DEF_FONT_SIZE: number = 12
-export const DEF_FONT_TITLE_SIZE: number = 18
+export const DEF_FONT_COLOR = '000000'
+export const DEF_FONT_SIZE = 12
+export const DEF_FONT_TITLE_SIZE = 18
 export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
 export const DEF_PRES_LAYOUT_NAME = 'DEFAULT'
 export const DEF_SHAPE_LINE_COLOR = '333333'
@@ -31,19 +31,19 @@ export const DEF_SLIDE_MARGIN_IN: [number, number, number, number] = [0.5, 0.5, 
 export const DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 }
 export const DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 }
 
-export const AXIS_ID_VALUE_PRIMARY: string = '2094734552'
-export const AXIS_ID_VALUE_SECONDARY: string = '2094734553'
-export const AXIS_ID_CATEGORY_PRIMARY: string = '2094734554'
-export const AXIS_ID_CATEGORY_SECONDARY: string = '2094734555'
-export const AXIS_ID_SERIES_PRIMARY: string = '2094734556'
+export const AXIS_ID_VALUE_PRIMARY = '2094734552'
+export const AXIS_ID_VALUE_SECONDARY = '2094734553'
+export const AXIS_ID_CATEGORY_PRIMARY = '2094734554'
+export const AXIS_ID_CATEGORY_SECONDARY = '2094734555'
+export const AXIS_ID_SERIES_PRIMARY = '2094734556'
 
 export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 export type WRITE_OUTPUT_TYPE = JSZIP_OUTPUT_TYPE | 'STREAM'
 export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'bubble3D' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
 export type SCHEME_COLORS = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 
-export const LETTERS: Array<string> = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-export const BARCHART_COLORS: Array<string> = [
+export const LETTERS: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+export const BARCHART_COLORS: string[] = [
 	'C0504D',
 	'4F81BD',
 	'9BBB59',
@@ -59,9 +59,9 @@ export const BARCHART_COLORS: Array<string> = [
 	'4BACC6',
 	'F79646',
 	'628FC6',
-	'C86360',
+	'C86360'
 ]
-export const PIECHART_COLORS: Array<string> = [
+export const PIECHART_COLORS: string[] = [
 	'5DA5DA',
 	'FAA43A',
 	'60BD68',
@@ -93,7 +93,7 @@ export enum TEXT_VALIGN {
 	't' = 't',
 }
 
-export const SLDNUMFLDID: string = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
+export const SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
 
 // ENUM
 // TODO: 3.5 or v4.0: rationalize ts-def exported enum names/case!

@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0 @ 2022-08-06T19:31:52.331Z */
+/* PptxGenJS 3.12.0-beta @ 2022-09-09T03:12:15.279Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -26,6 +26,44 @@ var __assign = function() {
     };
     return __assign.apply(this, arguments);
 };
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
 
 function __spreadArray(to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
@@ -85,7 +123,7 @@ var BARCHART_COLORS = [
     '4BACC6',
     'F79646',
     '628FC6',
-    'C86360',
+    'C86360'
 ];
 var PIECHART_COLORS = [
     '5DA5DA',
@@ -644,7 +682,7 @@ function getSmartParseNumber(size, xyDir, layout) {
     if (typeof size === 'number' && size >= 100)
         return size;
     // CASE 3: Percentage (ex: '50%')
-    if (typeof size === 'string' && size.indexOf('%') > -1) {
+    if (typeof size === 'string' && size.includes('%')) {
         if (xyDir && xyDir === 'X')
             return Math.round((parseFloat(size) / 100) * layout.width);
         if (xyDir && xyDir === 'Y')
@@ -663,28 +701,10 @@ function getSmartParseNumber(size, xyDir, layout) {
  */
 function getUuid(uuidFormat) {
     return uuidFormat.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0, v = c === 'x' ? r : (r & 0x3) | 0x8;
+        var r = (Math.random() * 16) | 0;
+        var v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
-}
-/**
- * TODO: What does this method do again??
- * shallow mix, returns new object
- */
-function getMix(o1, o2, etc) {
-    var objMix = {};
-    var _loop_1 = function (i) {
-        var oN = arguments_1[i];
-        if (oN)
-            Object.keys(oN).forEach(function (key) {
-                objMix[key] = oN[key];
-            });
-    };
-    var arguments_1 = arguments;
-    for (var i = 0; i <= arguments.length; i++) {
-        _loop_1(i);
-    }
-    return objMix;
 }
 /**
  * Replace special XML characters with HTML-encoded strings
@@ -713,7 +733,6 @@ function inch2Emu(inches) {
 }
 /**
  * Convert `pt` into points (using `ONEPT`)
- *
  * @param {number|string} pt
  * @returns {number} value in points (`ONEPT`)
  */
@@ -723,9 +742,8 @@ function valToPts(pt) {
 }
 /**
  * Convert degrees (0..360) to PowerPoint `rot` value
- *
- * @param {number} d - degrees
- * @returns {number} rot - value
+ * @param {number} d degrees
+ * @returns {number} calculated `rot` value
  */
 function convertRotationDegrees(d) {
     d = d || 0;
@@ -788,13 +806,17 @@ function createColorElement(colorStr, innerElements) {
  * @param {TextGlowProps} options glow properties
  * @param {TextGlowProps} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
- *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
+ * { size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
 function createGlowElement(options, defaults) {
-    var strXml = '', opts = getMix(defaults, options), size = Math.round(opts['size'] * ONEPT), color = opts['color'], opacity = Math.round(opts['opacity'] * 100000);
+    var strXml = '';
+    var opts = __assign(__assign({}, defaults), options);
+    var size = Math.round(opts.size * ONEPT);
+    var color = opts.color;
+    var opacity = Math.round(opts.opacity * 100000);
     strXml += "<a:glow rad=\"".concat(size, "\">");
     strXml += createColorElement(color, "<a:alpha val=\"".concat(opacity, "\"/>"));
-    strXml += "</a:glow>";
+    strXml += '</a:glow>';
     return strXml;
 }
 /**
@@ -850,12 +872,13 @@ function getNewRelId(target) {
  * @return {TableRow[]} - cell's text objects grouped into lines
  */
 function parseTextToLines(cell, colWidth, verbose) {
+    var _a, _b;
     // FYI: CPL = Width / (font-size / font-constant)
     // FYI: CHAR:2.3, colWidth:10, fontSize:12 => CPL=138, (actual chars per line in PPT)=145 [14.5 CPI]
     // FYI: CHAR:2.3, colWidth:7 , fontSize:12 => CPL= 97, (actual chars per line in PPT)=100 [14.3 CPI]
     // FYI: CHAR:2.3, colWidth:9 , fontSize:16 => CPL= 96, (actual chars per line in PPT)=84  [ 9.3 CPI]
-    var FOCO = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant
-    var CPL = Math.floor((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / FOCO); // Chars-Per-Line
+    var FOCO = 2.3 + (((_a = cell.options) === null || _a === void 0 ? void 0 : _a.autoPageCharWeight) ? cell.options.autoPageCharWeight : 0); // Character Constant
+    var CPL = Math.floor((colWidth / ONEPT) * EMU) / ((((_b = cell.options) === null || _b === void 0 ? void 0 : _b.fontSize) ? cell.options.fontSize : DEF_FONT_SIZE) / FOCO); // Chars-Per-Line
     var parsedLines = [];
     var inputCells = [];
     var inputLines1 = [];
@@ -864,10 +887,10 @@ function parseTextToLines(cell, colWidth, verbose) {
         if (cell.options && cell.options.autoPageCharWeight) {
             let CHR1 = 2.3 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant
             let CPL1 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR1) // Chars-Per-Line
-            console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}'	=> CPL: ${CPL1}`)
+            console.log(`cell.options.autoPageCharWeight: '${cell.options.autoPageCharWeight}' => CPL: ${CPL1}`)
             let CHR2 = 2.3 + 0
             let CPL2 = ((colWidth / ONEPT) * EMU) / ((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) / CHR2) // Chars-Per-Line
-            console.log(`cell.options.autoPageCharWeight: '0'	=> CPL: ${CPL2}`)
+            console.log(`cell.options.autoPageCharWeight: '0' => CPL: ${CPL2}`)
         }
     */
     /**
@@ -898,17 +921,18 @@ function parseTextToLines(cell, colWidth, verbose) {
     if (verbose) {
         console.log('[1/4] inputCells');
         inputCells.forEach(function (cell, idx) { return console.log("[1/4] [".concat(idx + 1, "] cell: ").concat(JSON.stringify(cell))); });
-        //console.log('...............................................\n\n')
+        // console.log('...............................................\n\n')
     }
     // STEP 2: Group table cells into lines based on "\n" or `breakLine` prop
     /**
-     * - EX: `[{ text:"Input Output" }, { text:"Extra" }]`							== 1 line
-     * - EX: `[{ text:"Input" }, { text:"Output", options:{ breakLine:true } }]`	== 1 line
-     * - EX: `[{ text:"Input\nOutput" }]`											== 2 lines
-     * - EX: `[{ text:"Input", options:{ breakLine:true } }, { text:"Output" }]`	== 2 lines
+     * - EX: `[{ text:"Input Output" }, { text:"Extra" }]`                       == 1 line
+     * - EX: `[{ text:"Input" }, { text:"Output", options:{ breakLine:true } }]` == 1 line
+     * - EX: `[{ text:"Input\nOutput" }]`                                        == 2 lines
+     * - EX: `[{ text:"Input", options:{ breakLine:true } }, { text:"Output" }]` == 2 lines
      */
     var newLine = [];
     inputCells.forEach(function (cell) {
+        var _a;
         // (this is always true, we just constructed them above, but we need to tell typescript b/c type is still string||Cell[])
         if (typeof cell.text === 'string') {
             if (cell.text.split('\n').length > 1) {
@@ -927,7 +951,7 @@ function parseTextToLines(cell, colWidth, verbose) {
                     options: cell.options,
                 });
             }
-            if (cell.options && cell.options.breakLine) {
+            if ((_a = cell.options) === null || _a === void 0 ? void 0 : _a.breakLine) {
                 if (verbose)
                     console.log("inputCells: new line > ".concat(JSON.stringify(newLine)));
                 inputLines1.push(newLine);
@@ -941,18 +965,18 @@ function parseTextToLines(cell, colWidth, verbose) {
     if (verbose) {
         console.log("[2/4] inputLines1 (".concat(inputLines1.length, ")"));
         inputLines1.forEach(function (line, idx) { return console.log("[2/4] [".concat(idx + 1, "] line: ").concat(JSON.stringify(line))); });
-        //console.log('...............................................\n\n')
+        // console.log('...............................................\n\n')
     }
     // STEP 3: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text, add its `options`, etc.)
     inputLines1.forEach(function (line) {
         line.forEach(function (cell) {
             var lineCells = [];
-            var cellTextStr = cell.text + ''; // force convert to string (compiled JS is better with this than a cast)
+            var cellTextStr = String(cell.text); // force convert to string (compiled JS is better with this than a cast)
             var lineWords = cellTextStr.split(' ');
             lineWords.forEach(function (word, idx) {
                 var cellProps = __assign({}, cell.options);
                 // IMPORTANT: Handle `breakLine` prop - we cannot apply to each word - only apply to very last word!
-                if (cellProps && cellProps.breakLine)
+                if (cellProps === null || cellProps === void 0 ? void 0 : cellProps.breakLine)
                     cellProps.breakLine = idx + 1 === lineWords.length;
                 lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < lineWords.length ? ' ' : ''), options: cellProps });
             });
@@ -962,7 +986,7 @@ function parseTextToLines(cell, colWidth, verbose) {
     if (verbose) {
         console.log("[3/4] inputLines2 (".concat(inputLines2.length, ")"));
         inputLines2.forEach(function (line) { return console.log("[3/4] line: ".concat(JSON.stringify(line))); });
-        //console.log('...............................................\n\n')
+        // console.log('...............................................\n\n')
     }
     // STEP 4: Group cells/words into lines based upon space consumed by word letters
     inputLines2.forEach(function (line) {
@@ -971,7 +995,7 @@ function parseTextToLines(cell, colWidth, verbose) {
         line.forEach(function (word) {
             // A: create new line when horizontal space is exhausted
             if (strCurrLine.length + word.text.length > CPL) {
-                //if (verbose) console.log(`STEP 4: New line added: (${strCurrLine.length} + ${word.text.length} > ${CPL})`);
+                // if (verbose) console.log(`STEP 4: New line added: (${strCurrLine.length} + ${word.text.length} > ${CPL})`);
                 parsedLines.push(lineCells);
                 lineCells = [];
                 strCurrLine = '';
@@ -1018,12 +1042,12 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
     function calcSlideTabH() {
         var emuStartY = 0;
         if (tableRowSlides.length === 0)
-            emuStartY = tablePropY ? tablePropY : inch2Emu(arrInchMargins[0]);
+            emuStartY = tablePropY || inch2Emu(arrInchMargins[0]);
         if (tableRowSlides.length > 0)
             emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0]);
         emuSlideTabH = (tablePropH || presLayout.height) - emuStartY - inch2Emu(arrInchMargins[2]);
-        //console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
-        //console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
+        // console.log(`| startY .......................................... = ${(emuStartY / EMU).toFixed(1)}`)
+        // console.log(`| emuSlideTabH .................................... = ${(emuSlideTabH / EMU).toFixed(1)}`)
         if (tableRowSlides.length > 1) {
             // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE #43, ISSUE #47, ISSUE #48)
             if (typeof tableProps.autoPageSlideStartY === 'number') {
@@ -1050,9 +1074,9 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         console.log("| tableProps.y .................................... = ".concat(typeof tableProps.y === 'number' ? (tableProps.y / EMU).toFixed(1) : tableProps.y));
         console.log("| tableProps.w .................................... = ".concat(typeof tableProps.w === 'number' ? (tableProps.w / EMU).toFixed(1) : tableProps.w));
         console.log("| tableProps.h .................................... = ".concat(typeof tableProps.h === 'number' ? (tableProps.h / EMU).toFixed(1) : tableProps.h));
-        console.log("| tableProps.slideMargin .......................... = ".concat(tableProps.slideMargin || ''));
-        console.log("| tableProps.margin ............................... = ".concat(tableProps.margin));
-        console.log("| tableProps.colW ................................. = ".concat(tableProps.colW));
+        console.log("| tableProps.slideMargin .......................... = ".concat(tableProps.slideMargin ? String(tableProps.slideMargin) : ''));
+        console.log("| tableProps.margin ............................... = ".concat(String(tableProps.margin)));
+        console.log("| tableProps.colW ................................. = ".concat(String(tableProps.colW)));
         console.log("| tableProps.autoPageSlideStartY .................. = ".concat(tableProps.autoPageSlideStartY));
         console.log("| tableProps.autoPageCharWeight ................... = ".concat(tableProps.autoPageCharWeight));
         console.log('|-- CALCULATIONS -------------------------------------------------------|');
@@ -1070,8 +1094,9 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         if (masterSlide && typeof masterSlide._margin !== 'undefined') {
             if (Array.isArray(masterSlide._margin))
                 arrInchMargins = masterSlide._margin;
-            else if (!isNaN(Number(masterSlide._margin)))
+            else if (!isNaN(Number(masterSlide._margin))) {
                 arrInchMargins = [Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin)];
+            }
         }
         else if (tableProps.slideMargin || tableProps.slideMargin === 0) {
             if (Array.isArray(tableProps.slideMargin))
@@ -1091,7 +1116,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
             if (!cell)
                 cell = { _type: SLIDE_OBJECT_TYPES.tablecell };
             var cellOpts = cell.options || null;
-            numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1);
+            numCols += Number((cellOpts === null || cellOpts === void 0 ? void 0 : cellOpts.colspan) ? cellOpts.colspan : 1);
         });
         if (tableProps.verbose)
             console.log("| numCols ......................................... = ".concat(numCols));
@@ -1104,7 +1129,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
     }
     // STEP 4: Calculate usable width now that total usable space is known (`emuSlideTabW`)
     {
-        emuSlideTabW = tableCalcW ? tableCalcW : inch2Emu((tablePropX ? tablePropX / EMU : arrInchMargins[1]) + arrInchMargins[3]);
+        emuSlideTabW = tableCalcW || inch2Emu((tablePropX ? tablePropX / EMU : arrInchMargins[1]) + arrInchMargins[3]);
         if (tableProps.verbose)
             console.log("| emuSlideTabW .................................... = ".concat((emuSlideTabW / EMU).toFixed(1)));
     }
@@ -1120,8 +1145,8 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
                     tableProps.colW.push(val);
             });
         }
-        // No column widths provided? Then distribute cols.
         else {
+            // No column widths provided? Then distribute cols.
             tableProps.colW = [];
             for (var iCol = 0; iCol < numCols; iCol++) {
                 tableProps.colW.push(emuSlideTabW / EMU / numCols);
@@ -1138,6 +1163,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         // B: Create new row in data model, calc `maxCellMar*`
         var currTableRow = [];
         row.forEach(function (cell) {
+            var _a, _b, _c, _d;
             currTableRow.push({
                 _type: SLIDE_OBJECT_TYPES.tablecell,
                 text: [],
@@ -1148,23 +1174,23 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
              * - We cant introduce a breaking change before v4.0, so...
              */
             if (cell.options.margin && cell.options.margin[0] >= 1) {
-                if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu)
+                if (((_a = cell.options) === null || _a === void 0 ? void 0 : _a.margin) && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu)
                     maxCellMarTopEmu = valToPts(cell.options.margin[0]);
-                else if (tableProps.margin && tableProps.margin[0] && valToPts(tableProps.margin[0]) > maxCellMarTopEmu)
+                else if ((tableProps === null || tableProps === void 0 ? void 0 : tableProps.margin) && tableProps.margin[0] && valToPts(tableProps.margin[0]) > maxCellMarTopEmu)
                     maxCellMarTopEmu = valToPts(tableProps.margin[0]);
-                if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu)
+                if (((_b = cell.options) === null || _b === void 0 ? void 0 : _b.margin) && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu)
                     maxCellMarBtmEmu = valToPts(cell.options.margin[2]);
-                else if (tableProps.margin && tableProps.margin[2] && valToPts(tableProps.margin[2]) > maxCellMarBtmEmu)
+                else if ((tableProps === null || tableProps === void 0 ? void 0 : tableProps.margin) && tableProps.margin[2] && valToPts(tableProps.margin[2]) > maxCellMarBtmEmu)
                     maxCellMarBtmEmu = valToPts(tableProps.margin[2]);
             }
             else {
-                if (cell.options.margin && cell.options.margin[0] && inch2Emu(cell.options.margin[0]) > maxCellMarTopEmu)
+                if (((_c = cell.options) === null || _c === void 0 ? void 0 : _c.margin) && cell.options.margin[0] && inch2Emu(cell.options.margin[0]) > maxCellMarTopEmu)
                     maxCellMarTopEmu = inch2Emu(cell.options.margin[0]);
-                else if (tableProps.margin && tableProps.margin[0] && inch2Emu(tableProps.margin[0]) > maxCellMarTopEmu)
+                else if ((tableProps === null || tableProps === void 0 ? void 0 : tableProps.margin) && tableProps.margin[0] && inch2Emu(tableProps.margin[0]) > maxCellMarTopEmu)
                     maxCellMarTopEmu = inch2Emu(tableProps.margin[0]);
-                if (cell.options.margin && cell.options.margin[2] && inch2Emu(cell.options.margin[2]) > maxCellMarBtmEmu)
+                if (((_d = cell.options) === null || _d === void 0 ? void 0 : _d.margin) && cell.options.margin[2] && inch2Emu(cell.options.margin[2]) > maxCellMarBtmEmu)
                     maxCellMarBtmEmu = inch2Emu(cell.options.margin[2]);
-                else if (tableProps.margin && tableProps.margin[2] && inch2Emu(tableProps.margin[2]) > maxCellMarBtmEmu)
+                else if ((tableProps === null || tableProps === void 0 ? void 0 : tableProps.margin) && tableProps.margin[2] && inch2Emu(tableProps.margin[2]) > maxCellMarBtmEmu)
                     maxCellMarBtmEmu = inch2Emu(tableProps.margin[2]);
             }
         });
@@ -1175,10 +1201,11 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
             console.log("| SLIDE [".concat(tableRowSlides.length, "]: emuSlideTabH ...... = ").concat((emuSlideTabH / EMU).toFixed(1), " "));
         // D: --==[[ BUILD DATA SET ]]==-- (iterate over cells: split text into lines[], set `lineHeight`)
         row.forEach(function (cell, iCell) {
+            var _a;
             var newCell = {
                 _type: SLIDE_OBJECT_TYPES.tablecell,
                 _lines: null,
-                _lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tableProps.fontSize ? tableProps.fontSize : DEF_FONT_SIZE) *
+                _lineHeight: inch2Emu(((((_a = cell.options) === null || _a === void 0 ? void 0 : _a.fontSize) ? cell.options.fontSize : tableProps.fontSize ? tableProps.fontSize : DEF_FONT_SIZE) *
                     (LINEH_MODIFIER + (tableProps.autoPageLineWeight ? tableProps.autoPageLineWeight : 0))) /
                     100),
                 text: [],
@@ -1216,9 +1243,9 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
          * - `_lines` ........: [ {_type: 'tablecell', text: 'cell-1,line-1', options: {…}}, {_type: 'tablecell', text: 'cell-1,line-2', options: {…}} }
          * - `_lines` is TableCell[] (the 1-N words in the line)
          * {
-         *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line-2' }],															// TOTAL-CELL-HEIGHT = 2
-         *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line-2' }],															// TOTAL-CELL-HEIGHT = 2
-         *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line-2' }, { text:'cell-3,line-3' }, { text:'cell-3,line-4' }],		// TOTAL-CELL-HEIGHT = 4
+         *    _lines: [{ text:'cell-1,line-1' }, { text:'cell-1,line-2' }],                                                     // TOTAL-CELL-HEIGHT = 2
+         *    _lines: [{ text:'cell-2,line-1' }, { text:'cell-2,line-2' }],                                                     // TOTAL-CELL-HEIGHT = 2
+         *    _lines: [{ text:'cell-3,line-1' }, { text:'cell-3,line-2' }, { text:'cell-3,line-3' }, { text:'cell-3,line-4' }], // TOTAL-CELL-HEIGHT = 4
          * }
          *
          * Example: 2 rows, with the firstrow overflowing onto a new slide
@@ -1315,16 +1342,17 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
         // F: Flush/capture row buffer before it resets at the top of this loop
         if (currTableRow.length > 0)
             newTableRowSlide.rows.push(currTableRow);
-        if (tableProps.verbose)
+        if (tableProps.verbose) {
             console.log("- SLIDE [".concat(tableRowSlides.length, "]: ROW [").concat(iRow, "]: ...COMPLETE ...... emuTabCurrH = ").concat((emuTabCurrH / EMU).toFixed(2), " ( emuSlideTabH = ").concat((emuSlideTabH / EMU).toFixed(2), " )"));
+        }
     });
     // STEP 7: Flush buffer / add final slide
     tableRowSlides.push(newTableRowSlide);
     if (tableProps.verbose) {
-        console.log("\n|================================================|");
+        console.log('\n|================================================|');
         console.log("| FINAL: tableRowSlides.length = ".concat(tableRowSlides.length));
         tableRowSlides.forEach(function (slide) { return console.log(slide); });
-        console.log("|================================================|\n\n");
+        console.log('|================================================|\n\n');
     }
     // LAST:
     return tableRowSlides;
@@ -1352,14 +1380,14 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     if (!document.getElementById(tabEleId))
         throw new Error('tableToSlides: Table ID "' + tabEleId + '" does not exist!');
     // STEP 1: Set margins
-    if (masterSlide && masterSlide._margin) {
+    if (masterSlide === null || masterSlide === void 0 ? void 0 : masterSlide._margin) {
         if (Array.isArray(masterSlide._margin))
             arrInchMargins = masterSlide._margin;
         else if (!isNaN(masterSlide._margin))
             arrInchMargins = [masterSlide._margin, masterSlide._margin, masterSlide._margin, masterSlide._margin];
         opts.slideMargin = arrInchMargins;
     }
-    else if (opts && opts.slideMargin) {
+    else if (opts === null || opts === void 0 ? void 0 : opts.slideMargin) {
         if (Array.isArray(opts.slideMargin))
             arrInchMargins = opts.slideMargin;
         else if (!isNaN(opts.slideMargin))
@@ -1404,7 +1432,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         var colSelectorSet = document.querySelector("#".concat(tabEleId, " thead tr:first-child th:nth-child(").concat(idxW + 1, ")"));
         if (colSelectorSet)
             intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'));
-        arrColW.push(intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
+        arrColW.push((intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth));
     });
     if (opts.verbose) {
         console.log("| arrColW ......................................... = [".concat(arrColW.join(', '), "]"));
@@ -1435,10 +1463,8 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                 // B: Create option object
                 var cellOpts = {
                     align: null,
-                    bold: window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
-                        Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
-                        ? true
-                        : false,
+                    bold: !!(window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
+                        Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500),
                     border: null,
                     color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
                     fill: { color: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])) },
@@ -1450,11 +1476,11 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     rowspan: Number(cell.getAttribute('rowspan')) || null,
                     valign: null,
                 };
-                if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
+                if (['left', 'center', 'right', 'start', 'end'].includes(window.getComputedStyle(cell).getPropertyValue('text-align'))) {
                     var align = window.getComputedStyle(cell).getPropertyValue('text-align').replace('start', 'left').replace('end', 'right');
                     cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null;
                 }
-                if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
+                if (['top', 'middle', 'bottom'].includes(window.getComputedStyle(cell).getPropertyValue('vertical-align'))) {
                     var valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
                     cellOpts.valign = valign === 'top' ? 'top' : valign === 'middle' ? 'middle' : valign === 'bottom' ? 'bottom' : null;
                 }
@@ -1549,7 +1575,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
             }
         }
         if (opts.addShape)
-            newSlide.addShape(opts.addShape.shape, opts.addShape.options || {});
+            newSlide.addShape(opts.addShape.shapeName, opts.addShape.options || {});
         if (opts.addTable)
             newSlide.addTable(opts.addTable.rows, opts.addTable.options || {});
         if (opts.addText)
@@ -1560,18 +1586,37 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
 /**
  * PptxGenJS: XML Generation
  */
-var imageSizingXml = {
+var ImageSizingXml = {
     cover: function (imgSize, boxDim) {
-        var imgRatio = imgSize.h / imgSize.w, boxRatio = boxDim.h / boxDim.w, isBoxBased = boxRatio > imgRatio, width = isBoxBased ? boxDim.h / imgRatio : boxDim.w, height = isBoxBased ? boxDim.h : boxDim.w * imgRatio, hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)), vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
-        return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>';
+        var imgRatio = imgSize.h / imgSize.w;
+        var boxRatio = boxDim.h / boxDim.w;
+        var isBoxBased = boxRatio > imgRatio;
+        var width = isBoxBased ? boxDim.h / imgRatio : boxDim.w;
+        var height = isBoxBased ? boxDim.h : boxDim.w * imgRatio;
+        var hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width));
+        var vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
+        return "<a:srcRect l=\"".concat(hzPerc, "\" r=\"").concat(hzPerc, "\" t=\"").concat(vzPerc, "\" b=\"").concat(vzPerc, "\"/><a:stretch/>");
     },
     contain: function (imgSize, boxDim) {
-        var imgRatio = imgSize.h / imgSize.w, boxRatio = boxDim.h / boxDim.w, widthBased = boxRatio > imgRatio, width = widthBased ? boxDim.w : boxDim.h / imgRatio, height = widthBased ? boxDim.w * imgRatio : boxDim.h, hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)), vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
-        return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>';
+        var imgRatio = imgSize.h / imgSize.w;
+        var boxRatio = boxDim.h / boxDim.w;
+        var widthBased = boxRatio > imgRatio;
+        var width = widthBased ? boxDim.w : boxDim.h / imgRatio;
+        var height = widthBased ? boxDim.w * imgRatio : boxDim.h;
+        var hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width));
+        var vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
+        return "<a:srcRect l=\"".concat(hzPerc, "\" r=\"").concat(hzPerc, "\" t=\"").concat(vzPerc, "\" b=\"").concat(vzPerc, "\"/><a:stretch/>");
     },
-    crop: function (imageSize, boxDim) {
-        var l = boxDim.x, r = imageSize.w - (boxDim.x + boxDim.w), t = boxDim.y, b = imageSize.h - (boxDim.y + boxDim.h), lPerc = Math.round(1e5 * (l / imageSize.w)), rPerc = Math.round(1e5 * (r / imageSize.w)), tPerc = Math.round(1e5 * (t / imageSize.h)), bPerc = Math.round(1e5 * (b / imageSize.h));
-        return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '"/><a:stretch/>';
+    crop: function (imgSize, boxDim) {
+        var l = boxDim.x;
+        var r = imgSize.w - (boxDim.x + boxDim.w);
+        var t = boxDim.y;
+        var b = imgSize.h - (boxDim.y + boxDim.h);
+        var lPerc = Math.round(1e5 * (l / imgSize.w));
+        var rPerc = Math.round(1e5 * (r / imgSize.w));
+        var tPerc = Math.round(1e5 * (t / imgSize.h));
+        var bPerc = Math.round(1e5 * (b / imgSize.h));
+        return "<a:srcRect l=\"".concat(lPerc, "\" r=\"").concat(rPerc, "\" t=\"").concat(tPerc, "\" b=\"").concat(bPerc, "\"/><a:stretch/>");
     },
 };
 /**
@@ -1580,18 +1625,19 @@ var imageSizingXml = {
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide) {
+    var _a;
     var strSlideXml = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>';
     var intTableNum = 1;
     // STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
     if (slide._bkgdImgRid) {
         strSlideXml += "<p:bg><p:bgPr><a:blipFill dpi=\"0\" rotWithShape=\"1\"><a:blip r:embed=\"rId".concat(slide._bkgdImgRid, "\"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>");
     }
-    else if (slide.background && slide.background.color) {
+    else if ((_a = slide.background) === null || _a === void 0 ? void 0 : _a.color) {
         strSlideXml += "<p:bg><p:bgPr>".concat(genXmlColorSelection(slide.background), "</p:bgPr></p:bg>");
     }
     else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
         // NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
-        strSlideXml += "<p:bg><p:bgRef idx=\"1001\"><a:schemeClr val=\"bg1\"/></p:bgRef></p:bg>";
+        strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>';
     }
     // STEP 2: Continue slide by starting spTree node
     strSlideXml += '<p:spTree>';
@@ -1600,10 +1646,21 @@ function slideObjectToXml(slide) {
     strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
     // STEP 3: Loop over all Slide.data objects and add them to this slide
     slide._slideObjects.forEach(function (slideItemObj, idx) {
-        var _a;
-        var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide._presLayout), cy = 0;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var x = 0;
+        var y = 0;
+        var cx = getSmartParseNumber('75%', 'X', slide._presLayout);
+        var cy = 0;
         var placeholderObj;
         var locationAttr = '';
+        var arrTabRows = null;
+        var objTabOpts = null;
+        var intColCnt = 0;
+        var intColW = 0;
+        var cellOpts = null;
+        var strXml = null;
+        var sizing = (_a = slideItemObj.options) === null || _a === void 0 ? void 0 : _a.sizing;
+        var rounding = (_b = slideItemObj.options) === null || _b === void 0 ? void 0 : _b.rounding;
         if (slide._slideLayout !== undefined &&
             slide._slideLayout._slideObjects !== undefined &&
             slideItemObj.options &&
@@ -1620,6 +1677,9 @@ function slideObjectToXml(slide) {
             cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout);
         if (typeof slideItemObj.options.h !== 'undefined')
             cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout);
+        // Set w/h now that smart parse is done
+        var imgWidth = cx;
+        var imgHeight = cy;
         // If using a placeholder then inherit it's position
         if (placeholderObj) {
             if (placeholderObj.options.x || placeholderObj.options.x === 0)
@@ -1637,30 +1697,30 @@ function slideObjectToXml(slide) {
         if (slideItemObj.options.flipV)
             locationAttr += ' flipV="1"';
         if (slideItemObj.options.rotate)
-            locationAttr += ' rot="' + convertRotationDegrees(slideItemObj.options.rotate) + '"';
+            locationAttr += " rot=\"".concat(convertRotationDegrees(slideItemObj.options.rotate), "\"");
         // B: Add OBJECT to the current Slide
         switch (slideItemObj._type) {
             case SLIDE_OBJECT_TYPES.table:
-                var arrTabRows_1 = slideItemObj.arrTabRows;
-                var objTabOpts_1 = slideItemObj.options;
-                var intColCnt_1 = 0, intColW = 0;
-                var cellOpts_1;
+                arrTabRows = slideItemObj.arrTabRows;
+                objTabOpts = slideItemObj.options;
+                intColCnt = 0;
+                intColW = 0;
                 // Calc number of columns
                 // NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
                 // ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-                arrTabRows_1[0].forEach(function (cell) {
-                    cellOpts_1 = cell.options || null;
-                    intColCnt_1 += cellOpts_1 && cellOpts_1.colspan ? Number(cellOpts_1.colspan) : 1;
+                arrTabRows[0].forEach(function (cell) {
+                    cellOpts = cell.options || null;
+                    intColCnt += (cellOpts === null || cellOpts === void 0 ? void 0 : cellOpts.colspan) ? Number(cellOpts.colspan) : 1;
                 });
                 // STEP 1: Start Table XML
                 // NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-                var strXml_1 = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"".concat(intTableNum * slide._slideNum + 1, "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
-                strXml_1 +=
+                strXml = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"".concat(intTableNum * slide._slideNum + 1, "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
+                strXml +=
                     '<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
                         '  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
                         '</p:nvGraphicFramePr>';
-                strXml_1 += "<p:xfrm><a:off x=\"".concat(x || (x === 0 ? 0 : EMU), "\" y=\"").concat(y || (y === 0 ? 0 : EMU), "\"/><a:ext cx=\"").concat(cx || (cx === 0 ? 0 : EMU), "\" cy=\"").concat(cy || EMU, "\"/></p:xfrm>");
-                strXml_1 += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>';
+                strXml += "<p:xfrm><a:off x=\"".concat(x || (x === 0 ? 0 : EMU), "\" y=\"").concat(y || (y === 0 ? 0 : EMU), "\"/><a:ext cx=\"").concat(cx || (cx === 0 ? 0 : EMU), "\" cy=\"").concat(cy || EMU, "\"/></p:xfrm>");
+                strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>';
                 // + '        <a:tblPr bandRow="1"/>';
                 // TODO: Support banded rows, first/last row, etc.
                 // NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
@@ -1668,27 +1728,27 @@ function slideObjectToXml(slide) {
                 // STEP 2: Set column widths
                 // Evenly distribute cols/rows across size provided when applicable (calc them if only overall dimensions were provided)
                 // A: Col widths provided?
-                if (Array.isArray(objTabOpts_1.colW)) {
-                    strXml_1 += '<a:tblGrid>';
-                    for (var col = 0; col < intColCnt_1; col++) {
-                        var w = inch2Emu(objTabOpts_1.colW[col]);
-                        if (w == null || isNaN(w)) {
-                            w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt_1;
-                        }
-                        strXml_1 += '<a:gridCol w="' + Math.round(w) + '"/>';
-                    }
-                    strXml_1 += '</a:tblGrid>';
-                }
                 // B: Table Width provided without colW? Then distribute cols
-                else {
-                    intColW = objTabOpts_1.colW ? objTabOpts_1.colW : EMU;
-                    if (slideItemObj.options.w && !objTabOpts_1.colW)
-                        intColW = Math.round((typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt_1);
-                    strXml_1 += '<a:tblGrid>';
-                    for (var colw = 0; colw < intColCnt_1; colw++) {
-                        strXml_1 += '<a:gridCol w="' + intColW + '"/>';
+                if (Array.isArray(objTabOpts.colW)) {
+                    strXml += '<a:tblGrid>';
+                    for (var col = 0; col < intColCnt; col++) {
+                        var w = inch2Emu(objTabOpts.colW[col]);
+                        if (w == null || isNaN(w)) {
+                            w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt;
+                        }
+                        strXml += "<a:gridCol w=\"".concat(Math.round(w), "\"/>");
                     }
-                    strXml_1 += '</a:tblGrid>';
+                    strXml += '</a:tblGrid>';
+                }
+                else {
+                    intColW = objTabOpts.colW ? objTabOpts.colW : EMU;
+                    if (slideItemObj.options.w && !objTabOpts.colW)
+                        intColW = Math.round((typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt);
+                    strXml += '<a:tblGrid>';
+                    for (var colw = 0; colw < intColCnt; colw++) {
+                        strXml += "<a:gridCol w=\"".concat(intColW, "\"/>");
+                    }
+                    strXml += '</a:tblGrid>';
                 }
                 // STEP 3: Build our row arrays into an actual grid to match the XML we will be building next (ISSUE #36)
                 // Note row arrays can arrive "lopsided" as in row1:[1,2,3] row2:[3] when first two cols rowspan!,
@@ -1704,7 +1764,7 @@ function slideObjectToXml(slide) {
                     \------|------|------|------/
                 */
                 // A: add _hmerge cell for colspan. should reserve rowspan
-                arrTabRows_1.forEach(function (cells) {
+                arrTabRows.forEach(function (cells) {
                     var _a, _b;
                     var _loop_1 = function (cIdx) {
                         var cell = cells[cIdx];
@@ -1729,8 +1789,8 @@ function slideObjectToXml(slide) {
                     }
                 });
                 // B: add _vmerge cell for rowspan. should reserve colspan/_hmerge
-                arrTabRows_1.forEach(function (cells, rIdx) {
-                    var nextRow = arrTabRows_1[rIdx + 1];
+                arrTabRows.forEach(function (cells, rIdx) {
+                    var nextRow = arrTabRows[rIdx + 1];
                     if (!nextRow)
                         return;
                     cells.forEach(function (cell, cIdx) {
@@ -1745,21 +1805,22 @@ function slideObjectToXml(slide) {
                     });
                 });
                 // STEP 4: Build table rows/cells
-                arrTabRows_1.forEach(function (cells, rIdx) {
+                arrTabRows.forEach(function (cells, rIdx) {
                     // A: Table Height provided without rowH? Then distribute rows
                     var intRowH = 0; // IMPORTANT: Default must be zero for auto-sizing to work
-                    if (Array.isArray(objTabOpts_1.rowH) && objTabOpts_1.rowH[rIdx])
-                        intRowH = inch2Emu(Number(objTabOpts_1.rowH[rIdx]));
-                    else if (objTabOpts_1.rowH && !isNaN(Number(objTabOpts_1.rowH)))
-                        intRowH = inch2Emu(Number(objTabOpts_1.rowH));
-                    else if (slideItemObj.options.cy || slideItemObj.options.h)
+                    if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx])
+                        intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]));
+                    else if (objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH)))
+                        intRowH = inch2Emu(Number(objTabOpts.rowH));
+                    else if (slideItemObj.options.cy || slideItemObj.options.h) {
                         intRowH = Math.round((slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : typeof slideItemObj.options.cy === 'number' ? slideItemObj.options.cy : 1) /
-                            arrTabRows_1.length);
+                            arrTabRows.length);
+                    }
                     // B: Start row
-                    strXml_1 += "<a:tr h=\"".concat(intRowH, "\">");
+                    strXml += "<a:tr h=\"".concat(intRowH, "\">");
                     // C: Loop over each CELL
                     cells.forEach(function (cellObj) {
-                        var _a, _b;
+                        var _a, _b, _c, _d, _e;
                         var cell = cellObj;
                         var cellSpanAttrs = {
                             rowSpan: ((_a = cell.options) === null || _a === void 0 ? void 0 : _a.rowspan) > 1 ? cell.options.rowspan : undefined,
@@ -1775,38 +1836,29 @@ function slideObjectToXml(slide) {
                         })
                             .map(function (_a) {
                             var k = _a[0], v = _a[1];
-                            return "".concat(k, "=\"").concat(v, "\"");
+                            return "".concat(String(k), "=\"").concat(String(v), "\"");
                         })
                             .join(' ');
                         if (cellSpanAttrStr)
                             cellSpanAttrStr = ' ' + cellSpanAttrStr;
                         // 1: COLSPAN/ROWSPAN: Add dummy cells for any active colspan/rowspan
                         if (cell._hmerge || cell._vmerge) {
-                            strXml_1 += "<a:tc".concat(cellSpanAttrStr, "><a:tcPr/></a:tc>");
+                            strXml += "<a:tc".concat(cellSpanAttrStr, "><a:tcPr/></a:tc>");
                             return;
                         }
                         // 2: OPTIONS: Build/set cell options
                         var cellOpts = cell.options || {};
                         cell.options = cellOpts;
                         ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function (name) {
-                            if (objTabOpts_1[name] && !cellOpts[name] && cellOpts[name] !== 0)
-                                cellOpts[name] = objTabOpts_1[name];
+                            if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] !== 0)
+                                cellOpts[name] = objTabOpts[name];
                         });
                         var cellValign = cellOpts.valign
-                            ? ' anchor="' +
-                                cellOpts.valign
-                                    .replace(/^c$/i, 'ctr')
-                                    .replace(/^m$/i, 'ctr')
-                                    .replace('center', 'ctr')
-                                    .replace('middle', 'ctr')
-                                    .replace('top', 't')
-                                    .replace('btm', 'b')
-                                    .replace('bottom', 'b') +
-                                '"'
+                            ? " anchor=\"".concat(cellOpts.valign.replace(/^c$/i, 'ctr').replace(/^m$/i, 'ctr').replace('center', 'ctr').replace('middle', 'ctr').replace('top', 't').replace('btm', 'b').replace('bottom', 'b'), "\"")
                             : '';
-                        var fillColor = cell._optImp && cell._optImp.fill && cell._optImp.fill.color
+                        var fillColor = ((_d = (_c = cell._optImp) === null || _c === void 0 ? void 0 : _c.fill) === null || _d === void 0 ? void 0 : _d.color)
                             ? cell._optImp.fill.color
-                            : cell._optImp && cell._optImp.fill && typeof cell._optImp.fill === 'string'
+                            : ((_e = cell._optImp) === null || _e === void 0 ? void 0 : _e.fill) && typeof cell._optImp.fill === 'string'
                                 ? cell._optImp.fill
                                 : '';
                         fillColor = fillColor || cellOpts.fill ? cellOpts.fill : '';
@@ -1827,12 +1879,13 @@ function slideObjectToXml(slide) {
                         }
                         // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 4: Set CELL content and properties ==================================
-                        strXml_1 += "<a:tc".concat(cellSpanAttrStr, ">").concat(genXmlTextBody(cell), "<a:tcPr").concat(cellMarginXml).concat(cellValign, ">");
-                        //strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
+                        strXml += "<a:tc".concat(cellSpanAttrStr, ">").concat(genXmlTextBody(cell), "<a:tcPr").concat(cellMarginXml).concat(cellValign, ">");
+                        // strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
                         // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
                         // 5: Borders: Add any borders
                         if (cellOpts.border && Array.isArray(cellOpts.border)) {
+                            // NOTE: *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
                             [
                                 { idx: 3, name: 'lnL' },
                                 { idx: 1, name: 'lnR' },
@@ -1840,31 +1893,31 @@ function slideObjectToXml(slide) {
                                 { idx: 2, name: 'lnB' },
                             ].forEach(function (obj) {
                                 if (cellOpts.border[obj.idx].type !== 'none') {
-                                    strXml_1 += "<a:".concat(obj.name, " w=\"").concat(valToPts(cellOpts.border[obj.idx].pt), "\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">");
-                                    strXml_1 += "<a:solidFill>".concat(createColorElement(cellOpts.border[obj.idx].color), "</a:solidFill>");
-                                    strXml_1 += "<a:prstDash val=\"".concat(cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid', "\"/><a:round/><a:headEnd type=\"none\" w=\"med\" len=\"med\"/><a:tailEnd type=\"none\" w=\"med\" len=\"med\"/>");
-                                    strXml_1 += "</a:".concat(obj.name, ">");
+                                    strXml += "<a:".concat(obj.name, " w=\"").concat(valToPts(cellOpts.border[obj.idx].pt), "\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">");
+                                    strXml += "<a:solidFill>".concat(createColorElement(cellOpts.border[obj.idx].color), "</a:solidFill>");
+                                    strXml += "<a:prstDash val=\"".concat(cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid', "\"/><a:round/><a:headEnd type=\"none\" w=\"med\" len=\"med\"/><a:tailEnd type=\"none\" w=\"med\" len=\"med\"/>");
+                                    strXml += "</a:".concat(obj.name, ">");
                                 }
                                 else {
-                                    strXml_1 += "<a:".concat(obj.name, " w=\"0\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:noFill/></a:").concat(obj.name, ">");
+                                    strXml += "<a:".concat(obj.name, " w=\"0\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:noFill/></a:").concat(obj.name, ">");
                                 }
                             });
                         }
                         // 6: Close cell Properties & Cell
-                        strXml_1 += cellFill;
-                        strXml_1 += '  </a:tcPr>';
-                        strXml_1 += ' </a:tc>';
+                        strXml += cellFill;
+                        strXml += '  </a:tcPr>';
+                        strXml += ' </a:tc>';
                     });
                     // D: Complete row
-                    strXml_1 += '</a:tr>';
+                    strXml += '</a:tr>';
                 });
                 // STEP 5: Complete table
-                strXml_1 += '      </a:tbl>';
-                strXml_1 += '    </a:graphicData>';
-                strXml_1 += '  </a:graphic>';
-                strXml_1 += '</p:graphicFrame>';
+                strXml += '      </a:tbl>';
+                strXml += '    </a:graphicData>';
+                strXml += '  </a:graphic>';
+                strXml += '</p:graphicFrame>';
                 // STEP 6: Set table XML
-                strSlideXml += strXml_1;
+                strSlideXml += strXml;
                 // LAST: Increment counter
                 intTableNum++;
                 break;
@@ -1893,23 +1946,15 @@ function slideObjectToXml(slide) {
                 // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
                 strSlideXml += "<p:nvSpPr><p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\">");
                 // <Hyperlink>
-                if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
-                    strSlideXml +=
-                        '<a:hlinkClick r:id="rId' +
-                            slideItemObj.options.hyperlink._rId +
-                            '" tooltip="' +
-                            (slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
-                            '"/>';
-                if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.slide)
-                    strSlideXml +=
-                        '<a:hlinkClick r:id="rId' +
-                            slideItemObj.options.hyperlink._rId +
-                            '" tooltip="' +
-                            (slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
-                            '" action="ppaction://hlinksldjump"/>';
+                if ((_c = slideItemObj.options.hyperlink) === null || _c === void 0 ? void 0 : _c.url) {
+                    strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.options.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '', "\"/>");
+                }
+                if ((_d = slideItemObj.options.hyperlink) === null || _d === void 0 ? void 0 : _d.slide) {
+                    strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.options.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '', "\" action=\"ppaction://hlinksldjump\"/>");
+                }
                 // </Hyperlink>
                 strSlideXml += '</p:cNvPr>';
-                strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>');
+                strSlideXml += '<p:cNvSpPr' + (((_e = slideItemObj.options) === null || _e === void 0 ? void 0 : _e.isTextBox) ? ' txBox="1"/>' : '/>');
                 strSlideXml += "<p:nvPr>".concat(slideItemObj._type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj), "</p:nvPr>");
                 strSlideXml += '</p:nvSpPr><p:spPr>';
                 strSlideXml += "<a:xfrm".concat(locationAttr, ">");
@@ -1925,7 +1970,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<a:rect l="l" t="t" r="r" b="b" />';
                     strSlideXml += '<a:pathLst>';
                     strSlideXml += "<a:path w=\"".concat(cx, "\" h=\"").concat(cy, "\">");
-                    (_a = slideItemObj.options.points) === null || _a === void 0 ? void 0 : _a.map(function (point, i) {
+                    (_f = slideItemObj.options.points) === null || _f === void 0 ? void 0 : _f.forEach(function (point, i) {
                         if ('curve' in point) {
                             switch (point.curve.type) {
                                 case 'arc':
@@ -1940,7 +1985,7 @@ function slideObjectToXml(slide) {
                             }
                         }
                         else if ('close' in point) {
-                            strSlideXml += "<a:close />";
+                            strSlideXml += '<a:close />';
                         }
                         else if (point.moveTo || i === 0) {
                             strSlideXml += "<a:moveTo><a:pt x=\"".concat(getSmartParseNumber(point.x, 'X', slide._presLayout), "\" y=\"").concat(getSmartParseNumber(point.y, 'Y', slide._presLayout), "\" /></a:moveTo>");
@@ -1994,12 +2039,10 @@ function slideObjectToXml(slide) {
                     slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
                     slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
                     strSlideXml += '<a:effectLst>';
-                    strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-                    strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" ';
-                    strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">';
-                    strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">';
-                    strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>';
-                    strSlideXml += '</a:outerShdw>';
+                    strSlideXml += " <a:".concat(slideItemObj.options.shadow.type, "Shdw sx=\"100000\" sy=\"100000\" kx=\"0\" ky=\"0\" algn=\"bl\" rotWithShape=\"0\" blurRad=\"").concat(slideItemObj.options.shadow.blur, "\" dist=\"").concat(slideItemObj.options.shadow.offset, "\" dir=\"").concat(slideItemObj.options.shadow.angle, "\">");
+                    strSlideXml += " <a:srgbClr val=\"".concat(slideItemObj.options.shadow.color, "\">");
+                    strSlideXml += " <a:alpha val=\"".concat(slideItemObj.options.shadow.opacity, "\"/></a:srgbClr>");
+                    strSlideXml += ' </a:outerShdw>';
                     strSlideXml += '</a:effectLst>';
                 }
                 /* TODO: FUTURE: Text wrapping (copied from MS-PPTX export)
@@ -2020,14 +2063,15 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy;
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
                 strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
-                if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
+                if ((_g = slideItemObj.hyperlink) === null || _g === void 0 ? void 0 : _g.url) {
                     strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\"/>");
-                if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
+                }
+                if ((_h = slideItemObj.hyperlink) === null || _h === void 0 ? void 0 : _h.slide) {
                     strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\" action=\"ppaction://hlinksldjump\"/>");
+                }
                 strSlideXml += '    </p:cNvPr>';
                 strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                 strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
@@ -2035,26 +2079,29 @@ function slideObjectToXml(slide) {
                 strSlideXml += '<p:blipFill>';
                 // NOTE: This works for both cases: either `path` or `data` contains the SVG
                 if ((slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0] &&
-                    (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0]['extn'] === 'svg') {
-                    strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
+                    (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0].extn === 'svg') {
+                    strSlideXml += "<a:blip r:embed=\"rId".concat(slideItemObj.imageRid - 1, "\">");
                     strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
-                    strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
+                    strSlideXml += "   <asvg:svgBlip xmlns:asvg=\"http://schemas.microsoft.com/office/drawing/2016/SVG/main\" r:embed=\"rId".concat(slideItemObj.imageRid, "\"/>");
                     strSlideXml += '  </a:ext>';
                     strSlideXml += ' </a:extLst>';
                     strSlideXml += '</a:blip>';
                 }
                 else {
-                    strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '">';
-                    strSlideXml += slideItemObj.options.transparency ? " <a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
+                    strSlideXml += "<a:blip r:embed=\"rId".concat(slideItemObj.imageRid, "\">");
+                    strSlideXml += slideItemObj.options.transparency ? "<a:alphaModFix amt=\"".concat(Math.round((100 - slideItemObj.options.transparency) * 1000), "\"/>") : '';
                     strSlideXml += '</a:blip>';
                 }
-                if (sizing && sizing.type) {
-                    var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide._presLayout) : cx, boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide._presLayout) : cy, boxX = getSmartParseNumber(sizing.x || 0, 'X', slide._presLayout), boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide._presLayout);
-                    strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY });
-                    width = boxW;
-                    height = boxH;
+                if (sizing === null || sizing === void 0 ? void 0 : sizing.type) {
+                    var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide._presLayout) : cx;
+                    var boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide._presLayout) : cy;
+                    var boxX = getSmartParseNumber(sizing.x || 0, 'X', slide._presLayout);
+                    var boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide._presLayout);
+                    strSlideXml += ImageSizingXml[sizing.type]({ w: imgWidth, h: imgHeight }, { w: boxW, h: boxH, x: boxX, y: boxY });
+                    imgWidth = boxW;
+                    imgHeight = boxH;
                 }
                 else {
                     strSlideXml += '  <a:stretch><a:fillRect/></a:stretch>';
@@ -2062,10 +2109,10 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:blipFill>';
                 strSlideXml += '<p:spPr>';
                 strSlideXml += ' <a:xfrm' + locationAttr + '>';
-                strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>';
-                strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>';
+                strSlideXml += "  <a:off x=\"".concat(x, "\" y=\"").concat(y, "\"/>");
+                strSlideXml += "  <a:ext cx=\"".concat(imgWidth, "\" cy=\"").concat(imgHeight, "\"/>");
                 strSlideXml += ' </a:xfrm>';
-                strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>';
+                strSlideXml += " <a:prstGeom prst=\"".concat(rounding ? 'ellipse' : 'rect', "\"><a:avLst/></a:prstGeom>");
                 strSlideXml += '</p:spPr>';
                 strSlideXml += '</p:pic>';
                 break;
@@ -2077,16 +2124,13 @@ function slideObjectToXml(slide) {
                     strSlideXml += "<p:cNvPr id=\"".concat(slideItemObj.mediaRid + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
                     strSlideXml += ' <p:cNvPicPr/>';
                     strSlideXml += ' <p:nvPr>';
-                    strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>';
+                    strSlideXml += "  <a:videoFile r:link=\"rId".concat(slideItemObj.mediaRid, "\"/>");
                     strSlideXml += ' </p:nvPr>';
                     strSlideXml += ' </p:nvPicPr>';
                     // NOTE: `blip` is diferent than videos; also there's no preview "p:extLst" above but exists in videos
-                    strSlideXml += ' <p:blipFill><a:blip r:embed="rId' + (slideItemObj.mediaRid + 1) + '"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'; // NOTE: Preview image is required!
+                    strSlideXml += " <p:blipFill><a:blip r:embed=\"rId".concat(slideItemObj.mediaRid + 1, "\"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>"); // NOTE: Preview image is required!
                     strSlideXml += ' <p:spPr>';
-                    strSlideXml += '  <a:xfrm' + locationAttr + '>';
-                    strSlideXml += '   <a:off x="' + x + '" y="' + y + '"/>';
-                    strSlideXml += '   <a:ext cx="' + cx + '" cy="' + cy + '"/>';
-                    strSlideXml += '  </a:xfrm>';
+                    strSlideXml += "  <a:xfrm".concat(locationAttr, "><a:off x=\"").concat(x, "\" y=\"").concat(y, "\"/><a:ext cx=\"").concat(cx, "\" cy=\"").concat(cy, "\"/></a:xfrm>");
                     strSlideXml += '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
                     strSlideXml += ' </p:spPr>';
                     strSlideXml += '</p:pic>';
@@ -2098,20 +2142,17 @@ function slideObjectToXml(slide) {
                     strSlideXml += "<p:cNvPr id=\"".concat(slideItemObj.mediaRid + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\"><a:hlinkClick r:id=\"\" action=\"ppaction://media\"/></p:cNvPr>");
                     strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                     strSlideXml += ' <p:nvPr>';
-                    strSlideXml += '  <a:videoFile r:link="rId' + slideItemObj.mediaRid + '"/>';
+                    strSlideXml += "  <a:videoFile r:link=\"rId".concat(slideItemObj.mediaRid, "\"/>");
                     strSlideXml += '  <p:extLst>';
                     strSlideXml += '   <p:ext uri="{DAA4B4D4-6D71-4841-9C94-3DE7FCFB9230}">';
-                    strSlideXml += '    <p14:media xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" r:embed="rId' + (slideItemObj.mediaRid + 1) + '"/>';
+                    strSlideXml += "    <p14:media xmlns:p14=\"http://schemas.microsoft.com/office/powerpoint/2010/main\" r:embed=\"rId".concat(slideItemObj.mediaRid + 1, "\"/>");
                     strSlideXml += '   </p:ext>';
                     strSlideXml += '  </p:extLst>';
                     strSlideXml += ' </p:nvPr>';
                     strSlideXml += ' </p:nvPicPr>';
-                    strSlideXml += ' <p:blipFill><a:blip r:embed="rId' + (slideItemObj.mediaRid + 2) + '"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'; // NOTE: Preview image is required!
+                    strSlideXml += " <p:blipFill><a:blip r:embed=\"rId".concat(slideItemObj.mediaRid + 2, "\"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>"); // NOTE: Preview image is required!
                     strSlideXml += ' <p:spPr>';
-                    strSlideXml += '  <a:xfrm' + locationAttr + '>';
-                    strSlideXml += '   <a:off x="' + x + '" y="' + y + '"/>';
-                    strSlideXml += '   <a:ext cx="' + cx + '" cy="' + cy + '"/>';
-                    strSlideXml += '  </a:xfrm>';
+                    strSlideXml += "  <a:xfrm".concat(locationAttr, "><a:off x=\"").concat(x, "\" y=\"").concat(y, "\"/><a:ext cx=\"").concat(cx, "\" cy=\"").concat(cy, "\"/></a:xfrm>");
                     strSlideXml += '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
                     strSlideXml += ' </p:spPr>';
                     strSlideXml += '</p:pic>';
@@ -2142,29 +2183,19 @@ function slideObjectToXml(slide) {
         // Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
         if (!slide._slideNumberProps.align)
             slide._slideNumberProps.align = 'left';
-        strSlideXml +=
-            '<p:sp>' +
-                '  <p:nvSpPr>' +
-                '    <p:cNvPr id="25" name="Slide Number Placeholder 0"/>' +
-                '    <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>' +
-                '    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>' +
-                '  </p:nvSpPr>' +
-                '  <p:spPr>' +
-                '    <a:xfrm>' +
-                '      <a:off x="' +
-                getSmartParseNumber(slide._slideNumberProps.x, 'X', slide._presLayout) +
-                '" y="' +
-                getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide._presLayout) +
-                '"/>' +
-                '      <a:ext cx="' +
-                (slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide._presLayout) : 800000) +
-                '" cy="' +
-                (slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide._presLayout) : 300000) +
-                '"/>' +
-                '    </a:xfrm>' +
-                '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-                '    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
-                '  </p:spPr>';
+        strSlideXml += '<p:sp>';
+        strSlideXml += ' <p:nvSpPr>';
+        strSlideXml += '  <p:cNvPr id="25" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>';
+        strSlideXml += '  <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>';
+        strSlideXml += ' </p:nvSpPr>';
+        strSlideXml += ' <p:spPr>';
+        strSlideXml += '<a:xfrm>' +
+            "<a:off x=\"".concat(getSmartParseNumber(slide._slideNumberProps.x, 'X', slide._presLayout), "\" y=\"").concat(getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide._presLayout), "\"/>") +
+            "<a:ext cx=\"".concat(slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide._presLayout) : '800000', "\" cy=\"").concat(slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide._presLayout) : '300000', "\"/>") +
+            '</a:xfrm>' +
+            ' <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+            ' <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
+            '</p:spPr>';
         strSlideXml += '<p:txBody>';
         strSlideXml += '<a:bodyPr';
         if (slide._slideNumberProps.margin && Array.isArray(slide._slideNumberProps.margin)) {
@@ -2188,8 +2219,9 @@ function slideObjectToXml(slide) {
             strSlideXml += "<a:defRPr sz=\"".concat(Math.round((slide._slideNumberProps.fontSize || 12) * 100), "\">");
             if (slide._slideNumberProps.color)
                 strSlideXml += genXmlColorSelection(slide._slideNumberProps.color);
-            if (slide._slideNumberProps.fontFace)
+            if (slide._slideNumberProps.fontFace) {
                 strSlideXml += "<a:latin typeface=\"".concat(slide._slideNumberProps.fontFace, "\"/><a:ea typeface=\"").concat(slide._slideNumberProps.fontFace, "\"/><a:cs typeface=\"").concat(slide._slideNumberProps.fontFace, "\"/>");
+            }
             strSlideXml += '</a:defRPr>';
         }
         strSlideXml += '</a:lvl1pPr></a:lstStyle>';
@@ -2201,7 +2233,7 @@ function slideObjectToXml(slide) {
         else if (slide._slideNumberProps.align.startsWith('r'))
             strSlideXml += '<a:pPr algn="r"/>';
         else
-            strSlideXml += "<a:pPr algn=\"l\"/>";
+            strSlideXml += '<a:pPr algn="l"/>';
         strSlideXml += "<a:fld id=\"".concat(SLDNUMFLDID, "\" type=\"slidenum\"><a:rPr b=\"").concat(slide._slideNumberProps.bold ? 1 : 0, "\" lang=\"en-US\"/>");
         strSlideXml += "<a:t>".concat(slide._slideNum, "</a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>");
         strSlideXml += '</p:txBody></p:sp>';
@@ -2226,72 +2258,59 @@ function slideObjectRelationsToXml(slide, defaultRels) {
     // STEP 1: Add all rels for this Slide
     slide._rels.forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
-        if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
+        if (rel.type.toLowerCase().includes('hyperlink')) {
             if (rel.data === 'slide') {
-                strXml +=
-                    '<Relationship Id="rId' +
-                        rel.rId +
-                        '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"' +
-                        ' Target="slide' +
-                        rel.Target +
-                        '.xml"/>';
+                strXml += "<Relationship Id=\"rId".concat(rel.rId, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide\" Target=\"slide").concat(rel.Target, ".xml\"/>");
             }
             else {
-                strXml +=
-                    '<Relationship Id="rId' +
-                        rel.rId +
-                        '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"' +
-                        ' Target="' +
-                        rel.Target +
-                        '" TargetMode="External"/>';
+                strXml += "<Relationship Id=\"rId".concat(rel.rId, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target=\"").concat(rel.Target, "\" TargetMode=\"External\"/>");
             }
         }
-        else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
-            strXml +=
-                '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>';
+        else if (rel.type.toLowerCase().includes('notesSlide')) {
+            strXml += "<Relationship Id=\"rId".concat(rel.rId, "\" Target=\"").concat(rel.Target, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide\"/>");
         }
     });
     (slide._relsChart || []).forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
-        strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>';
+        strXml += "<Relationship Id=\"rId".concat(rel.rId, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\" Target=\"").concat(rel.Target, "\"/>");
     });
     (slide._relsMedia || []).forEach(function (rel) {
+        var relRid = rel.rId.toString();
         lastRid = Math.max(lastRid, rel.rId);
-        if (rel.type.toLowerCase().indexOf('image') > -1) {
-            strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' + rel.Target + '"/>';
+        if (rel.type.toLowerCase().includes('image')) {
+            strXml += '<Relationship Id="rId' + relRid + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' + rel.Target + '"/>';
         }
-        else if (rel.type.toLowerCase().indexOf('audio') > -1) {
+        else if (rel.type.toLowerCase().includes('audio')) {
             // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-            if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-                strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' + rel.Target + '"/>';
-            else
-                strXml +=
-                    '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio" Target="' + rel.Target + '"/>';
+            if (strXml.includes(' Target="' + rel.Target + '"')) {
+                strXml += '<Relationship Id="rId' + relRid + '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' + rel.Target + '"/>';
+            }
+            else {
+                strXml += '<Relationship Id="rId' + relRid + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio" Target="' + rel.Target + '"/>';
+            }
         }
-        else if (rel.type.toLowerCase().indexOf('video') > -1) {
+        else if (rel.type.toLowerCase().includes('video')) {
             // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-            if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-                strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' + rel.Target + '"/>';
-            else
-                strXml +=
-                    '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video" Target="' + rel.Target + '"/>';
+            if (strXml.includes(' Target="' + rel.Target + '"')) {
+                strXml += '<Relationship Id="rId' + relRid + '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' + rel.Target + '"/>';
+            }
+            else {
+                strXml += '<Relationship Id="rId' + relRid + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video" Target="' + rel.Target + '"/>';
+            }
         }
-        else if (rel.type.toLowerCase().indexOf('online') > -1) {
+        else if (rel.type.toLowerCase().includes('online')) {
             // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-            if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-                strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2007/relationships/image" Target="' + rel.Target + '"/>';
-            else
-                strXml +=
-                    '<Relationship Id="rId' +
-                        rel.rId +
-                        '" Target="' +
-                        rel.Target +
-                        '" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
+            if (strXml.includes(' Target="' + rel.Target + '"')) {
+                strXml += '<Relationship Id="rId' + relRid + '" Type="http://schemas.microsoft.com/office/2007/relationships/image" Target="' + rel.Target + '"/>';
+            }
+            else {
+                strXml += '<Relationship Id="rId' + relRid + '" Target="' + rel.Target + '" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
+            }
         }
     });
     // STEP 2: Add default rels
     defaultRels.forEach(function (rel, idx) {
-        strXml += '<Relationship Id="rId' + (lastRid + idx + 1) + '" Type="' + rel.type + '" Target="' + rel.target + '"/>';
+        strXml += "<Relationship Id=\"rId".concat(lastRid + idx + 1, "\" Type=\"").concat(rel.type, "\" Target=\"").concat(rel.target, "\"/>");
     });
     strXml += '</Relationships>';
     return strXml;
@@ -2303,7 +2322,11 @@ function slideObjectRelationsToXml(slide, defaultRels) {
  * @return {string} XML
  */
 function genXmlParagraphProperties(textObj, isDefault) {
-    var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '', strXmlTabStops = '';
+    var _a, _b;
+    var strXmlBullet = '';
+    var strXmlLnSpc = '';
+    var strXmlParaSpc = '';
+    var strXmlTabStops = '';
     var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
     var bulletMarL = valToPts(DEF_BULLET_MARGIN);
     var paragraphPropXml = "<".concat(tag).concat(textObj.options.rtlMode ? ' rtl="1" ' : '');
@@ -2350,7 +2373,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
         // NOTE: OOXML uses the unicode character set for Bullets
         // EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
         if (typeof textObj.options.bullet === 'object') {
-            if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.indent)
+            if ((_b = (_a = textObj === null || textObj === void 0 ? void 0 : textObj.options) === null || _a === void 0 ? void 0 : _a.bullet) === null || _b === void 0 ? void 0 : _b.indent)
                 bulletMarL = valToPts(textObj.options.bullet.indent);
             if (textObj.options.bullet.type) {
                 if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
@@ -2361,9 +2384,9 @@ function genXmlParagraphProperties(textObj, isDefault) {
             else if (textObj.options.bullet.characterCode) {
                 var bulletCode = "&#x".concat(textObj.options.bullet.characterCode, ";");
                 // Check value for hex-ness (s/b 4 char hex)
-                if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.characterCode) === false) {
+                if (!/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.characterCode)) {
                     console.warn('Warning: `bullet.characterCode should be a 4-digit unicode charatcer (ex: 22AB)`!');
-                    bulletCode = BULLET_TYPES['DEFAULT'];
+                    bulletCode = BULLET_TYPES.DEFAULT;
                 }
                 paragraphPropXml += " marL=\"".concat(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL, "\" indent=\"-").concat(bulletMarL, "\"");
                 strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>';
@@ -2372,25 +2395,25 @@ function genXmlParagraphProperties(textObj, isDefault) {
                 // @deprecated `bullet.code` v3.3.0
                 var bulletCode = "&#x".concat(textObj.options.bullet.code, ";");
                 // Check value for hex-ness (s/b 4 char hex)
-                if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) === false) {
+                if (!/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code)) {
                     console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
-                    bulletCode = BULLET_TYPES['DEFAULT'];
+                    bulletCode = BULLET_TYPES.DEFAULT;
                 }
                 paragraphPropXml += " marL=\"".concat(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL, "\" indent=\"-").concat(bulletMarL, "\"");
                 strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>';
             }
             else {
                 paragraphPropXml += " marL=\"".concat(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL, "\" indent=\"-").concat(bulletMarL, "\"");
-                strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"".concat(BULLET_TYPES['DEFAULT'], "\"/>");
+                strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"".concat(BULLET_TYPES.DEFAULT, "\"/>");
             }
         }
-        else if (textObj.options.bullet === true) {
+        else if (textObj.options.bullet) {
             paragraphPropXml += " marL=\"".concat(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL, "\" indent=\"-").concat(bulletMarL, "\"");
-            strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"".concat(BULLET_TYPES['DEFAULT'], "\"/>");
+            strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"".concat(BULLET_TYPES.DEFAULT, "\"/>");
         }
-        else if (textObj.options.bullet === false) {
+        else if (!textObj.options.bullet) {
             // We only add this when the user explicitely asks for no bullet, otherwise, it can override the master defaults!
-            paragraphPropXml += " indent=\"0\" marL=\"0\""; // FIX: ISSUE#589 - specify zero indent and marL or default will be hanging paragraph
+            paragraphPropXml += ' indent="0" marL="0"'; // FIX: ISSUE#589 - specify zero indent and marL or default will be hanging paragraph
             strXmlBullet = '<a:buNone/>';
         }
         // OPTION: tabStops
@@ -2419,16 +2442,16 @@ function genXmlTextRunProperties(opts, isDefault) {
     var runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr';
     // BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
     runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '');
-    runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : ''; // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-    runProps += opts.hasOwnProperty('bold') ? " b=\"".concat(opts.bold ? 1 : 0, "\"") : '';
-    runProps += opts.hasOwnProperty('italic') ? " i=\"".concat(opts.italic ? 1 : 0, "\"") : '';
-    runProps += opts.hasOwnProperty('strike') ? " strike=\"".concat(typeof opts.strike === 'string' ? opts.strike : 'sngStrike', "\"") : '';
+    runProps += opts.fontSize ? " sz=\"".concat(Math.round(opts.fontSize * 100), "\"") : ''; // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+    runProps += (opts === null || opts === void 0 ? void 0 : opts.bold) ? " b=\"".concat(opts.bold ? '1' : '0', "\"") : '';
+    runProps += (opts === null || opts === void 0 ? void 0 : opts.italic) ? " i=\"".concat(opts.italic ? '1' : '0', "\"") : '';
+    runProps += (opts === null || opts === void 0 ? void 0 : opts.strike) ? " strike=\"".concat(typeof opts.strike === 'string' ? opts.strike : 'sngStrike', "\"") : '';
     if (typeof opts.underline === 'object' && ((_a = opts.underline) === null || _a === void 0 ? void 0 : _a.style)) {
         runProps += " u=\"".concat(opts.underline.style, "\"");
     }
     else if (typeof opts.underline === 'string') {
-        // DEPRECATED: opts.underline is an object in v3.5.0
-        runProps += " u=\"".concat(opts.underline, "\"");
+        // DEPRECATED: opts.underline is an object as of v3.5.0
+        runProps += " u=\"".concat(String(opts.underline), "\"");
     }
     else if (opts.hyperlink) {
         runProps += ' u="sng"';
@@ -2465,22 +2488,22 @@ function genXmlTextRunProperties(opts, isDefault) {
     // Hyperlink support
     if (opts.hyperlink) {
         if (typeof opts.hyperlink !== 'object')
-            throw new Error("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ");
+            throw new Error('ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:\'https://github.com\'}` ');
         else if (!opts.hyperlink.url && !opts.hyperlink.slide)
-            throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'");
+            throw new Error('ERROR: \'hyperlink requires either `url` or `slide`\'');
         else if (opts.hyperlink.url) {
-            //runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
+            // runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
             runProps += "<a:hlinkClick r:id=\"rId".concat(opts.hyperlink._rId, "\" invalidUrl=\"\" action=\"\" tgtFrame=\"\" tooltip=\"").concat(opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '', "\" history=\"1\" highlightClick=\"0\" endSnd=\"0\"").concat(opts.color ? '>' : '/>');
         }
         else if (opts.hyperlink.slide) {
             runProps += "<a:hlinkClick r:id=\"rId".concat(opts.hyperlink._rId, "\" action=\"ppaction://hlinksldjump\" tooltip=\"").concat(opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '', "\"").concat(opts.color ? '>' : '/>');
         }
         if (opts.color) {
-            runProps += '	<a:extLst>';
-            runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">';
-            runProps += '			<ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>';
-            runProps += '		</a:ext>';
-            runProps += '	</a:extLst>';
+            runProps += ' <a:extLst>';
+            runProps += '  <a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">';
+            runProps += '   <ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>';
+            runProps += '  </a:ext>';
+            runProps += ' </a:extLst>';
             runProps += '</a:hlinkClick>';
         }
     }
@@ -2537,13 +2560,13 @@ function genXmlBodyProperties(slideObject) {
         bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="square"' : ' wrap="none"';
         // B: Textbox margins [padding]
         if (slideObject.options._bodyProp.lIns || slideObject.options._bodyProp.lIns === 0)
-            bodyProperties += ' lIns="' + slideObject.options._bodyProp.lIns + '"';
+            bodyProperties += " lIns=\"".concat(slideObject.options._bodyProp.lIns, "\"");
         if (slideObject.options._bodyProp.tIns || slideObject.options._bodyProp.tIns === 0)
-            bodyProperties += ' tIns="' + slideObject.options._bodyProp.tIns + '"';
+            bodyProperties += " tIns=\"".concat(slideObject.options._bodyProp.tIns, "\"");
         if (slideObject.options._bodyProp.rIns || slideObject.options._bodyProp.rIns === 0)
-            bodyProperties += ' rIns="' + slideObject.options._bodyProp.rIns + '"';
+            bodyProperties += " rIns=\"".concat(slideObject.options._bodyProp.rIns, "\"");
         if (slideObject.options._bodyProp.bIns || slideObject.options._bodyProp.bIns === 0)
-            bodyProperties += ' bIns="' + slideObject.options._bodyProp.bIns + '"';
+            bodyProperties += " bIns=\"".concat(slideObject.options._bodyProp.bIns, "\"");
         // C: Add rtl after margins
         bodyProperties += ' rtlCol="0"';
         // D: Add anchorPoints
@@ -2563,7 +2586,7 @@ function genXmlBodyProperties(slideObject) {
             if (slideObject.options.fit === 'none')
                 bodyProperties += '';
             // NOTE: Shrink does not work automatically - PowerPoint calculates the `fontScale` value dynamically upon resize
-            //else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+            // else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
             else if (slideObject.options.fit === 'shrink')
                 bodyProperties += '<a:normAutofit/>';
             else if (slideObject.options.fit === 'resize')
@@ -2577,7 +2600,7 @@ function genXmlBodyProperties(slideObject) {
          * MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
          * NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
          */
-        bodyProperties += slideObject.options._bodyProp.autoFit !== false ? '<a:spAutoFit/>' : '';
+        bodyProperties += slideObject.options._bodyProp.autoFit ? '<a:spAutoFit/>' : '';
         // LAST: Close _bodyProp
         bodyProperties += '</a:bodyPr>';
     }
@@ -2595,20 +2618,20 @@ function genXmlBodyProperties(slideObject) {
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
  * @note Bullets are a paragragh-level formatting device
  * @template
- *	<p:txBody>
- *		<a:bodyPr wrap="square" rtlCol="0">
- *			<a:spAutoFit/>
- *		</a:bodyPr>
- *		<a:lstStyle/>
- *		<a:p>
- *			<a:pPr algn="ctr"/>
- *			<a:r>
- *				<a:rPr lang="en-US" dirty="0" err="1"/>
- *				<a:t>textbox text</a:t>
- *			</a:r>
- *			<a:endParaRPr lang="en-US" dirty="0"/>
- *		</a:p>
- *	</p:txBody>
+ *    <p:txBody>
+ *        <a:bodyPr wrap="square" rtlCol="0">
+ *            <a:spAutoFit/>
+ *        </a:bodyPr>
+ *        <a:lstStyle/>
+ *        <a:p>
+ *            <a:pPr algn="ctr"/>
+ *            <a:r>
+ *                <a:rPr lang="en-US" dirty="0" err="1"/>
+ *                <a:t>textbox text</a:t>
+ *            </a:r>
+ *            <a:endParaRPr lang="en-US" dirty="0"/>
+ *        </a:p>
+ *    </p:txBody>
  * @returns XML containing the param object's text and formatting
  */
 function genXmlTextBody(slideObj) {
@@ -2647,8 +2670,8 @@ function genXmlTextBody(slideObj) {
         // Handle cases 1,2
         tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} });
     }
-    else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).indexOf('text') > -1) {
-        //} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
+    else if (slideObj.text && !Array.isArray(slideObj.text) && typeof slideObj.text === 'object' && Object.keys(slideObj.text).includes('text')) {
+        // } else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) { // 20210706: replaced with below as ts compiler rejected it
         // Handle case 3
         tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} });
     }
@@ -2672,7 +2695,7 @@ function genXmlTextBody(slideObj) {
         }
         // C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
         // NOTE: Filter for trailing lineBreak prevents the creation of an empty textObj as the last item
-        if (itext.text.indexOf(CRLF) > -1 && itext.text.match(/\n$/g) === null) {
+        if (itext.text.includes(CRLF) && itext.text.match(/\n$/g) === null) {
             itext.text.split(CRLF).forEach(function (line) {
                 itext.options.breakLine = true;
                 arrTextObjects.push({ text: line, options: itext.options });
@@ -2689,7 +2712,7 @@ function genXmlTextBody(slideObj) {
         // A: Align or Bullet trigger new line
         if (arrTexts.length > 0 && (textObj.options.align || opts.align)) {
             // Only start a new paragraph when align *changes*
-            if (textObj.options.align != arrTextObjects[idx - 1].options.align) {
+            if (textObj.options.align !== arrTextObjects[idx - 1].options.align) {
                 arrLines.push(arrTexts);
                 arrTexts = [];
             }
@@ -2715,18 +2738,19 @@ function genXmlTextBody(slideObj) {
     });
     // STEP 6: Loop over each line and create paragraph props, text run, etc.
     arrLines.forEach(function (line) {
+        var _a;
         var reqsClosingFontSize = false;
         // A: Start paragraph, add paraProps
         strSlideXml += '<a:p>';
         // NOTE: `rtlMode` is like other opts, its propagated up to each text:options, so just check the 1st one
-        var paragraphPropXml = "<a:pPr ".concat(line[0].options && line[0].options.rtlMode ? ' rtl="1" ' : '');
+        var paragraphPropXml = "<a:pPr ".concat(((_a = line[0].options) === null || _a === void 0 ? void 0 : _a.rtlMode) ? ' rtl="1" ' : '');
         // B: Start paragraph, loop over lines and add text runs
         line.forEach(function (textObj, idx) {
             // A: Set line index
             textObj.options._lineIdx = idx;
             // A.1: Add soft break if not the first run of the line.
             if (idx > 0 && textObj.options.softBreakBefore) {
-                strSlideXml += "<a:br/>";
+                strSlideXml += '<a:br/>';
             }
             // B: Inherit pPr-type options from parent shape's `options`
             textObj.options.align = textObj.options.align || opts.align;
@@ -2740,13 +2764,15 @@ function genXmlTextBody(slideObj) {
             // C: Inherit any main options (color, fontSize, etc.)
             // NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
             // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
-            Object.entries(opts).forEach(function (_a) {
+            // FILTER RULE: Hyperlinks should not inherit `color` from main options (let PPT default to local color, eg: blue on MacOS)
+            Object.entries(opts).filter(function (_a) {
+                var key = _a[0]; _a[1];
+                return !(textObj.options.hyperlink && key === 'color');
+            }).forEach(function (_a) {
                 var key = _a[0], val = _a[1];
-                // RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
-                if (textObj.options.hyperlink && key === 'color')
-                    ;
+                // if (textObj.options.hyperlink && key === 'color') null
                 // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-                else if (key !== 'bullet' && !textObj.options[key])
+                if (key !== 'bullet' && !textObj.options[key])
                     textObj.options[key] = val;
             });
             // D: Add formatted textrun
@@ -2793,11 +2819,13 @@ function genXmlTextBody(slideObj) {
  * @returns XML
  */
 function genXmlPlaceholder(placeholderObj) {
+    var _a, _b;
     if (!placeholderObj)
         return '';
-    var placeholderIdx = placeholderObj.options && placeholderObj.options._placeholderIdx ? placeholderObj.options._placeholderIdx : '';
-    var placeholderType = placeholderObj.options && placeholderObj.options._placeholderType ? placeholderObj.options._placeholderType : '';
-    return "<p:ph\n\t\t".concat(placeholderIdx ? ' idx="' + placeholderIdx + '"' : '', "\n\t\t").concat(placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="' + PLACEHOLDER_TYPES[placeholderType] + '"' : '', "\n\t\t").concat(placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : '', "\n\t\t/>");
+    var placeholderIdx = ((_a = placeholderObj.options) === null || _a === void 0 ? void 0 : _a._placeholderIdx) ? placeholderObj.options._placeholderIdx : '';
+    var placeholderTyp = ((_b = placeholderObj.options) === null || _b === void 0 ? void 0 : _b._placeholderType) ? placeholderObj.options._placeholderType : '';
+    var placeholderType = placeholderTyp && PLACEHOLDER_TYPES[placeholderTyp] ? (PLACEHOLDER_TYPES[placeholderTyp]).toString() : '';
+    return "<p:ph\n\t\t".concat(placeholderIdx ? ' idx="' + placeholderIdx.toString() + '"' : '', "\n\t\t").concat(placeholderType && PLACEHOLDER_TYPES[placeholderType] ? " type=\"".concat(placeholderType, "\"") : '', "\n\t\t").concat(placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : '', "\n\t\t/>");
 }
 // XML-GEN: First 6 functions create the base /ppt files
 /**
@@ -2821,7 +2849,7 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     strXml += '<Default Extension="mp4" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
     slides.forEach(function (slide) {
         (slide._relsMedia || []).forEach(function (rel) {
-            if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1) {
+            if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && !strXml.includes(rel.type)) {
                 strXml += '<Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>';
             }
         });
@@ -2832,14 +2860,11 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     strXml += '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
     strXml += '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>';
     slides.forEach(function (slide, idx) {
-        strXml +=
-            '<Override PartName="/ppt/slideMasters/slideMaster' +
-                (idx + 1) +
-                '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>';
-        strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
+        strXml += "<Override PartName=\"/ppt/slideMasters/slideMaster".concat(idx + 1, ".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml\"/>");
+        strXml += "<Override PartName=\"/ppt/slides/slide".concat(idx + 1, ".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.presentationml.slide+xml\"/>");
         // Add charts if any
         slide._relsChart.forEach(function (rel) {
-            strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+            strXml += "<Override PartName=\"".concat(rel.Target, "\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>");
         });
     });
     // STEP 3: Core PPT
@@ -2849,28 +2874,23 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     strXml += '<Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>';
     // STEP 4: Add Slide Layouts
     slideLayouts.forEach(function (layout, idx) {
-        strXml +=
-            '<Override PartName="/ppt/slideLayouts/slideLayout' +
-                (idx + 1) +
-                '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
+        strXml += "<Override PartName=\"/ppt/slideLayouts/slideLayout".concat(idx + 1, ".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml\"/>");
         (layout._relsChart || []).forEach(function (rel) {
             strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
         });
     });
     // STEP 5: Add notes slide(s)
     slides.forEach(function (_slide, idx) {
-        strXml +=
-            ' <Override PartName="/ppt/notesSlides/notesSlide' +
-                (idx + 1) +
-                '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>';
+        strXml += "<Override PartName=\"/ppt/notesSlides/notesSlide".concat(idx + 1, ".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml\"/>");
     });
     // STEP 6: Add rels
     masterSlide._relsChart.forEach(function (rel) {
         strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
     });
     masterSlide._relsMedia.forEach(function (rel) {
-        if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1)
+        if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && !strXml.includes(rel.type)) {
             strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>';
+        }
     });
     // LAST: Finish XML (Resume core)
     strXml += ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>';
@@ -2892,7 +2912,7 @@ function makeXmlRootRels() {
  * @returns XML
  */
 function makeXmlApp(slides, company) {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".concat(CRLF, "<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\">\n\t<TotalTime>0</TotalTime>\n\t<Words>0</Words>\n\t<Application>Microsoft Office PowerPoint</Application>\n\t<PresentationFormat>On-screen Show (16:9)</PresentationFormat>\n\t<Paragraphs>0</Paragraphs>\n\t<Slides>").concat(slides.length, "</Slides>\n\t<Notes>").concat(slides.length, "</Notes>\n\t<HiddenSlides>0</HiddenSlides>\n\t<MMClips>0</MMClips>\n\t<ScaleCrop>false</ScaleCrop>\n\t<HeadingPairs>\n\t\t<vt:vector size=\"6\" baseType=\"variant\">\n\t\t\t<vt:variant><vt:lpstr>Fonts Used</vt:lpstr></vt:variant>\n\t\t\t<vt:variant><vt:i4>2</vt:i4></vt:variant>\n\t\t\t<vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>\n\t\t\t<vt:variant><vt:i4>1</vt:i4></vt:variant>\n\t\t\t<vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>\n\t\t\t<vt:variant><vt:i4>").concat(slides.length, "</vt:i4></vt:variant>\n\t\t</vt:vector>\n\t</HeadingPairs>\n\t<TitlesOfParts>\n\t\t<vt:vector size=\"").concat(slides.length + 1 + 2, "\" baseType=\"lpstr\">\n\t\t\t<vt:lpstr>Arial</vt:lpstr>\n\t\t\t<vt:lpstr>Calibri</vt:lpstr>\n\t\t\t<vt:lpstr>Office Theme</vt:lpstr>\n\t\t\t").concat(slides.map(function (_slideObj, idx) { return '<vt:lpstr>Slide ' + (idx + 1) + '</vt:lpstr>\n'; }).join(''), "\n\t\t</vt:vector>\n\t</TitlesOfParts>\n\t<Company>").concat(company, "</Company>\n\t<LinksUpToDate>false</LinksUpToDate>\n\t<SharedDoc>false</SharedDoc>\n\t<HyperlinksChanged>false</HyperlinksChanged>\n\t<AppVersion>16.0000</AppVersion>\n\t</Properties>");
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".concat(CRLF, "<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\">\n\t<TotalTime>0</TotalTime>\n\t<Words>0</Words>\n\t<Application>Microsoft Office PowerPoint</Application>\n\t<PresentationFormat>On-screen Show (16:9)</PresentationFormat>\n\t<Paragraphs>0</Paragraphs>\n\t<Slides>").concat(slides.length, "</Slides>\n\t<Notes>").concat(slides.length, "</Notes>\n\t<HiddenSlides>0</HiddenSlides>\n\t<MMClips>0</MMClips>\n\t<ScaleCrop>false</ScaleCrop>\n\t<HeadingPairs>\n\t\t<vt:vector size=\"6\" baseType=\"variant\">\n\t\t\t<vt:variant><vt:lpstr>Fonts Used</vt:lpstr></vt:variant>\n\t\t\t<vt:variant><vt:i4>2</vt:i4></vt:variant>\n\t\t\t<vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>\n\t\t\t<vt:variant><vt:i4>1</vt:i4></vt:variant>\n\t\t\t<vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>\n\t\t\t<vt:variant><vt:i4>").concat(slides.length, "</vt:i4></vt:variant>\n\t\t</vt:vector>\n\t</HeadingPairs>\n\t<TitlesOfParts>\n\t\t<vt:vector size=\"").concat(slides.length + 1 + 2, "\" baseType=\"lpstr\">\n\t\t\t<vt:lpstr>Arial</vt:lpstr>\n\t\t\t<vt:lpstr>Calibri</vt:lpstr>\n\t\t\t<vt:lpstr>Office Theme</vt:lpstr>\n\t\t\t").concat(slides.map(function (_slideObj, idx) { return "<vt:lpstr>Slide ".concat(idx + 1, "</vt:lpstr>"); }).join(''), "\n\t\t</vt:vector>\n\t</TitlesOfParts>\n\t<Company>").concat(company, "</Company>\n\t<LinksUpToDate>false</LinksUpToDate>\n\t<SharedDoc>false</SharedDoc>\n\t<HyperlinksChanged>false</HyperlinksChanged>\n\t<AppVersion>16.0000</AppVersion>\n\t</Properties>");
 }
 /**
  * Creates `docProps/core.xml`
@@ -2916,26 +2936,15 @@ function makeXmlPresentationRels(slides) {
     strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
     strXml += '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>';
     for (var idx = 1; idx <= slides.length; idx++) {
-        strXml +=
-            '<Relationship Id="rId' + ++intRelNum + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide' + idx + '.xml"/>';
+        strXml += "<Relationship Id=\"rId".concat(++intRelNum, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide\" Target=\"slides/slide").concat(idx, ".xml\"/>");
     }
     intRelNum++;
     strXml +=
-        '<Relationship Id="rId' +
-            intRelNum +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>' +
-            '<Relationship Id="rId' +
-            (intRelNum + 1) +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>' +
-            '<Relationship Id="rId' +
-            (intRelNum + 2) +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>' +
-            '<Relationship Id="rId' +
-            (intRelNum + 3) +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
-            '<Relationship Id="rId' +
-            (intRelNum + 4) +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>' +
+        "<Relationship Id=\"rId".concat(intRelNum + 0, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster\" Target=\"notesMasters/notesMaster1.xml\"/>") +
+            "<Relationship Id=\"rId".concat(intRelNum + 1, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps\" Target=\"presProps.xml\"/>") +
+            "<Relationship Id=\"rId".concat(intRelNum + 2, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps\" Target=\"viewProps.xml\"/>") +
+            "<Relationship Id=\"rId".concat(intRelNum + 3, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>") +
+            "<Relationship Id=\"rId".concat(intRelNum + 4, "\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles\" Target=\"tableStyles.xml\"/>") +
             '</Relationships>';
     return strXml;
 }
@@ -2947,11 +2956,11 @@ function makeXmlPresentationRels(slides) {
  */
 function makeXmlSlide(slide) {
     return ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".concat(CRLF) +
-        "<p:sld xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" " +
-        "xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"" +
-        "".concat(slide && slide.hidden ? ' show="0"' : '', ">") +
+        '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
+        'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
+        "".concat((slide === null || slide === void 0 ? void 0 : slide.hidden) ? ' show="0"' : '', ">") +
         "".concat(slideObjectToXml(slide)) +
-        "<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>");
+        '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>');
 }
 /**
  * Get text content of Notes from Slide
@@ -2962,7 +2971,7 @@ function getNotesFromSlide(slide) {
     var notesText = '';
     slide._slideObjects.forEach(function (data) {
         if (data._type === SLIDE_OBJECT_TYPES.notes)
-            notesText += data.text && data.text[0] ? data.text[0].text : '';
+            notesText += (data === null || data === void 0 ? void 0 : data.text) && data.text[0] ? data.text[0].text : '';
     });
     return notesText.replace(/\r*\n/g, CRLF);
 }
@@ -2979,35 +2988,7 @@ function makeXmlNotesMaster() {
  * @return {string} XML
  */
 function makeXmlNotesSlide(slide) {
-    return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-        CRLF +
-        '<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">' +
-        '<p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/>' +
-        '<p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/>' +
-        '<a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/>' +
-        '</a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Slide Image Placeholder 1"/>' +
-        '<p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/></p:cNvSpPr>' +
-        '<p:nvPr><p:ph type="sldImg"/></p:nvPr></p:nvSpPr><p:spPr/>' +
-        '</p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Notes Placeholder 2"/>' +
-        '<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr>' +
-        '<p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr><p:spPr/>' +
-        '<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r>' +
-        '<a:rPr lang="en-US" dirty="0"/><a:t>' +
-        encodeXmlEntities(getNotesFromSlide(slide)) +
-        '</a:t></a:r><a:endParaRPr lang="en-US" dirty="0"/></a:p></p:txBody>' +
-        '</p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Number Placeholder 3"/>' +
-        '<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr>' +
-        '<p:ph type="sldNum" sz="quarter" idx="10"/></p:nvPr></p:nvSpPr>' +
-        '<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p>' +
-        '<a:fld id="' +
-        SLDNUMFLDID +
-        '" type="slidenum">' +
-        '<a:rPr lang="en-US"/><a:t>' +
-        slide._slideNum +
-        '</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp>' +
-        '</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
-        '<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991"/>' +
-        '</p:ext></p:extLst></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:notes>');
+    return ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".concat(CRLF, "<p:notes xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id=\"1\" name=\"\"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x=\"0\" y=\"0\"/><a:ext cx=\"0\" cy=\"0\"/><a:chOff x=\"0\" y=\"0\"/><a:chExt cx=\"0\" cy=\"0\"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id=\"2\" name=\"Slide Image Placeholder 1\"/><p:cNvSpPr><a:spLocks noGrp=\"1\" noRot=\"1\" noChangeAspect=\"1\"/></p:cNvSpPr><p:nvPr><p:ph type=\"sldImg\"/></p:nvPr></p:nvSpPr><p:spPr/></p:sp><p:sp><p:nvSpPr><p:cNvPr id=\"3\" name=\"Notes Placeholder 2\"/><p:cNvSpPr><a:spLocks noGrp=\"1\"/></p:cNvSpPr><p:nvPr><p:ph type=\"body\" idx=\"1\"/></p:nvPr></p:nvSpPr><p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang=\"en-US\" dirty=\"0\"/><a:t>").concat(encodeXmlEntities(getNotesFromSlide(slide)), "</a:t></a:r><a:endParaRPr lang=\"en-US\" dirty=\"0\"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id=\"4\" name=\"Slide Number Placeholder 3\"/><p:cNvSpPr><a:spLocks noGrp=\"1\"/></p:cNvSpPr><p:nvPr><p:ph type=\"sldNum\" sz=\"quarter\" idx=\"10\"/></p:nvPr></p:nvSpPr><p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:fld id=\"").concat(SLDNUMFLDID, "\" type=\"slidenum\"><a:rPr lang=\"en-US\"/><a:t>").concat(slide._slideNum, "</a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p></p:txBody></p:sp></p:spTree><p:extLst><p:ext uri=\"{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}\"><p14:creationId xmlns:p14=\"http://schemas.microsoft.com/office/powerpoint/2010/main\" val=\"1024086991\"/></p:ext></p:extLst></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:notes>"));
 }
 /**
  * Generates the XML layout resource from a layout object
@@ -3025,7 +3006,7 @@ function makeXmlLayout(layout) {
  */
 function makeXmlMaster(slide, layouts) {
     // NOTE: Pass layouts as static rels because they are not referenced any time
-    var layoutDefs = layouts.map(function (_layoutDef, idx) { return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide._rels.length + idx + 1) + '"/>'; });
+    var layoutDefs = layouts.map(function (_layoutDef, idx) { return "<p:sldLayoutId id=\"".concat(LAYOUT_IDX_SERIES_BASE + idx, "\" r:id=\"rId").concat(slide._rels.length + idx + 1, "\"/>"); });
     var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
     strXml +=
         '<p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
@@ -3090,11 +3071,11 @@ function makeXmlSlideLayoutRel(layoutNumber, slideLayouts) {
 function makeXmlSlideRel(slides, slideLayouts, slideNumber) {
     return slideObjectRelationsToXml(slides[slideNumber - 1], [
         {
-            target: '../slideLayouts/slideLayout' + getLayoutIdxForSlide(slides, slideLayouts, slideNumber) + '.xml',
+            target: "../slideLayouts/slideLayout".concat(getLayoutIdxForSlide(slides, slideLayouts, slideNumber), ".xml"),
             type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
         },
         {
-            target: '../notesSlides/notesSlide' + slideNumber + '.xml',
+            target: "../notesSlides/notesSlide".concat(slideNumber, ".xml"),
             type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide',
         },
     ]);
@@ -3162,7 +3143,7 @@ function makeXmlTheme() {
  */
 function makeXmlPresentation(pres) {
     var strXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".concat(CRLF) +
-        "<p:presentation xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" " +
+        '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
         "xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" ".concat(pres.rtlMode ? 'rtl="1"' : '', " saveSubsetFonts=\"1\" autoCompressPictures=\"0\">");
     // STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
     strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
@@ -3184,7 +3165,7 @@ function makeXmlPresentation(pres) {
     for (var idy = 1; idy < 10; idy++) {
         strXml +=
             "<a:lvl".concat(idy, "pPr marL=\"").concat((idy - 1) * 457200, "\" algn=\"l\" defTabSz=\"914400\" rtl=\"0\" eaLnBrk=\"1\" latinLnBrk=\"0\" hangingPunct=\"1\">") +
-                "<a:defRPr sz=\"1800\" kern=\"1200\"><a:solidFill><a:schemeClr val=\"tx1\"/></a:solidFill><a:latin typeface=\"+mn-lt\"/><a:ea typeface=\"+mn-ea\"/><a:cs typeface=\"+mn-cs\"/>" +
+                '<a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
                 "</a:defRPr></a:lvl".concat(idy, "pPr>");
     }
     strXml += '</p:defaultTextStyle>';
@@ -3195,7 +3176,7 @@ function makeXmlPresentation(pres) {
         pres.sections.forEach(function (sect) {
             strXml += "<p14:section name=\"".concat(encodeXmlEntities(sect.title), "\" id=\"{").concat(getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'), "}\"><p14:sldIdLst>");
             sect._slides.forEach(function (slide) { return (strXml += "<p14:sldId id=\"".concat(slide._slideId, "\"/>")); });
-            strXml += "</p14:sldIdLst></p14:section>";
+            strXml += '</p14:sldIdLst></p14:section>';
         });
         strXml += '</p14:sectionLst></p:ext>';
         strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>';
@@ -3233,7 +3214,7 @@ function makeXmlViewProps() {
  */
 function correctShadowOptions(ShadowProps) {
     if (!ShadowProps || typeof ShadowProps !== 'object') {
-        //console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
+        // console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
         return;
     }
     // OPT: `type`
@@ -3275,7 +3256,7 @@ var _chartCounter = 0;
  */
 function createSlideMaster(props, target) {
     // STEP 1: Add background if either the slide or layout has background props
-    //	if (props.background || target.background) addBackgroundDefinition(props.background, target)
+    // if (props.background || target.background) addBackgroundDefinition(props.background, target)
     if (props.bkgd)
         target.bkgd = props.bkgd; // DEPRECATED: (remove in v4.0.0)
     // STEP 2: Add all Slide Master objects in the order they were given
@@ -3302,7 +3283,7 @@ function createSlideMaster(props, target) {
                 object[key].options._placeholderIdx = 100 + idx;
                 addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true);
                 // TODO: ISSUE#599 - only text is suported now (add more below)
-                //else if (object[key].image) addImageDefinition(tgt, object[key].image)
+                // else if (object[key].image) addImageDefinition(tgt, object[key].image)
                 /* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
                     <p:sp>
                   <p:nvSpPr>
@@ -3332,22 +3313,23 @@ function createSlideMaster(props, target) {
  * @param {PresSlide} `target` slide object that the chart will be added to
  * @return {object} chart object
  * {
- *   title: 'eSurvey chart',
- *   data: [
- *		{
- *			name: 'Income',
- *			labels: ['2005', '2006', '2007', '2008', '2009'],
- *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
- *		},
- *		{
- *			name: 'Expense',
- *			labels: ['2005', '2006', '2007', '2008', '2009'],
- *			values: [18.1, 22.8, 23.9, 25.1, 25]
- *		}
- *	 ]
- *	}
+ *    title: 'eSurvey chart',
+ *    data: [
+ *        {
+ *            name: 'Income',
+ *            labels: ['2005', '2006', '2007', '2008', '2009'],
+ *            values: [23.5, 26.2, 30.1, 29.5, 24.6]
+ *        },
+ *        {
+ *            name: 'Expense',
+ *            labels: ['2005', '2006', '2007', '2008', '2009'],
+ *            values: [18.1, 22.8, 23.9, 25.1, 25]
+ *        }
+ *    ]
+ * }
  */
 function addChartDefinition(target, type, data, opt) {
+    var _a;
     function correctGridLineOptions(glOpts) {
         if (!glOpts || glOpts.style === 'none')
             return;
@@ -3355,7 +3337,7 @@ function addChartDefinition(target, type, data, opt) {
             console.warn('Warning: chart.gridLine.size must be greater than 0.');
             delete glOpts.size; // delete prop to used defaults
         }
-        if (glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0) {
+        if (glOpts.style && !['solid', 'dash', 'dot'].includes(glOpts.style)) {
             console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
             delete glOpts.style;
         }
@@ -3370,8 +3352,8 @@ function addChartDefinition(target, type, data, opt) {
     // DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
     // EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
     // Multi-Type Charts
-    var tmpOpt;
-    var tmpData = [], options;
+    var tmpOpt = null;
+    var tmpData = [];
     if (Array.isArray(type)) {
         // For multi-type charts there needs to be data for each type,
         // as well as a single data source for non-series operations.
@@ -3393,7 +3375,7 @@ function addChartDefinition(target, type, data, opt) {
             item.labels = [item.labels];
         }
     });
-    options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {};
+    var options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {};
     // STEP 1: TODO: check for reqd fields, correct type, etc
     // `type` exists in CHART_TYPE
     // Array.isArray(data)
@@ -3419,63 +3401,64 @@ function addChartDefinition(target, type, data, opt) {
         ? encodeXmlEntities(options.objectName)
         : "Chart ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.chart; }).length);
     // B: Options: misc
-    if (['bar', 'col'].indexOf(options.barDir || '') < 0)
+    if (!['bar', 'col'].includes(options.barDir || ''))
         options.barDir = 'col';
     // barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
     // barGrouping must be handled before data label validation as it can affect valid label positioning
     if (options._type === CHART_TYPE.AREA) {
-        if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+        if (!['stacked', 'standard', 'percentStacked'].includes(options.barGrouping || ''))
             options.barGrouping = 'standard';
     }
     if (options._type === CHART_TYPE.BAR) {
-        if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+        if (!['clustered', 'stacked', 'percentStacked'].includes(options.barGrouping || ''))
             options.barGrouping = 'clustered';
     }
     if (options._type === CHART_TYPE.BAR3D) {
-        if (['clustered', 'stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+        if (!['clustered', 'stacked', 'standard', 'percentStacked'].includes(options.barGrouping || ''))
             options.barGrouping = 'standard';
     }
-    if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
+    if ((_a = options.barGrouping) === null || _a === void 0 ? void 0 : _a.includes('tacked')) {
         if (!options.barGapWidthPct)
             options.barGapWidthPct = 50;
     }
     // Clean up and validate data label positions
     // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
     if (options.dataLabelPosition) {
-        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR)
+        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR) {
             delete options.dataLabelPosition;
+        }
         if (options._type === CHART_TYPE.PIE) {
-            if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
+            if (!['bestFit', 'ctr', 'inEnd', 'outEnd'].includes(options.dataLabelPosition))
                 delete options.dataLabelPosition;
         }
         if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.BUBBLE3D || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
-            if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0)
+            if (!['b', 'ctr', 'l', 'r', 't'].includes(options.dataLabelPosition))
                 delete options.dataLabelPosition;
         }
         if (options._type === CHART_TYPE.BAR) {
-            if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr', 'inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0)
+            if (!['stacked', 'percentStacked'].includes(options.barGrouping || '')) {
+                if (!['ctr', 'inBase', 'inEnd'].includes(options.dataLabelPosition))
                     delete options.dataLabelPosition;
             }
-            if (['clustered'].indexOf(options.barGrouping || '') < 0) {
-                if (['ctr', 'inBase', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
+            if (!['clustered'].includes(options.barGrouping || '')) {
+                if (!['ctr', 'inBase', 'inEnd', 'outEnd'].includes(options.dataLabelPosition))
                     delete options.dataLabelPosition;
             }
         }
     }
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
-    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
+    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors || !options.dataLabelBkgrdColors ? options.dataLabelBkgrdColors : false;
+    if (!['b', 'l', 'r', 't', 'tr'].includes(options.legendPos || ''))
         options.legendPos = 'r';
     // 3D bar: ST_Shape
-    if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0)
+    if (!['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].includes(options.bar3DShape || ''))
         options.bar3DShape = 'box';
     // lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
     // Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
-    if (['circle', 'dash', 'diamond', 'dot', 'none', 'square', 'triangle'].indexOf(options.lineDataSymbol || '') < 0)
+    if (!['circle', 'dash', 'diamond', 'dot', 'none', 'square', 'triangle'].includes(options.lineDataSymbol || ''))
         options.lineDataSymbol = 'circle';
-    if (['gap', 'span'].indexOf(options.displayBlanksAs || '') < 0)
+    if (!['gap', 'span'].includes(options.displayBlanksAs || ''))
         options.displayBlanksAs = 'span';
-    if (['standard', 'marker', 'filled'].indexOf(options.radarStyle || '') < 0)
+    if (!['standard', 'marker', 'filled'].includes(options.radarStyle || ''))
         options.radarStyle = 'standard';
     options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6;
     options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? valToPts(options.lineDataSymbolLineSize) : valToPts(0.75);
@@ -3485,6 +3468,7 @@ function addChartDefinition(target, type, data, opt) {
             var val = options.layout[key];
             if (isNaN(Number(val)) || val < 0 || val > 1) {
                 console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
+                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
                 delete options.layout[key]; // remove invalid value so that default will be used
             }
         });
@@ -3498,23 +3482,23 @@ function addChartDefinition(target, type, data, opt) {
     correctGridLineOptions(options.serGridLine);
     correctShadowOptions(options.shadow);
     // C: Options: plotArea
-    options.showDataTable = options.showDataTable === true || options.showDataTable === false ? options.showDataTable : false;
-    options.showDataTableHorzBorder = options.showDataTableHorzBorder === true || options.showDataTableHorzBorder === false ? options.showDataTableHorzBorder : true;
-    options.showDataTableVertBorder = options.showDataTableVertBorder === true || options.showDataTableVertBorder === false ? options.showDataTableVertBorder : true;
-    options.showDataTableOutline = options.showDataTableOutline === true || options.showDataTableOutline === false ? options.showDataTableOutline : true;
-    options.showDataTableKeys = options.showDataTableKeys === true || options.showDataTableKeys === false ? options.showDataTableKeys : true;
-    options.showLabel = options.showLabel === true || options.showLabel === false ? options.showLabel : false;
-    options.showLegend = options.showLegend === true || options.showLegend === false ? options.showLegend : false;
-    options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true;
-    options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false;
-    options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false;
-    options.showLeaderLines = options.showLeaderLines === true || options.showLeaderLines === false ? options.showLeaderLines : false;
+    options.showDataTable = options.showDataTable || !options.showDataTable ? options.showDataTable : false;
+    options.showDataTableHorzBorder = options.showDataTableHorzBorder || !options.showDataTableHorzBorder ? options.showDataTableHorzBorder : true;
+    options.showDataTableVertBorder = options.showDataTableVertBorder || !options.showDataTableVertBorder ? options.showDataTableVertBorder : true;
+    options.showDataTableOutline = options.showDataTableOutline || !options.showDataTableOutline ? options.showDataTableOutline : true;
+    options.showDataTableKeys = options.showDataTableKeys || !options.showDataTableKeys ? options.showDataTableKeys : true;
+    options.showLabel = options.showLabel || !options.showLabel ? options.showLabel : false;
+    options.showLegend = options.showLegend || !options.showLegend ? options.showLegend : false;
+    options.showPercent = options.showPercent || !options.showPercent ? options.showPercent : true;
+    options.showTitle = options.showTitle || !options.showTitle ? options.showTitle : false;
+    options.showValue = options.showValue || !options.showValue ? options.showValue : false;
+    options.showLeaderLines = options.showLeaderLines || !options.showLeaderLines ? options.showLeaderLines : false;
     options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true;
     options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true;
     options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true;
     options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30;
     options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30;
-    options.v3DRAngAx = options.v3DRAngAx === true || options.v3DRAngAx === false ? options.v3DRAngAx : true;
+    options.v3DRAngAx = options.v3DRAngAx || !options.v3DRAngAx ? options.v3DRAngAx : true;
     options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30;
     // D: Options: chart
     options.barGapWidthPct = !isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150;
@@ -3536,8 +3520,9 @@ function addChartDefinition(target, type, data, opt) {
     options.plotArea.border = options.plotArea.border && typeof options.plotArea.border === 'object' ? options.plotArea.border : null;
     if (options.plotArea.border && (!options.plotArea.border.pt || isNaN(options.plotArea.border.pt)))
         options.plotArea.border.pt = DEF_CHART_BORDER.pt;
-    if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string'))
+    if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string')) {
         options.plotArea.border.color = DEF_CHART_BORDER.color;
+    }
     if (options.border)
         options.plotArea.border = options.border; // @deprecated [[remove in v4.0]]
     options.plotArea.fill = options.plotArea.fill || { color: null, transparency: null };
@@ -3557,13 +3542,15 @@ function addChartDefinition(target, type, data, opt) {
     options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
     if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
         options.dataBorder.pt = 0.75;
-    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
+    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6)) {
         options.dataBorder.color = 'F9F9F9';
+    }
     //
     if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER)
         options.dataLabelFormatCode = 'General';
-    if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT))
+    if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)) {
         options.dataLabelFormatCode = options.showPercent ? '0%' : 'General';
+    }
     options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0';
     //
     // Set default format for Scatter chart labels to custom string if not defined
@@ -3589,8 +3576,8 @@ function addChartDefinition(target, type, data, opt) {
         opts: options,
         type: options._type,
         globalId: chartId,
-        fileName: 'chart' + chartId + '.xml',
-        Target: '/ppt/charts/chart' + chartId + '.xml',
+        fileName: "chart".concat(chartId, ".xml"),
+        Target: "/ppt/charts/chart".concat(chartId, ".xml"),
     });
     target._slideObjects.push(resultObject);
     return resultObject;
@@ -3625,19 +3612,19 @@ function addImageDefinition(target, opt) {
     var objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : "Image ".concat(target._slideObjects.filter(function (obj) { return obj._type === SLIDE_OBJECT_TYPES.image; }).length);
     // REALITY-CHECK:
     if (!strImagePath && !strImageData) {
-        console.error("ERROR: addImage() requires either 'data' or 'path' parameter!");
+        console.error('ERROR: addImage() requires either \'data\' or \'path\' parameter!');
         return null;
     }
     else if (strImagePath && typeof strImagePath !== 'string') {
-        console.error("ERROR: addImage() 'path' should be a string, ex: {path:'/img/sample.png'} - you sent ".concat(strImagePath));
+        console.error("ERROR: addImage() 'path' should be a string, ex: {path:'/img/sample.png'} - you sent ".concat(String(strImagePath)));
         return null;
     }
     else if (strImageData && typeof strImageData !== 'string') {
-        console.error("ERROR: addImage() 'data' should be a string, ex: {data:'image/png;base64,NMP[...]'} - you sent ".concat(strImageData));
+        console.error("ERROR: addImage() 'data' should be a string, ex: {data:'image/png;base64,NMP[...]'} - you sent ".concat(String(strImageData)));
         return null;
     }
-    else if (strImageData && typeof strImageData === 'string' && strImageData.toLowerCase().indexOf('base64,') === -1) {
-        console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
+    else if (strImageData && typeof strImageData === 'string' && !strImageData.toLowerCase().includes('base64,')) {
+        console.error('ERROR: Image `data` value lacks a base64 header! Ex: \'image/png;base64,NMP[...]\')');
         return null;
     }
     // STEP 1: Set extension
@@ -3652,7 +3639,7 @@ function addImageDefinition(target, opt) {
     if (strImageData && /image\/(\w+);/.exec(strImageData) && /image\/(\w+);/.exec(strImageData).length > 0) {
         strImgExtn = /image\/(\w+);/.exec(strImageData)[1];
     }
-    else if (strImageData && strImageData.toLowerCase().indexOf('image/svg+xml') > -1) {
+    else if (strImageData === null || strImageData === void 0 ? void 0 : strImageData.toLowerCase().includes('image/svg+xml')) {
         strImgExtn = 'svg';
     }
     // STEP 2: Set type/path
@@ -3688,7 +3675,7 @@ function addImageDefinition(target, opt) {
             extn: 'png',
             data: strImageData || '',
             rId: imageRelId,
-            Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+            Target: "../media/image-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".png"),
             isSvgPng: true,
             svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
         });
@@ -3699,21 +3686,21 @@ function addImageDefinition(target, opt) {
             extn: strImgExtn,
             data: strImageData || '',
             rId: imageRelId + 1,
-            Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+            Target: "../media/image-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".").concat(strImgExtn),
         });
         newObject.imageRid = imageRelId + 1;
     }
     else {
         // PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
-        var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && item.isDuplicate === false; })[0];
+        var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && !item.isDuplicate; })[0];
         target._relsMedia.push({
             path: strImagePath || 'preencoded.' + strImgExtn,
             type: 'image/' + strImgExtn,
             extn: strImgExtn,
             data: strImageData || '',
             rId: imageRelId,
-            isDuplicate: dupeItem && dupeItem.Target ? true : false,
-            Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/image-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".").concat(strImgExtn),
+            isDuplicate: !!(dupeItem === null || dupeItem === void 0 ? void 0 : dupeItem.Target),
+            Target: (dupeItem === null || dupeItem === void 0 ? void 0 : dupeItem.Target) ? dupeItem.Target : "../media/image-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".").concat(strImgExtn),
         });
         newObject.imageRid = imageRelId;
     }
@@ -3756,17 +3743,17 @@ function addMediaDefinition(target, opt) {
     var slideData = { _type: SLIDE_OBJECT_TYPES.media };
     // STEP 1: REALITY-CHECK
     if (!strPath && !strData && strType !== 'online') {
-        throw new Error("addMedia() error: either 'data' or 'path' are required!");
+        throw new Error('addMedia() error: either `data` or `path` are required!');
     }
-    else if (strData && strData.toLowerCase().indexOf('base64,') === -1) {
-        throw new Error("addMedia() error: `data` value lacks a base64 header! Ex: 'video/mpeg;base64,NMP[...]')");
+    else if (strData && !strData.toLowerCase().includes('base64,')) {
+        throw new Error('addMedia() error: `data` value lacks a base64 header! Ex: \'video/mpeg;base64,NMP[...]\')');
     }
     // Online Video: requires `link`
     if (strType === 'online' && !strLink) {
         throw new Error('addMedia() error: online videos require `link` value');
     }
     // FIXME: 20190707
-    //strType = strData ? strData.split(';')[0].split('/')[0] : strType
+    // strType = strData ? strData.split(';')[0].split('/')[0] : strType
     strExtn = opt.extn || (strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()) || 'mp3';
     // STEP 2: Set type, media
     slideData.mtype = strType;
@@ -3807,12 +3794,12 @@ function addMediaDefinition(target, opt) {
             type: 'image/png',
             extn: 'png',
             rId: getNewRelId(target),
-            Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+            Target: "../media/image-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".png"),
         });
     }
     else {
         // PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
-        var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strPath && item.type === strType + '/' + strExtn && item.isDuplicate === false; })[0];
+        var dupeItem = target._relsMedia.filter(function (item) { return item.path && item.path === strPath && item.type === strType + '/' + strExtn && !item.isDuplicate; })[0];
         // A: "relationships/video"
         var relId1 = getNewRelId(target);
         target._relsMedia.push({
@@ -3821,8 +3808,8 @@ function addMediaDefinition(target, opt) {
             extn: strExtn,
             data: strData || '',
             rId: relId1,
-            isDuplicate: dupeItem && dupeItem.Target ? true : false,
-            Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/media-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".").concat(strExtn),
+            isDuplicate: !!(dupeItem === null || dupeItem === void 0 ? void 0 : dupeItem.Target),
+            Target: (dupeItem === null || dupeItem === void 0 ? void 0 : dupeItem.Target) ? dupeItem.Target : "../media/media-".concat(target._slideNum, "-").concat(target._relsMedia.length + 1, ".").concat(strExtn),
         });
         slideData.mediaRid = relId1;
         // B: "relationships/media"
@@ -3832,8 +3819,8 @@ function addMediaDefinition(target, opt) {
             extn: strExtn,
             data: strData || '',
             rId: getNewRelId(target),
-            isDuplicate: dupeItem && dupeItem.Target ? true : false,
-            Target: dupeItem && dupeItem.Target ? dupeItem.Target : "../media/media-".concat(target._slideNum, "-").concat(target._relsMedia.length + 0, ".").concat(strExtn),
+            isDuplicate: !!(dupeItem === null || dupeItem === void 0 ? void 0 : dupeItem.Target),
+            Target: (dupeItem === null || dupeItem === void 0 ? void 0 : dupeItem.Target) ? dupeItem.Target : "../media/media-".concat(target._slideNum, "-").concat(target._relsMedia.length + 0, ".").concat(strExtn),
         });
         // C: Add cover (preview/overlay) image
         target._relsMedia.push({
@@ -3901,7 +3888,7 @@ function addShapeDefinition(target, shapeName, opts) {
     // 3: Handle line (lots of deprecated opts)
     if (typeof options.line === 'string') {
         var tmpOpts = newLineOpts;
-        tmpOpts.color = options.line + ''; // @deprecated `options.line` string (was line color)
+        tmpOpts.color = String(options.line); // @deprecated `options.line` string (was line color)
         options.line = tmpOpts;
     }
     if (typeof options.lineSize === 'number')
@@ -3935,11 +3922,11 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     {
         // A: check for empty
         if (tableRows === null || tableRows.length === 0 || !Array.isArray(tableRows)) {
-            throw new Error("addTable: Array expected! EX: 'slide.addTable( [rows], {options} );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)");
+            throw new Error('addTable: Array expected! EX: \'slide.addTable( [rows], {options} );\' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)');
         }
         // B: check for non-well-formatted array (ex: rows=['a','b'] instead of [['a','b']])
         if (!tableRows[0] || !Array.isArray(tableRows[0])) {
-            throw new Error("addTable: 'rows' should be an array of cells! EX: 'slide.addTable( [ ['A'], ['B'], {text:'C',options:{align:'center'}} ] );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)");
+            throw new Error('addTable: \'rows\' should be an array of cells! EX: \'slide.addTable( [ [\'A\'], [\'B\'], {text:\'C\',options:{align:\'center\'}} ] );\' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)');
         }
         // TODO: FUTURE: This is wacky and wont function right (shows .w value when there is none from demo.js?!) 20191219
         /*
@@ -4021,7 +4008,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     if (!opt.color)
         opt.color = opt.color || DEF_FONT_COLOR; // Set default color if needed (table option > inherit from Slide > default to black)
     if (typeof opt.border === 'string') {
-        console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`");
+        console.warn('addTable `border` option must be an object. Ex: `{border: {type:\'none\'}}`');
         opt.border = null;
     }
     else if (Array.isArray(opt.border)) {
@@ -4049,8 +4036,9 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     if (slideLayout && typeof slideLayout._margin !== 'undefined') {
         if (Array.isArray(slideLayout._margin))
             arrTableMargin = slideLayout._margin;
-        else if (!isNaN(Number(slideLayout._margin)))
+        else if (!isNaN(Number(slideLayout._margin))) {
             arrTableMargin = [Number(slideLayout._margin), Number(slideLayout._margin), Number(slideLayout._margin), Number(slideLayout._margin)];
+        }
     }
     // Case 2: Table margins
     /* FIXME: add `_margin` option to slide options
@@ -4065,7 +4053,8 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
      */
     if (opt.colW) {
         var firstRowColCnt = arrRows[0].reduce(function (totalLen, c) {
-            if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
+            var _a;
+            if (((_a = c === null || c === void 0 ? void 0 : c.options) === null || _a === void 0 ? void 0 : _a.colspan) && typeof c.options.colspan === 'number') {
                 totalLen += c.options.colspan;
             }
             else {
@@ -4073,18 +4062,18 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             }
             return totalLen;
         }, 0);
-        // Ex: `colW = 3` or `colW = '3'`
         if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
+            // Ex: `colW = 3` or `colW = '3'`
             opt.w = Math.floor(Number(opt.colW) * firstRowColCnt);
             opt.colW = null; // IMPORTANT: Unset `colW` so table is created using `opt.w`, which will evenly divide cols
         }
-        // Ex: `colW=[3]` but with >1 cols (same as above, user is saying "use this width for all")
         else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length === 1 && firstRowColCnt > 1) {
+            // Ex: `colW=[3]` but with >1 cols (same as above, user is saying "use this width for all")
             opt.w = Math.floor(Number(opt.colW) * firstRowColCnt);
             opt.colW = null; // IMPORTANT: Unset `colW` so table is created using `opt.w`, which will evenly divide cols
         }
-        // Err: Mismatched colW and cols count
         else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== firstRowColCnt) {
+            // Err: Mismatched colW and cols count
             console.warn('addTable: mismatch: (colW.length != data.length) Therefore, defaulting to evenly distributed col widths.');
             opt.colW = null;
         }
@@ -4117,7 +4106,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             */
             if (typeof cell === 'number' || typeof cell === 'string') {
                 // Grab table formatting `opts` to use here so text style/format inherits as it should
-                row[idy] = { _type: SLIDE_OBJECT_TYPES.tablecell, text: row[idy].toString(), options: opt };
+                row[idy] = { _type: SLIDE_OBJECT_TYPES.tablecell, text: String(row[idy]), options: opt };
             }
             else if (typeof cell === 'object') {
                 // ARG0: `text`
@@ -4133,13 +4122,13 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             // B: Check for fine-grained formatting, disable auto-page when found
             // Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
             // Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
-            //if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
+            // if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
             // TODO: FIXME: WIP: 20210807: We cant do this anymore
         });
     });
     // STEP 6: Auto-Paging: (via {options} and used internally)
     // (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
-    if (opt && opt.autoPage === false) {
+    if (opt && !opt.autoPage) {
         // Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
         createHyperlinkRels(target, arrRows);
         // Add slideObjects (NOTE: Use `extend` to avoid mutation)
@@ -4156,7 +4145,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach(function (slide, idx) {
             // A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
             if (!getSlide(target._slideNum + idx))
-                slides.push(addSlide(slideLayout ? slideLayout._name : null));
+                slides.push(addSlide({ masterName: (slideLayout === null || slideLayout === void 0 ? void 0 : slideLayout._name) || null }));
             // B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
             if (idx > 0)
                 opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0]);
@@ -4183,7 +4172,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
 function addTextDefinition(target, text, opts, isPlaceholder) {
     var newObject = {
         _type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
-        shape: (opts && opts.shape) || SHAPE_TYPE.RECTANGLE,
+        shape: (opts === null || opts === void 0 ? void 0 : opts.shape) || SHAPE_TYPE.RECTANGLE,
         text: !text || text.length === 0 ? [{ text: '', options: null }] : text,
         options: opts || {},
     };
@@ -4201,7 +4190,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             // A.3: Text targeting a placeholder need to inherit the placeholders options (eg: margin, valign, etc.) (Issue #640)
             if (itemOpts.placeholder && target._slideLayout && target._slideLayout._slideObjects) {
                 var placeHold = target._slideLayout._slideObjects.filter(function (item) { return item._type === 'placeholder' && item.options && item.options.placeholder && item.options.placeholder === itemOpts.placeholder; })[0];
-                if (placeHold && placeHold.options)
+                if (placeHold === null || placeHold === void 0 ? void 0 : placeHold.options)
                     itemOpts = __assign(__assign({}, itemOpts), placeHold.options);
             }
             // A.4: Other options
@@ -4227,7 +4216,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
                     var tmpOpts = newLineOpts;
                     if (typeof itemOpts.line === 'string')
                         tmpOpts.color = itemOpts.line; // @deprecated [remove in v4.0]
-                    //tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line`:[string] (was line color)
+                    // tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line`:[string] (was line color)
                     itemOpts.line = tmpOpts;
                 }
                 if (typeof itemOpts.lineSize === 'number')
@@ -4296,6 +4285,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
  * @param {PresSlide} slide - slide object containing layouts
  */
 function addPlaceholdersToSlideLayouts(slide) {
+    // Add all placeholders on this Slide that dont already exist
     (slide._slideLayout._slideObjects || []).forEach(function (slideLayoutObj) {
         if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
             // A: Search for this placeholder on Slide before we add
@@ -4314,6 +4304,7 @@ function addPlaceholdersToSlideLayouts(slide) {
  * @param {PresSlide} target - slide object that the background is set to
  */
 function addBackgroundDefinition(props, target) {
+    var _a;
     // A: @deprecated
     if (target.bkgd) {
         if (!target.background)
@@ -4325,11 +4316,11 @@ function addBackgroundDefinition(props, target) {
                 target.background.data = target.bkgd.data;
             if (target.bkgd.path)
                 target.background.path = target.bkgd.path;
-            if (target.bkgd['src'])
-                target.background.path = target.bkgd['src']; // @deprecated (drop in 4.x)
+            if (target.bkgd.src)
+                target.background.path = target.bkgd.src; // @deprecated (drop in 4.x)
         }
     }
-    if (target.background && target.background.fill)
+    if ((_a = target.background) === null || _a === void 0 ? void 0 : _a.fill)
         target.background.color = target.background.fill;
     // B: Handle media
     if (props && (props.path || props.data)) {
@@ -4378,9 +4369,9 @@ function createHyperlinkRels(target, text) {
         }
         else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
             if (typeof text.options.hyperlink !== 'object')
-                console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
+                console.log('ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:\'https://github.com\'}` ');
             else if (!text.options.hyperlink.url && !text.options.hyperlink.slide)
-                console.log("ERROR: 'hyperlink requires either: `url` or `slide`'");
+                console.log('ERROR: \'hyperlink requires either: `url` or `slide`\'');
             else {
                 var relId = getNewRelId(target);
                 target._rels.push({
@@ -4400,9 +4391,10 @@ function createHyperlinkRels(target, text) {
  */
 var Slide = /** @class */ (function () {
     function Slide(params) {
+        var _a;
         this.addSlide = params.addSlide;
         this.getSlide = params.getSlide;
-        this._name = 'Slide ' + params.slideNumber;
+        this._name = "Slide ".concat(params.slideNumber);
         this._presLayout = params.presLayout;
         this._rId = params.slideRId;
         this._rels = [];
@@ -4417,7 +4409,7 @@ var Slide = /** @class */ (function () {
          * `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
          * so, lastly, add to the Slide now.
          */
-        this._slideNumberProps = this._slideLayout && this._slideLayout._slideNumberProps ? this._slideLayout._slideNumberProps : null;
+        this._slideNumberProps = ((_a = this._slideLayout) === null || _a === void 0 ? void 0 : _a._slideNumberProps) ? this._slideLayout._slideNumberProps : null;
     }
     Object.defineProperty(Slide.prototype, "bkgd", {
         get: function () {
@@ -4537,7 +4529,7 @@ var Slide = /** @class */ (function () {
         // But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
         // <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
         // TypeScript => `pptxgen.shapes.RECTANGLE` [string] "rect" ... shapeName = 'rect'
-        //let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
+        // let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
         addShapeDefinition(this, shapeName, options);
         return this;
     };
@@ -4576,474 +4568,476 @@ var Slide = /** @class */ (function () {
  * @return {Promise} promise of generating the XLSX file
  */
 function createExcelWorksheet(chartObject, zip) {
-    var data = chartObject.data;
-    return new Promise(function (resolve, reject) {
-        var zipExcel = new JSZip();
-        var intBubbleCols = (data.length - 1) * 2 + 1; // 1 for "X-Values", then 2 for every Y-Axis
-        var IS_MULTI_CAT_AXES = data[0] && data[0].labels && data[0].labels.length > 1;
-        // A: Add folders
-        zipExcel.folder('_rels');
-        zipExcel.folder('docProps');
-        zipExcel.folder('xl/_rels');
-        zipExcel.folder('xl/tables');
-        zipExcel.folder('xl/theme');
-        zipExcel.folder('xl/worksheets');
-        zipExcel.folder('xl/worksheets/_rels');
-        // B: Add core contents
-        {
-            zipExcel.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
-                '  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
-                '  <Default Extension="xml" ContentType="application/xml"/>' +
-                '  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
-                '  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
-                '  <Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>' +
-                '  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
-                '  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>' +
-                '  <Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>' +
-                '  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
-                '  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>' +
-                '</Types>\n');
-            zipExcel.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
-                '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
-                '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
-                '</Relationships>\n');
-            zipExcel.file('docProps/app.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' +
-                '<Application>Microsoft Macintosh Excel</Application>' +
-                '<DocSecurity>0</DocSecurity>' +
-                '<ScaleCrop>false</ScaleCrop>' +
-                '<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs>' +
-                '<TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>Sheet1</vt:lpstr></vt:vector></TitlesOfParts>' +
-                '<Company></Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>' +
-                '</Properties>\n');
-            zipExcel.file('docProps/core.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
-                '<dc:creator>PptxGenJS</dc:creator>' +
-                '<cp:lastModifiedBy>PptxGenJS</cp:lastModifiedBy>' +
-                '<dcterms:created xsi:type="dcterms:W3CDTF">' +
-                new Date().toISOString() +
-                '</dcterms:created>' +
-                '<dcterms:modified xsi:type="dcterms:W3CDTF">' +
-                new Date().toISOString() +
-                '</dcterms:modified>' +
-                '</cp:coreProperties>');
-            zipExcel.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-                '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
-                '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
-                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
-                '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>' +
-                '</Relationships>');
-            zipExcel.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="0" formatCode="General"/></numFmts><fonts count="4"><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="10"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="18"/><color indexed="8"/>' +
-                '<name val="Arial"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><dxfs count="0"/><tableStyles count="0"/><colors><indexedColors><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ffff0000"/><rgbColor rgb="ff00ff00"/><rgbColor rgb="ff0000ff"/>' +
-                '<rgbColor rgb="ffffff00"/><rgbColor rgb="ffff00ff"/><rgbColor rgb="ff00ffff"/><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ff878787"/><rgbColor rgb="fff9f9f9"/></indexedColors></colors></styleSheet>\n');
-            zipExcel.file('xl/theme/theme1.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light" panose="020F0302020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:majorFont><a:minorFont><a:latin typeface="Calibri" panose="020F0502020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/><a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}"><thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst></a:theme>');
-            zipExcel.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-                '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x15" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main">' +
-                '<fileVersion appName="xl" lastEdited="7" lowestEdited="6" rupBuild="10507"/>' +
-                '<workbookPr/>' +
-                '<bookViews><workbookView xWindow="0" yWindow="500" windowWidth="20960" windowHeight="15960"/></bookViews>' +
-                '<sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>' +
-                '<calcPr calcId="0" concurrentCalc="0"/>' +
-                '</workbook>\n');
-            zipExcel.file('xl/worksheets/_rels/sheet1.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>' +
-                '</Relationships>\n');
-        }
-        // sharedStrings.xml
-        {
-            // A: Start XML
-            var strSharedStrings_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(intBubbleCols, "\" uniqueCount=\"").concat(intBubbleCols, "\">");
-            }
-            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(data.length, "\" uniqueCount=\"").concat(data.length, "\">");
-            }
-            else if (IS_MULTI_CAT_AXES) {
-                var totCount_1 = data.length;
-                data[0].labels.forEach(function (arrLabel) { return (totCount_1 += arrLabel.filter(function (label) { return label && label !== ''; }).length); });
-                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(totCount_1, "\" uniqueCount=\"").concat(totCount_1, "\">");
-                strSharedStrings_1 += '<si><t/></si>';
-            }
-            else {
-                // series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
-                var totCount = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length;
-                // series names + labels of one series + blank string (same for all label groups)
-                var unqCount = data.length + data[0].labels.length * data[0].labels[0].length + 1;
-                // start `sst`
-                strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(totCount, "\" uniqueCount=\"").concat(unqCount, "\">");
-                // B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
-                strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
-            }
-            // C: Add `name`/Series
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                data.forEach(function (objData, idx) {
-                    if (idx === 0)
-                        strSharedStrings_1 += '<si><t>X-Axis</t></si>';
-                    else {
-                        strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities(objData.name || 'Y-Axis' + idx), "</t></si>");
-                        strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities('Size' + idx), "</t></si>");
-                    }
-                });
-            }
-            else {
-                data.forEach(function (objData) {
-                    strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')), "</t></si>");
-                });
-            }
-            // D: Add `labels`/Categories
-            if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
-                // Use forEach backwards & check for '' to support multi-cat axes
-                data[0].labels
-                    .slice()
-                    .reverse()
-                    .forEach(function (labelsGroup) {
-                    labelsGroup
-                        .filter(function (label) { return label && label !== ''; })
-                        .forEach(function (label) {
-                        strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities(label), "</t></si>");
-                    });
-                });
-            }
-            // DONE:
-            strSharedStrings_1 += '</sst>\n';
-            zipExcel.file('xl/sharedStrings.xml', strSharedStrings_1);
-        }
-        // tables/table1.xml
-        {
-            var strTableXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                strTableXml_1 += "<table xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" id=\"1\" name=\"Table1\" displayName=\"Table1\" ref=\"A1:".concat(getExcelColName(intBubbleCols)).concat(intBubbleCols, "\" totalsRowShown=\"0\">");
-                strTableXml_1 += "<tableColumns count=\"".concat(intBubbleCols, "\">");
-                var idxColLtr_1 = 1;
-                data.forEach(function (obj, idx) {
-                    if (idx === 0) {
-                        strTableXml_1 += "<tableColumn id=\"".concat(idx + 1, "\" name=\"X-Values\"/>");
-                    }
-                    else {
-                        strTableXml_1 += "<tableColumn id=\"".concat(idx + idxColLtr_1, "\" name=\"").concat(obj.name, "\"/>");
-                        idxColLtr_1++;
-                        strTableXml_1 += "<tableColumn id=\"".concat(idx + idxColLtr_1, "\" name=\"").concat('Size' + idx, "\"/>");
-                    }
-                });
-            }
-            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                strTableXml_1 +=
-                    '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
-                        getExcelColName(data.length) +
-                        (data[0].values.length + 1) +
-                        '" totalsRowShown="0">';
-                strTableXml_1 += '<tableColumns count="' + data.length + '">';
-                data.forEach(function (_obj, idx) {
-                    strTableXml_1 += '<tableColumn id="' + (idx + 1) + '" name="' + (idx === 0 ? 'X-Values' : 'Y-Value ' + idx) + '"/>';
-                });
-            }
-            else {
-                strTableXml_1 +=
-                    '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
-                        getExcelColName(data.length + data[0].labels.length) +
-                        (data[0].labels[0].length + 1) +
-                        '" totalsRowShown="0">';
-                strTableXml_1 += '<tableColumns count="' + (data.length + data[0].labels.length) + '">';
-                data[0].labels.forEach(function (_labelsGroup, idx) {
-                    strTableXml_1 += "<tableColumn id=\"".concat(idx + 1, "\" name=\"Column").concat(idx + 1, "\"/>");
-                });
-                data.forEach(function (obj, idx) {
-                    strTableXml_1 += '<tableColumn id="' + (idx + data[0].labels.length + 1) + '" name="' + encodeXmlEntities(obj.name) + '"/>';
-                });
-            }
-            strTableXml_1 += '</tableColumns>';
-            strTableXml_1 += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
-            strTableXml_1 += '</table>';
-            zipExcel.file('xl/tables/table1.xml', strTableXml_1);
-        }
-        // worksheets/sheet1.xml
-        {
-            var strSheetXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            strSheetXml_1 +=
-                '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(intBubbleCols)).concat(data[0].values.length + 1, "\"/>");
-            }
-            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length)).concat(data[0].values.length + 1, "\"/>");
-            }
-            else {
-                strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length + 1)).concat(data[0].values.length + 1, "\"/>");
-            }
-            strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
-            strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultRowHeight="16"/>';
-            if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
-                // UNUSED: strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
-                /* EX: INPUT: `data`
-                [
-                    { name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
-                    { name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9], sizes:[ 4, 5, 6, 7, 8] },
-                    { name:'Y-Axis 2', values:[33,32,42,53,63], sizes:[11,12,13,14,15] }
-                ];
-                */
-                /* EX: OUTPUT: bubbleChart Worksheet:
-                    -|----A-----|------B-----|------C-----|------D-----|------E-----|
-                    1| X-Values | Y-Values 1 | Y-Sizes 1  | Y-Values 2 | Y-Sizes 2  |
-                    2|    11    |     22     |      4     |     33     |      8     |
-                    -|----------|------------|------------|------------|------------|
-                */
-                strSheetXml_1 += '<sheetData>';
-                // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(intBubbleCols, "\">");
-                strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
-                for (var idx = 1; idx < intBubbleCols; idx++) {
-                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
-                }
-                strSheetXml_1 += '</row>';
-                // B: Add row for each X-Axis value (Y-Axis* value is optional)
-                data[0].values.forEach(function (val, idx) {
-                    // Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-                    strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(intBubbleCols, "\">");
-                    strSheetXml_1 += "<c r=\"A".concat(idx + 2, "\"><v>").concat(val, "</v></c>");
-                    // Add Y-Axis 1->N (idy=0 = Xaxis)
-                    var idxColLtr = 2;
-                    for (var idy = 1; idy < data.length; idy++) {
-                        // y-value
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idxColLtr)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || '', "</v></c>");
-                        idxColLtr++;
-                        // y-size
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idxColLtr)).concat(idx + 2, "\"><v>").concat(data[idy].sizes[idx] || '', "</v></c>");
-                        idxColLtr++;
-                    }
-                    strSheetXml_1 += '</row>';
-                });
-            }
-            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-                /* UNUSED:
-                    strSheetXml += '<cols>'
-                    strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
-                    //data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
-                    strSheetXml += '</cols>'
-                */
-                /* EX: INPUT: `data`
-                    [
-                        { name:'X-AxisA', values:[ 1, 2, 3, 4, 5] },
-                        { name:'Y-AxisB', values:[ 2,22,42,52,62] },
-                        { name:'Y-AxisC', values:[ 3,33,43,53,63] }
-                    ];
-                */
-                /* EX: OUTPUT: sheet1.xml:
-                    -|----A----|----B----|----C----|
-                    1| X-AxisA | Y-AxisB | Y-AxisC |
-                    2|    1    |    2    |    3    |
-                    -|---------|---------|---------|
-                */
-                strSheetXml_1 += '<sheetData>';
-                // A: Create header row first (every `name` row provided)
-                strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length, "\">");
-                for (var idx = 0; idx < data.length; idx++) {
-                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
-                }
-                strSheetXml_1 += '</row>';
-                // B: Add row for each X-Axis value (Y-Axis* value is optional)
-                data[0].values.forEach(function (val, idx) {
-                    // Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-                    strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(data.length, "\">");
-                    strSheetXml_1 += "<c r=\"A".concat(idx + 2, "\"><v>").concat(val, "</v></c>");
-                    // Add Y-Axis 1->N
-                    for (var idy = 1; idy < data.length; idy++) {
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : '', "</v></c>");
-                    }
-                    strSheetXml_1 += '</row>';
-                });
-            }
-            else {
-                //strSheetXml += '<cols><col min="1" max="1" width="11" customWidth="1" /></cols>'
-                strSheetXml_1 += '<sheetData>';
-                /* EX: INPUT: `data`
-                    [
-                        { name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
-                        { name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
-                        { name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
-                    ];
-                */
-                /* EX: OUTPUT: lineChart Worksheet:
-                    -|---A---|--B--|--C--|--D--|
-                    1|       | Red | Amb | Grn |
-                    2|Jan-17 |   11|   22|   33|
-                    3|Feb-17 |   55|   43|   70|
-                    4|Mar-17 |   56|  143|   99|
-                    5|Apr-17 |   65|    3|  120|
-                    6|May-17 |   75|   93|  170|
-                    -|-------|-----|-----|-----|
-                */
-                if (!IS_MULTI_CAT_AXES) {
-                    // A: Create header row first
-                    strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length + data[0].labels.length, "\">");
-                    data[0].labels.forEach(function (_labelsGroup, idx) {
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>0</v></c>");
-                    });
-                    for (var idx = 0; idx < data.length; idx++) {
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1 + data[0].labels.length), "1\" t=\"s\"><v>").concat(idx + 1, "</v></c>"); // NOTE: use `t="s"` for label cols!
-                    }
-                    strSheetXml_1 += '</row>';
-                    // B: Add data row(s) for each category
-                    data[0].labels[0].forEach(function (_cat, idx) {
-                        strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(data.length + data[0].labels.length, "\">");
-                        // Leading cols are reserved for the label groups
-                        for (var idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
-                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(data[0].labels.length - idx2)).concat(idx + 2, "\" t=\"s\">");
-                            strSheetXml_1 += "<v>".concat(data.length + idx + 1, "</v>");
-                            strSheetXml_1 += '</c>';
-                        }
-                        for (var idy = 0; idy < data.length; idy++) {
-                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(data[0].labels.length + idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || '', "</v></c>");
-                        }
-                        strSheetXml_1 += '</row>';
-                    });
-                }
-                else {
-                    // A: create header row
-                    strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length + data[0].labels.length, "\">");
-                    for (var idx = 0; idx < data[0].labels.length; idx++) {
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>0</v></c>");
-                    }
-                    for (var idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length - 1; idx++) {
-                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + data[0].labels.length), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: use `t="s"` for label cols!
-                    }
-                    strSheetXml_1 += '</row>';
-                    // FIXME: 20220524 (v3.11.0)
-                    /**
-                     * @example INPUT
-                     * const LABELS = [
-                     *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-                     *   ["Mech", "", "", "Elec", "", "", "Hydr", "", ""],
-                     * ];
-                     * const arrDataRegions = [
-                     *   { name: "West", labels: LABELS, values: [11, 8, 3, 0, 11, 3, 0, 0, 0] },
-                     *   { name: "Ctrl", labels: LABELS, values: [0, 11, 6, 19, 12, 5, 0, 0, 0] },
-                     *   { name: "East", labels: LABELS, values: [0, 3, 2, 0, 0, 0, 4, 3, 1] },
-                     * ];
-                     */
-                    /**
-                     * @example OUTPUT EXCEL SHEET
-                     * |/|---A--|---B--|---C--|---D--|---E--|
-                     * |1|      |      | West | Ctrl | East |
-                     * |2| Mech | Gear |  ##  |  ##  |  ##  |
-                     * |3|      | Brng |  ##  |  ##  |  ##  |
-                     * |4|      | Motr |  ##  |  ##  |  ##  |
-                     * |5| Elec | Swch |  ##  |  ##  |  ##  |
-                     * |6|      | Plug |  ##  |  ##  |  ##  |
-                     * |7|      | Cord |  ##  |  ##  |  ##  |
-                     * |8| Hydr | Pump |  ##  |  ##  |  ##  |
-                     * |9|      | Leak |  ##  |  ##  |  ##  |
-                     *|10|      | Seal |  ##  |  ##  |  ##  |
-                     */
-                    /**
-                     * @example OUTPUT EXCEL SHEET XML
-                     * <row r="1" spans="1:5">
-                     *   <c r="A1" t="s"><v>0</v></c>
-                     *   <c r="B1" t="s"><v>0</v></c>
-                     *   <c r="C1" t="s"><v>1</v></c>
-                     *   <c r="D1" t="s"><v>2</v></c>
-                     *   <c r="E1" t="s"><v>3</v></c>
-                     * </row>
-                     * <row r="2" spans="1:5">
-                     * 	<c r="A2" t="s"><v>4</v></c>
-                     * 	<c r="B2" t="s"><v>7</v></c>
-                     * 	<c r="C2"      ><v>###</v></c>
-                     * </row>
-                     * <row r="3" spans="1:5">
-                     * 	<c r="A3" />
-                     * 	<c r="B3" t="s"><v>8</v></c>
-                     *  <c r="C3"      ><v>###</v></c>
-                     * </row>
-                     */
-                    /**
-                     * @example SHARED-STRINGS
-                     * 1=West, 2=Ctrl, 3=East, 4=Mech, 5=Elec, 6=Mydr, 7=Gear, 8=Brng, [...], 15=Seal
-                     */
-                    // B: Add data row(s) for each category
-                    /**
-                     * const LABELS = [
-                     *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-                     *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
-                     *   ["2010",     "",     "",     "",     "",     "",     "",     "",     ""],
-                     * ];
-                     */
-                    var TOT_SER = data.length;
-                    var TOT_CAT = data[0].labels[0].length;
-                    var TOT_LVL = data[0].labels.length;
-                    var _loop_1 = function (idx) {
-                        // A: start row
-                        strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(TOT_SER + TOT_LVL, "\">");
-                        // WIP: FIXME:
-                        // B: add a col for each label/cat
-                        var totLabels = TOT_SER;
-                        var revLabelGroups = data[0].labels.slice().reverse();
-                        revLabelGroups.forEach(function (labelsGroup, idy) {
-                            /**
-                             * const LABELS_REVERSED = [
-                             *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
-                             *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-                             * ];
-                             */
-                            var colLabel = labelsGroup[idx];
-                            if (colLabel) {
-                                var totGrpLbls = idy === 0 ? 1 : revLabelGroups[idy - 1].filter(function (label) { return label && label !== ''; }).length; // get unique label so we can add to get proper shared-string #
-                                totLabels += totGrpLbls;
-                                strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1 + idy)).concat(idx + 2, "\" t=\"s\"><v>").concat(totLabels, "</v></c>");
+    return __awaiter(this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data = chartObject.data;
+                    return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            var _a, _b;
+                            var zipExcel = new JSZip();
+                            var intBubbleCols = (data.length - 1) * 2 + 1; // 1 for "X-Values", then 2 for every Y-Axis
+                            var IS_MULTI_CAT_AXES = ((_b = (_a = data[0]) === null || _a === void 0 ? void 0 : _a.labels) === null || _b === void 0 ? void 0 : _b.length) > 1;
+                            // A: Add folders
+                            zipExcel.folder('_rels');
+                            zipExcel.folder('docProps');
+                            zipExcel.folder('xl/_rels');
+                            zipExcel.folder('xl/tables');
+                            zipExcel.folder('xl/theme');
+                            zipExcel.folder('xl/worksheets');
+                            zipExcel.folder('xl/worksheets/_rels');
+                            // B: Add core contents
+                            {
+                                zipExcel.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+                                    '  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+                                    '  <Default Extension="xml" ContentType="application/xml"/>' +
+                                    '  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+                                    '  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+                                    '  <Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>' +
+                                    '  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+                                    '  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>' +
+                                    '  <Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>' +
+                                    '  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
+                                    '  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>' +
+                                    '</Types>\n');
+                                zipExcel.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+                                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+                                    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
+                                    '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+                                    '</Relationships>\n');
+                                zipExcel.file('docProps/app.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' +
+                                    '<Application>Microsoft Macintosh Excel</Application>' +
+                                    '<DocSecurity>0</DocSecurity>' +
+                                    '<ScaleCrop>false</ScaleCrop>' +
+                                    '<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs>' +
+                                    '<TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>Sheet1</vt:lpstr></vt:vector></TitlesOfParts>' +
+                                    '<Company></Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>' +
+                                    '</Properties>\n');
+                                zipExcel.file('docProps/core.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+                                    '<dc:creator>PptxGenJS</dc:creator>' +
+                                    '<cp:lastModifiedBy>PptxGenJS</cp:lastModifiedBy>' +
+                                    '<dcterms:created xsi:type="dcterms:W3CDTF">' +
+                                    new Date().toISOString() +
+                                    '</dcterms:created>' +
+                                    '<dcterms:modified xsi:type="dcterms:W3CDTF">' +
+                                    new Date().toISOString() +
+                                    '</dcterms:modified>' +
+                                    '</cp:coreProperties>');
+                                zipExcel.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+                                    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+                                    '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+                                    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
+                                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+                                    '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>' +
+                                    '</Relationships>');
+                                zipExcel.file('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="0" formatCode="General"/></numFmts><fonts count="4"><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="10"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="18"/><color indexed="8"/>' +
+                                    '<name val="Arial"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><dxfs count="0"/><tableStyles count="0"/><colors><indexedColors><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ffff0000"/><rgbColor rgb="ff00ff00"/><rgbColor rgb="ff0000ff"/>' +
+                                    '<rgbColor rgb="ffffff00"/><rgbColor rgb="ffff00ff"/><rgbColor rgb="ff00ffff"/><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ff878787"/><rgbColor rgb="fff9f9f9"/></indexedColors></colors></styleSheet>\n');
+                                zipExcel.file('xl/theme/theme1.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light" panose="020F0302020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:majorFont><a:minorFont><a:latin typeface="Calibri" panose="020F0502020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/><a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}"><thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst></a:theme>');
+                                zipExcel.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+                                    '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x15" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main">' +
+                                    '<fileVersion appName="xl" lastEdited="7" lowestEdited="6" rupBuild="10507"/>' +
+                                    '<workbookPr/>' +
+                                    '<bookViews><workbookView xWindow="0" yWindow="500" windowWidth="20960" windowHeight="15960"/></bookViews>' +
+                                    '<sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>' +
+                                    '<calcPr calcId="0" concurrentCalc="0"/>' +
+                                    '</workbook>\n');
+                                zipExcel.file('xl/worksheets/_rels/sheet1.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+                                    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+                                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>' +
+                                    '</Relationships>\n');
                             }
-                        });
-                        // WIP: FIXME:
-                        // C: add a col for each data value
-                        for (var idy = 0; idy < TOT_SER; idy++) {
-                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(TOT_LVL + idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || 0, "</v></c>");
-                        }
-                        // D: Done
-                        strSheetXml_1 += '</row>';
-                    };
-                    // Iterate across labels/cats as these are the <row>'s
-                    for (var idx = 0; idx < TOT_CAT; idx++) {
-                        _loop_1(idx);
-                    }
-                    //console.log(strSheetXml) // WIP: CHECK:
-                    //console.log(`---CHECK ABOVE---------------------`)
-                }
+                            // sharedStrings.xml
+                            {
+                                // A: Start XML
+                                var strSharedStrings_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+                                if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
+                                    strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(intBubbleCols, "\" uniqueCount=\"").concat(intBubbleCols, "\">");
+                                }
+                                else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
+                                    strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(data.length, "\" uniqueCount=\"").concat(data.length, "\">");
+                                }
+                                else if (IS_MULTI_CAT_AXES) {
+                                    var totCount_1 = data.length;
+                                    data[0].labels.forEach(function (arrLabel) { return (totCount_1 += arrLabel.filter(function (label) { return label && label !== ''; }).length); });
+                                    strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(totCount_1, "\" uniqueCount=\"").concat(totCount_1, "\">");
+                                    strSharedStrings_1 += '<si><t/></si>';
+                                }
+                                else {
+                                    // series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
+                                    var totCount = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length;
+                                    // series names + labels of one series + blank string (same for all label groups)
+                                    var unqCount = data.length + data[0].labels.length * data[0].labels[0].length + 1;
+                                    // start `sst`
+                                    strSharedStrings_1 += "<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"".concat(totCount, "\" uniqueCount=\"").concat(unqCount, "\">");
+                                    // B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
+                                    strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
+                                }
+                                // C: Add `name`/Series
+                                if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
+                                    data.forEach(function (objData, idx) {
+                                        if (idx === 0)
+                                            strSharedStrings_1 += '<si><t>X-Axis</t></si>';
+                                        else {
+                                            strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities(objData.name || "Y-Axis".concat(idx)), "</t></si>");
+                                            strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities("Size".concat(idx)), "</t></si>");
+                                        }
+                                    });
+                                }
+                                else {
+                                    data.forEach(function (objData) {
+                                        strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')), "</t></si>");
+                                    });
+                                }
+                                // D: Add `labels`/Categories
+                                if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.BUBBLE3D && chartObject.opts._type !== CHART_TYPE.SCATTER) {
+                                    // Use forEach backwards & check for '' to support multi-cat axes
+                                    data[0].labels
+                                        .slice()
+                                        .reverse()
+                                        .forEach(function (labelsGroup) {
+                                        labelsGroup
+                                            .filter(function (label) { return label && label !== ''; })
+                                            .forEach(function (label) {
+                                            strSharedStrings_1 += "<si><t>".concat(encodeXmlEntities(label), "</t></si>");
+                                        });
+                                    });
+                                }
+                                // DONE:
+                                strSharedStrings_1 += '</sst>\n';
+                                zipExcel.file('xl/sharedStrings.xml', strSharedStrings_1);
+                            }
+                            // tables/table1.xml
+                            {
+                                var strTableXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+                                if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
+                                    strTableXml_1 += "<table xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" id=\"1\" name=\"Table1\" displayName=\"Table1\" ref=\"A1:".concat(getExcelColName(intBubbleCols)).concat(intBubbleCols, "\" totalsRowShown=\"0\">");
+                                    strTableXml_1 += "<tableColumns count=\"".concat(intBubbleCols, "\">");
+                                    var idxColLtr_1 = 1;
+                                    data.forEach(function (obj, idx) {
+                                        if (idx === 0) {
+                                            strTableXml_1 += "<tableColumn id=\"".concat(idx + 1, "\" name=\"X-Values\"/>");
+                                        }
+                                        else {
+                                            strTableXml_1 += "<tableColumn id=\"".concat(idx + idxColLtr_1, "\" name=\"").concat(obj.name, "\"/>");
+                                            idxColLtr_1++;
+                                            strTableXml_1 += "<tableColumn id=\"".concat(idx + idxColLtr_1, "\" name=\"Size").concat(idx, "\"/>");
+                                        }
+                                    });
+                                }
+                                else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
+                                    strTableXml_1 += "<table xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" id=\"1\" name=\"Table1\" displayName=\"Table1\" ref=\"A1:".concat(getExcelColName(data.length)).concat(data[0].values.length + 1, "\" totalsRowShown=\"0\">");
+                                    strTableXml_1 += "<tableColumns count=\"".concat(data.length, "\">");
+                                    data.forEach(function (_obj, idx) {
+                                        strTableXml_1 += "<tableColumn id=\"".concat(idx + 1, "\" name=\"").concat(idx === 0 ? 'X-Values' : 'Y-Value ').concat(idx, "\"/>");
+                                    });
+                                }
+                                else {
+                                    strTableXml_1 += "<table xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" id=\"1\" name=\"Table1\" displayName=\"Table1\" ref=\"A1:".concat(getExcelColName(data.length + data[0].labels.length)).concat(data[0].labels[0].length + 1, "'\" totalsRowShown=\"0\">");
+                                    strTableXml_1 += "<tableColumns count=\"".concat(data.length + data[0].labels.length, "\">");
+                                    data[0].labels.forEach(function (_labelsGroup, idx) {
+                                        strTableXml_1 += "<tableColumn id=\"".concat(idx + 1, "\" name=\"Column").concat(idx + 1, "\"/>");
+                                    });
+                                    data.forEach(function (obj, idx) {
+                                        strTableXml_1 += "<tableColumn id=\"".concat(idx + data[0].labels.length + 1, "\" name=\"").concat(encodeXmlEntities(obj.name), "\"/>");
+                                    });
+                                }
+                                strTableXml_1 += '</tableColumns>';
+                                strTableXml_1 += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
+                                strTableXml_1 += '</table>';
+                                zipExcel.file('xl/tables/table1.xml', strTableXml_1);
+                            }
+                            // worksheets/sheet1.xml
+                            {
+                                var strSheetXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+                                strSheetXml_1 +=
+                                    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
+                                if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
+                                    strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(intBubbleCols)).concat(data[0].values.length + 1, "\"/>");
+                                }
+                                else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
+                                    strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length)).concat(data[0].values.length + 1, "\"/>");
+                                }
+                                else {
+                                    strSheetXml_1 += "<dimension ref=\"A1:".concat(getExcelColName(data.length + 1)).concat(data[0].values.length + 1, "\"/>");
+                                }
+                                strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
+                                strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultRowHeight="16"/>';
+                                if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
+                                    // UNUSED: strSheetXml += `<cols><col min="1" max="${data.length}" width="11" customWidth="1" /></cols>`
+                                    /* EX: INPUT: `data`
+                                    [
+                                        { name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
+                                        { name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9], sizes:[ 4, 5, 6, 7, 8] },
+                                        { name:'Y-Axis 2', values:[33,32,42,53,63], sizes:[11,12,13,14,15] }
+                                    ];
+                                    */
+                                    /* EX: OUTPUT: bubbleChart Worksheet:
+                                        -|----A-----|------B-----|------C-----|------D-----|------E-----|
+                                        1| X-Values | Y-Values 1 | Y-Sizes 1  | Y-Values 2 | Y-Sizes 2  |
+                                        2|    11    |     22     |      4     |     33     |      8     |
+                                        -|----------|------------|------------|------------|------------|
+                                    */
+                                    strSheetXml_1 += '<sheetData>';
+                                    // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+                                    strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(intBubbleCols, "\">");
+                                    strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
+                                    for (var idx = 1; idx < intBubbleCols; idx++) {
+                                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
+                                    }
+                                    strSheetXml_1 += '</row>';
+                                    // B: Add row for each X-Axis value (Y-Axis* value is optional)
+                                    data[0].values.forEach(function (val, idx) {
+                                        // Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+                                        strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(intBubbleCols, "\">");
+                                        strSheetXml_1 += "<c r=\"A".concat(idx + 2, "\"><v>").concat(val, "</v></c>");
+                                        // Add Y-Axis 1->N (idy=0 = Xaxis)
+                                        var idxColLtr = 2;
+                                        for (var idy = 1; idy < data.length; idy++) {
+                                            // y-value
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idxColLtr)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || '', "</v></c>");
+                                            idxColLtr++;
+                                            // y-size
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idxColLtr)).concat(idx + 2, "\"><v>").concat(data[idy].sizes[idx] || '', "</v></c>");
+                                            idxColLtr++;
+                                        }
+                                        strSheetXml_1 += '</row>';
+                                    });
+                                }
+                                else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
+                                    /* UNUSED:
+                                        strSheetXml += '<cols>'
+                                        strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
+                                        //data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
+                                        strSheetXml += '</cols>'
+                                    */
+                                    /* EX: INPUT: `data`
+                                        [
+                                            { name:'X-AxisA', values:[ 1, 2, 3, 4, 5] },
+                                            { name:'Y-AxisB', values:[ 2,22,42,52,62] },
+                                            { name:'Y-AxisC', values:[ 3,33,43,53,63] }
+                                        ];
+                                    */
+                                    /* EX: OUTPUT: sheet1.xml:
+                                        -|----A----|----B----|----C----|
+                                        1| X-AxisA | Y-AxisB | Y-AxisC |
+                                        2|    1    |    2    |    3    |
+                                        -|---------|---------|---------|
+                                    */
+                                    strSheetXml_1 += '<sheetData>';
+                                    // A: Create header row first (every `name` row provided)
+                                    strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length, "\">");
+                                    for (var idx = 0; idx < data.length; idx++) {
+                                        strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: add `t="s"` for label cols!
+                                    }
+                                    strSheetXml_1 += '</row>';
+                                    // B: Add row for each X-Axis value (Y-Axis* value is optional)
+                                    data[0].values.forEach(function (val, idx) {
+                                        // Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+                                        strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(data.length, "\">");
+                                        strSheetXml_1 += "<c r=\"A".concat(idx + 2, "\"><v>").concat(val, "</v></c>");
+                                        // Add Y-Axis 1->N
+                                        for (var idy = 1; idy < data.length; idy++) {
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : '', "</v></c>");
+                                        }
+                                        strSheetXml_1 += '</row>';
+                                    });
+                                }
+                                else {
+                                    // strSheetXml += '<cols><col min="1" max="1" width="11" customWidth="1" /></cols>'
+                                    strSheetXml_1 += '<sheetData>';
+                                    /* EX: INPUT: `data`
+                                        [
+                                            { name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+                                            { name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+                                            { name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+                                        ];
+                                    */
+                                    /* EX: OUTPUT: lineChart Worksheet:
+                                        -|---A---|--B--|--C--|--D--|
+                                        1|       | Red | Amb | Grn |
+                                        2|Jan-17 |   11|   22|   33|
+                                        3|Feb-17 |   55|   43|   70|
+                                        4|Mar-17 |   56|  143|   99|
+                                        5|Apr-17 |   65|    3|  120|
+                                        6|May-17 |   75|   93|  170|
+                                        -|-------|-----|-----|-----|
+                                    */
+                                    if (!IS_MULTI_CAT_AXES) {
+                                        // A: Create header row first
+                                        strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length + data[0].labels.length, "\">");
+                                        data[0].labels.forEach(function (_labelsGroup, idx) {
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>0</v></c>");
+                                        });
+                                        for (var idx = 0; idx < data.length; idx++) {
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1 + data[0].labels.length), "1\" t=\"s\"><v>").concat(idx + 1, "</v></c>"); // NOTE: use `t="s"` for label cols!
+                                        }
+                                        strSheetXml_1 += '</row>';
+                                        // B: Add data row(s) for each category
+                                        data[0].labels[0].forEach(function (_cat, idx) {
+                                            strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(data.length + data[0].labels.length, "\">");
+                                            // Leading cols are reserved for the label groups
+                                            for (var idx2 = data[0].labels.length - 1; idx2 >= 0; idx2--) {
+                                                strSheetXml_1 += "<c r=\"".concat(getExcelColName(data[0].labels.length - idx2)).concat(idx + 2, "\" t=\"s\">");
+                                                strSheetXml_1 += "<v>".concat(data.length + idx + 1, "</v>");
+                                                strSheetXml_1 += '</c>';
+                                            }
+                                            for (var idy = 0; idy < data.length; idy++) {
+                                                strSheetXml_1 += "<c r=\"".concat(getExcelColName(data[0].labels.length + idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || '', "</v></c>");
+                                            }
+                                            strSheetXml_1 += '</row>';
+                                        });
+                                    }
+                                    else {
+                                        // A: create header row
+                                        strSheetXml_1 += "<row r=\"1\" spans=\"1:".concat(data.length + data[0].labels.length, "\">");
+                                        for (var idx = 0; idx < data[0].labels.length; idx++) {
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1), "1\" t=\"s\"><v>0</v></c>");
+                                        }
+                                        for (var idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length - 1; idx++) {
+                                            strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + data[0].labels.length), "1\" t=\"s\"><v>").concat(idx, "</v></c>"); // NOTE: use `t="s"` for label cols!
+                                        }
+                                        strSheetXml_1 += '</row>';
+                                        // FIXME: 20220524 (v3.11.0)
+                                        /**
+                                         * @example INPUT
+                                         * const LABELS = [
+                                         *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+                                         *   ["Mech", "", "", "Elec", "", "", "Hydr", "", ""],
+                                         * ];
+                                         * const arrDataRegions = [
+                                         *   { name: "West", labels: LABELS, values: [11, 8, 3, 0, 11, 3, 0, 0, 0] },
+                                         *   { name: "Ctrl", labels: LABELS, values: [0, 11, 6, 19, 12, 5, 0, 0, 0] },
+                                         *   { name: "East", labels: LABELS, values: [0, 3, 2, 0, 0, 0, 4, 3, 1] },
+                                         * ];
+                                         */
+                                        /**
+                                         * @example OUTPUT EXCEL SHEET
+                                         * |/|---A--|---B--|---C--|---D--|---E--|
+                                         * |1|      |      | West | Ctrl | East |
+                                         * |2| Mech | Gear |  ##  |  ##  |  ##  |
+                                         * |3|      | Brng |  ##  |  ##  |  ##  |
+                                         * |4|      | Motr |  ##  |  ##  |  ##  |
+                                         * |5| Elec | Swch |  ##  |  ##  |  ##  |
+                                         * |6|      | Plug |  ##  |  ##  |  ##  |
+                                         * |7|      | Cord |  ##  |  ##  |  ##  |
+                                         * |8| Hydr | Pump |  ##  |  ##  |  ##  |
+                                         * |9|      | Leak |  ##  |  ##  |  ##  |
+                                         *|10|      | Seal |  ##  |  ##  |  ##  |
+                                         */
+                                        /**
+                                         * @example OUTPUT EXCEL SHEET XML
+                                         * <row r="1" spans="1:5">
+                                         *   <c r="A1" t="s"><v>0</v></c>
+                                         *   <c r="B1" t="s"><v>0</v></c>
+                                         *   <c r="C1" t="s"><v>1</v></c>
+                                         *   <c r="D1" t="s"><v>2</v></c>
+                                         *   <c r="E1" t="s"><v>3</v></c>
+                                         * </row>
+                                         * <row r="2" spans="1:5">
+                                         *   <c r="A2" t="s"><v>4</v></c>
+                                         *   <c r="B2" t="s"><v>7</v></c>
+                                         *   <c r="C2"      ><v>###</v></c>
+                                         * </row>
+                                         * <row r="3" spans="1:5">
+                                         *   <c r="A3" />
+                                         *   <c r="B3" t="s"><v>8</v></c>
+                                         *   <c r="C3"      ><v>###</v></c>
+                                         * </row>
+                                         */
+                                        /**
+                                         * @example SHARED-STRINGS
+                                         * 1=West, 2=Ctrl, 3=East, 4=Mech, 5=Elec, 6=Mydr, 7=Gear, 8=Brng, [...], 15=Seal
+                                         */
+                                        // B: Add data row(s) for each category
+                                        /**
+                                         * const LABELS = [
+                                         *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+                                         *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+                                         *   ["2010",     "",     "",     "",     "",     "",     "",     "",     ""],
+                                         * ];
+                                         */
+                                        var TOT_SER = data.length;
+                                        var TOT_CAT = data[0].labels[0].length;
+                                        var TOT_LVL = data[0].labels.length;
+                                        var _loop_1 = function (idx) {
+                                            // A: start row
+                                            strSheetXml_1 += "<row r=\"".concat(idx + 2, "\" spans=\"1:").concat(TOT_SER + TOT_LVL, "\">");
+                                            // WIP: FIXME:
+                                            // B: add a col for each label/cat
+                                            var totLabels = TOT_SER;
+                                            var revLabelGroups = data[0].labels.slice().reverse();
+                                            revLabelGroups.forEach(function (labelsGroup, idy) {
+                                                /**
+                                                 * const LABELS_REVERSED = [
+                                                 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+                                                 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+                                                 * ];
+                                                 */
+                                                var colLabel = labelsGroup[idx];
+                                                if (colLabel) {
+                                                    var totGrpLbls = idy === 0 ? 1 : revLabelGroups[idy - 1].filter(function (label) { return label && label !== ''; }).length; // get unique label so we can add to get proper shared-string #
+                                                    totLabels += totGrpLbls;
+                                                    strSheetXml_1 += "<c r=\"".concat(getExcelColName(idx + 1 + idy)).concat(idx + 2, "\" t=\"s\"><v>").concat(totLabels, "</v></c>");
+                                                }
+                                            });
+                                            // WIP: FIXME:
+                                            // C: add a col for each data value
+                                            for (var idy = 0; idy < TOT_SER; idy++) {
+                                                strSheetXml_1 += "<c r=\"".concat(getExcelColName(TOT_LVL + idy + 1)).concat(idx + 2, "\"><v>").concat(data[idy].values[idx] || 0, "</v></c>");
+                                            }
+                                            // D: Done
+                                            strSheetXml_1 += '</row>';
+                                        };
+                                        // Iterate across labels/cats as these are the <row>'s
+                                        for (var idx = 0; idx < TOT_CAT; idx++) {
+                                            _loop_1(idx);
+                                        }
+                                        // console.log(strSheetXml) // WIP: CHECK:
+                                        // console.log(`---CHECK ABOVE---------------------`)
+                                    }
+                                }
+                                strSheetXml_1 += '</sheetData>';
+                                /* FIXME: support multi-level
+                                if (IS_MULTI_CAT_AXES) {
+                                    strSheetXml += '<mergeCells count="3">'
+                                    strSheetXml += ' <mergeCell ref="A2:A4"/>'
+                                    strSheetXml += ' <mergeCell ref="A10:A12"/>'
+                                    strSheetXml += ' <mergeCell ref="A5:A9"/>'
+                                    strSheetXml += '</mergeCells>'
+                                }
+                                */
+                                strSheetXml_1 += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>';
+                                // Link the `table1.xml` file to define an actual Table in Excel
+                                // NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
+                                // ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
+                                // ....: Leaving this so nobody foolishly attempts to add this in the future
+                                // strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'
+                                strSheetXml_1 += '</worksheet>\n';
+                                zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml_1);
+                            }
+                            // C: Add XLSX to PPTX export
+                            zipExcel
+                                .generateAsync({ type: 'base64' })
+                                .then(function (content) {
+                                // 1: Create the embedded Excel worksheet with labels and data
+                                zip.file("ppt/embeddings/Microsoft_Excel_Worksheet".concat(chartObject.globalId, ".xlsx"), content, { base64: true });
+                                // 2: Create the chart.xml and rel files
+                                zip.file('ppt/charts/_rels/' + chartObject.fileName + '.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+                                    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+                                    "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/package\" Target=\"../embeddings/Microsoft_Excel_Worksheet".concat(chartObject.globalId, ".xlsx\"/>") +
+                                    '</Relationships>');
+                                zip.file("ppt/charts/".concat(chartObject.fileName), makeXmlCharts(chartObject));
+                                // 3: Done
+                                resolve('');
+                            })
+                                .catch(function (strErr) {
+                                reject(strErr);
+                            });
+                        })];
+                case 1: return [2 /*return*/, _a.sent()];
             }
-            strSheetXml_1 += '</sheetData>';
-            /* FIXME: support multi-level
-            if (IS_MULTI_CAT_AXES) {
-                strSheetXml += '<mergeCells count="3">'
-                strSheetXml += ' <mergeCell ref="A2:A4"/>'
-                strSheetXml += ' <mergeCell ref="A10:A12"/>'
-                strSheetXml += ' <mergeCell ref="A5:A9"/>'
-                strSheetXml += '</mergeCells>'
-            }
-            */
-            strSheetXml_1 += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>';
-            // Link the `table1.xml` file to define an actual Table in Excel
-            // NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
-            // ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
-            // ....: Leaving this so nobody foolishly attempts to add this in the future
-            //strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'
-            strSheetXml_1 += '</worksheet>\n';
-            zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml_1);
-        }
-        // C: Add XLSX to PPTX export
-        zipExcel
-            .generateAsync({ type: 'base64' })
-            .then(function (content) {
-            // 1: Create the embedded Excel worksheet with labels and data
-            zip.file('ppt/embeddings/Microsoft_Excel_Worksheet' + chartObject.globalId + '.xlsx', content, { base64: true });
-            // 2: Create the chart.xml and rel files
-            zip.file('ppt/charts/_rels/' + chartObject.fileName + '.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-                "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/package\" Target=\"../embeddings/Microsoft_Excel_Worksheet".concat(chartObject.globalId, ".xlsx\"/>") +
-                '</Relationships>');
-            zip.file("ppt/charts/".concat(chartObject.fileName), makeXmlCharts(chartObject));
-            // 3: Done
-            resolve(null);
-        })
-            .catch(function (strErr) {
-            reject(strErr);
         });
     });
 }
@@ -5054,6 +5048,7 @@ function createExcelWorksheet(chartObject, zip) {
  * @return {string} XML
  */
 function makeXmlCharts(rel) {
+    var _a, _b, _c, _d;
     var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
     var usesSecondaryValAxis = false;
     // STEP 1: Create chart
@@ -5086,12 +5081,7 @@ function makeXmlCharts(rel) {
          * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
          */
         if (rel.opts._type === CHART_TYPE.BAR3D) {
-            strXml += '<c:view3D>';
-            strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>';
-            strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>';
-            strXml += ' <c:rAngAx val="' + (rel.opts.v3DRAngAx === false ? 0 : 1) + '"/>';
-            strXml += ' <c:perspective val="' + rel.opts.v3DPerspective + '"/>';
-            strXml += '</c:view3D>';
+            strXml += "<c:view3D><c:rotX val=\"".concat(rel.opts.v3DRotX, "\"/><c:rotY val=\"").concat(rel.opts.v3DRotY, "\"/><c:rAngAx val=\"").concat(!rel.opts.v3DRAngAx ? 0 : 1, "\"/><c:perspective val=\"").concat(rel.opts.v3DPerspective, "\"/></c:view3D>");
         }
         strXml += '<c:plotArea>';
         // IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
@@ -5116,10 +5106,10 @@ function makeXmlCharts(rel) {
     if (Array.isArray(rel.opts._type)) {
         rel.opts._type.forEach(function (type) {
             // TODO: FIXME: theres `options` on chart rels??
-            var options = getMix(rel.opts, type.options);
-            //let options: IChartOptsLib = { type: type.type, }
-            var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
-            var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
+            var options = __assign(__assign({}, rel.opts), type.options);
+            // let options: IChartOptsLib = { type: type.type, }
+            var valAxisId = options.secondaryValAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
+            var catAxisId = options.secondaryCatAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
             usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
             strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId);
         });
@@ -5137,15 +5127,15 @@ function makeXmlCharts(rel) {
             if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
                 throw new Error('There must be the same number of value and category axes.');
             }
-            strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
+            strXml += makeCatAxis(__assign(__assign({}, rel.opts), rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
         }
         else {
             strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
         }
         if (rel.opts.valAxes) {
-            strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
+            strXml += makeValAxis(__assign(__assign({}, rel.opts), rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
             if (rel.opts.valAxes[1]) {
-                strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY);
+                strXml += makeValAxis(__assign(__assign({}, rel.opts), rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY);
             }
         }
         else {
@@ -5156,8 +5146,8 @@ function makeXmlCharts(rel) {
             }
         }
         // Combo Charts: Add secondary axes after all vals
-        if (rel.opts.catAxes && rel.opts.catAxes[1]) {
-            strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY);
+        if (((_a = rel.opts) === null || _a === void 0 ? void 0 : _a.catAxes) && ((_b = rel.opts) === null || _b === void 0 ? void 0 : _b.catAxes[1])) {
+            strXml += makeCatAxis(__assign(__assign({}, rel.opts), rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_SECONDARY);
         }
     }
     // C: Chart Properties and plotArea Options: Border, Data Table, Fill, Legend
@@ -5165,36 +5155,35 @@ function makeXmlCharts(rel) {
         // NOTE: DataTable goes between '</c:valAx>' and '<c:spPr>'
         if (rel.opts.showDataTable) {
             strXml += '<c:dTable>';
-            strXml += '  <c:showHorzBorder val="' + (rel.opts.showDataTableHorzBorder === false ? 0 : 1) + '"/>';
-            strXml += '  <c:showVertBorder val="' + (rel.opts.showDataTableVertBorder === false ? 0 : 1) + '"/>';
-            strXml += '  <c:showOutline    val="' + (rel.opts.showDataTableOutline === false ? 0 : 1) + '"/>';
-            strXml += '  <c:showKeys       val="' + (rel.opts.showDataTableKeys === false ? 0 : 1) + '"/>';
+            strXml += "  <c:showHorzBorder val=\"".concat(!rel.opts.showDataTableHorzBorder ? 0 : 1, "\"/>");
+            strXml += "  <c:showVertBorder val=\"".concat(!rel.opts.showDataTableVertBorder ? 0 : 1, "\"/>");
+            strXml += "  <c:showOutline    val=\"".concat(!rel.opts.showDataTableOutline ? 0 : 1, "\"/>");
+            strXml += "  <c:showKeys       val=\"".concat(!rel.opts.showDataTableKeys ? 0 : 1, "\"/>");
             strXml += '  <c:spPr>';
             strXml += '    <a:noFill/>';
-            strXml +=
-                '    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln>';
+            strXml += '    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln>';
             strXml += '    <a:effectLst/>';
             strXml += '  </c:spPr>';
             strXml += '  <c:txPr>';
-            strXml += '	  <a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="ellipsis" vert="horz" wrap="square" anchor="ctr" anchorCtr="1"/>';
-            strXml += '	  <a:lstStyle/>';
-            strXml += '	  <a:p>';
-            strXml += '		<a:pPr rtl="0">';
+            strXml += '   <a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="ellipsis" vert="horz" wrap="square" anchor="ctr" anchorCtr="1"/>';
+            strXml += '   <a:lstStyle/>';
+            strXml += '   <a:p>';
+            strXml += '     <a:pPr rtl="0">';
             strXml += "       <a:defRPr sz=\"".concat(Math.round((rel.opts.dataTableFontSize || DEF_FONT_SIZE) * 100), "\" b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\" kern=\"1200\" baseline=\"0\">");
-            strXml += '			<a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>';
-            strXml += '			<a:latin typeface="+mn-lt"/>';
-            strXml += '			<a:ea typeface="+mn-ea"/>';
-            strXml += '			<a:cs typeface="+mn-cs"/>';
-            strXml += '		  </a:defRPr>';
-            strXml += '		</a:pPr>';
-            strXml += '		<a:endParaRPr lang="en-US"/>';
-            strXml += '	  </a:p>';
-            strXml += '	</c:txPr>';
+            strXml += '         <a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>';
+            strXml += '         <a:latin typeface="+mn-lt"/>';
+            strXml += '         <a:ea typeface="+mn-ea"/>';
+            strXml += '         <a:cs typeface="+mn-cs"/>';
+            strXml += '       </a:defRPr>';
+            strXml += '     </a:pPr>';
+            strXml += '    <a:endParaRPr lang="en-US"/>';
+            strXml += '   </a:p>';
+            strXml += ' </c:txPr>';
             strXml += '</c:dTable>';
         }
         strXml += '  <c:spPr>';
         // OPTION: Fill
-        strXml += rel.opts.plotArea.fill && rel.opts.plotArea.fill.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>';
+        strXml += ((_c = rel.opts.plotArea.fill) === null || _c === void 0 ? void 0 : _c.color) ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>';
         // OPTION: Border
         strXml += rel.opts.plotArea.border
             ? "<a:ln w=\"".concat(valToPts(rel.opts.plotArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.plotArea.border.color), "</a:ln>")
@@ -5208,7 +5197,7 @@ function makeXmlCharts(rel) {
         if (rel.opts.showLegend) {
             strXml += '<c:legend>';
             strXml += '<c:legendPos val="' + rel.opts.legendPos + '"/>';
-            //strXml += '<c:layout/>'
+            // strXml += '<c:layout/>'
             strXml += '<c:overlay val="0"/>';
             if (rel.opts.legendFontFace || rel.opts.legendFontSize || rel.opts.legendColor) {
                 strXml += '<c:txPr>';
@@ -5216,7 +5205,7 @@ function makeXmlCharts(rel) {
                 strXml += '  <a:lstStyle/>';
                 strXml += '  <a:p>';
                 strXml += '    <a:pPr>';
-                strXml += rel.opts.legendFontSize ? '<a:defRPr sz="' + Math.round(Number(rel.opts.legendFontSize) * 100) + '">' : '<a:defRPr>';
+                strXml += rel.opts.legendFontSize ? "<a:defRPr sz=\"".concat(Math.round(Number(rel.opts.legendFontSize) * 100), "\">") : '<a:defRPr>';
                 if (rel.opts.legendColor)
                     strXml += genXmlColorSelection(rel.opts.legendColor);
                 if (rel.opts.legendFontFace)
@@ -5239,7 +5228,7 @@ function makeXmlCharts(rel) {
     strXml += '</c:chart>';
     // D: CHARTSPACE SHAPE PROPS
     strXml += '<c:spPr>';
-    strXml += rel.opts.chartArea.fill && rel.opts.chartArea.fill.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>';
+    strXml += ((_d = rel.opts.chartArea.fill) === null || _d === void 0 ? void 0 : _d.color) ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>';
     strXml += rel.opts.chartArea.border
         ? "<a:ln w=\"".concat(valToPts(rel.opts.chartArea.border.pt), "\" cap=\"flat\">").concat(genXmlColorSelection(rel.opts.chartArea.border.color), "</a:ln>")
         : '<a:ln><a:noFill/></a:ln>';
@@ -5266,6 +5255,9 @@ function makeXmlCharts(rel) {
 function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeChart) {
     // NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
     // ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
+    var colorIndex = -1; // Maintain the color index by region
+    var idxColLtr = 1;
+    var optsChartData = null;
     var strXml = '';
     switch (chartType) {
         case CHART_TYPE.AREA:
@@ -5321,12 +5313,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                  }
                 ]
              */
-            var colorIndex_1 = -1; // Maintain the color index by region
             data.forEach(function (obj) {
-                colorIndex_1++;
+                var _a;
+                colorIndex++;
                 strXml += '<c:ser>';
-                strXml += '  <c:idx val="' + obj._dataIndex + '"/>';
-                strXml += '  <c:order val="' + obj._dataIndex + '"/>';
+                strXml += "  <c:idx val=\"".concat(obj._dataIndex, "\"/><c:order val=\"").concat(obj._dataIndex, "\"/>");
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
                 strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + obj.labels.length + 1) + '$1</c:f>';
@@ -5336,7 +5327,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Fill and Border
                 // TODO: CURRENT: Pull#727
                 // TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
-                var seriesColor = opts.chartColors ? opts.chartColors[colorIndex_1 % opts.chartColors.length] : null;
+                var seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null;
                 strXml += '  <c:spPr>';
                 if (seriesColor === 'transparent') {
                     strXml += '<a:noFill/>';
@@ -5352,17 +5343,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
+                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(seriesColor), "</a:solidFill>");
                         strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
                     }
                 }
                 else if (opts.dataBorder) {
-                    strXml +=
-                        '<a:ln w="' +
-                            valToPts(opts.dataBorder.pt) +
-                            '" cap="flat"><a:solidFill>' +
-                            createColorElement(opts.dataBorder.color) +
-                            '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+                    strXml += "<a:ln w=\"".concat(valToPts(opts.dataBorder.pt), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
                 }
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
                 strXml += '  </c:spPr>';
@@ -5391,21 +5377,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
                     strXml += '<c:marker>';
                     strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
-                    if (opts.lineDataSymbolSize) {
-                        // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
-                        strXml += '  <c:size val="' + opts.lineDataSymbolSize + '"/>';
-                    }
+                    if (opts.lineDataSymbolSize)
+                        strXml += "<c:size val=\"".concat(opts.lineDataSymbolSize, "\"/>"); // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
                     strXml += '  <c:spPr>';
-                    strXml +=
-                        '    <a:solidFill>' +
-                            createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]) +
-                            '</a:solidFill>';
-                    strXml +=
-                        '    <a:ln w="' +
-                            opts.lineDataSymbolLineSize +
-                            '" cap="flat"><a:solidFill>' +
-                            createColorElement(opts.lineDataSymbolLineColor || seriesColor) +
-                            '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+                    strXml += "    <a:solidFill>".concat(createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]), "</a:solidFill>");
+                    strXml += "    <a:ln w=\"".concat(opts.lineDataSymbolLineSize, "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.lineDataSymbolLineColor || seriesColor), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
                     strXml += '    <a:effectLst/>';
                     strXml += '  </c:spPr>';
                     strXml += '</c:marker>';
@@ -5415,12 +5391,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
                 if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
                     data.length === 1 &&
-                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors && opts.invertedColors.length))) {
+                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || ((_a = opts.invertedColors) === null || _a === void 0 ? void 0 : _a.length))) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
                         strXml += '  <c:dPt>';
-                        strXml += '    <c:idx val="' + index + '"/>';
+                        strXml += "    <c:idx val=\"".concat(index, "\"/>");
                         strXml += '      <c:invertIfNegative val="0"/>';
                         strXml += '    <c:bubble3D val="0"/>';
                         strXml += '    <c:spPr>';
@@ -5450,27 +5426,23 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     if (opts.catLabelFormatCode) {
                         // Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
                         strXml += '  <c:numRef>';
-                        strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels[0].length + 1) + '</c:f>';
+                        strXml += "    <c:f>Sheet1!$A$2:$A$".concat(obj.labels[0].length + 1, "</c:f>");
                         strXml += '    <c:numCache>';
                         strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>';
-                        strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>';
-                        obj.labels[0].forEach(function (label, idx) {
-                            strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
-                        });
+                        strXml += "      <c:ptCount val=\"".concat(obj.labels[0].length, "\"/>");
+                        obj.labels[0].forEach(function (label, idx) { return (strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(encodeXmlEntities(label), "</c:v></c:pt>")); });
                         strXml += '    </c:numCache>';
                         strXml += '  </c:numRef>';
                     }
                     else {
                         strXml += '  <c:multiLvlStrRef>';
-                        strXml += '    <c:f>Sheet1!$A$2:$' + getExcelColName(obj.labels.length) + '$' + (obj.labels[0].length + 1) + '</c:f>';
+                        strXml += "    <c:f>Sheet1!$A$2:$".concat(getExcelColName(obj.labels.length), "$").concat(obj.labels[0].length + 1, "</c:f>");
                         strXml += '    <c:multiLvlStrCache>';
-                        strXml += '	     <c:ptCount val="' + obj.labels[0].length + '"/>';
+                        strXml += "      <c:ptCount val=\"".concat(obj.labels[0].length, "\"/>");
                         obj.labels.forEach(function (labelsGroup) {
-                            strXml += '  <c:lvl>';
-                            labelsGroup.forEach(function (label, idx) {
-                                strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
-                            });
-                            strXml += '  </c:lvl>';
+                            strXml += '<c:lvl>';
+                            labelsGroup.forEach(function (label, idx) { return (strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(encodeXmlEntities(label), "</c:v></c:pt>")); });
+                            strXml += '</c:lvl>';
                         });
                         strXml += '    </c:multiLvlStrCache>';
                         strXml += '  </c:multiLvlStrRef>';
@@ -5484,7 +5456,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += "<c:f>Sheet1!$".concat(getExcelColName(obj._dataIndex + obj.labels.length + 1), "$2:$").concat(getExcelColName(obj._dataIndex + obj.labels.length + 1), "$").concat(obj.labels[0].length + 1, "</c:f>");
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>';
-                    strXml += '      <c:ptCount val="' + obj.labels[0].length + '"/>';
+                    strXml += "      <c:ptCount val=\"".concat(obj.labels[0].length, "\"/>");
                     obj.values.forEach(function (value, idx) { return (strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>")); });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -5504,14 +5476,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml +=
-                    '        <a:defRPr b="' +
-                        (opts.dataLabelFontBold ? 1 : 0) +
-                        '" i="' +
-                        (opts.dataLabelFontItalic ? 1 : 0) +
-                        '" strike="noStrike" sz="' +
-                        Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
-                        '" u="none">';
+                strXml += "        <a:defRPr b=\"".concat(opts.dataLabelFontBold ? 1 : 0, "\" i=\"").concat(opts.dataLabelFontItalic ? 1 : 0, "\" strike=\"noStrike\" sz=\"").concat(Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" u=\"none\">");
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5530,12 +5495,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             }
             // 4: Add more chart options (gapWidth, line Marker, etc.)
             if (chartType === CHART_TYPE.BAR) {
-                strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
-                strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0) + '"/>';
+                strXml += "  <c:gapWidth val=\"".concat(opts.barGapWidthPct, "\"/>");
+                strXml += "  <c:overlap val=\"".concat((opts.barGrouping || '').includes('tacked') ? 100 : opts.barOverlapPct ? opts.barOverlapPct : 0, "\"/>");
             }
             else if (chartType === CHART_TYPE.BAR3D) {
-                strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
-                strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>';
+                strXml += "  <c:gapWidth val=\"".concat(opts.barGapWidthPct, "\"/>");
+                strXml += "  <c:gapDepth val=\"".concat(opts.barGapDepthPct, "\"/>");
                 strXml += '  <c:shape val="' + opts.bar3DShape + '"/>';
             }
             else if (chartType === CHART_TYPE.LINE) {
@@ -5560,27 +5525,27 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:scatterStyle val="lineMarker"/>';
             strXml += '<c:varyColors val="0"/>';
             // 2: Series: (One for each Y-Axis)
-            colorIndex_1 = -1;
+            colorIndex = -1;
             data.filter(function (_obj, idx) { return idx > 0; }).forEach(function (obj, idx) {
-                colorIndex_1++;
+                colorIndex++;
                 strXml += '<c:ser>';
-                strXml += '  <c:idx val="' + idx + '"/>';
-                strXml += '  <c:order val="' + idx + '"/>';
+                strXml += "  <c:idx val=\"".concat(idx, "\"/>");
+                strXml += "  <c:order val=\"".concat(idx, "\"/>");
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$1</c:f>';
+                strXml += "      <c:f>Sheet1!$".concat(getExcelColName(idx + 2), "$1</c:f>");
                 strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
                 // 'c:spPr': Fill, Border, Line, LineStyle (dash, etc.), Shadow
                 strXml += '  <c:spPr>';
                 {
-                    var tmpSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
+                    var tmpSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
                     if (tmpSerColor === 'transparent') {
                         strXml += '<a:noFill/>';
                     }
                     else if (opts.chartColorsOpacity) {
-                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>';
+                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000).toString() + '"/>') + '</a:solidFill>';
                     }
                     else {
                         strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
@@ -5589,8 +5554,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
-                        strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
+                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(tmpSerColor), "</a:solidFill>");
+                        strXml += "<a:prstDash val=\"".concat(opts.lineDash || 'solid', "\"/><a:round/></a:ln>");
                     }
                     // Shadow
                     strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
@@ -5602,21 +5567,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
                     if (opts.lineDataSymbolSize) {
                         // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
-                        strXml += '  <c:size val="' + opts.lineDataSymbolSize + '"/>';
+                        strXml += "<c:size val=\"".concat(opts.lineDataSymbolSize, "\"/>");
                     }
-                    strXml += '  <c:spPr>';
-                    strXml +=
-                        '    <a:solidFill>' +
-                            createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
-                            '</a:solidFill>';
-                    strXml +=
-                        '    <a:ln w="' +
-                            opts.lineDataSymbolLineSize +
-                            '" cap="flat"><a:solidFill>' +
-                            createColorElement(opts.lineDataSymbolLineColor || opts.chartColors[colorIndex_1 % opts.chartColors.length]) +
-                            '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-                    strXml += '    <a:effectLst/>';
-                    strXml += '  </c:spPr>';
+                    strXml += '<c:spPr>';
+                    strXml += "<a:solidFill>".concat(createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]), "</a:solidFill>");
+                    strXml += "<a:ln w=\"".concat(opts.lineDataSymbolLineSize, "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.lineDataSymbolLineColor || opts.chartColors[colorIndex % opts.chartColors.length]), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
+                    strXml += '<a:effectLst/>';
+                    strXml += '</c:spPr>';
                     strXml += '</c:marker>';
                 }
                 // Option: scatter data point labels
@@ -5627,62 +5584,62 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         obj.labels[0].forEach(function (label, idx) {
                             if (opts.dataLabelFormatScatter === 'custom' || opts.dataLabelFormatScatter === 'customXY') {
                                 strXml += '  <c:dLbl>';
-                                strXml += '    <c:idx val="' + idx + '"/>';
+                                strXml += "    <c:idx val=\"".concat(idx, "\"/>");
                                 strXml += '    <c:tx>';
                                 strXml += '      <c:rich>';
-                                strXml += '			<a:bodyPr>';
-                                strXml += '				<a:spAutoFit/>';
-                                strXml += '			</a:bodyPr>';
-                                strXml += '        	<a:lstStyle/>';
-                                strXml += '        	<a:p>';
-                                strXml += '				<a:pPr>';
-                                strXml += '					<a:defRPr/>';
-                                strXml += '				</a:pPr>';
-                                strXml += '          	<a:r>';
-                                strXml += '            		<a:rPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>';
-                                strXml += '            		<a:t>' + encodeXmlEntities(label) + '</a:t>';
-                                strXml += '          	</a:r>';
+                                strXml += '            <a:bodyPr>';
+                                strXml += '                <a:spAutoFit/>';
+                                strXml += '            </a:bodyPr>';
+                                strXml += '            <a:lstStyle/>';
+                                strXml += '            <a:p>';
+                                strXml += '                <a:pPr>';
+                                strXml += '                    <a:defRPr/>';
+                                strXml += '                </a:pPr>';
+                                strXml += '              <a:r>';
+                                strXml += '                    <a:rPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>';
+                                strXml += '                    <a:t>' + encodeXmlEntities(label) + '</a:t>';
+                                strXml += '              </a:r>';
                                 // Apply XY values at end of custom label
                                 // Do not apply the values if the label was empty or just spaces
                                 // This allows for selective labelling where required
                                 if (opts.dataLabelFormatScatter === 'customXY' && !/^ *$/.test(label)) {
-                                    strXml += '          	<a:r>';
-                                    strXml += '          		<a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
-                                    strXml += '          		<a:t> (</a:t>';
-                                    strXml += '          	</a:r>';
-                                    strXml += '          	<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="XVALUE">';
-                                    strXml += '          		<a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0"/>';
-                                    strXml += '          		<a:pPr>';
-                                    strXml += '          			<a:defRPr/>';
-                                    strXml += '          		</a:pPr>';
-                                    strXml += '          		<a:t>[' + encodeXmlEntities(obj.name) + '</a:t>';
-                                    strXml += '          	</a:fld>';
-                                    strXml += '          	<a:r>';
-                                    strXml += '          		<a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
-                                    strXml += '          		<a:t>, </a:t>';
-                                    strXml += '          	</a:r>';
-                                    strXml += '          	<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="YVALUE">';
-                                    strXml += '          		<a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0"/>';
-                                    strXml += '          		<a:pPr>';
-                                    strXml += '          			<a:defRPr/>';
-                                    strXml += '          		</a:pPr>';
-                                    strXml += '          		<a:t>[' + encodeXmlEntities(obj.name) + ']</a:t>';
-                                    strXml += '          	</a:fld>';
-                                    strXml += '          	<a:r>';
-                                    strXml += '          		<a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
-                                    strXml += '          		<a:t>)</a:t>';
-                                    strXml += '          	</a:r>';
-                                    strXml += '          	<a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>';
+                                    strXml += '              <a:r>';
+                                    strXml += '                  <a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
+                                    strXml += '                  <a:t> (</a:t>';
+                                    strXml += '              </a:r>';
+                                    strXml += '              <a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="XVALUE">';
+                                    strXml += '                  <a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0"/>';
+                                    strXml += '                  <a:pPr>';
+                                    strXml += '                      <a:defRPr/>';
+                                    strXml += '                  </a:pPr>';
+                                    strXml += '                  <a:t>[' + encodeXmlEntities(obj.name) + '</a:t>';
+                                    strXml += '              </a:fld>';
+                                    strXml += '              <a:r>';
+                                    strXml += '                  <a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
+                                    strXml += '                  <a:t>, </a:t>';
+                                    strXml += '              </a:r>';
+                                    strXml += '              <a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="YVALUE">';
+                                    strXml += '                  <a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0"/>';
+                                    strXml += '                  <a:pPr>';
+                                    strXml += '                      <a:defRPr/>';
+                                    strXml += '                  </a:pPr>';
+                                    strXml += '                  <a:t>[' + encodeXmlEntities(obj.name) + ']</a:t>';
+                                    strXml += '              </a:fld>';
+                                    strXml += '              <a:r>';
+                                    strXml += '                  <a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
+                                    strXml += '                  <a:t>)</a:t>';
+                                    strXml += '              </a:r>';
+                                    strXml += '              <a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>';
                                 }
-                                strXml += '        	</a:p>';
+                                strXml += '            </a:p>';
                                 strXml += '      </c:rich>';
                                 strXml += '    </c:tx>';
                                 strXml += '    <c:spPr>';
-                                strXml += '    	<a:noFill/>';
-                                strXml += '    	<a:ln>';
-                                strXml += '    		<a:noFill/>';
-                                strXml += '    	</a:ln>';
-                                strXml += '    	<a:effectLst/>';
+                                strXml += '        <a:noFill/>';
+                                strXml += '        <a:ln>';
+                                strXml += '            <a:noFill/>';
+                                strXml += '        </a:ln>';
+                                strXml += '        <a:effectLst/>';
                                 strXml += '    </c:spPr>';
                                 if (opts.dataLabelPosition)
                                     strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
@@ -5692,13 +5649,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                                 strXml += '    <c:showSerName val="0"/>';
                                 strXml += '    <c:showPercent val="0"/>';
                                 strXml += '    <c:showBubbleSize val="0"/>';
-                                strXml += '	   <c:showLeaderLines val="1"/>';
+                                strXml += '       <c:showLeaderLines val="1"/>';
                                 strXml += '    <c:extLst>';
                                 strXml += '      <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart"/>';
                                 strXml += '      <c:ext uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}" xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart">';
-                                strXml += '			<c16:uniqueId val="{' + '00000000'.substring(0, 8 - (idx + 1).toString().length).toString() + (idx + 1) + chartUuid_1 + '}"/>';
+                                strXml += "            <c16:uniqueId val=\"{".concat('00000000'.substring(0, 8 - (idx + 1).toString().length).toString()).concat(idx + 1).concat(chartUuid_1, "}\"/>");
                                 strXml += '      </c:ext>';
-                                strXml += '		</c:extLst>';
+                                strXml += '        </c:extLst>';
                                 strXml += '</c:dLbl>';
                             }
                         });
@@ -5706,38 +5663,38 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     }
                     if (opts.dataLabelFormatScatter === 'XY') {
                         strXml += '<c:dLbls>';
-                        strXml += '	<c:spPr>';
-                        strXml += '		<a:noFill/>';
-                        strXml += '		<a:ln>';
-                        strXml += '			<a:noFill/>';
-                        strXml += '		</a:ln>';
-                        strXml += '	  	<a:effectLst/>';
-                        strXml += '	</c:spPr>';
-                        strXml += '	<c:txPr>';
-                        strXml += '		<a:bodyPr>';
-                        strXml += '			<a:spAutoFit/>';
-                        strXml += '		</a:bodyPr>';
-                        strXml += '		<a:lstStyle/>';
-                        strXml += '		<a:p>';
-                        strXml += '	    	<a:pPr>';
-                        strXml += '        		<a:defRPr/>';
-                        strXml += '	    	</a:pPr>';
-                        strXml += '	    	<a:endParaRPr lang="en-US"/>';
-                        strXml += '		</a:p>';
-                        strXml += '	</c:txPr>';
+                        strXml += '    <c:spPr>';
+                        strXml += '        <a:noFill/>';
+                        strXml += '        <a:ln>';
+                        strXml += '            <a:noFill/>';
+                        strXml += '        </a:ln>';
+                        strXml += '          <a:effectLst/>';
+                        strXml += '    </c:spPr>';
+                        strXml += '    <c:txPr>';
+                        strXml += '        <a:bodyPr>';
+                        strXml += '            <a:spAutoFit/>';
+                        strXml += '        </a:bodyPr>';
+                        strXml += '        <a:lstStyle/>';
+                        strXml += '        <a:p>';
+                        strXml += '            <a:pPr>';
+                        strXml += '                <a:defRPr/>';
+                        strXml += '            </a:pPr>';
+                        strXml += '            <a:endParaRPr lang="en-US"/>';
+                        strXml += '        </a:p>';
+                        strXml += '    </c:txPr>';
                         if (opts.dataLabelPosition)
                             strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
-                        strXml += '	<c:showLegendKey val="0"/>';
+                        strXml += '    <c:showLegendKey val="0"/>';
                         strXml += " <c:showVal val=\"".concat(opts.showLabel ? '1' : '0', "\"/>");
                         strXml += " <c:showCatName val=\"".concat(opts.showLabel ? '1' : '0', "\"/>");
                         strXml += " <c:showSerName val=\"".concat(opts.showSerName ? '1' : '0', "\"/>");
-                        strXml += '	<c:showPercent val="0"/>';
-                        strXml += '	<c:showBubbleSize val="0"/>';
-                        strXml += '	<c:extLst>';
-                        strXml += '		<c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">';
-                        strXml += '			<c15:showLeaderLines val="1"/>';
-                        strXml += '		</c:ext>';
-                        strXml += '	</c:extLst>';
+                        strXml += '    <c:showPercent val="0"/>';
+                        strXml += '    <c:showBubbleSize val="0"/>';
+                        strXml += '    <c:extLst>';
+                        strXml += '        <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">';
+                        strXml += '            <c15:showLeaderLines val="1"/>';
+                        strXml += '        </c:ext>';
+                        strXml += '    </c:extLst>';
                         strXml += '</c:dLbls>';
                     }
                 }
@@ -5748,7 +5705,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
                         strXml += '  <c:dPt>';
-                        strXml += '    <c:idx val="' + index + '"/>';
+                        strXml += "    <c:idx val=\"".concat(index, "\"/>");
                         strXml += '      <c:invertIfNegative val="0"/>';
                         strXml += '    <c:bubble3D val="0"/>';
                         strXml += '    <c:spPr>';
@@ -5770,12 +5727,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // X-Axis is always the same
                     strXml += '<c:xVal>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$A$2:$A$' + (data[0].values.length + 1) + '</c:f>';
+                    strXml += "    <c:f>Sheet1!$A$2:$A$".concat(data[0].values.length + 1, "</c:f>");
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>General</c:formatCode>';
-                    strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
+                    strXml += "      <c:ptCount val=\"".concat(data[0].values.length, "\"/>");
                     data[0].values.forEach(function (value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
+                        strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>");
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -5783,13 +5740,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // Y-Axis vals are this object's `values`
                     strXml += '<c:yVal>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 2) + '$2:$' + getExcelColName(idx + 2) + '$' + (data[0].values.length + 1) + '</c:f>';
+                    strXml += "    <c:f>Sheet1!$".concat(getExcelColName(idx + 2), "$2:$").concat(getExcelColName(idx + 2), "$").concat(data[0].values.length + 1, "</c:f>");
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>General</c:formatCode>';
                     // NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
-                    strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
+                    strXml += "      <c:ptCount val=\"".concat(data[0].values.length, "\"/>");
                     data[0].values.forEach(function (_value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (obj.values[idx] || obj.values[idx] === 0 ? obj.values[idx] : '') + '</c:v></c:pt>';
+                        strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(obj.values[idx] || obj.values[idx] === 0 ? obj.values[idx] : '', "</c:v></c:pt>");
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -5808,14 +5765,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml +=
-                    '        <a:defRPr b="' +
-                        (opts.dataLabelFontBold ? 1 : 0) +
-                        '" i="' +
-                        (opts.dataLabelFontItalic ? 1 : 0) +
-                        '" strike="noStrike" sz="' +
-                        Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
-                        '" u="none">';
+                strXml += "        <a:defRPr b=\"".concat(opts.dataLabelFontBold ? '1' : '0', "\" i=\"").concat(opts.dataLabelFontItalic ? '1' : '0', "\" strike=\"noStrike\" sz=\"").concat(Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" u=\"none\">");
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5850,29 +5800,28 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:bubbleChart>';
             strXml += '<c:varyColors val="0"/>';
             // 2: Series: (One for each Y-Axis)
-            colorIndex_1 = -1;
-            var idxColLtr_2 = 1;
+            colorIndex = -1;
             data.filter(function (_obj, idx) { return idx > 0; }).forEach(function (obj, idx) {
-                colorIndex_1++;
+                colorIndex++;
                 strXml += '<c:ser>';
-                strXml += '  <c:idx val="' + idx + '"/>';
-                strXml += '  <c:order val="' + idx + '"/>';
+                strXml += "  <c:idx val=\"".concat(idx, "\"/>");
+                strXml += "  <c:order val=\"".concat(idx, "\"/>");
                 // A: `<c:tx>`
                 strXml += '  <c:tx>';
                 strXml += '    <c:strRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$1</c:f>';
+                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr + 1) + '$1</c:f>';
                 strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt></c:strCache>';
                 strXml += '    </c:strRef>';
                 strXml += '  </c:tx>';
                 // B: '<c:spPr>': Fill, Border, Line, LineStyle (dash, etc.), Shadow
                 {
                     strXml += '<c:spPr>';
-                    var tmpSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
+                    var tmpSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
                     if (tmpSerColor === 'transparent') {
                         strXml += '<a:noFill/>';
                     }
                     else if (opts.chartColorsOpacity) {
-                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>';
+                        strXml += "<a:solidFill>".concat(createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000).toString() + '"/>'), "</a:solidFill>");
                     }
                     else {
                         strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
@@ -5881,16 +5830,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else if (opts.dataBorder) {
-                        strXml +=
-                            '<a:ln w="' +
-                                valToPts(opts.dataBorder.pt) +
-                                '" cap="flat"><a:solidFill>' +
-                                createColorElement(opts.dataBorder.color) +
-                                '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+                        strXml += "<a:ln w=\"".concat(valToPts(opts.dataBorder.pt), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
                     }
                     else {
-                        strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
-                        strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
+                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(tmpSerColor), "</a:solidFill>");
+                        strXml += "<a:prstDash val=\"".concat(opts.lineDash || 'solid', "\"/><a:round/></a:ln>");
                     }
                     // Shadow
                     strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
@@ -5903,12 +5847,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // X-Axis is always the same
                     strXml += '<c:xVal>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$A$2:$A$' + (data[0].values.length + 1) + '</c:f>';
+                    strXml += "    <c:f>Sheet1!$A$2:$A$".concat(data[0].values.length + 1, "</c:f>");
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>General</c:formatCode>';
-                    strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
+                    strXml += "      <c:ptCount val=\"".concat(data[0].values.length, "\"/>");
                     data[0].values.forEach(function (value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
+                        strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>");
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -5916,14 +5860,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // Y-Axis vals are this object's `values`
                     strXml += '<c:yVal>';
                     strXml += '  <c:numRef>';
-                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$2:$' + getExcelColName(idxColLtr_2 + 1) + '$' + (data[0].values.length + 1) + '</c:f>';
-                    idxColLtr_2++;
+                    strXml += "<c:f>Sheet1!$".concat(getExcelColName(idxColLtr + 1), "$2:$").concat(getExcelColName(idxColLtr + 1), "$").concat(data[0].values.length + 1, "</c:f>");
+                    idxColLtr++;
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>General</c:formatCode>';
                     // NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
-                    strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
+                    strXml += "      <c:ptCount val=\"".concat(data[0].values.length, "\"/>");
                     data[0].values.forEach(function (_value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (obj.values[idx] || obj.values[idx] === 0 ? obj.values[idx] : '') + '</c:v></c:pt>';
+                        strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(obj.values[idx] || obj.values[idx] === 0 ? obj.values[idx] : '', "</c:v></c:pt>");
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -5932,13 +5876,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // E: '<c:bubbleSize>'
                 strXml += '  <c:bubbleSize>';
                 strXml += '    <c:numRef>';
-                strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr_2 + 1) + '$2:$' + getExcelColName(idxColLtr_2 + 1) + '$' + (obj.sizes.length + 1) + '</c:f>';
-                idxColLtr_2++;
+                strXml += "<c:f>Sheet1!$".concat(getExcelColName(idxColLtr + 1), "$2:$").concat(getExcelColName(idxColLtr + 1), "$").concat(obj.sizes.length + 1, "</c:f>");
+                idxColLtr++;
                 strXml += '      <c:numCache>';
                 strXml += '        <c:formatCode>General</c:formatCode>';
-                strXml += '	       <c:ptCount val="' + obj.sizes.length + '"/>';
+                strXml += "           <c:ptCount val=\"".concat(obj.sizes.length, "\"/>");
                 obj.sizes.forEach(function (value, idx) {
-                    strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || '') + '</c:v></c:pt>';
+                    strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || '', "</c:v></c:pt>");
                 });
                 strXml += '      </c:numCache>';
                 strXml += '    </c:numRef>';
@@ -5969,8 +5913,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '</c:dLbls>';
             }
             // 4: Bubble options
-            //strXml += '  <c:bubbleScale val="100"/>';
-            //strXml += '  <c:showNegBubbles val="0"/>';
+            // strXml += '  <c:bubbleScale val="100"/>';
+            // strXml += '  <c:showNegBubbles val="0"/>';
             // Commented out to let it default to PPT until we create options
             // 5: AxisId (NOTE: order matters! (category comes first))
             strXml += "<c:axId val=\"".concat(catAxisId, "\"/><c:axId val=\"").concat(valAxisId, "\"/>");
@@ -5981,7 +5925,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPE.DOUGHNUT:
         case CHART_TYPE.PIE:
             // Use the same let name so code blocks from barChart are interchangeable
-            var obj = data[0];
+            optsChartData = data[0];
             /* EX:
                 data: [
                  {
@@ -6002,7 +5946,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '      <c:f>Sheet1!$B$1</c:f>';
             strXml += '      <c:strCache>';
             strXml += '        <c:ptCount val="1"/>';
-            strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(obj.name) + '</c:v></c:pt>';
+            strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(optsChartData.name) + '</c:v></c:pt>';
             strXml += '      </c:strCache>';
             strXml += '    </c:strRef>';
             strXml += '  </c:tx>';
@@ -6016,9 +5960,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
             }
             strXml += '  </c:spPr>';
-            //strXml += '<c:explosion val="0"/>'
+            // strXml += '<c:explosion val="0"/>'
             // 2: "Data Point" block for every data row
-            obj.labels[0].forEach(function (_label, idx) {
+            optsChartData.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dPt>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
                 strXml += ' <c:bubble3D val="0"/>';
@@ -6033,7 +5977,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             });
             // 3: "Data Label" block for every data Label
             strXml += '<c:dLbls>';
-            obj.labels[0].forEach(function (_label, idx) {
+            optsChartData.labels[0].forEach(function (_label, idx) {
                 strXml += '<c:dLbl>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
                 strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
@@ -6047,7 +5991,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
                 if (chartType === CHART_TYPE.PIE && opts.dataLabelPosition)
-                    strXml += "    <c:dLblPos val=\"".concat(opts.dataLabelPosition, "\"/>");
+                    strXml += "<c:dLblPos val=\"".concat(opts.dataLabelPosition, "\"/>");
                 strXml += '    <c:showLegendKey val="0"/>';
                 strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
                 strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>';
@@ -6057,34 +6001,34 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:dLbl>';
             });
             strXml += " <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
-            strXml += '	<c:txPr>';
-            strXml += '	  <a:bodyPr/>';
-            strXml += '	  <a:lstStyle/>';
-            strXml += '	  <a:p>';
-            strXml += '		<a:pPr>';
-            strXml += '		  <a:defRPr sz="1800" b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">';
-            strXml += '			<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>';
-            strXml += '		  </a:defRPr>';
-            strXml += '		</a:pPr>';
-            strXml += '	  </a:p>';
-            strXml += '	</c:txPr>';
+            strXml += '    <c:txPr>';
+            strXml += '      <a:bodyPr/>';
+            strXml += '      <a:lstStyle/>';
+            strXml += '      <a:p>';
+            strXml += '        <a:pPr>';
+            strXml += "          <a:defRPr sz=\"1800\" b=\"".concat(opts.dataLabelFontBold ? '1' : '0', "\" i=\"").concat(opts.dataLabelFontItalic ? '1' : '0', "\" u=\"none\" strike=\"noStrike\">");
+            strXml += '            <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>';
+            strXml += '          </a:defRPr>';
+            strXml += '        </a:pPr>';
+            strXml += '      </a:p>';
+            strXml += '    </c:txPr>';
             strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : '';
-            strXml += '	<c:showLegendKey val="0"/>';
-            strXml += '	<c:showVal val="0"/>';
-            strXml += '	<c:showCatName val="1"/>';
-            strXml += '	<c:showSerName val="0"/>';
-            strXml += '	<c:showPercent val="1"/>';
-            strXml += '	<c:showBubbleSize val="0"/>';
+            strXml += '    <c:showLegendKey val="0"/>';
+            strXml += '    <c:showVal val="0"/>';
+            strXml += '    <c:showCatName val="1"/>';
+            strXml += '    <c:showSerName val="0"/>';
+            strXml += '    <c:showPercent val="1"/>';
+            strXml += '    <c:showBubbleSize val="0"/>';
             strXml += " <c:showLeaderLines val=\"".concat(opts.showLeaderLines ? '1' : '0', "\"/>");
             strXml += '</c:dLbls>';
             // 2: "Categories"
             strXml += '<c:cat>';
             strXml += '  <c:strRef>';
-            strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels[0].length + 1) + '</c:f>';
+            strXml += "    <c:f>Sheet1!$A$2:$A$".concat(optsChartData.labels[0].length + 1, "</c:f>");
             strXml += '    <c:strCache>';
-            strXml += '	     <c:ptCount val="' + obj.labels[0].length + '"/>';
-            obj.labels[0].forEach(function (label, idx) {
-                strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
+            strXml += "         <c:ptCount val=\"".concat(optsChartData.labels[0].length, "\"/>");
+            optsChartData.labels[0].forEach(function (label, idx) {
+                strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(encodeXmlEntities(label), "</c:v></c:pt>");
             });
             strXml += '    </c:strCache>';
             strXml += '  </c:strRef>';
@@ -6092,11 +6036,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: Create vals
             strXml += '  <c:val>';
             strXml += '    <c:numRef>';
-            strXml += '      <c:f>Sheet1!$B$2:$B$' + (obj.labels[0].length + 1) + '</c:f>';
+            strXml += "      <c:f>Sheet1!$B$2:$B$".concat(optsChartData.labels[0].length + 1, "</c:f>");
             strXml += '      <c:numCache>';
-            strXml += '	       <c:ptCount val="' + obj.labels[0].length + '"/>';
-            obj.values.forEach(function (value, idx) {
-                strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
+            strXml += "           <c:ptCount val=\"".concat(optsChartData.labels[0].length, "\"/>");
+            optsChartData.values.forEach(function (value, idx) {
+                strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>");
             });
             strXml += '      </c:numCache>';
             strXml += '    </c:numRef>';
@@ -6105,7 +6049,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:ser>';
             strXml += "  <c:firstSliceAng val=\"".concat(opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0, "\"/>");
             if (chartType === CHART_TYPE.DOUGHNUT)
-                strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
+                strXml += "<c:holeSize val=\"".concat(opts.holeSize || 50, "\"/>");
             strXml += '</c:' + chartType + 'Chart>';
             // Done with Doughnut/Pie
             break;
@@ -6136,11 +6080,11 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml += '  <c:scaling>';
     strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
     if (opts.catAxisMaxVal || opts.catAxisMaxVal === 0)
-        strXml += '<c:max val="' + opts.catAxisMaxVal + '"/>';
+        strXml += "<c:max val=\"".concat(opts.catAxisMaxVal, "\"/>");
     if (opts.catAxisMinVal || opts.catAxisMinVal === 0)
-        strXml += '<c:min val="' + opts.catAxisMinVal + '"/>';
+        strXml += "<c:min val=\"".concat(opts.catAxisMinVal, "\"/>");
     strXml += '</c:scaling>';
-    strXml += '  <c:delete val="' + (opts.catAxisHidden ? 1 : 0) + '"/>';
+    strXml += '  <c:delete val="' + (opts.catAxisHidden ? '1' : '0') + '"/>';
     strXml += '  <c:axPos val="' + (opts.barDir === 'col' ? 'b' : 'l') + '"/>';
     strXml += opts.catGridLine.style !== 'none' ? createGridLineElement(opts.catGridLine) : '';
     // '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
@@ -6171,25 +6115,24 @@ function makeCatAxis(opts, axisId, valAxisId) {
         strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || (opts.barDir === 'col' ? 'low' : 'nextTo')) + '"/>';
     }
     strXml += '  <c:spPr>';
-    strXml += '    <a:ln w="' + (opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT) + '" cap="flat">';
-    strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
+    strXml += "    <a:ln w=\"".concat(opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT, "\" cap=\"flat\">");
+    strXml += !opts.catAxisLineShow ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
     strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || 'solid') + '"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
     strXml += '  </c:spPr>';
     strXml += '  <c:txPr>';
-    strXml += '    <a:bodyPr' + (opts.catAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.catAxisLabelRotate) + '"' : '') + '/>'; // don't specify rot 0 so we get the auto behavior
+    if (opts.catAxisLabelRotate) {
+        strXml += "<a:bodyPr rot=\"".concat(convertRotationDegrees(opts.catAxisLabelRotate), "\"/>");
+    }
+    else {
+        // NOTE: don't specify "`rot=0" - that way the object will be auto behavior
+        strXml += '<a:bodyPr/>';
+    }
     strXml += '    <a:lstStyle/>';
     strXml += '    <a:p>';
     strXml += '    <a:pPr>';
-    strXml +=
-        '    <a:defRPr sz="' +
-            Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-            '" b="' +
-            (opts.catAxisLabelFontBold ? 1 : 0) +
-            '" i="' +
-            (opts.catAxisLabelFontItalic ? 1 : 0) +
-            '" u="none" strike="noStrike">';
+    strXml += "      <a:defRPr sz=\"".concat(Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.catAxisLabelFontBold ? 1 : 0, "\" i=\"").concat(opts.catAxisLabelFontItalic ? 1 : 0, "\" u=\"none\" strike=\"noStrike\">");
     strXml += '      <a:solidFill>' + createColorElement(opts.catAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
@@ -6201,7 +6144,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml += " <c:".concat(typeof opts.valAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses', " val=\"").concat(opts.valAxisCrossesAt || 'autoZero', "\"/>");
     strXml += ' <c:auto val="1"/>';
     strXml += ' <c:lblAlgn val="ctr"/>';
-    strXml += ' <c:noMultiLvlLbl val="' + (opts.catAxisMultiLevelLabels ? 0 : 1) + '"/>';
+    strXml += " <c:noMultiLvlLbl val=\"".concat(opts.catAxisMultiLevelLabels ? 0 : 1, "\"/>");
     if (opts.catAxisLabelFrequency)
         strXml += ' <c:tickLblSkip val="' + opts.catAxisLabelFrequency + '"/>';
     // Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
@@ -6210,8 +6153,8 @@ function makeCatAxis(opts, axisId, valAxisId) {
         if (opts.catLabelFormatCode) {
             ['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function (opt) {
                 // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-                if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opts[opt].toLowerCase()) === -1)) {
-                    console.warn('`' + opt + "` must be one of: 'days','months','years' !");
+                if (opts[opt] && (typeof opts[opt] !== 'string' || !['days', 'months', 'years'].includes(opts[opt].toLowerCase()))) {
+                    console.warn("\"".concat(opt, "\" must be one of: 'days','months','years' !"));
                     opts[opt] = null;
                 }
             });
@@ -6223,9 +6166,9 @@ function makeCatAxis(opts, axisId, valAxisId) {
                 strXml += '<c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>';
         }
         if (opts.catAxisMajorUnit)
-            strXml += '<c:majorUnit val="' + opts.catAxisMajorUnit + '"/>';
+            strXml += "<c:majorUnit val=\"".concat(opts.catAxisMajorUnit, "\"/>");
         if (opts.catAxisMinorUnit)
-            strXml += '<c:minorUnit val="' + opts.catAxisMinorUnit + '"/>';
+            strXml += "<c:minorUnit val=\"".concat(opts.catAxisMinorUnit, "\"/>");
     }
     // Close cat axis tag
     // NOTE: Added closing tag of val or cat axis based on chart type
@@ -6256,11 +6199,11 @@ function makeValAxis(opts, valAxisId) {
         strXml += "<c:logBase val=\"".concat(opts.valAxisLogScaleBase, "\"/>");
     strXml += '<c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
     if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0)
-        strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>';
+        strXml += "<c:max val=\"".concat(opts.valAxisMaxVal, "\"/>");
     if (opts.valAxisMinVal || opts.valAxisMinVal === 0)
-        strXml += '<c:min val="' + opts.valAxisMinVal + '"/>';
+        strXml += "<c:min val=\"".concat(opts.valAxisMinVal, "\"/>");
     strXml += '  </c:scaling>';
-    strXml += '  <c:delete val="' + (opts.valAxisHidden ? 1 : 0) + '"/>';
+    strXml += "  <c:delete val=\"".concat(opts.valAxisHidden ? 1 : 0, "\"/>");
     strXml += '  <c:axPos val="' + axisPos + '"/>';
     if (opts.valGridLine.style !== 'none')
         strXml += createGridLineElement(opts.valGridLine);
@@ -6286,25 +6229,18 @@ function makeValAxis(opts, valAxisId) {
         strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || (opts.barDir === 'col' ? 'nextTo' : 'low')) + '"/>';
     }
     strXml += ' <c:spPr>';
-    strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">';
-    strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
+    strXml += "   <a:ln w=\"".concat(opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT, "\" cap=\"flat\">");
+    strXml += !opts.valAxisLineShow ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
     strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || 'solid') + '"/>';
     strXml += '     <a:round/>';
     strXml += '   </a:ln>';
     strXml += ' </c:spPr>';
     strXml += ' <c:txPr>';
-    strXml += '  <a:bodyPr' + (opts.valAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.valAxisLabelRotate) + '"' : '') + '/>'; // don't specify rot 0 so we get the auto behavior
+    strXml += "  <a:bodyPr".concat(opts.valAxisLabelRotate ? (' rot="' + convertRotationDegrees(opts.valAxisLabelRotate).toString() + '"') : '', "/>"); // don't specify rot 0 so we get the auto behavior
     strXml += '  <a:lstStyle/>';
     strXml += '  <a:p>';
     strXml += '    <a:pPr>';
-    strXml +=
-        '      <a:defRPr sz="' +
-            Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-            '" b="' +
-            (opts.valAxisLabelFontBold ? 1 : 0) +
-            '" i="' +
-            (opts.valAxisLabelFontItalic ? 1 : 0) +
-            '" u="none" strike="noStrike">';
+    strXml += "      <a:defRPr sz=\"".concat(Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.valAxisLabelFontBold ? 1 : 0, "\" i=\"").concat(opts.valAxisLabelFontItalic ? 1 : 0, "\" u=\"none\" strike=\"noStrike\">");
     strXml += '        <a:solidFill>' + createColorElement(opts.valAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '      </a:defRPr>';
@@ -6314,7 +6250,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += ' </c:txPr>';
     strXml += ' <c:crossAx val="' + crossAxId + '"/>';
     if (typeof opts.catAxisCrossesAt === 'number') {
-        strXml += ' <c:crossesAt val="' + opts.catAxisCrossesAt + '"/>';
+        strXml += " <c:crossesAt val=\"".concat(opts.catAxisCrossesAt, "\"/>");
     }
     else if (typeof opts.catAxisCrossesAt === 'string') {
         strXml += ' <c:crosses val="' + opts.catAxisCrossesAt + '"/>';
@@ -6326,14 +6262,13 @@ function makeValAxis(opts, valAxisId) {
     }
     strXml +=
         ' <c:crossBetween val="' +
-            (opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(function (type) { return type.type === CHART_TYPE.AREA; }).length > 0 ? true : false)
-                ? 'midCat'
-                : 'between') +
+            (opts._type === CHART_TYPE.SCATTER || (!!(Array.isArray(opts._type) && opts._type.filter(function (type) { return type.type === CHART_TYPE.AREA; }).length > 0)) ? 'midCat' : 'between') +
             '"/>';
     if (opts.valAxisMajorUnit)
-        strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>';
-    if (opts.valAxisDisplayUnit)
+        strXml += " <c:majorUnit val=\"".concat(opts.valAxisMajorUnit, "\"/>");
+    if (opts.valAxisDisplayUnit) {
         strXml += "<c:dispUnits><c:builtInUnit val=\"".concat(opts.valAxisDisplayUnit, "\"/>").concat(opts.valAxisDisplayUnitLabel ? '<c:dispUnitsLbl/>' : '', "</c:dispUnits>");
+    }
     strXml += '</c:valAx>';
     return strXml;
 }
@@ -6350,7 +6285,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '<c:serAx>';
     strXml += '  <c:axId val="' + axisId + '"/>';
     strXml += '  <c:scaling><c:orientation val="' + (opts.serAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/></c:scaling>';
-    strXml += '  <c:delete val="' + (opts.serAxisHidden ? 1 : 0) + '"/>';
+    strXml += '  <c:delete val="' + (opts.serAxisHidden ? '1' : '0') + '"/>';
     strXml += '  <c:axPos val="' + (opts.barDir === 'col' ? 'b' : 'l') + '"/>';
     strXml += opts.serGridLine.style !== 'none' ? createGridLineElement(opts.serGridLine) : '';
     // '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
@@ -6366,10 +6301,10 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.serLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
     strXml += '  <c:majorTickMark val="out"/>';
     strXml += '  <c:minorTickMark val="none"/>';
-    strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>';
+    strXml += "  <c:tickLblPos val=\"".concat(opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo', "\"/>");
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="12700" cap="flat">';
-    strXml += opts.serAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.serAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
+    strXml += !opts.serAxisLineShow ? '<a:noFill/>' : "<a:solidFill>".concat(createColorElement(opts.serAxisLineColor || DEF_CHART_GRIDLINE.color), "</a:solidFill>");
     strXml += '      <a:prstDash val="solid"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
@@ -6379,9 +6314,9 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '    <a:lstStyle/>';
     strXml += '    <a:p>';
     strXml += '    <a:pPr>';
-    strXml += "    <a:defRPr sz=\"".concat(Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.serAxisLabelFontBold || 0, "\" i=\"").concat(opts.serAxisLabelFontItalic || 0, "\" u=\"none\" strike=\"noStrike\">");
-    strXml += '      <a:solidFill>' + createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
-    strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>';
+    strXml += "    <a:defRPr sz=\"".concat(Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.serAxisLabelFontBold ? '1' : '0', "\" i=\"").concat(opts.serAxisLabelFontItalic ? '1' : '0', "\" u=\"none\" strike=\"noStrike\">");
+    strXml += "      <a:solidFill>".concat(createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR), "</a:solidFill>");
+    strXml += "      <a:latin typeface=\"".concat(opts.serAxisLabelFontFace || 'Arial', "\"/>");
     strXml += '   </a:defRPr>';
     strXml += '  </a:pPr>';
     strXml += '  <a:endParaRPr lang="' + (opts.lang || 'en-US') + '"/>';
@@ -6395,21 +6330,21 @@ function makeSerAxis(opts, axisId, valAxisId) {
     if (opts.serLabelFormatCode) {
         ['serAxisBaseTimeUnit', 'serAxisMajorTimeUnit', 'serAxisMinorTimeUnit'].forEach(function (opt) {
             // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) === -1)) {
-                console.warn('`' + opt + "` must be one of: 'days','months','years' !");
+            if (opts[opt] && (typeof opts[opt] !== 'string' || !['days', 'months', 'years'].includes(opt.toLowerCase()))) {
+                console.warn("\"".concat(opt, "\" must be one of: 'days','months','years' !"));
                 opts[opt] = null;
             }
         });
         if (opts.serAxisBaseTimeUnit)
-            strXml += ' <c:baseTimeUnit  val="' + opts.serAxisBaseTimeUnit.toLowerCase() + '"/>';
+            strXml += " <c:baseTimeUnit  val=\"".concat(opts.serAxisBaseTimeUnit.toLowerCase(), "\"/>");
         if (opts.serAxisMajorTimeUnit)
-            strXml += ' <c:majorTimeUnit val="' + opts.serAxisMajorTimeUnit.toLowerCase() + '"/>';
+            strXml += " <c:majorTimeUnit val=\"".concat(opts.serAxisMajorTimeUnit.toLowerCase(), "\"/>");
         if (opts.serAxisMinorTimeUnit)
-            strXml += ' <c:minorTimeUnit val="' + opts.serAxisMinorTimeUnit.toLowerCase() + '"/>';
+            strXml += " <c:minorTimeUnit val=\"".concat(opts.serAxisMinorTimeUnit.toLowerCase(), "\"/>");
         if (opts.serAxisMajorUnit)
-            strXml += ' <c:majorUnit     val="' + opts.serAxisMajorUnit + '"/>';
+            strXml += " <c:majorUnit val=\"".concat(opts.serAxisMajorUnit, "\"/>");
         if (opts.serAxisMinorUnit)
-            strXml += ' <c:minorUnit     val="' + opts.serAxisMinorUnit + '"/>';
+            strXml += " <c:minorUnit val=\"".concat(opts.serAxisMinorUnit, "\"/>");
     }
     // Close ser axis tag
     strXml += '</c:serAx>';
@@ -6421,10 +6356,10 @@ function makeSerAxis(opts, axisId, valAxisId) {
  * @return {string} XML `<c:title>`
  */
 function genXmlTitle(opts, chartX, chartY) {
-    var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"".concat(opts.titleAlign.substring(0, 1), "\">") : "<a:pPr>";
-    var rotate = opts.titleRotate ? "<a:bodyPr rot=\"".concat(convertRotationDegrees(opts.titleRotate), "\"/>") : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
-    var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
-    var titleBold = opts.titleBold === true ? 1 : 0;
+    var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"".concat(opts.titleAlign.substring(0, 1), "\">") : '<a:pPr>';
+    var rotate = opts.titleRotate ? "<a:bodyPr rot=\"".concat(convertRotationDegrees(opts.titleRotate), "\"/>") : '<a:bodyPr/>'; // don't specify rotation to get default (ex. vertical for cat axis)
+    var sizeAttr = opts.fontSize ? "sz=\"".concat(Math.round(opts.fontSize * 100), "\"") : ''; // only set the font size if specified.  Powerpoint will handle the default size
+    var titleBold = opts.titleBold ? 1 : 0;
     var layout = '<c:layout/>';
     if (opts.titlePos && typeof opts.titlePos.x === 'number' && typeof opts.titlePos.y === 'number') {
         // NOTE: manualLayout x/y vals are *relative to entire slide*
@@ -6442,7 +6377,7 @@ function genXmlTitle(opts, chartX, chartY) {
             valY = valY / 10;
         layout = "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"".concat(valX, "\"/><c:y val=\"").concat(valY, "\"/></c:manualLayout></c:layout>");
     }
-    return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      ".concat(rotate, "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        ").concat(align, "\n\t        <a:defRPr ").concat(sizeAttr, " b=\"").concat(titleBold, "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill>").concat(createColorElement(opts.color || DEF_FONT_COLOR), "</a:solidFill>\n\t          <a:latin typeface=\"").concat(opts.fontFace || 'Arial', "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr ").concat(sizeAttr, " b=\"").concat(titleBold, "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill>").concat(createColorElement(opts.color || DEF_FONT_COLOR), "</a:solidFill>\n\t          <a:latin typeface=\"").concat(opts.fontFace || 'Arial', "\"/>\n\t        </a:rPr>\n\t        <a:t>").concat(encodeXmlEntities(opts.title) || '', "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  ").concat(layout, "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>");
+    return "<c:title>\n      <c:tx>\n        <c:rich>\n          ".concat(rotate, "\n          <a:lstStyle/>\n          <a:p>\n            ").concat(align, "\n            <a:defRPr ").concat(sizeAttr, " b=\"").concat(titleBold, "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n              <a:solidFill>").concat(createColorElement(opts.color || DEF_FONT_COLOR), "</a:solidFill>\n              <a:latin typeface=\"").concat(opts.fontFace || 'Arial', "\"/>\n            </a:defRPr>\n          </a:pPr>\n          <a:r>\n            <a:rPr ").concat(sizeAttr, " b=\"").concat(titleBold, "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n              <a:solidFill>").concat(createColorElement(opts.color || DEF_FONT_COLOR), "</a:solidFill>\n              <a:latin typeface=\"").concat(opts.fontFace || 'Arial', "\"/>\n            </a:rPr>\n            <a:t>").concat(encodeXmlEntities(opts.title) || '', "</a:t>\n          </a:r>\n        </a:p>\n        </c:rich>\n      </c:tx>\n      ").concat(layout, "\n      <c:overlay val=\"0\"/>\n    </c:title>");
 }
 /**
  * Calc and return excel column name for a given column length
@@ -6477,16 +6412,22 @@ function createShadowElement(options, defaults) {
         return '<a:effectLst/>';
     }
     else if (typeof options !== 'object') {
-        console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`");
+        console.warn('`shadow` options must be an object. Ex: `{shadow: {type:\'none\'}}`');
         return '<a:effectLst/>';
     }
-    var strXml = '<a:effectLst>', opts = getMix(defaults, options), type = opts['type'] || 'outer', blur = valToPts(opts['blur']), offset = valToPts(opts['offset']), angle = Math.round(opts['angle'] * 60000), color = opts['color'], opacity = Math.round(opts['opacity'] * 100000), rotateWithShape = opts['rotateWithShape'] ? 1 : 0;
-    strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" ';
-    strXml += 'rotWithShape="' + +rotateWithShape + '"';
-    strXml += ' dist="' + offset + '" dir="' + angle + '">';
-    strXml += '<a:srgbClr val="' + color + '">';
-    strXml += '<a:alpha val="' + opacity + '"/></a:srgbClr>';
-    strXml += '</a:' + type + 'Shdw>';
+    var strXml = '<a:effectLst>';
+    var opts = __assign(__assign({}, defaults), options);
+    var type = opts.type || 'outer';
+    var blur = valToPts(opts.blur);
+    var offset = valToPts(opts.offset);
+    var angle = Math.round(opts.angle * 60000);
+    var color = opts.color;
+    var opacity = Math.round(opts.opacity * 100000);
+    var rotShape = opts.rotateWithShape ? 1 : 0;
+    strXml += "<a:".concat(type, "Shdw sx=\"100000\" sy=\"100000\" kx=\"0\" ky=\"0\"  algn=\"bl\" blurRad=\"").concat(blur, "\" rotWithShape=\"").concat(rotShape, "\" dist=\"").concat(offset, "\" dir=\"").concat(angle, "\">");
+    strXml += "<a:srgbClr val=\"".concat(color, "\">");
+    strXml += "<a:alpha val=\"".concat(opacity, "\"/></a:srgbClr>");
+    strXml += "</a:".concat(type, "Shdw>");
     strXml += '</a:effectLst>';
     return strXml;
 }
@@ -6498,7 +6439,7 @@ function createShadowElement(options, defaults) {
 function createGridLineElement(glOpts) {
     var strXml = '<c:majorGridlines>';
     strXml += ' <c:spPr>';
-    strXml += '  <a:ln w="' + valToPts(glOpts.size || DEF_CHART_GRIDLINE.size) + '" cap="flat">';
+    strXml += "  <a:ln w=\"".concat(valToPts(glOpts.size || DEF_CHART_GRIDLINE.size), "\" cap=\"flat\">");
     strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in [Pull #135]
     strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
     strXml += '  </a:ln>';
@@ -6520,11 +6461,11 @@ function encodeSlideMediaRels(layout) {
     var https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
     // A: Capture all audio/image/video candidates for encoding (filtering online/pre-encoded)
-    var candidateRels = layout._relsMedia.filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); });
+    var candidateRels = layout._relsMedia.filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && !rel.path.includes('preencoded'))); });
     // B: PERF: Mark dupes (same `path`) so that we dont load same media over-and-over
     var unqPaths = [];
     candidateRels.forEach(function (rel) {
-        if (unqPaths.indexOf(rel.path) === -1) {
+        if (!unqPaths.includes(rel.path)) {
             rel.isDuplicate = false;
             unqPaths.push(rel.path);
         }
@@ -6548,7 +6489,7 @@ function encodeSlideMediaRels(layout) {
                 catch (ex) {
                     rel.data = IMG_BROKEN;
                     candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
-                    reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString());
+                    reject(new Error("ERROR: Unable to read media: \"".concat(rel.path, "\"\n").concat(String(ex))));
                 }
             }
             else if (fs && https && rel.path.indexOf('http') === 0) {
@@ -6564,7 +6505,7 @@ function encodeSlideMediaRels(layout) {
                     res.on('error', function (_ex) {
                         rel.data = IMG_BROKEN;
                         candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
-                        reject("ERROR! Unable to load image (https.get): ".concat(rel.path));
+                        reject(new Error("ERROR! Unable to load image (https.get): ".concat(rel.path)));
                     });
                 });
             }
@@ -6595,7 +6536,7 @@ function encodeSlideMediaRels(layout) {
                 xhr_1.onerror = function (ex) {
                     rel.data = IMG_BROKEN;
                     candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
-                    reject("ERROR! Unable to load image (xhr.onerror): ".concat(rel.path));
+                    reject(new Error("ERROR! Unable to load image (xhr.onerror): ".concat(rel.path)));
                 };
                 // B: Execute request
                 xhr_1.open('GET', rel.path);
@@ -6609,7 +6550,7 @@ function encodeSlideMediaRels(layout) {
         .filter(function (rel) { return rel.isSvgPng && rel.data; })
         .forEach(function (rel) {
         if (fs) {
-            //console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
+            // console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
             rel.data = IMG_BROKEN;
             imageProms.push(Promise.resolve().then(function () { return 'done'; }));
         }
@@ -6625,38 +6566,45 @@ function encodeSlideMediaRels(layout) {
  * @return {Promise} promise
  */
 function createSvgPngPreview(rel) {
-    return new Promise(function (resolve, reject) {
-        // A: Create
-        var image = new Image();
-        // B: Set onload event
-        image.onload = function () {
-            // First: Check for any errors: This is the best method (try/catch wont work, etc.)
-            if (image.width + image.height === 0) {
-                image.onerror('h/w=0');
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, new Promise(function (resolve, reject) {
+                        // A: Create
+                        var image = new Image();
+                        // B: Set onload event
+                        image.onload = function () {
+                            // First: Check for any errors: This is the best method (try/catch wont work, etc.)
+                            if (image.width + image.height === 0) {
+                                image.onerror('h/w=0');
+                            }
+                            var canvas = document.createElement('CANVAS');
+                            var ctx = canvas.getContext('2d');
+                            canvas.width = image.width;
+                            canvas.height = image.height;
+                            ctx.drawImage(image, 0, 0);
+                            // Users running on local machine will get the following error:
+                            // "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
+                            // when the canvas.toDataURL call executes below.
+                            try {
+                                rel.data = canvas.toDataURL(rel.type);
+                                resolve('done');
+                            }
+                            catch (ex) {
+                                image.onerror(ex);
+                            }
+                            canvas = null;
+                        };
+                        image.onerror = function (ex) {
+                            rel.data = IMG_BROKEN;
+                            reject(new Error("ERROR! Unable to load image (image.onerror): ".concat(rel.path)));
+                        };
+                        // C: Load image
+                        image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN;
+                    })];
+                case 1: return [2 /*return*/, _a.sent()];
             }
-            var canvas = document.createElement('CANVAS');
-            var ctx = canvas.getContext('2d');
-            canvas.width = image.width;
-            canvas.height = image.height;
-            ctx.drawImage(image, 0, 0);
-            // Users running on local machine will get the following error:
-            // "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
-            // when the canvas.toDataURL call executes below.
-            try {
-                rel.data = canvas.toDataURL(rel.type);
-                resolve('done');
-            }
-            catch (ex) {
-                image.onerror(ex);
-            }
-            canvas = null;
-        };
-        image.onerror = function (ex) {
-            rel.data = IMG_BROKEN;
-            reject("ERROR! Unable to load image (image.onerror): ".concat(rel.path));
-        };
-        // C: Load image
-        image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN;
+        });
     });
 }
 
@@ -6691,7 +6639,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.11.0';
+var VERSION = '3.12.0-beta-20220908-2210';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6720,17 +6668,15 @@ var PptxGenJS = /** @class */ (function () {
         this._shapes = SHAPE_TYPE;
         /**
          * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
-         * @param {string} masterName - slide master name
+         * @param {AddSlideProps} options - slide masterName and/or sectionTitle
          * @return {PresSlide} new Slide
          */
-        this.addNewSlide = function (masterName) {
+        this.addNewSlide = function (options) {
             // Continue using sections if the first slide using auto-paging has a Section
             var sectAlreadyInUse = _this.sections.length > 0 &&
                 _this.sections[_this.sections.length - 1]._slides.filter(function (slide) { return slide._slideNum === _this.slides[_this.slides.length - 1]._slideNum; }).length > 0;
-            return _this.addSlide({
-                masterName: masterName,
-                sectionTitle: sectAlreadyInUse ? _this.sections[_this.sections.length - 1].title : null,
-            });
+            options.sectionTitle = sectAlreadyInUse ? _this.sections[_this.sections.length - 1].title : null;
+            return _this.addSlide(options);
         };
         /**
          * Provides an API for `addTableDefinition` to get slide reference by number
@@ -6753,7 +6699,7 @@ var PptxGenJS = /** @class */ (function () {
          * Create all chart and media rels for this Presentation
          * @param {PresSlide | SlideLayout} slide - slide with rels
          * @param {JSZip} zip - JSZip instance
-         * @param {Promise<any>[]} chartPromises - promise array
+         * @param {Promise<string>[]} chartPromises - promise array
          */
         this.createChartMediaRels = function (slide, zip, chartPromises) {
             slide._relsChart.forEach(function (rel) { return chartPromises.push(createExcelWorksheet(rel, zip)); });
@@ -6762,11 +6708,11 @@ var PptxGenJS = /** @class */ (function () {
                     // A: Loop vars
                     var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
                     // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-                    if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
+                    if (!data.includes(',') && !data.includes(';'))
                         data = 'image/png;base64,' + data;
-                    else if (data.indexOf(',') === -1)
+                    else if (!data.includes(','))
                         data = 'image/png;base64,' + data;
-                    else if (data.indexOf(';') === -1)
+                    else if (!data.includes(';'))
                         data = 'image/png;' + data;
                     // C: Add media
                     zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
@@ -6779,123 +6725,156 @@ var PptxGenJS = /** @class */ (function () {
          * @param {Blob} blobContent - Blob content
          * @return {Promise<string>} Promise with file name
          */
-        this.writeFileToBrowser = function (exportName, blobContent) {
-            // STEP 1: Create element
-            var eleLink = document.createElement('a');
-            eleLink.setAttribute('style', 'display:none;');
-            eleLink.dataset.interception = 'off'; // @see https://docs.microsoft.com/en-us/sharepoint/dev/spfx/hyperlinking
-            document.body.appendChild(eleLink);
-            // STEP 2: Download file to browser
-            // DESIGN: Use `createObjectURL()` to D/L files in client browsers (FYI: synchronously executed)
-            if (window.URL.createObjectURL) {
-                var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
-                eleLink.href = url_1;
-                eleLink.download = exportName;
-                eleLink.click();
-                // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
-                setTimeout(function () {
-                    window.URL.revokeObjectURL(url_1);
-                    document.body.removeChild(eleLink);
-                }, 100);
-                // Done
-                return Promise.resolve(exportName);
-            }
-        };
+        this.writeFileToBrowser = function (exportName, blobContent) { return __awaiter(_this, void 0, void 0, function () {
+            var eleLink, url_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        eleLink = document.createElement('a');
+                        eleLink.setAttribute('style', 'display:none;');
+                        eleLink.dataset.interception = 'off'; // @see https://docs.microsoft.com/en-us/sharepoint/dev/spfx/hyperlinking
+                        document.body.appendChild(eleLink);
+                        if (!window.URL.createObjectURL) return [3 /*break*/, 2];
+                        url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
+                        eleLink.href = url_1;
+                        eleLink.download = exportName;
+                        eleLink.click();
+                        // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url_1);
+                            document.body.removeChild(eleLink);
+                        }, 100);
+                        return [4 /*yield*/, Promise.resolve(exportName)];
+                    case 1: 
+                    // Done
+                    return [2 /*return*/, _a.sent()];
+                    case 2: return [2 /*return*/];
+                }
+            });
+        }); };
         /**
          * Create and export the .pptx file
          * @param {WRITE_OUTPUT_TYPE} outputType - output file type
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
-        this.exportPresentation = function (props) {
-            var arrChartPromises = [];
-            var arrMediaPromises = [];
-            var zip = new JSZip();
-            // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
-            _this.slides.forEach(function (slide) {
-                arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
+        this.exportPresentation = function (props) { return __awaiter(_this, void 0, void 0, function () {
+            var arrChartPromises, arrMediaPromises, zip;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        arrChartPromises = [];
+                        arrMediaPromises = [];
+                        zip = new JSZip();
+                        // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
+                        this.slides.forEach(function (slide) {
+                            arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
+                        });
+                        this.slideLayouts.forEach(function (layout) {
+                            arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(layout));
+                        });
+                        arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(this.masterSlide));
+                        return [4 /*yield*/, Promise.all(arrMediaPromises).then(function () { return __awaiter(_this, void 0, void 0, function () {
+                                var _this = this;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            // A: Add empty placeholder objects to slides that don't already have them
+                                            this.slides.forEach(function (slide) {
+                                                if (slide._slideLayout)
+                                                    addPlaceholdersToSlideLayouts(slide);
+                                            });
+                                            // B: Add all required folders and files
+                                            zip.folder('_rels');
+                                            zip.folder('docProps');
+                                            zip.folder('ppt').folder('_rels');
+                                            zip.folder('ppt/charts').folder('_rels');
+                                            zip.folder('ppt/embeddings');
+                                            zip.folder('ppt/media');
+                                            zip.folder('ppt/slideLayouts').folder('_rels');
+                                            zip.folder('ppt/slideMasters').folder('_rels');
+                                            zip.folder('ppt/slides').folder('_rels');
+                                            zip.folder('ppt/theme');
+                                            zip.folder('ppt/notesMasters').folder('_rels');
+                                            zip.folder('ppt/notesSlides').folder('_rels');
+                                            zip.file('[Content_Types].xml', makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)); // TODO: pass only `this` like below! 20200206
+                                            zip.file('_rels/.rels', makeXmlRootRels());
+                                            zip.file('docProps/app.xml', makeXmlApp(this.slides, this.company)); // TODO: pass only `this` like below! 20200206
+                                            zip.file('docProps/core.xml', makeXmlCore(this.title, this.subject, this.author, this.revision)); // TODO: pass only `this` like below! 20200206
+                                            zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(this.slides));
+                                            zip.file('ppt/theme/theme1.xml', makeXmlTheme());
+                                            zip.file('ppt/presentation.xml', makeXmlPresentation(this));
+                                            zip.file('ppt/presProps.xml', makeXmlPresProps());
+                                            zip.file('ppt/tableStyles.xml', makeXmlTableStyles());
+                                            zip.file('ppt/viewProps.xml', makeXmlViewProps());
+                                            // C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
+                                            this.slideLayouts.forEach(function (layout, idx) {
+                                                zip.file("ppt/slideLayouts/slideLayout".concat(idx + 1, ".xml"), makeXmlLayout(layout));
+                                                zip.file("ppt/slideLayouts/_rels/slideLayout".concat(idx + 1, ".xml.rels"), makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts));
+                                            });
+                                            this.slides.forEach(function (slide, idx) {
+                                                zip.file("ppt/slides/slide".concat(idx + 1, ".xml"), makeXmlSlide(slide));
+                                                zip.file("ppt/slides/_rels/slide".concat(idx + 1, ".xml.rels"), makeXmlSlideRel(_this.slides, _this.slideLayouts, idx + 1));
+                                                // Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
+                                                zip.file("ppt/notesSlides/notesSlide".concat(idx + 1, ".xml"), makeXmlNotesSlide(slide));
+                                                zip.file("ppt/notesSlides/_rels/notesSlide".concat(idx + 1, ".xml.rels"), makeXmlNotesSlideRel(idx + 1));
+                                            });
+                                            zip.file('ppt/slideMasters/slideMaster1.xml', makeXmlMaster(this.masterSlide, this.slideLayouts));
+                                            zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(this.masterSlide, this.slideLayouts));
+                                            zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
+                                            zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
+                                            // D: Create all Rels (images, media, chart data)
+                                            this.slideLayouts.forEach(function (layout) {
+                                                _this.createChartMediaRels(layout, zip, arrChartPromises);
+                                            });
+                                            this.slides.forEach(function (slide) {
+                                                _this.createChartMediaRels(slide, zip, arrChartPromises);
+                                            });
+                                            this.createChartMediaRels(this.masterSlide, zip, arrChartPromises);
+                                            return [4 /*yield*/, Promise.all(arrChartPromises).then(function () { return __awaiter(_this, void 0, void 0, function () {
+                                                    return __generator(this, function (_a) {
+                                                        switch (_a.label) {
+                                                            case 0:
+                                                                if (!(props.outputType === 'STREAM')) return [3 /*break*/, 2];
+                                                                return [4 /*yield*/, zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })];
+                                                            case 1: 
+                                                            // A: stream file
+                                                            return [2 /*return*/, _a.sent()];
+                                                            case 2:
+                                                                if (!props.outputType) return [3 /*break*/, 4];
+                                                                return [4 /*yield*/, zip.generateAsync({ type: props.outputType })];
+                                                            case 3: 
+                                                            // B: Node [fs]: Output type user option or default
+                                                            return [2 /*return*/, _a.sent()];
+                                                            case 4: return [4 /*yield*/, zip.generateAsync({ type: 'blob', compression: props.compression ? 'DEFLATE' : 'STORE' })];
+                                                            case 5: 
+                                                            // C: Browser: Output blob as app/ms-pptx
+                                                            return [2 /*return*/, _a.sent()];
+                                                        }
+                                                    });
+                                                }); })];
+                                        case 1: 
+                                        // E: Wait for Promises (if any) then generate the PPTX file
+                                        return [2 /*return*/, _a.sent()];
+                                    }
+                                });
+                            }); })];
+                    case 1: 
+                    // STEP 2: Wait for Promises (if any) then generate the PPTX file
+                    return [2 /*return*/, _a.sent()];
+                }
             });
-            _this.slideLayouts.forEach(function (layout) {
-                arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(layout));
-            });
-            arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(_this.masterSlide));
-            // STEP 2: Wait for Promises (if any) then generate the PPTX file
-            return Promise.all(arrMediaPromises).then(function () {
-                // A: Add empty placeholder objects to slides that don't already have them
-                _this.slides.forEach(function (slide) {
-                    if (slide._slideLayout)
-                        addPlaceholdersToSlideLayouts(slide);
-                });
-                // B: Add all required folders and files
-                zip.folder('_rels');
-                zip.folder('docProps');
-                zip.folder('ppt').folder('_rels');
-                zip.folder('ppt/charts').folder('_rels');
-                zip.folder('ppt/embeddings');
-                zip.folder('ppt/media');
-                zip.folder('ppt/slideLayouts').folder('_rels');
-                zip.folder('ppt/slideMasters').folder('_rels');
-                zip.folder('ppt/slides').folder('_rels');
-                zip.folder('ppt/theme');
-                zip.folder('ppt/notesMasters').folder('_rels');
-                zip.folder('ppt/notesSlides').folder('_rels');
-                zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts, _this.masterSlide)); // TODO: pass only `this` like below! 20200206
-                zip.file('_rels/.rels', makeXmlRootRels());
-                zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company)); // TODO: pass only `this` like below! 20200206
-                zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision)); // TODO: pass only `this` like below! 20200206
-                zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(_this.slides));
-                zip.file('ppt/theme/theme1.xml', makeXmlTheme());
-                zip.file('ppt/presentation.xml', makeXmlPresentation(_this));
-                zip.file('ppt/presProps.xml', makeXmlPresProps());
-                zip.file('ppt/tableStyles.xml', makeXmlTableStyles());
-                zip.file('ppt/viewProps.xml', makeXmlViewProps());
-                // C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
-                _this.slideLayouts.forEach(function (layout, idx) {
-                    zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', makeXmlLayout(layout));
-                    zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts));
-                });
-                _this.slides.forEach(function (slide, idx) {
-                    zip.file('ppt/slides/slide' + (idx + 1) + '.xml', makeXmlSlide(slide));
-                    zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', makeXmlSlideRel(_this.slides, _this.slideLayouts, idx + 1));
-                    // Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
-                    zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', makeXmlNotesSlide(slide));
-                    zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', makeXmlNotesSlideRel(idx + 1));
-                });
-                zip.file('ppt/slideMasters/slideMaster1.xml', makeXmlMaster(_this.masterSlide, _this.slideLayouts));
-                zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(_this.masterSlide, _this.slideLayouts));
-                zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
-                zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
-                // D: Create all Rels (images, media, chart data)
-                _this.slideLayouts.forEach(function (layout) {
-                    _this.createChartMediaRels(layout, zip, arrChartPromises);
-                });
-                _this.slides.forEach(function (slide) {
-                    _this.createChartMediaRels(slide, zip, arrChartPromises);
-                });
-                _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
-                // E: Wait for Promises (if any) then generate the PPTX file
-                // @ts-ignore
-                return Promise.all(arrChartPromises).then(function () {
-                    if (props.outputType === 'STREAM') {
-                        // A: stream file
-                        return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' });
-                    }
-                    else if (props.outputType) {
-                        // B: Node [fs]: Output type user option or default
-                        return zip.generateAsync({ type: props.outputType });
-                    }
-                    else {
-                        // C: Browser: Output blob as app/ms-pptx
-                        return zip.generateAsync({ type: 'blob', compression: props.compression ? 'DEFLATE' : 'STORE' });
-                    }
-                });
-            });
-        };
+        }); };
+        var layout4x3 = { name: 'screen4x3', width: 9144000, height: 6858000 };
+        var layout16x9 = { name: 'screen16x9', width: 9144000, height: 5143500 };
+        var layout16x10 = { name: 'screen16x10', width: 9144000, height: 5715000 };
+        var layoutWide = { name: 'custom', width: 12192000, height: 6858000 };
         // Set available layouts
         this.LAYOUTS = {
-            LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 },
-            LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 },
-            LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 },
-            LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 },
+            LAYOUT_4x3: layout4x3,
+            LAYOUT_16x9: layout16x9,
+            LAYOUT_16x10: layout16x10,
+            LAYOUT_WIDE: layoutWide,
         };
         // Core
         this._author = 'PptxGenJS';
@@ -7140,24 +7119,38 @@ var PptxGenJS = /** @class */ (function () {
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
      */
     PptxGenJS.prototype.stream = function (props) {
-        var propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false;
-        return this.exportPresentation({
-            compression: propsCompress,
-            outputType: 'STREAM',
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.exportPresentation({
+                            compression: props === null || props === void 0 ? void 0 : props.compression,
+                            outputType: 'STREAM',
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
         });
     };
     /**
      * Export the current Presentation as JSZip content with the selected type
-     * @param {WriteProps} props - output properties
+     * @param {WriteProps} props output properties
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
      */
     PptxGenJS.prototype.write = function (props) {
-        // DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
-        var propsOutpType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? props : null;
-        var propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false;
-        return this.exportPresentation({
-            compression: propsCompress,
-            outputType: propsOutpType,
+        return __awaiter(this, void 0, void 0, function () {
+            var propsOutpType, propsCompress;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        propsOutpType = typeof props === 'object' && (props === null || props === void 0 ? void 0 : props.outputType) ? props.outputType : props ? props : null;
+                        propsCompress = typeof props === 'object' && (props === null || props === void 0 ? void 0 : props.compression) ? props.compression : false;
+                        return [4 /*yield*/, this.exportPresentation({
+                                compression: propsCompress,
+                                outputType: propsOutpType,
+                            })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
         });
     };
     /**
@@ -7166,35 +7159,51 @@ var PptxGenJS = /** @class */ (function () {
      * @returns {Promise<string>} the presentation name
      */
     PptxGenJS.prototype.writeFile = function (props) {
-        var _this = this;
-        var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
-        // DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
-        if (typeof props === 'string')
-            console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');
-        var propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : '';
-        var propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false;
-        var fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx';
-        return this.exportPresentation({
-            compression: propsCompress,
-            outputType: fs ? 'nodebuffer' : null,
-        }).then(function (content) {
-            if (fs) {
-                // Node: Output
-                return new Promise(function (resolve, reject) {
-                    fs.writeFile(fileName, content, function (err) {
-                        if (err) {
-                            reject(err);
-                        }
-                        else {
-                            resolve(fileName);
-                        }
-                    });
-                });
-            }
-            else {
-                // Browser: Output blob as app/ms-pptx
-                return _this.writeFileToBrowser(fileName, content);
-            }
+        return __awaiter(this, void 0, void 0, function () {
+            var fs, propsExpName, propsCompress, fileName;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
+                        ;
+                        // DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
+                        if (typeof props === 'string')
+                            console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');
+                        propsExpName = typeof props === 'object' && (props === null || props === void 0 ? void 0 : props.fileName) ? props.fileName : typeof props === 'string' ? props : '';
+                        propsCompress = typeof props === 'object' && (props === null || props === void 0 ? void 0 : props.compression) ? props.compression : false;
+                        fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx';
+                        return [4 /*yield*/, this.exportPresentation({
+                                compression: propsCompress,
+                                outputType: fs ? 'nodebuffer' : null,
+                            }).then(function (content) { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (!fs) return [3 /*break*/, 2];
+                                            return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                                    fs.writeFile(fileName, content, function (err) {
+                                                        if (err) {
+                                                            reject(err);
+                                                        }
+                                                        else {
+                                                            resolve(fileName);
+                                                        }
+                                                    });
+                                                })];
+                                        case 1: 
+                                        // Node: Output
+                                        return [2 /*return*/, _a.sent()];
+                                        case 2: return [4 /*yield*/, this.writeFileToBrowser(fileName, content)];
+                                        case 3: 
+                                        // Browser: Output blob as app/ms-pptx
+                                        return [2 /*return*/, _a.sent()];
+                                    }
+                                });
+                            }); })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
         });
     };
     // PRESENTATION METHODS
@@ -7225,7 +7234,7 @@ var PptxGenJS = /** @class */ (function () {
      */
     PptxGenJS.prototype.addSlide = function (options) {
         // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
-        var masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : '';
+        var masterSlideName = typeof options === 'string' ? options : (options === null || options === void 0 ? void 0 : options.masterName) ? options.masterName : '';
         var slideLayout = {
             _name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
             _presLayout: this.presLayout,
@@ -7253,26 +7262,27 @@ var PptxGenJS = /** @class */ (function () {
         this._slides.push(newSlide);
         // B: Sections
         // B-1: Add slide to section (if any provided)
-        if (options && options.sectionTitle) {
+        // B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
+        if (options === null || options === void 0 ? void 0 : options.sectionTitle) {
             var sect = this.sections.filter(function (section) { return section.title === options.sectionTitle; })[0];
             if (!sect)
                 console.warn("addSlide: unable to find section with title: \"".concat(options.sectionTitle, "\""));
             else
                 sect._slides.push(newSlide);
         }
-        // B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
-        else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
+        else if (this.sections && this.sections.length > 0 && (!(options === null || options === void 0 ? void 0 : options.sectionTitle))) {
             var lastSect = this._sections[this.sections.length - 1];
             // CASE 1: The latest section is a default type - just add this one
             if (lastSect._type === 'default')
                 lastSect._slides.push(newSlide);
             // CASE 2: There latest section is NOT a default type - create the defualt, add this slide
-            else
+            else {
                 this._sections.push({
                     title: "Default-".concat(this.sections.filter(function (sect) { return sect._type === 'default'; }).length + 1),
                     _type: 'default',
                     _slides: [newSlide],
                 });
+            }
         }
         return newSlide;
     };
@@ -7344,7 +7354,7 @@ var PptxGenJS = /** @class */ (function () {
     PptxGenJS.prototype.tableToSlides = function (eleId, options) {
         if (options === void 0) { options = {}; }
         // @note `verbose` option is undocumented; used for verbose output of layout process
-        genTableToSlides(this, eleId, options, options && options.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout._name === options.masterSlideName; })[0] : null);
+        genTableToSlides(this, eleId, options, (options === null || options === void 0 ? void 0 : options.masterSlideName) ? this.slideLayouts.filter(function (layout) { return layout._name === options.masterSlideName; })[0] : null);
     };
     return PptxGenJS;
 }());
