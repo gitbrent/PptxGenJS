@@ -727,6 +727,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 						'" cap="flat"><a:solidFill>' +
 						createColorElement(opts.dataBorder.color) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
+				} else {
+					strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="' + createLineCap(opts.lineCap) + '">'
+					strXml += '  <a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
+					strXml += '  <a:prstDash val="' + (opts.lineDash || 'solid') + '"/>'
+					strXml += '  <a:round/>'
+					strXml += '</a:ln>'
 				}
 
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
@@ -1297,8 +1303,11 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 							createColorElement(opts.dataBorder.color) +
 							'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
-						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat">'
+						strXml += '  <a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
+						strXml += '  <a:prstDash val="' + (opts.lineDash || 'solid') + '"/>'
+						strXml += '  <a:round/>'
+						strXml += '</a:ln>'
 					}
 
 					// Shadow
