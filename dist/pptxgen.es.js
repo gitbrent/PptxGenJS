@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-10-10T07:28:41.530Z */
+/* PptxGenJS 3.11.0-beta @ 2022-11-01T08:34:55.901Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -4438,7 +4438,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:' + chartType + 'Chart>';
             strXml += '  <c:varyColors val="1"/>';
             strXml += '<c:ser>';
-            if (opts.chartPieExplosion) {
+            if (opts.chartPieExplosion && Number.isInteger(opts.chartPieExplosion)) {
                 strXml += '  <c:explosion val="' + opts.chartPieExplosion + '"/>';
             }
             strXml += '  <c:idx val="0"/>';
@@ -7018,7 +7018,8 @@ var PptxGenJS = /** @class */ (function () {
             // STEP 2: Download file to browser
             // DESIGN: Use `createObjectURL()` to D/L files in client browsers (FYI: synchronously executed)
             if (window.URL.createObjectURL) {
-                var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
+                var blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+                var url_1 = window.URL.createObjectURL(blob);
                 eleLink.href = url_1;
                 eleLink.download = exportName;
                 eleLink.click();
@@ -7028,7 +7029,11 @@ var PptxGenJS = /** @class */ (function () {
                     document.body.removeChild(eleLink);
                 }, 100);
                 // Done
-                return Promise.resolve(exportName);
+                return Promise.resolve({
+                    name: exportName,
+                    type: blob.type,
+                    size: blob.size,
+                });
             }
         };
         /**

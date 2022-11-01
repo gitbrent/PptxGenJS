@@ -1679,6 +1679,20 @@ export interface WriteProps extends WriteBaseProps {
 	 */
 	outputType?: WRITE_OUTPUT_TYPE
 }
+export interface WriteFile {
+	/**
+	 * File name
+	 */
+	name: string
+	/**
+	 * File size
+	 */
+	size: number
+	/**
+	 * Mime type
+	 */
+	type: string
+}
 export interface WriteFileProps extends WriteBaseProps {
 	/**
 	 * Export file name
