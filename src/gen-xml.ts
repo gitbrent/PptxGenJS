@@ -351,9 +351,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 								{ idx: 0, name: 'lnT' },
 								{ idx: 2, name: 'lnB' },
 							].forEach(obj => {
+								let opacity = Math.round((100 - cellOpts.border[obj.idx]['transparency']) * 1000)
+								let borderAlpha = `<a:alpha val="${opacity}"/>`
 								if (cellOpts.border[obj.idx].type !== 'none') {
 									strXml += `<a:${obj.name} w="${valToPts(cellOpts.border[obj.idx].pt)}" cap="flat" cmpd="sng" algn="ctr">`
-									strXml += `<a:solidFill>${createColorElement(cellOpts.border[obj.idx].color)}</a:solidFill>`
+									strXml += `<a:solidFill>${createColorElement(cellOpts.border[obj.idx].color, borderAlpha)}</a:solidFill>`
 									strXml += `<a:prstDash val="${
 										cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid'
 									}"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>`
