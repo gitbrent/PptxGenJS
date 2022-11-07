@@ -92,6 +92,7 @@ import {
 	TableToSlidesProps,
 	WriteBaseProps,
 	WriteFileProps,
+	WriteFile,
 	WriteProps,
 } from './core-interfaces'
 import * as genCharts from './gen-charts'
@@ -445,7 +446,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {Blob} blobContent - Blob content
 	 * @return {Promise<string>} Promise with file name
 	 */
-	private writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
+	private writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<WriteFile> => {
 		// STEP 1: Create element
 		let eleLink = document.createElement('a')
 		eleLink.setAttribute('style', 'display:none;')
@@ -455,7 +456,8 @@ export default class PptxGenJS implements IPresentationProps {
 		// STEP 2: Download file to browser
 		// DESIGN: Use `createObjectURL()` to D/L files in client browsers (FYI: synchronously executed)
 		if (window.URL.createObjectURL) {
-			let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
+			let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
+			let url = window.URL.createObjectURL(blob)
 			eleLink.href = url
 			eleLink.download = exportName
 			eleLink.click()
@@ -467,7 +469,11 @@ export default class PptxGenJS implements IPresentationProps {
 			}, 100)
 
 			// Done
-			return Promise.resolve(exportName)
+			return Promise.resolve({
+				name: exportName,
+				type: blob.type,
+				size: blob.size,
+			})
 		}
 	}
 
@@ -602,7 +608,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(props?: WriteFileProps | string): Promise<string> {
+	writeFile(props?: WriteFileProps | string): Promise<string | WriteFile> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
@@ -616,7 +622,7 @@ export default class PptxGenJS implements IPresentationProps {
 		}).then(content => {
 			if (fs) {
 				// Node: Output
-				return new Promise<string>((resolve, reject) => {
+				return new Promise((resolve, reject) => {
 					fs.writeFile(fileName, content, err => {
 						if (err) {
 							reject(err)
@@ -741,7 +747,7 @@ export default class PptxGenJS implements IPresentationProps {
 				...style,
 				rel: {
 					id: '', // populated in `genXml.makeXmlPresentationRels`
-					target: `fonts/${font.name.replace(/ /g,'')}-${style.name}.fntdata`,
+					target: `fonts/${font.name.replace(/ /g, '')}-${style.name}.fntdata`,
 				},
 			})),
 		}))
