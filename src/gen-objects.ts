@@ -464,16 +464,16 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 			isSvgPng: true,
 			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
 		})
-		newObject.imageRid = imageRelId
-		target._relsMedia.push({
-			path: strImagePath || strImageData,
-			type: 'image/svg+xml',
-			extn: strImgExtn,
-			data: strImageData || '',
-			rId: imageRelId + 1,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
-		})
-		newObject.imageRid = imageRelId + 1
+		imageRelId++;
+        newObject.imageRid = imageRelId;
+        target._relsMedia.push({
+            path: strImagePath || strImageData,
+            type: 'image/svg+xml',
+            extn: strImgExtn,
+            data: strImageData || '',
+            rId: newObject.imageRid,
+            Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+        });
 	} else {
 		// PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
 		const dupeItem = target._relsMedia.filter(item => item.path && item.path === strImagePath && item.type === 'image/' + strImgExtn && item.isDuplicate === false)[0]

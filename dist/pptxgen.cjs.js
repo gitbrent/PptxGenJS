@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-11-07T14:48:26.212Z */
+/* PptxGenJS 3.11.0-beta @ 2022-11-08T10:19:39.930Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2146,16 +2146,16 @@ function addImageDefinition(target, opt) {
             isSvgPng: true,
             svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
         });
+        imageRelId++;
         newObject.imageRid = imageRelId;
         target._relsMedia.push({
             path: strImagePath || strImageData,
             type: 'image/svg+xml',
             extn: strImgExtn,
             data: strImageData || '',
-            rId: imageRelId + 1,
+            rId: newObject.imageRid,
             Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
         });
-        newObject.imageRid = imageRelId + 1;
     }
     else {
         // PERF: Duplicate media should reuse existing `Target` value and not create an additional copy
