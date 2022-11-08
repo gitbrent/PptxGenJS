@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-11-01T08:34:55.898Z */
+/* PptxGenJS 3.11.0-beta @ 2022-11-07T14:48:26.212Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -55,7 +55,7 @@ var LAYOUT_IDX_SERIES_BASE = 2147483649;
 var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 var LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
 var DEF_BULLET_MARGIN = 27;
-var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
+var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1, transparency: 0 };
 var DEF_CELL_MARGIN_IN = [0.05, 0.1, 0.05, 0.1]; // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
 var DEF_CHART_BORDER = { type: 'solid', color: '363636', pt: 1 };
 var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 };
@@ -2450,6 +2450,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                     newCell.options.border[idx] = {
                         type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
                         color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+                        transparency: newCell.options.border[idx].transparency || DEF_CELL_BORDER.transparency,
                         pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
                     };
                 });
@@ -2481,7 +2482,12 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     else if (Array.isArray(opt.border)) {
         [0, 1, 2, 3].forEach(function (idx) {
             opt.border[idx] = opt.border[idx]
-                ? { type: opt.border[idx].type || DEF_CELL_BORDER.type, color: opt.border[idx].color || DEF_CELL_BORDER.color, pt: opt.border[idx].pt || DEF_CELL_BORDER.pt }
+                ? {
+                    type: opt.border[idx].type || DEF_CELL_BORDER.type,
+                    color: opt.border[idx].color || DEF_CELL_BORDER.color,
+                    pt: opt.border[idx].pt || DEF_CELL_BORDER.pt,
+                    transparency: opt.border[idx].transparency || DEF_CELL_BORDER.transparency,
+                }
                 : { type: 'none' };
         });
     }
@@ -5417,9 +5423,11 @@ function slideObjectToXml(slide) {
                                 { idx: 0, name: 'lnT' },
                                 { idx: 2, name: 'lnB' },
                             ].forEach(function (obj) {
+                                var opacity = Math.round((100 - cellOpts.border[obj.idx]['transparency']) * 1000);
+                                var borderAlpha = "<a:alpha val=\"".concat(opacity, "\"/>");
                                 if (cellOpts.border[obj.idx].type !== 'none') {
                                     strXml_1 += "<a:".concat(obj.name, " w=\"").concat(valToPts(cellOpts.border[obj.idx].pt), "\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">");
-                                    strXml_1 += "<a:solidFill>".concat(createColorElement(cellOpts.border[obj.idx].color), "</a:solidFill>");
+                                    strXml_1 += "<a:solidFill>".concat(createColorElement(cellOpts.border[obj.idx].color, borderAlpha), "</a:solidFill>");
                                     strXml_1 += "<a:prstDash val=\"".concat(cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid', "\"/><a:round/><a:headEnd type=\"none\" w=\"med\" len=\"med\"/><a:tailEnd type=\"none\" w=\"med\" len=\"med\"/>");
                                     strXml_1 += "</a:".concat(obj.name, ">");
                                 }
