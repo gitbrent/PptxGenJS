@@ -1251,21 +1251,6 @@ function genXmlImgSolidFill(solidFill: SolidFillProps): string {
  * @param {ISlideObject|TableCell} slideObj - slideObj or tableCell
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
  * @note Bullets are a paragragh-level formatting device
- * @template
- *	<p:txBody>
- *		<a:bodyPr wrap="square" rtlCol="0">
- *			<a:spAutoFit/>
- *		</a:bodyPr>
- *		<a:lstStyle/>
- *		<a:p>
- *			<a:pPr algn="ctr"/>
- *			<a:r>
- *				<a:rPr lang="en-US" dirty="0" err="1"/>
- *				<a:t>textbox text</a:t>
- *			</a:r>
- *			<a:endParaRPr lang="en-US" dirty="0"/>
- *		</a:p>
- *	</p:txBody>
  * @returns XML containing the param object's text and formatting
  */
 export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
