@@ -41,6 +41,10 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 					theme: {
 						customCss: require.resolve("./src/css/custom.css"),
 					},
+					googleAnalytics: {
+						trackingID: 'G-4F7ZC3PH3Y',
+						anonymizeIP: true,
+					},
 				}),
 			],
 		],
@@ -200,15 +204,6 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 					href: "https://github.com/gitbrent/PptxGenJS",
 				},
 			},
-			plugins: [
-				[
-					"@docusaurus/plugin-google-gtag",
-					{
-						trackingID: "G-4F7ZC3PH3Y",
-						anonymizeIP: true,
-					},
-				],
-			],
 		},
 	}
 );
