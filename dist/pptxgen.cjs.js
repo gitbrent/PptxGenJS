@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2022-11-07T14:48:26.212Z */
+/* PptxGenJS 3.11.0-beta @ 2022-12-08T14:06:36.946Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5076,7 +5076,7 @@ function encodeSlideMediaRels(layout) {
                 xhr_1.onerror = function (ex) {
                     rel.data = IMG_BROKEN;
                     candidateRels.filter(function (dupe) { return dupe.isDuplicate && dupe.path === rel.path; }).forEach(function (dupe) { return (dupe.data = rel.data); });
-                    reject("ERROR! Unable to load image (xhr.onerror): ".concat(rel.path));
+                    reject("ERROR! Unable to load image (xhr.onerror): ".concat(rel.path, " | ex: ").concat(ex));
                 };
                 // B: Execute request
                 xhr_1.open('GET', rel.path);
@@ -5134,7 +5134,7 @@ function createSvgPngPreview(rel) {
         };
         image.onerror = function (ex) {
             rel.data = IMG_BROKEN;
-            reject("ERROR! Unable to load image (image.onerror): ".concat(rel.path));
+            reject("ERROR! Unable to load image (image.onerror): ".concat(rel.path, " | ex: ").concat(ex));
         };
         // C: Load image
         image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN;
