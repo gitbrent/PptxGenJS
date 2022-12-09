@@ -89,7 +89,7 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 						xhr.onerror = ex => {
 							rel.data = IMG_BROKEN
 							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
-							reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
+							reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path} | ex: ${ex}`)
 						}
 
 						// B: Execute request
@@ -151,7 +151,7 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 		}
 		image.onerror = ex => {
 			rel.data = IMG_BROKEN
-			reject(`ERROR! Unable to load image (image.onerror): ${rel.path}`)
+			reject(`ERROR! Unable to load image (image.onerror): ${rel.path} | ex: ${ex}`)
 		}
 
 		// C: Load image
