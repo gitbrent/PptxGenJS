@@ -146,6 +146,7 @@ declare namespace PptxGenJS {
 		'center' = 'center',
 		'right' = 'right',
 		'justify' = 'justify',
+		'distributed' = 'distributed',
 	}
 	export enum AlignV {
 		'top' = 'top',
@@ -820,6 +821,7 @@ declare namespace PptxGenJS {
 		'center' = 'center',
 		'right' = 'right',
 		'justify' = 'justify',
+		'distributed' = 'distributed',
 	}
 	export enum TEXT_VALIGN {
 		'b' = 'b',
@@ -904,7 +906,7 @@ declare namespace PptxGenJS {
 	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 	export type Color = HexColor | ThemeColor
 	export type Margin = number | [number, number, number, number]
-	export type HAlign = 'left' | 'center' | 'right' | 'justify'
+	export type HAlign = 'left' | 'center' | 'right' | 'justify' | 'distributed'
 	export type VAlign = 'top' | 'middle' | 'bottom'
 
 	// used by charts, shape, text

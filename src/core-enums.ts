@@ -86,6 +86,7 @@ export enum TEXT_HALIGN {
 	'center' = 'center',
 	'right' = 'right',
 	'justify' = 'justify',
+	'distributed' = 'distributed',
 }
 export enum TEXT_VALIGN {
 	'b' = 'b',
@@ -319,6 +320,7 @@ export enum AlignH {
 	'center' = 'center',
 	'right' = 'right',
 	'justify' = 'justify',
+	'distributed' = 'distributed',
 }
 export enum AlignV {
 	'top' = 'top',

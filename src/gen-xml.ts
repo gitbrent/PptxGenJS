@@ -842,6 +842,9 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 				case 'justify':
 					paragraphPropXml += ' algn="just"'
 					break
+				case 'distributed':
+					paragraphPropXml += ' algn="dist"'
+					break
 				default:
 					paragraphPropXml += ''
 					break
