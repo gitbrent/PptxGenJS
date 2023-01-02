@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2022-09-09T03:12:15.279Z */
+/* PptxGenJS 3.12.1-alpha4 @ 2023-01-04T16:17:20.265Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -859,7 +859,9 @@ function genXmlColorSelection(props) {
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
 function getNewRelId(target) {
-    return target._rels.length + target._relsChart.length + target._relsMedia.length + 1;
+    // The nvGrpSpPr node has ID 1, so we have an offset of 1
+    var offset = 1;
+    return target._rels.length + target._relsChart.length + target._relsMedia.length + offset + 1;
 }
 
 /**
@@ -2065,18 +2067,20 @@ function slideObjectToXml(slide) {
             case SLIDE_OBJECT_TYPES.image:
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += "<p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\">");
-                if ((_g = slideItemObj.hyperlink) === null || _g === void 0 ? void 0 : _g.url) {
-                    strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\"/>");
+                strSlideXml += "<p:cNvPr id=\"".concat(slideItemObj.imageRid, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\" ").concat(!slideItemObj.hyperlink && '/', ">");
+                if (slideItemObj.hyperlink) {
+                    if ((_g = slideItemObj.hyperlink) === null || _g === void 0 ? void 0 : _g.url) {
+                        strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\"/>");
+                    }
+                    if ((_h = slideItemObj.hyperlink) === null || _h === void 0 ? void 0 : _h.slide) {
+                        strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\" action=\"ppaction://hlinksldjump\"/>");
+                    }
+                    strSlideXml += '    </p:cNvPr>' + CRLF;
+                    strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>' + CRLF;
+                    strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>' + CRLF;
                 }
-                if ((_h = slideItemObj.hyperlink) === null || _h === void 0 ? void 0 : _h.slide) {
-                    strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\" action=\"ppaction://hlinksldjump\"/>");
-                }
-                strSlideXml += '    </p:cNvPr>';
-                strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
-                strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
-                strSlideXml += '  </p:nvPicPr>';
-                strSlideXml += '<p:blipFill>';
+                strSlideXml += '  </p:nvPicPr>' + CRLF;
+                strSlideXml += '<p:blipFill>' + CRLF;
                 // NOTE: This works for both cases: either `path` or `data` contains the SVG
                 if ((slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0] &&
                     (slide._relsMedia || []).filter(function (rel) { return rel.rId === slideItemObj.imageRid; })[0].extn === 'svg') {
@@ -2183,9 +2187,11 @@ function slideObjectToXml(slide) {
         // Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
         if (!slide._slideNumberProps.align)
             slide._slideNumberProps.align = 'left';
+        // The whole generation of relId needs an overhaul, this creates too many inter dependencies
+        var relId = getNewRelId(slide) + 1;
         strSlideXml += '<p:sp>';
         strSlideXml += ' <p:nvSpPr>';
-        strSlideXml += '  <p:cNvPr id="25" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>';
+        strSlideXml += "  <p:cNvPr id=\"".concat(relId, "\" name=\"Slide Number Placeholder 0\"/><p:cNvSpPr><a:spLocks noGrp=\"1\"/></p:cNvSpPr>");
         strSlideXml += '  <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>';
         strSlideXml += ' </p:nvSpPr>';
         strSlideXml += ' <p:spPr>';
@@ -2243,6 +2249,29 @@ function slideObjectToXml(slide) {
     strSlideXml += '</p:cSld>';
     // LAST: Return
     return strSlideXml;
+}
+function generateTiming(slide) {
+    var types = [
+        SLIDE_OBJECT_TYPES.image,
+        SLIDE_OBJECT_TYPES.media,
+        SLIDE_OBJECT_TYPES.text,
+        SLIDE_OBJECT_TYPES.table
+    ];
+    var images = slide._slideObjects.filter(function (o) { return types.includes(o._type) && o.options.appearOnClick; });
+    if (images.length === 0) {
+        return '';
+    }
+    // We're incrementing with 2 here because the slide number takes the previous relId.
+    var baseId = getNewRelId(slide) + 2;
+    var out = "\n\t\t<p:timing>\n\t\t\t<p:tnLst>\n\t\t\t\t<p:par>\n\t\t\t\t\t<p:cTn id=\"".concat(baseId, "\" dur=\"indefinite\" restart=\"never\" nodeType=\"tmRoot\">\n\t\t\t\t\t\t<p:childTnLst>\n\t\t\t\t\t\t\t<p:seq>\n\t\t\t\t\t\t\t\t<p:cTn id=\"").concat(baseId + 1, "\" dur=\"indefinite\" nodeType=\"mainSeq\">\n\t\t\t\t\t\t\t\t\t<p:childTnLst>\n\t");
+    for (var i = 0; i < images.length; i++) {
+        var id = baseId + 2 + (i * 4);
+        // console.log('Setting appearance for image ', id, ', image: ', images[i].imageRid)
+        var imageRid = images[i].imageRid;
+        out += "\n      <p:par>\n        <p:cTn id=\"".concat(id, "\" fill=\"hold\">\n          <p:stCondLst>\n            <p:cond delay=\"indefinite\"/>\n          </p:stCondLst>\n          <p:childTnLst>\n            <p:par>\n              <p:cTn id=\"").concat(id + 1, "\" fill=\"hold\">\n                <p:stCondLst>\n                  <p:cond delay=\"0\"/>\n                </p:stCondLst>\n                <p:childTnLst>\n                  <p:par>\n                    <p:cTn id=\"").concat(id + 2, "\" nodeType=\"clickEffect\" fill=\"hold\" presetClass=\"entr\" presetID=\"1\">\n                      <p:stCondLst>\n                        <p:cond delay=\"0\"/>\n                      </p:stCondLst>\n                      <p:childTnLst>\n                        <p:set>\n                          <p:cBhvr>\n                            <p:cTn id=\"").concat(id + 3, "\" dur=\"1\" fill=\"hold\">\n                              <p:stCondLst>\n                                <p:cond delay=\"0\"/>\n                              </p:stCondLst>\n                            </p:cTn>\n                            <p:tgtEl>\n                              <p:spTgt spid=\"").concat(imageRid, "\"/>\n                            </p:tgtEl>\n                            <p:attrNameLst>\n                              <p:attrName>style.visibility</p:attrName>\n                            </p:attrNameLst>\n                          </p:cBhvr>\n                          <p:to>\n                            <p:strVal val=\"visible\"/>\n                          </p:to>\n                        </p:set>\n                      </p:childTnLst>\n                    </p:cTn>\n                  </p:par>\n                </p:childTnLst>\n              </p:cTn>\n            </p:par>\n          </p:childTnLst>\n        </p:cTn>\n      </p:par>\n\t\t");
+    }
+    out += "\n\t\t\t\t\t\t\t\t\t</p:childTnLst>\n\t      \t\t\t\t\t\t</p:cTn>\n\t\t\t\t\t\t\t\t<p:prevCondLst>\n\t\t\t\t\t\t\t\t\t<p:cond evt=\"onPrev\">\n\t\t\t\t\t\t\t\t\t\t<p:tgtEl>\n\t\t\t\t\t\t\t\t\t\t\t<p:sldTgt/>\n\t\t\t\t\t\t\t\t\t\t</p:tgtEl>\n\t\t\t\t\t\t\t\t\t</p:cond>\n\t\t\t\t\t\t\t\t</p:prevCondLst>\n\t\t\t\t\t\t\t\t<p:nextCondLst>\n\t\t\t\t\t\t\t\t\t<p:cond evt=\"onNext\">\n\t\t\t\t\t\t\t\t\t\t<p:tgtEl>\n\t\t\t\t\t\t\t\t\t\t\t<p:sldTgt/>\n\t\t\t\t\t\t\t\t\t\t</p:tgtEl>\n\t\t\t\t\t\t\t\t\t</p:cond>\n\t\t\t\t\t\t\t\t</p:nextCondLst>\n\t\t\t\t\t\t\t</p:seq>\n\t\t\t\t\t\t</p:childTnLst>\n\t\t\t\t\t</p:cTn>\n\t\t\t\t</p:par>\n\t\t\t</p:tnLst>\n\t\t</p:timing>\n\t";
+    return out;
 }
 /**
  * Transforms slide relations to XML string.
@@ -2960,7 +2989,9 @@ function makeXmlSlide(slide) {
         'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
         "".concat((slide === null || slide === void 0 ? void 0 : slide.hidden) ? ' show="0"' : '', ">") +
         "".concat(slideObjectToXml(slide)) +
-        '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>');
+        // '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>' +
+        "".concat(generateTiming(slide)) +
+        '</p:sld>');
 }
 /**
  * Get text content of Notes from Slide
@@ -3662,6 +3693,7 @@ function addImageDefinition(target, opt) {
         flipV: opt.flipV || false,
         flipH: opt.flipH || false,
         transparency: opt.transparency || 0,
+        appearOnClick: opt.appearOnClick || false,
         objectName: objectName,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -6639,7 +6671,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0-beta-20220908-2210';
+var VERSION = '3.12.1-beta-20230102-2132-melleb';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;

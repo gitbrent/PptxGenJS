@@ -46,6 +46,16 @@ export interface PositionProps {
 	 */
 	w?: Coord
 }
+
+export interface AppearOnClickProps {
+	/**
+	 * Appear on click
+	 * @default false
+	 * @example true // Set animation of object to appear on click
+	 */
+	appearOnClick?: boolean
+}
+
 /**
  * Either `data` or `path` is required
  */
@@ -449,7 +459,7 @@ export interface ObjectNameProps {
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
 
-export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
+export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps, AppearOnClickProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -537,7 +547,7 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
  * Add media (audio/video) to slide
  * @requires either `link` or `path`
  */
-export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
+export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps, AppearOnClickProps {
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -573,7 +583,7 @@ export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNamePr
 
 // shapes =========================================================================================
 
-export interface ShapeProps extends PositionProps, ObjectNameProps {
+export interface ShapeProps extends PositionProps, ObjectNameProps, AppearOnClickProps {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -810,7 +820,7 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	rowspan?: number
 }
-export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
+export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps, AppearOnClickProps {
 	_arrObjTabHeadRows?: TableRow[]
 
 	/**
@@ -941,7 +951,7 @@ export interface TextGlowProps {
 	size: number
 }
 
-export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
+export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps, AppearOnClickProps {
 	_bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
 		autoFit?: boolean

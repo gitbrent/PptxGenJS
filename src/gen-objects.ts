@@ -448,6 +448,7 @@ export function addImageDefinition (target: PresSlide, opt: ImageProps): void {
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
+		appearOnClick: opt.appearOnClick || false,
 		objectName,
 	}
 
