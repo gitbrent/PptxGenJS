@@ -15,3 +15,6 @@ demo
 build
 docs
 static
+
+.vscode
+demos/image-appear/out.pptx

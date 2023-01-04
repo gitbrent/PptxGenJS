@@ -1,3 +1,9 @@
+**NOTE**:
+This is a modified version to support showing elements on click, details can be found here: https://github.com/gitbrent/PptxGenJS/pull/1202.
+Please use the original version from https://github.com/gitbrent/PptxGenJS/.
+<hr />
+
+
 <h1 align="center">PptxGenJS</h1>
 <h5 align="center">
   Create JavaScript PowerPoint Presentations

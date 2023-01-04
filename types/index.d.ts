@@ -870,6 +870,14 @@ declare namespace PptxGenJS {
 		 */
 		w?: Coord
 	}
+	export interface AppearOnClickProps {
+		/**
+		 * Appear on click
+		 * @default false
+		 * @example true // Set animation of object to appear on click
+		 */
+		appearOnClick?: boolean;
+	}
 	/**
 	 * Either `data` or `path` is required
 	 */
@@ -1264,7 +1272,7 @@ declare namespace PptxGenJS {
 	// image / media ==================================================================================
 	export type MediaType = 'audio' | 'online' | 'video'
 
-	export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
+	export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps, AppearOnClickProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -1352,7 +1360,7 @@ declare namespace PptxGenJS {
 	 * Add media (audio/video) to slide
 	 * @requires either `link` or `path`
 	 */
-	export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
+	export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps, AppearOnClickProps {
 		/**
 		 * Media type
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -1388,7 +1396,7 @@ declare namespace PptxGenJS {
 
 	// shapes =========================================================================================
 
-	export interface ShapeProps extends PositionProps, ObjectNameProps {
+	export interface ShapeProps extends PositionProps, ObjectNameProps, AppearOnClickProps {
 		/**
 		 * Horizontal alignment
 		 * @default 'left'
@@ -1625,7 +1633,7 @@ declare namespace PptxGenJS {
 		 */
 		rowspan?: number
 	}
-	export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
+	export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps, AppearOnClickProps {
 		//_arrObjTabHeadRows?: TableRow[]
 
 		/**
@@ -1744,7 +1752,7 @@ declare namespace PptxGenJS {
 		size: number
 	}
 
-	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
+	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps, AppearOnClickProps {
 		baseline?: number
 		/**
 		 * Character spacing
@@ -2409,7 +2417,7 @@ declare namespace PptxGenJS {
 		 */
 		bkgd?: string | BackgroundProps
 	}
-	export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
+	export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions, AppearOnClickProps {
 		//_placeholderIdx?: number
 		//_placeholderType?: PLACEHOLDER_TYPE
 

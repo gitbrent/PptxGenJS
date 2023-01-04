@@ -37,6 +37,7 @@ import {
 	createGlowElement,
 	encodeXmlEntities,
 	genXmlColorSelection,
+	getNewRelId,
 	getSmartParseNumber,
 	getUuid,
 	inch2Emu,
@@ -556,24 +557,26 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 			case SLIDE_OBJECT_TYPES.image:
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += `<p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
+				strSlideXml += `<p:cNvPr id="${slideItemObj.imageRid}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
 					slideItemObj.options.altText || slideItemObj.image
-				)}">`
-				if (slideItemObj.hyperlink?.url) {
-					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
-						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
-					}"/>`
+				)}" ${!slideItemObj.hyperlink && '/'}>`
+				if (slideItemObj.hyperlink) {
+					if (slideItemObj.hyperlink?.url) {
+						strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+							slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+						}"/>`
+					}
+					if (slideItemObj.hyperlink?.slide) {
+						strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+							slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+						}" action="ppaction://hlinksldjump"/>`
+					}
+					strSlideXml += '    </p:cNvPr>' + CRLF
+					strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>' + CRLF
+					strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>' + CRLF
 				}
-				if (slideItemObj.hyperlink?.slide) {
-					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
-						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
-					}" action="ppaction://hlinksldjump"/>`
-				}
-				strSlideXml += '    </p:cNvPr>'
-				strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
-				strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
-				strSlideXml += '  </p:nvPicPr>'
-				strSlideXml += '<p:blipFill>'
+				strSlideXml += '  </p:nvPicPr>' + CRLF
+				strSlideXml += '<p:blipFill>' + CRLF
 				// NOTE: This works for both cases: either `path` or `data` contains the SVG
 				if (
 					(slide._relsMedia || []).filter(rel => rel.rId === slideItemObj.imageRid)[0] &&
@@ -686,9 +689,12 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 		// Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
 		if (!slide._slideNumberProps.align) slide._slideNumberProps.align = 'left'
 
+		// The whole generation of relId needs an overhaul, this creates too many inter dependencies
+		const relId = getNewRelId(slide as PresSlide) + 1
+
 		strSlideXml += '<p:sp>'
 		strSlideXml += ' <p:nvSpPr>'
-		strSlideXml += '  <p:cNvPr id="25" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>'
+		strSlideXml += `  <p:cNvPr id="${relId}" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>`
 		strSlideXml += '  <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>'
 		strSlideXml += ' </p:nvSpPr>'
 		strSlideXml += ' <p:spPr>'
@@ -740,6 +746,113 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 	// LAST: Return
 	return strSlideXml
+}
+
+function generateTiming (slide: PresSlide): string {
+	const types = [
+		SLIDE_OBJECT_TYPES.image,
+		SLIDE_OBJECT_TYPES.media,
+		SLIDE_OBJECT_TYPES.text,
+		SLIDE_OBJECT_TYPES.table
+	]
+	const images = slide._slideObjects.filter(o => types.includes(o._type) && o.options.appearOnClick)
+	if (images.length === 0) {
+		return ''
+	}
+
+	// We're incrementing with 2 here because the slide number takes the previous relId.
+	const baseId = getNewRelId(slide) + 2
+
+	let out = `
+		<p:timing>
+			<p:tnLst>
+				<p:par>
+					<p:cTn id="${baseId}" dur="indefinite" restart="never" nodeType="tmRoot">
+						<p:childTnLst>
+							<p:seq>
+								<p:cTn id="${baseId + 1}" dur="indefinite" nodeType="mainSeq">
+									<p:childTnLst>
+	`
+
+	for (let i = 0; i < images.length; i++) {
+		const id = baseId + 2 + (i * 4)
+		// console.log('Setting appearance for image ', id, ', image: ', images[i].imageRid)
+		const imageRid = images[i].imageRid
+		out += `
+      <p:par>
+        <p:cTn id="${id}" fill="hold">
+          <p:stCondLst>
+            <p:cond delay="indefinite"/>
+          </p:stCondLst>
+          <p:childTnLst>
+            <p:par>
+              <p:cTn id="${id + 1}" fill="hold">
+                <p:stCondLst>
+                  <p:cond delay="0"/>
+                </p:stCondLst>
+                <p:childTnLst>
+                  <p:par>
+                    <p:cTn id="${id + 2}" nodeType="clickEffect" fill="hold" presetClass="entr" presetID="1">
+                      <p:stCondLst>
+                        <p:cond delay="0"/>
+                      </p:stCondLst>
+                      <p:childTnLst>
+                        <p:set>
+                          <p:cBhvr>
+                            <p:cTn id="${id + 3}" dur="1" fill="hold">
+                              <p:stCondLst>
+                                <p:cond delay="0"/>
+                              </p:stCondLst>
+                            </p:cTn>
+                            <p:tgtEl>
+                              <p:spTgt spid="${imageRid}"/>
+                            </p:tgtEl>
+                            <p:attrNameLst>
+                              <p:attrName>style.visibility</p:attrName>
+                            </p:attrNameLst>
+                          </p:cBhvr>
+                          <p:to>
+                            <p:strVal val="visible"/>
+                          </p:to>
+                        </p:set>
+                      </p:childTnLst>
+                    </p:cTn>
+                  </p:par>
+                </p:childTnLst>
+              </p:cTn>
+            </p:par>
+          </p:childTnLst>
+        </p:cTn>
+      </p:par>
+		`
+	}
+
+	out += `
+									</p:childTnLst>
+	      						</p:cTn>
+								<p:prevCondLst>
+									<p:cond evt="onPrev">
+										<p:tgtEl>
+											<p:sldTgt/>
+										</p:tgtEl>
+									</p:cond>
+								</p:prevCondLst>
+								<p:nextCondLst>
+									<p:cond evt="onNext">
+										<p:tgtEl>
+											<p:sldTgt/>
+										</p:tgtEl>
+									</p:cond>
+								</p:nextCondLst>
+							</p:seq>
+						</p:childTnLst>
+					</p:cTn>
+				</p:par>
+			</p:tnLst>
+		</p:timing>
+	`
+
+	return out
 }
 
 /**
@@ -1544,7 +1657,9 @@ export function makeXmlSlide (slide: PresSlide): string {
 		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
 		`${slide?.hidden ? ' show="0"' : ''}>` +
 		`${slideObjectToXml(slide)}` +
-		'<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>'
+		// '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>' +
+		`${generateTiming(slide)}` +
+		'</p:sld>'
 	)
 }
 

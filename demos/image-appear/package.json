@@ -1,0 +1,12 @@
+{
+  "name": "image-appear-demo",
+  "version": "0.1.0",
+  "description": "",
+  "main": "image-appear.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true
+}

@@ -219,5 +219,7 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
 export function getNewRelId (target: PresSlide): number {
-	return target._rels.length + target._relsChart.length + target._relsMedia.length + 1
+	// The nvGrpSpPr node has ID 1, so we have an offset of 1
+	const offset = 1
+	return target._rels.length + target._relsChart.length + target._relsMedia.length + offset + 1
 }
