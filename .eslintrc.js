@@ -23,6 +23,7 @@ module.exports = {
 	ignorePatterns: [".eslintrc.js"],
 	rules: {
 		"@typescript-eslint/indent": ["error", "tab"],
+		"@typescript-eslint/prefer-nullish-coalescing": "warn",
 		"@typescript-eslint/strict-boolean-expressions": 0,
 		"comma-dangle": ["error", "only-multiline"],
 		"no-lone-blocks": 0,
