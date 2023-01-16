@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2022-09-09T03:12:15.279Z */
+/* PptxGenJS 3.12.0-beta @ 2023-01-16T23:23:48.961Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -43,7 +43,7 @@ function __generator(thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -6639,7 +6639,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0-beta-20220908-2210';
+var VERSION = '3.12.0-beta-20230116-1720';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
