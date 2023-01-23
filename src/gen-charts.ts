@@ -19,8 +19,8 @@ import {
 	LETTERS,
 	ONEPT,
 } from './core-enums'
-import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData } from './core-interfaces'
-import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getUuid, valToPts } from './gen-utils'
+import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData, ChartLineCap } from './core-interfaces'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
 import JSZip from 'jszip'
 
 /**
@@ -860,11 +860,11 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += `<a:ln w="${valToPts(opts.lineSize)}" cap="flat"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`
+						strXml += `<a:ln w="${valToPts(opts.lineSize)}" cap="${createLineCap(opts.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 				} else if (opts.dataBorder) {
-					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(opts.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="${createLineCap(opts.lineCap)}"><a:solidFill>${createColorElement(opts.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 				}
 
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
@@ -1082,7 +1082,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += `<a:ln w="${valToPts(opts.lineSize)}" cap="flat"><a:solidFill>${createColorElement(tmpSerColor)}</a:solidFill>`
+						strXml += `<a:ln w="${valToPts(opts.lineSize)}" cap="${createLineCap(opts.lineCap)}"><a:solidFill>${createColorElement(tmpSerColor)}</a:solidFill>`
 						strXml += `<a:prstDash val="${opts.lineDash || 'solid'}"/><a:round/></a:ln>`
 					}
 
@@ -2018,7 +2018,7 @@ function createShadowElement (options: ShadowProps, defaults: object): string {
 function createGridLineElement (glOpts: OptsChartGridLine): string {
 	let strXml = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
-	strXml += `  <a:ln w="${valToPts(glOpts.size || DEF_CHART_GRIDLINE.size)}" cap="flat">`
+	strXml += `  <a:ln w="${valToPts(glOpts.size || DEF_CHART_GRIDLINE.size)}" cap="${createLineCap(glOpts.cap || DEF_CHART_GRIDLINE.cap)}">`
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in [Pull #135]
 	strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>'
 	strXml += '  </a:ln>'
@@ -2026,4 +2026,17 @@ function createGridLineElement (glOpts: OptsChartGridLine): string {
 	strXml += '</c:majorGridlines>'
 
 	return strXml
+}
+
+function createLineCap(lineCap: ChartLineCap): string {
+	if (!lineCap || lineCap === 'flat') {
+		return 'flat';
+	} else if (lineCap === 'square') {
+		return 'sq';
+	} else if (lineCap === 'round') {
+		return 'rnd';
+	} else {
+		const neverLineCap: never = lineCap;
+		throw new Error(`Invalid chart line cap: ${neverLineCap}`);
+	}
 }

@@ -1112,6 +1112,8 @@ export interface OptsDataLabelPosition {
 */
 
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+export type ChartLineCap = 'flat' | 'round' | 'square'
+
 export interface OptsChartData {
 	_dataIndex?: number
 
@@ -1147,6 +1149,12 @@ export interface IOptsChartData extends OptsChartData {
 	labels?: string[][]
 }
 export interface OptsChartGridLine {
+	/**
+	 * MS-PPT > Chart format > Format Major Gridlines > Line > Cap type
+	 * - line cap type
+	 * @default flat
+	 */
+	cap?: ChartLineCap
 	/**
 	 * Gridline color (hex)
 	 * @example 'FF3399'
@@ -1432,6 +1440,17 @@ export interface IChartPropsChartDoughnut {
 	holeSize?: number
 }
 export interface IChartPropsChartLine {
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Line > Cap type
+	 * - line cap type
+	 * @default flat
+	 */
+	lineCap?: ChartLineCap
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+	 * - line dash type
+	 * @default solid
+	 */
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	/**
 	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
