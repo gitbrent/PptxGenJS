@@ -128,7 +128,7 @@ function App() {
 						<code className="language-javascript">{demoCode}</code>
 					</pre>
 
-					<div className="row">
+					<div className="row row-cols-1 row-cols-md-3 g-4">
 						<div className="col">
 							<button type="button" className="btn btn-success w-100 me-3" onClick={(_ev) => runDemo()}>
 								Run Demo

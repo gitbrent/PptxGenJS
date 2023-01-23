@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.11.0
- * BLD.: 20220724
+ * VER.: 3.12.0
+ * BLD.: 20230116
  */
 
 import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, FOOTER_TEXT_OPTS, IMAGE_PATHS, TESTMODE } from "./enums.mjs";
@@ -61,8 +61,50 @@ export function genSlides_Chart(pptx) {
 	}
 }
 
-// SLIDE 1: Bar Chart
+// SLIDE 1: Bar Chart: Chart Title, Cat/Val Axis Title
 function genSlide01(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Options: Chart Title, Cat/Val Axis Title", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	let optsChart = {
+		x: 0.5,
+		y: 0.5,
+		w: "90%",
+		h: "90%",
+		barDir: "col",
+		barGrouping: "stacked",
+		chartColors: COLORS_CHART,
+		invertedColors: ["C0504D"],
+		showLegend: true,
+		//
+		showTitle: true,
+		title: "Chart Title",
+		titleFontFace: "Helvetica Neue Thin",
+		titleFontSize: 24,
+		titleColor: COLORS_ACCENT[0],
+		titlePos: { x: 1.5, y: 0 },
+		//titleRotate: 10,
+		//
+		showCatAxisTitle: true,
+		catAxisLabelColor: COLORS_ACCENT[1],
+		catAxisTitleColor: COLORS_ACCENT[1],
+		catAxisTitle: "Cat Axis Title",
+		catAxisTitleFontSize: 14,
+		//
+		showValAxisTitle: true,
+		valAxisLabelColor: COLORS_ACCENT[2],
+		valAxisTitleColor: COLORS_ACCENT[2],
+		valAxisTitle: "Val Axis Title",
+		valAxisTitleFontSize: 14,
+	};
+
+	// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
+	slide.addChart(pptx.charts.BAR, dataChartBar8Series, optsChart);
+}
+
+// SLIDE 2: Bar Chart: Various Designs
+function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Bar Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
@@ -219,14 +261,14 @@ function genSlide01(pptx) {
 		legendColor: COLORS_ACCENT[1],
 		//
 		showTitle: true,
-		title: "Rent Prices",
+		title: "Device Prices",
 		titleColor: COLORS_ACCENT[0],
 	};
 	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar4);
 }
 
-// SLIDE 2: Bar Chart Options: Axis, DataLabel, Grid
-function genSlide02(pptx) {
+// SLIDE 3: Bar Chart Options: Axis, DataLabel, Grid
+function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Bar Chart Options: Axis, DataLabel, Grid", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
@@ -391,8 +433,8 @@ function genSlide02(pptx) {
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
 }
 
-// SLIDE 3: Bar Chart: Stacked
-function genSlide03(pptx) {
+// SLIDE 4: Bar Chart: Stacked
+function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable(
@@ -419,22 +461,23 @@ function genSlide03(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		chartArea: { fill: { color: "404040" } },
+		plotArea: { fill: { color: "0d0d0d" } },
 		barDir: "bar",
 		barGrouping: "stacked",
+		chartColors: ["F2AF00", "4472C4"],
 
 		catAxisOrientation: "maxMin",
-		catAxisLabelColor: "CC0000",
+		catAxisLabelColor: "4472C4",
 		catAxisLabelFontFace: "Helvetica Neue",
 		catAxisLabelFontSize: 14,
-		catAxisLabelFontBold: true,
-		valAxisLabelFontBold: true,
-
+		//catAxisLabelFontBold: true,
+		valAxisLabelColor: "F2AF00",
+		valAxisLabelFontFace: "Helvetica Neue",
+		valAxisLabelFontSize: 14,
+		//valAxisLabelFontBold: true,
 		dataLabelColor: "FFFFFF",
 		showValue: true,
-
-		titleColor: "33CF22",
-		titleFontFace: "Helvetica Neue",
-		titleFontSize: 24,
 	};
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar1);
 
@@ -477,10 +520,13 @@ function genSlide03(pptx) {
 		h: 3.5,
 		barDir: "bar",
 		barGrouping: "percentStacked",
+		chartColors: ["F2AF00", "4472C4"],
 		dataBorder: { pt: 1, color: "F1F1F1" },
 		catAxisHidden: true,
 		valAxisHidden: true,
+		valGridLine: { style: "none" },
 		showTitle: false,
+		//
 		layout: { x: 0.1, y: 0.1, w: 1, h: 1 },
 		showDataTable: true,
 		showDataTableKeys: true,
@@ -515,48 +561,6 @@ function genSlide03(pptx) {
 		//dataTableFormatCode: '$0.00' // @since v3.3.0
 	};
 	slide.addChart(pptx.charts.BAR, dataChartBar3Series, optsChartBar4);
-}
-
-// SLIDE 4: Bar Chart: Title Options, Inverted Colors
-function genSlide04(pptx) {
-	let slide = pptx.addSlide({ sectionTitle: "Charts" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Options: Chart Title, Cat/Val Axis Title", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-
-	let optsChart = {
-		x: 0.5,
-		y: 0.5,
-		w: "90%",
-		h: "90%",
-		barDir: "col",
-		barGrouping: "stacked",
-		chartColors: COLORS_CHART,
-		invertedColors: ["C0504D"],
-		showLegend: true,
-		//
-		showTitle: true,
-		title: "Chart Title",
-		titleFontFace: "Helvetica Neue Thin",
-		titleFontSize: 24,
-		titleColor: COLORS_ACCENT[0],
-		titlePos: { x: 1.5, y: 0 },
-		//titleRotate: 10,
-		//
-		showCatAxisTitle: true,
-		catAxisLabelColor: COLORS_ACCENT[1],
-		catAxisTitleColor: COLORS_ACCENT[1],
-		catAxisTitle: "Cat Axis Title",
-		catAxisTitleFontSize: 14,
-		//
-		showValAxisTitle: true,
-		valAxisLabelColor: COLORS_ACCENT[2],
-		valAxisTitleColor: COLORS_ACCENT[2],
-		valAxisTitle: "Val Axis Title",
-		valAxisTitleFontSize: 14,
-	};
-
-	// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
-	slide.addChart(pptx.charts.BAR, dataChartBar8Series, optsChart);
 }
 
 // SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode
@@ -758,6 +762,10 @@ function genSlide06(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		chartColorsOpacity: 80,
 		//
+		v3DRotX: 20,
+		v3DRotY: 10,
+		v3DRAngAx: false,
+		//
 		catAxisLabelColor: COLORS_SPECTRUM[1],
 		catAxisLineColor: COLORS_SPECTRUM[1],
 		catAxisLabelFontFace: "Arial",
@@ -787,6 +795,11 @@ function genSlide06(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		barDir: "col",
 		bar3DShape: "cylinder",
+		//
+		v3DRotX: 10,
+		v3DRotY: 20,
+		v3DRAngAx: false,
+		//
 		catAxisLabelColor: "0000CC",
 		catAxisLabelFontFace: "Courier",
 		catAxisLabelFontSize: 12,
@@ -813,6 +826,7 @@ function genSlide06(pptx) {
 		barDir: "col",
 		bar3DShape: "pyramid",
 		barGrouping: "stacked",
+		v3DRAngAx: true,
 		//
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
@@ -839,6 +853,7 @@ function genSlide06(pptx) {
 		chartColors: COLORS_ACCENT,
 		barDir: "col",
 		bar3DShape: "coneToMax",
+		v3DRAngAx: true,
 		//
 		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontSize: 11,
@@ -886,8 +901,8 @@ function genSlide07(pptx) {
 			valAxisMaxVal: 1,
 			barDir: "bar",
 			axisLabelFormatCode: "#%",
-			catGridLine: { color: "D8D8D8", style: "dash", size: 1 },
-			valGridLine: { color: "D8D8D8", style: "dash", size: 1 },
+			catGridLine: { color: "D8D8D8", style: "dash", size: 1, cap: "round" },
+			valGridLine: { color: "D8D8D8", style: "dash", size: 1, cap: "square" },
 			catAxisLineShow: false,
 			valAxisLineShow: false,
 			barGrouping: "stacked",
@@ -1014,6 +1029,7 @@ function genSlide10(pptx) {
 			y: idx < 3 ? 0.5 : idx < 6 ? 2.85 : 5.1,
 			w: 4.25,
 			h: 2.25,
+			lineCap: 'round',
 			lineDataSymbol: opt,
 			lineDataSymbolSize: idx == 5 ? 9 : idx == 6 ? 12 : null,
 			chartColors: COLORS_VIVID,
@@ -1147,6 +1163,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: 1, color: "404040" },
 		dataLabelColor: "f2f9fc",
+		showPercent: true,
 		showLegend: true,
 		legendPos: "t",
 	});
@@ -1161,6 +1178,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
+		showPercent: true,
 		legendPos: "t",
 		legendFontSize: 14,
 		showLeaderLines: true,
@@ -1198,6 +1216,7 @@ function genSlide12(pptx) {
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		chartColors: COLORS_SPECTRUM,
 		dataLabelColor: "F1F1F1",
+		showPercent: true,
 		showLegend: true,
 		legendPos: "b",
 	});
@@ -1210,6 +1229,7 @@ function genSlide12(pptx) {
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
 		dataBorder: { pt: "1", color: "F1F1F1" },
+		showPercent: true,
 		showLegend: true,
 		legendPos: "b",
 		showTitle: true,
@@ -1401,9 +1421,17 @@ function genSlide15(pptx) {
 		w: "45%",
 		h: 3,
 		chartArea: { fill: { color: "F1F1F1" } },
-		chartColors: ["4477CC", "ED7D31"],
+		chartColors: COLORS_ACCENT,
 		chartColorsOpacity: 40,
 		dataBorder: { pt: 1, color: "FFFFFF" },
+		//valAxisCrossesAt: 4,
+		//catAxisCrossesAt: 4,
+		dataLabelFontFace: "Arial",
+		dataLabelFontSize: 10,
+		dataLabelColor: "363636",
+		dataLabelPosition: "r",
+		showSerName: true,
+		showLeaderLines: true,
 	};
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1);
 
@@ -1414,6 +1442,8 @@ function genSlide15(pptx) {
 		w: "45%",
 		h: 3,
 		plotArea: { fill: { color: "F1F1F1" } },
+		chartColors: COLORS_RYGU,
+		chartColorsOpacity: 25,
 
 		showLegend: true,
 		legendPos: "b",
@@ -1422,9 +1452,6 @@ function genSlide15(pptx) {
 		lineSmooth: true,
 		lineDataSymbolSize: 12,
 		lineDataSymbolLineColor: "FFFFFF",
-
-		chartColors: COLORS_RYGU,
-		chartColorsOpacity: 25,
 	};
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble2);
 
@@ -1457,7 +1484,7 @@ function genSlide15(pptx) {
 	slide.addChart(pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3);
 
 	// BOTTOM-RIGHT
-	let optsChartBubble4 = { x: 7.0, y: 4.0, w: "45%", h: 3, lineSize: 0 };
+	let optsChartBubble4 = { x: 7.0, y: 4.0, w: "45%", h: 3, lineSize: 0, chartColors: COLORS_RYGU };
 	slide.addChart(pptx.charts.BUBBLE3D, arrDataBubble2, optsChartBubble4);
 }
 
@@ -1681,6 +1708,7 @@ function genSlide17(pptx) {
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 		barDir: "col",
+		v3DRAngAx: true,
 	};
 
 	const opts4 = {
@@ -2225,6 +2253,12 @@ function genSlide21(pptx) {
 		showTitle: true,
 		title: "Rotated cyan shadow",
 		dataLabelColor: "FFFFFF",
+		/* NOTE: following are optional and default to `false`, leavign chart "plain" (without labels, etc.)
+		dataLabelFontSize: 9,
+		showLabel: true,
+		showValue: true,
+		showPercent: true,
+		*/
 		shadow: {
 			type: "outer",
 			blur: 10,
