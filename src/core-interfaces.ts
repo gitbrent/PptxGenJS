@@ -259,80 +259,80 @@ export interface TextBaseProps {
 	 * @default false
 	 */
 	bullet?:
-		| boolean
-		| {
-				/**
-				 * Bullet type
-				 * @default bullet
-				 */
-				type?: 'bullet' | 'number'
-				/**
-				 * Bullet character code (unicode)
-				 * @since v3.3.0
-				 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
-				 */
-				characterCode?: string
-				/**
-				 * Indentation (space between bullet and text) (points)
-				 * @since v3.3.0
-				 * @default 27 // DEF_BULLET_MARGIN
-				 * @example 10 // Indents text 10 points from bullet
-				 */
-				indent?: number
-				/**
-				 * Number type
-				 * @since v3.3.0
-				 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
-				 */
-				numberType?:
-					| 'alphaLcParenBoth'
-					| 'alphaLcParenR'
-					| 'alphaLcPeriod'
-					| 'alphaUcParenBoth'
-					| 'alphaUcParenR'
-					| 'alphaUcPeriod'
-					| 'arabicParenBoth'
-					| 'arabicParenR'
-					| 'arabicPeriod'
-					| 'arabicPlain'
-					| 'romanLcParenBoth'
-					| 'romanLcParenR'
-					| 'romanLcPeriod'
-					| 'romanUcParenBoth'
-					| 'romanUcParenR'
-					| 'romanUcPeriod'
-				/**
-				 * Number bullets start at
-				 * @since v3.3.0
-				 * @default 1
-				 * @example 10 // numbered bullets start with 10
-				 */
-				numberStartAt?: number
+	| boolean
+	| {
+		/**
+		 * Bullet type
+		 * @default bullet
+		 */
+		type?: 'bullet' | 'number'
+		/**
+		 * Bullet character code (unicode)
+		 * @since v3.3.0
+		 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+		 */
+		characterCode?: string
+		/**
+		 * Indentation (space between bullet and text) (points)
+		 * @since v3.3.0
+		 * @default 27 // DEF_BULLET_MARGIN
+		 * @example 10 // Indents text 10 points from bullet
+		 */
+		indent?: number
+		/**
+		 * Number type
+		 * @since v3.3.0
+		 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
+		 */
+		numberType?:
+		| 'alphaLcParenBoth'
+		| 'alphaLcParenR'
+		| 'alphaLcPeriod'
+		| 'alphaUcParenBoth'
+		| 'alphaUcParenR'
+		| 'alphaUcPeriod'
+		| 'arabicParenBoth'
+		| 'arabicParenR'
+		| 'arabicPeriod'
+		| 'arabicPlain'
+		| 'romanLcParenBoth'
+		| 'romanLcParenR'
+		| 'romanLcPeriod'
+		| 'romanUcParenBoth'
+		| 'romanUcParenR'
+		| 'romanUcPeriod'
+		/**
+		 * Number bullets start at
+		 * @since v3.3.0
+		 * @default 1
+		 * @example 10 // numbered bullets start with 10
+		 */
+		numberStartAt?: number
 
-				// DEPRECATED
+		// DEPRECATED
 
-				/**
-				 * Bullet code (unicode)
-				 * @deprecated v3.3.0 - use `characterCode`
-				 */
-				code?: string
-				/**
-				 * Margin between bullet and text
-				 * @since v3.2.1
-				 * @deplrecated v3.3.0 - use `indent`
-				 */
-				marginPt?: number
-				/**
-				 * Number to start with (only applies to type:number)
-				 * @deprecated v3.3.0 - use `numberStartAt`
-				 */
-				startAt?: number
-				/**
-				 * Number type
-				 * @deprecated v3.3.0 - use `numberType`
-				 */
-				style?: string
-		  }
+		/**
+		 * Bullet code (unicode)
+		 * @deprecated v3.3.0 - use `characterCode`
+		 */
+		code?: string
+		/**
+		 * Margin between bullet and text
+		 * @since v3.2.1
+		 * @deplrecated v3.3.0 - use `indent`
+		 */
+		marginPt?: number
+		/**
+		 * Number to start with (only applies to type:number)
+		 * @deprecated v3.3.0 - use `numberStartAt`
+		 */
+		startAt?: number
+		/**
+		 * Number type
+		 * @deprecated v3.3.0 - use `numberType`
+		 */
+		style?: string
+	}
 	/**
 	 * Text color
 	 * - `HexColor` or `ThemeColor`
@@ -394,23 +394,23 @@ export interface TextBaseProps {
 	 */
 	underline?: {
 		style?:
-			| 'dash'
-			| 'dashHeavy'
-			| 'dashLong'
-			| 'dashLongHeavy'
-			| 'dbl'
-			| 'dotDash'
-			| 'dotDashHeave'
-			| 'dotDotDash'
-			| 'dotDotDashHeavy'
-			| 'dotted'
-			| 'dottedHeavy'
-			| 'heavy'
-			| 'none'
-			| 'sng'
-			| 'wavy'
-			| 'wavyDbl'
-			| 'wavyHeavy'
+		| 'dash'
+		| 'dashHeavy'
+		| 'dashLong'
+		| 'dashLongHeavy'
+		| 'dbl'
+		| 'dotDash'
+		| 'dotDashHeave'
+		| 'dotDotDash'
+		| 'dotDotDashHeavy'
+		| 'dotted'
+		| 'dottedHeavy'
+		| 'heavy'
+		| 'none'
+		| 'sng'
+		| 'wavy'
+		| 'wavyDbl'
+		| 'wavyHeavy'
 		color?: Color
 	}
 	/**
@@ -1105,6 +1105,8 @@ export interface OptsDataLabelPosition {
 */
 
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+export type ChartLineCap = 'flat' | 'round' | 'square'
+
 export interface OptsChartData {
 	_dataIndex?: number
 
@@ -1141,6 +1143,12 @@ export interface IOptsChartData extends OptsChartData {
 }
 export interface OptsChartGridLine {
 	/**
+	 * MS-PPT > Chart format > Format Major Gridlines > Line > Cap type
+	 * - line cap type
+	 * @default flat
+	 */
+	cap?: ChartLineCap
+	/**
 	 * Gridline color (hex)
 	 * @example 'FF3399'
 	 */
@@ -1153,10 +1161,6 @@ export interface OptsChartGridLine {
 	 * Gridline style
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
-	/**
-	 * Line cap
-	 */
-	cap?: ChartLineCap
 }
 // TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
@@ -1392,8 +1396,18 @@ export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean
 	holeSize?: number
 }
-export type ChartLineCap = 'flat' | 'square' | 'round'
 export interface IChartPropsChartLine {
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Line > Cap type
+	 * - line cap type
+	 * @default flat
+	 */
+	lineCap?: ChartLineCap
+	/**
+	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
+	 * - line dash type
+	 * @default solid
+	 */
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	/**
 	 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
@@ -1427,12 +1441,6 @@ export interface IChartPropsChartLine {
 	 * @default 2
 	 */
 	lineSize?: number
-	/**
-	 * MS-PPT > Chart format > Format Data Series > Line > Cap type
-	 * - line cap type
-	 * @default flat
-	 */
-	lineCap?: ChartLineCap
 	/**
 	 * MS-PPT > Chart format > Format Data Series > Line > Smoothed line
 	 * - "Smoothed line"
@@ -1510,21 +1518,21 @@ export interface IChartPropsTitle extends TextBaseProps {
 }
 export interface IChartOpts
 	extends IChartPropsAxisCat,
-		IChartPropsAxisSer,
-		IChartPropsAxisVal,
-		IChartPropsBase,
-		IChartPropsChartBar,
-		IChartPropsChartDoughnut,
-		IChartPropsChartLine,
-		IChartPropsChartPie,
-		IChartPropsChartRadar,
-		IChartPropsDataLabel,
-		IChartPropsDataTable,
-		IChartPropsLegend,
-		IChartPropsTitle,
-		ObjectNameProps,
-		OptsChartGridLine,
-		PositionProps {
+	IChartPropsAxisSer,
+	IChartPropsAxisVal,
+	IChartPropsBase,
+	IChartPropsChartBar,
+	IChartPropsChartDoughnut,
+	IChartPropsChartLine,
+	IChartPropsChartPie,
+	IChartPropsChartRadar,
+	IChartPropsDataLabel,
+	IChartPropsDataTable,
+	IChartPropsLegend,
+	IChartPropsTitle,
+	ObjectNameProps,
+	OptsChartGridLine,
+	PositionProps {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
@@ -1663,15 +1671,15 @@ export interface SlideMasterProps {
 		| { rect: {} }
 		| { text: TextProps }
 		| {
-				placeholder: {
-					options: PlaceholderProps
-					/**
-					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-					 */
-					text?: string
-				}
-		  }
+			placeholder: {
+				options: PlaceholderProps
+				/**
+				 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+				 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+				 */
+				text?: string
+			}
+		}
 	)[]
 
 	/**
