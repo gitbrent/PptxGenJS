@@ -20,7 +20,7 @@ import {
 	ONEPT,
 } from './core-enums'
 import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData, ChartLineCap } from './core-interfaces'
-import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getUuid, valToPts } from './gen-utils'
 import JSZip from 'jszip'
 
 /**
@@ -1613,7 +1613,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 			// 4: Close "SERIES"
 			strXml += '  </c:ser>'
 			strXml += `  <c:firstSliceAng val="${opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0}"/>`
-			if (chartType === CHART_TYPE.DOUGHNUT) strXml += `<c:holeSize val="${typeof opts.holeSize === 'number' ? opts.holeSize : 50)}"/>`
+			if (chartType === CHART_TYPE.DOUGHNUT) strXml += `<c:holeSize val="${typeof opts.holeSize === 'number' ? opts.holeSize : '50'}"/>`
 			strXml += '</c:' + chartType + 'Chart>'
 
 			// Done with Doughnut/Pie
@@ -2028,15 +2028,15 @@ function createGridLineElement (glOpts: OptsChartGridLine): string {
 	return strXml
 }
 
-function createLineCap(lineCap: ChartLineCap): string {
+function createLineCap (lineCap: ChartLineCap): string {
 	if (!lineCap || lineCap === 'flat') {
-		return 'flat';
+		return 'flat'
 	} else if (lineCap === 'square') {
-		return 'sq';
+		return 'sq'
 	} else if (lineCap === 'round') {
-		return 'rnd';
+		return 'rnd'
 	} else {
-		const neverLineCap: never = lineCap;
-		throw new Error(`Invalid chart line cap: ${neverLineCap}`);
+		const neverLineCap: never = lineCap
+		throw new Error(`Invalid chart line cap: ${neverLineCap}`)
 	}
 }
