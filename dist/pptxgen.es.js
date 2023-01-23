@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2023-01-17T00:03:38.960Z */
+/* PptxGenJS 3.12.0-beta @ 2023-01-23T03:25:07.961Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -90,7 +90,7 @@ var DEF_BULLET_MARGIN = 27;
 var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
 var DEF_CELL_MARGIN_IN = [0.05, 0.1, 0.05, 0.1]; // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
 var DEF_CHART_BORDER = { type: 'solid', color: '363636', pt: 1 };
-var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 };
+var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1, cap: 'flat' };
 var DEF_FONT_COLOR = '000000';
 var DEF_FONT_SIZE = 12;
 var DEF_FONT_TITLE_SIZE = 18;
@@ -3341,6 +3341,10 @@ function addChartDefinition(target, type, data, opt) {
             console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
             delete glOpts.style;
         }
+        if (glOpts.cap && ['flat', 'square', 'round'].indexOf(glOpts.cap) < 0) {
+            console.warn('Warning: chart.gridLine.cap options: `flat`, `square`, `round`.');
+            delete glOpts.cap;
+        }
     }
     var chartId = ++_chartCounter;
     var resultObject = {
@@ -5343,12 +5347,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(seriesColor), "</a:solidFill>");
+                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"").concat(createLineCap(opts.lineCap), "\"><a:solidFill>").concat(createColorElement(seriesColor), "</a:solidFill>");
                         strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
                     }
                 }
                 else if (opts.dataBorder) {
-                    strXml += "<a:ln w=\"".concat(valToPts(opts.dataBorder.pt), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
+                    strXml += "<a:ln w=\"".concat(valToPts(opts.dataBorder.pt), "\" cap=\"").concat(createLineCap(opts.lineCap), "\"><a:solidFill>").concat(createColorElement(opts.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
                 }
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
                 strXml += '  </c:spPr>';
@@ -5554,7 +5558,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(tmpSerColor), "</a:solidFill>");
+                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"").concat(createLineCap(opts.lineCap), "\"><a:solidFill>").concat(createColorElement(tmpSerColor), "</a:solidFill>");
                         strXml += "<a:prstDash val=\"".concat(opts.lineDash || 'solid', "\"/><a:round/></a:ln>");
                     }
                     // Shadow
@@ -6049,7 +6053,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:ser>';
             strXml += "  <c:firstSliceAng val=\"".concat(opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0, "\"/>");
             if (chartType === CHART_TYPE.DOUGHNUT)
-                strXml += "<c:holeSize val=\"".concat(opts.holeSize || 50, "\"/>");
+                strXml += "<c:holeSize val=\"".concat(typeof opts.holeSize === 'number' ? opts.holeSize : '50', "\"/>");
             strXml += '</c:' + chartType + 'Chart>';
             // Done with Doughnut/Pie
             break;
@@ -6439,13 +6443,28 @@ function createShadowElement(options, defaults) {
 function createGridLineElement(glOpts) {
     var strXml = '<c:majorGridlines>';
     strXml += ' <c:spPr>';
-    strXml += "  <a:ln w=\"".concat(valToPts(glOpts.size || DEF_CHART_GRIDLINE.size), "\" cap=\"flat\">");
+    strXml += "  <a:ln w=\"".concat(valToPts(glOpts.size || DEF_CHART_GRIDLINE.size), "\" cap=\"").concat(createLineCap(glOpts.cap || DEF_CHART_GRIDLINE.cap), "\">");
     strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in [Pull #135]
     strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
     strXml += '  </a:ln>';
     strXml += ' </c:spPr>';
     strXml += '</c:majorGridlines>';
     return strXml;
+}
+function createLineCap(lineCap) {
+    if (!lineCap || lineCap === 'flat') {
+        return 'flat';
+    }
+    else if (lineCap === 'square') {
+        return 'sq';
+    }
+    else if (lineCap === 'round') {
+        return 'rnd';
+    }
+    else {
+        var neverLineCap = lineCap;
+        throw new Error("Invalid chart line cap: ".concat(neverLineCap));
+    }
 }
 
 /**
@@ -6639,7 +6658,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0-beta-20230116-1801';
+var VERSION = '3.12.0-beta-20230122-2120';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
