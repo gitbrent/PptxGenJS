@@ -762,6 +762,10 @@ function genSlide06(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		chartColorsOpacity: 80,
 		//
+		v3DRotX: 20,
+		v3DRotY: 10,
+		v3DRAngAx: false,
+		//
 		catAxisLabelColor: COLORS_SPECTRUM[1],
 		catAxisLineColor: COLORS_SPECTRUM[1],
 		catAxisLabelFontFace: "Arial",
@@ -791,6 +795,11 @@ function genSlide06(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		barDir: "col",
 		bar3DShape: "cylinder",
+		//
+		v3DRotX: 10,
+		v3DRotY: 20,
+		v3DRAngAx: false,
+		//
 		catAxisLabelColor: "0000CC",
 		catAxisLabelFontFace: "Courier",
 		catAxisLabelFontSize: 12,
@@ -817,6 +826,7 @@ function genSlide06(pptx) {
 		barDir: "col",
 		bar3DShape: "pyramid",
 		barGrouping: "stacked",
+		v3DRAngAx: true,
 		//
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
@@ -843,6 +853,7 @@ function genSlide06(pptx) {
 		chartColors: COLORS_ACCENT,
 		barDir: "col",
 		bar3DShape: "coneToMax",
+		v3DRAngAx: true,
 		//
 		catAxisLabelColor: COLORS_ACCENT[0],
 		catAxisLabelFontSize: 11,
@@ -1152,6 +1163,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: 1, color: "404040" },
 		dataLabelColor: "f2f9fc",
+		showPercent: true,
 		showLegend: true,
 		legendPos: "t",
 	});
@@ -1166,6 +1178,7 @@ function genSlide12(pptx) {
 		chartColors: COLORS_SPECTRUM,
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		showLegend: true,
+		showPercent: true,
 		legendPos: "t",
 		legendFontSize: 14,
 		showLeaderLines: true,
@@ -1203,6 +1216,7 @@ function genSlide12(pptx) {
 		dataBorder: { pt: "1", color: "F1F1F1" },
 		chartColors: COLORS_SPECTRUM,
 		dataLabelColor: "F1F1F1",
+		showPercent: true,
 		showLegend: true,
 		legendPos: "b",
 	});
@@ -1215,6 +1229,7 @@ function genSlide12(pptx) {
 		h: 3.2,
 		chartArea: { fill: { color: "F1F1F1" } },
 		dataBorder: { pt: "1", color: "F1F1F1" },
+		showPercent: true,
 		showLegend: true,
 		legendPos: "b",
 		showTitle: true,
@@ -1693,6 +1708,7 @@ function genSlide17(pptx) {
 		chartArea: { fill: { color: "F1F1F1" } },
 		catAxisMultiLevelLabels: true,
 		barDir: "col",
+		v3DRAngAx: true,
 	};
 
 	const opts4 = {
@@ -2237,6 +2253,12 @@ function genSlide21(pptx) {
 		showTitle: true,
 		title: "Rotated cyan shadow",
 		dataLabelColor: "FFFFFF",
+		/* NOTE: following are optional and default to `false`, leavign chart "plain" (without labels, etc.)
+		dataLabelFontSize: 9,
+		showLabel: true,
+		showValue: true,
+		showPercent: true,
+		*/
 		shadow: {
 			type: "outer",
 			blur: 10,

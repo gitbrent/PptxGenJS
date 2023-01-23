@@ -16,7 +16,7 @@ import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALI
  * @example '75%' // coordinate as percentage of slide size
  */
 export type Coord = number | `${number}%`
-export type PositionProps = {
+export interface PositionProps {
 	/**
 	 * Horizontal position
 	 * - inches or percentage
@@ -49,7 +49,7 @@ export type PositionProps = {
 /**
  * Either `data` or `path` is required
  */
-export type DataOrPathProps = {
+export interface DataOrPathProps {
 	/**
 	 * URL or relative path
 	 *
@@ -71,6 +71,12 @@ export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
+
+	/**
+	 * source URL
+	 * @deprecated v3.6.0 - use `DataOrPathProps` instead - remove in v4.0.0
+	 */
+	src?: string
 }
 /**
  * Color in Hex format
@@ -158,6 +164,7 @@ export interface ShadowProps {
 	 * @example 'FF3399'
 	 */
 	color?: HexColor
+	rotateWithShape?: boolean
 }
 // used by: shape, table, text
 export interface ShapeFillProps {
@@ -379,7 +386,7 @@ export interface TextBaseProps {
 	 * - PowerPoint: Paragraph > Tabs > Tab stop position
 	 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
 	 */
-	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+	tabStops?: Array<{ position: number, alignment?: 'l' | 'r' | 'ctr' | 'dec' }>
 	/**
 	 * Transparency (percent)
 	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Transparency
@@ -427,7 +434,7 @@ export interface PlaceholderProps extends PositionProps, TextBaseProps {
 	 */
 	margin?: Margin
 }
-export type ObjectNameProps = {
+export interface ObjectNameProps {
 	/**
 	 * Object name
 	 * - used instead of default "Object N" name
@@ -625,11 +632,11 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * @example [{ x: 0, y: 0 }, { x: 10, y: 10 }] // draw a line between those two points
 	 */
 	points?: Array<
-		| { x: Coord; y: Coord; moveTo?: boolean }
-		| { x: Coord; y: Coord; curve: { type: 'arc'; hR: Coord; wR: Coord; stAng: number; swAng: number } }
-		| { x: Coord; y: Coord; curve: { type: 'cubic'; x1: Coord; y1: Coord; x2: Coord; y2: Coord } }
-		| { x: Coord; y: Coord; curve: { type: 'quadratic'; x1: Coord; y1: Coord } }
-		| { close: true }
+	| { x: Coord, y: Coord, moveTo?: boolean }
+	| { x: Coord, y: Coord, curve: { type: 'arc', hR: Coord, wR: Coord, stAng: number, swAng: number } }
+	| { x: Coord, y: Coord, curve: { type: 'cubic', x1: Coord, y1: Coord, x2: Coord, y2: Coord } }
+	| { x: Coord, y: Coord, curve: { type: 'quadratic', x1: Coord, y1: Coord } }
+	| { close: true }
 	>
 	/**
 	 * Rounded rectangle radius (only for pptx.shapes.ROUNDED_RECTANGLE)
@@ -677,7 +684,7 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 
 export interface TableToSlidesProps extends TableProps {
 	_arrObjTabHeadRows?: TableRow[]
-	//_masterSlide?: SlideLayout
+	// _masterSlide?: SlideLayout
 
 	/**
 	 * Add an image to slide(s) created during autopaging
@@ -685,19 +692,19 @@ export interface TableToSlidesProps extends TableProps {
 	 * - see `DataOrPathProps` for details on `image` props
 	 * - see `PositionProps` for details on `options` props
 	 */
-	addImage?: { image: DataOrPathProps; options: PositionProps }
+	addImage?: { image: DataOrPathProps, options: PositionProps }
 	/**
 	 * Add a shape to slide(s) created during autopaging
 	 */
-	addShape?: { shape: any; options: {} }
+	addShape?: { shapeName: SHAPE_NAME, options: ShapeProps }
 	/**
 	 * Add a table to slide(s) created during autopaging
 	 */
-	addTable?: { rows: any[]; options: {} }
+	addTable?: { rows: TableRow[], options: TableProps }
 	/**
 	 * Add a text object to slide(s) created during autopaging
 	 */
-	addText?: { text: any[]; options: {} }
+	addText?: { text: TextProps[], options: TextPropsOptions }
 	/**
 	 * Whether to enable auto-paging
 	 * - auto-paging creates new slides as content overflows a slide
@@ -927,7 +934,7 @@ export interface TextGlowProps {
 	 * @example 0.5
 	 * 50% opaque
 	 */
-	opacity: number
+	opacity?: number
 	/**
 	 * size (points)
 	 */
@@ -1016,7 +1023,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @example [10,5,10,5] // Top margin 10, Right margin 5, Bottom margin 10, Left margin 5
 	 */
 	margin?: Margin
-	outline?: { color: Color; size: number }
+	outline?: { color: Color, size: number }
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
@@ -1135,7 +1142,7 @@ export interface OptsChartData {
 	/**
 	 * Override `chartColors`
 	 */
-	//color?: string // TODO: WIP: (Pull #727)
+	// color?: string // TODO: WIP: (Pull #727)
 }
 // Used internally, probably shouldn't be used by end users
 export interface IOptsChartData extends OptsChartData {
@@ -1165,8 +1172,8 @@ export interface OptsChartGridLine {
 // TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
 	type: CHART_NAME
-	data: any[]
-	options: {}
+	data: IOptsChartData[]
+	options: IChartOptsLib
 }
 export interface IChartPropsFillLine {
 	/**
@@ -1208,21 +1215,57 @@ export interface IChartPropsBase {
 	lang?: string
 	layout?: PositionProps
 	shadow?: ShadowProps
+	/**
+	 * @default false
+	 */
 	showLabel?: boolean
 	showLeaderLines?: boolean
+	/**
+	 * @default false
+	 */
 	showLegend?: boolean
+	/**
+	 * @default false
+	 */
 	showPercent?: boolean
-	showSerName?: boolean,
+	/**
+	 * @default false
+	 */
+	showSerName?: boolean
+	/**
+	 * @default false
+	 */
 	showTitle?: boolean
+	/**
+	 * @default false
+	 */
 	showValue?: boolean
 	/**
-	 * 3D perspecitve
-	 * - range: 0-100
+	 * 3D Perspecitve
+	 * - range: 0-120
 	 * @default 30
 	 */
 	v3DPerspective?: number
+	/**
+	 * Right Angle Axes
+	 * - Shows chart from first-person perspective
+	 * - Overrides `v3DPerspective` when true
+	 * - PowerPoint: Chart Options > 3-D Rotation
+	 * @default false
+	 */
 	v3DRAngAx?: boolean
+	/**
+	 * X Rotation
+	 * - PowerPoint: Chart Options > 3-D Rotation
+	 * - range: 0-359.9
+	 * @default 30
+	 */
 	v3DRotX?: number
+	/**
+	 * Y Rotation
+	 * - range: 0-359.9
+	 * @default 30
+	 */
 	v3DRotY?: number
 
 	/**
@@ -1271,7 +1314,7 @@ export interface IChartPropsAxisCat {
 	catAxisMaxVal?: number
 	catAxisMinorTickMark?: ChartAxisTickMark
 	catAxisMinorTimeUnit?: string
-	catAxisMinorUnit?: string
+	catAxisMinorUnit?: number
 	catAxisMinVal?: number
 	/** @since v3.11.0 */
 	catAxisMultiLevelLabels?: boolean
@@ -1494,6 +1537,10 @@ export interface IChartPropsDataTable {
 	 * @example '$0.00' // shows values as '$0.00'
 	 */
 	dataTableFormatCode?: string
+	/**
+	 * Whether to show a data table adjacent to the chart
+	 * @default false
+	 */
 	showDataTable?: boolean
 	showDataTableHorzBorder?: boolean
 	showDataTableKeys?: boolean
@@ -1513,7 +1560,7 @@ export interface IChartPropsTitle extends TextBaseProps {
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
-	titlePos?: { x: number; y: number }
+	titlePos?: { x: number, y: number }
 	titleRotate?: number
 }
 export interface IChartOpts
@@ -1576,7 +1623,7 @@ export interface ISlideRelMedia {
 	/** used to indicate that a media file has already been read/enocded (PERF) */
 	isDuplicate?: boolean
 	isSvgPng?: boolean
-	svgSize?: { w: number; h: number }
+	svgSize?: { w: number, h: number }
 	rId: number
 	Target: string
 }
@@ -1664,23 +1711,21 @@ export interface SlideMasterProps {
 	background?: BackgroundProps
 	margin?: Margin
 	slideNumber?: SlideNumberProps
-	objects?: (
-		| { chart: {} }
-		| { image: {} }
-		| { line: {} }
-		| { rect: {} }
-		| { text: TextProps }
-		| {
-			placeholder: {
-				options: PlaceholderProps
-				/**
-				 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-				 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-				 */
-				text?: string
-			}
+	objects?: Array< | { chart: IChartOpts }
+	| { image: ImageProps }
+	| { line: ShapeProps }
+	| { rect: ShapeProps }
+	| { text: TextProps }
+	| {
+		placeholder: {
+			options: PlaceholderProps
+			/**
+			 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+			 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+			 */
+			text?: string
 		}
-	)[]
+	}>
 
 	/**
 	 * @deprecated v3.3.0 - use `background`
@@ -1728,13 +1773,13 @@ export interface PresSlide extends SlideBaseProps {
 	_slideLayout: SlideLayout
 	_slideId: number
 
-	addChart: Function
-	addImage: Function
-	addMedia: Function
-	addNotes: Function
-	addShape: Function
-	addTable: Function
-	addText: Function
+	addChart: (type: CHART_NAME | IChartMulti[], data: IOptsChartData[], options?: IChartOpts) => PresSlide
+	addImage: (options: ImageProps) => PresSlide
+	addMedia: (options: MediaProps) => PresSlide
+	addNotes: (notes: string) => PresSlide
+	addShape: (shapeName: SHAPE_NAME, options?: ShapeProps) => PresSlide
+	addTable: (tableRows: TableRow[], options?: TableProps) => PresSlide
+	addText: (text: string | TextProps[], options?: TextPropsOptions) => PresSlide
 
 	/**
 	 * Background color or image (`color` | `path` | `data`)
