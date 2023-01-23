@@ -285,7 +285,7 @@ function genSlide04(pptx) {
  * SLIDE 5: Image Shadow
  * @param {PptxGenJS} pptx
  */
- function genSlide05(pptx) {
+function genSlide05(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 
 	slide.addTable([[{ text: "Image Examples: Shadows", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
@@ -296,13 +296,13 @@ function genSlide04(pptx) {
 
 	// OUTER SHADOW
 	slide.addText("Shadow: `type:outer`, `opacity:0.5`, `blur:20`, `color:000000`, `offset:20`, `angle:270`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 0.78, y: 2.46, w: 3.3, h: 2, shadow: {type: 'outer', opacity: 0.5, blur: 20, color: '000000', offset: 20, angle: 270} });
+	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 0.78, y: 2.46, w: 3.3, h: 2, shadow: { type: 'outer', opacity: 0.5, blur: 20, color: '000000', offset: 20, angle: 270 } });
 
 	// NO SHADOW
 	slide.addText("Shadow: `type:none`", { x: 5, y: 1.2, w: 6.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 4.52, y: 2.46, w: 3.3, h: 2, shadow: {type: 'none'} });
+	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 4.52, y: 2.46, w: 3.3, h: 2, shadow: { type: 'none' } });
 
 	// INNER SHADOW
 	slide.addText("Shadow: `type:inner`, `opacity:1`, `blur:20`, `color:000000`, `offset:20`, `angle:270`", { x: 8, y: 0.6, w: 6.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 8.42, y: 2.46, w: 3.3, h: 2, shadow: {type: 'inner', opacity: 1, blur: 20, color: '000000', offset: 20, angle: 270} });
+	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 8.42, y: 2.46, w: 3.3, h: 2, shadow: { type: 'inner', opacity: 1, blur: 20, color: '000000', offset: 20, angle: 270 } });
 }
