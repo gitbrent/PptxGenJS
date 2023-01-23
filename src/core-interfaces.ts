@@ -486,6 +486,13 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 */
 	rounding?: boolean
 	/**
+	 * Shadow Props
+	 * - MS-PPT > Format Picture > Shadow
+	 * @example
+	 * { type: 'outer', color: '000000', opacity: 0.5, blur: 20,  offset: 20, angle: 270 }
+	 */
+	shadow?: ShadowProps
+	/**
 	 * Image sizing options
 	 */
 	sizing?: {
@@ -532,16 +539,6 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @example 25 // 25% transparent
 	 */
 	transparency?: number
-	/**
-	 * Shadow Props
-	 * @example { type: 'outer',
-	 *            opacity: 0.5,
-	 *            blur: 20,
-	 *            color: '000000',
-	 *            offset: 20,
-	 *            angle: 270 }
-	 */
-	shadow?: ShadowProps
 }
 /**
  * Add media (audio/video) to slide
