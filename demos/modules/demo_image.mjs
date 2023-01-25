@@ -19,6 +19,8 @@ import { HYPERLINK_SVG, LOGO_STARLABS, SVG_BASE64, UNITE_PNG } from "./media.mjs
 
 const BKGD_LTGRAY = "F1F1F1";
 const COLOR_BLUE = "0088CC";
+const CODE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 6, fontSize: 10, color: '696969' };
+const TITLE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 4, fontSize: 18, fontFace: "Segoe UI", color: COLOR_BLUE, valign: "top", align: "center" };
 
 export function genSlides_Image(pptx) {
 	pptx.addSection({ title: "Images" });
@@ -197,38 +199,42 @@ function genSlide02(pptx) {
 	slide.slideNumber = { x: "50%", y: "95%", color: COLOR_BLUE };
 
 	// TOP-LEFT: jpg
+	slide.addImage({ path: IMAGE_PATHS.ccLogo.path, x: 0.5, y: 0.6, h: 2.68, w: 3.58 });
 	slide.addText(
 		[{ text: `path:"${IMAGE_PATHS.ccLogo.path}"` }],
-		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 0.6, w: 3.6, h: 3.35, fontSize: 10, color:'696969', valign: 'bottom', margin: 10, fill: { color: BKGD_LTGRAY }, } }
+		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 3.28, h: 0.7, w: 3.58 }, ...CODE_STYLE }
 	);
-	slide.addImage({ path: IMAGE_PATHS.ccLogo.path, x: 0.66, y: 0.75, h: 2.5, w: 3.33 });
-
-	// TODO: WIP: do same below
 
 	// TOP-CENTER: png
-	slide.addText([{ text: `path:"${IMAGE_PATHS.wikimedia2.path}"` }], { ...BASE_CODE_OPTS, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 10 } });
-	slide.addImage({ path: IMAGE_PATHS.wikimedia2.path, x: 4.55, y: 1.44, h: 2.5, w: 3.27 });
+	slide.addImage({ path: IMAGE_PATHS.wikimedia2.path, x: 4.6, y: 0.6, h: 2.64, w: 3.45 });
+	slide.addText(
+		[{ text: `path:"${IMAGE_PATHS.wikimedia2.path}"` }],
+		{ ...BASE_CODE_OPTS, ...{ x: 4.6, y: 3.24, h: 0.7, w: 3.45 }, ...CODE_STYLE }
+	);
 
 	// TOP-RIGHT: relative-path test
-	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }], {
-		...BASE_CODE_OPTS,
-		...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 },
-	});
 	// NOTE: Node will throw exception when using "/" path
-	slide.addImage({ path: `${typeof window === "undefined" ? ".." : ""}${IMAGE_PATHS.ccLicenseComp.path}`, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
-
-	// BOTTOM: wide, url-sourced
+	slide.addImage({
+		path: `${typeof window === "undefined" ? ".." : ""}${IMAGE_PATHS.ccLicenseComp.path}`,
+		x: 8.57, y: 0.6, h: 2.52, w: 4.26
+	});
 	slide.addText(
 		[
-			{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } },
+			{ text: '// Example: local path', options: { breakLine: true } },
+			{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }
+		],
+		{ ...BASE_CODE_OPTS, ...{ x: 8.57, y: 3.12, h: 0.82, w: 4.26 }, ...CODE_STYLE }
+	);
+
+	// BOTTOM: wide, url-sourced
+	slide.addImage({ path: IMAGE_PATHS.sydneyBridge.path, x: 0.5, y: 4.35, h: 1.8, w: 12.33 });
+	slide.addText(
+		[
+			{ text: '// Example: URL variables, plus more than one ".jpg"', options: { breakLine: true } },
 			{ text: `path:"${IMAGE_PATHS.sydneyBridge.path}"` },
 		],
-		{
-			...BASE_CODE_OPTS,
-			...{ x: 0.5, y: 4.2, w: 12.33, h: 0.8, fontSize: 11 },
-		}
+		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 6.15, w: 12.33, h: 0.8 }, ...CODE_STYLE }
 	);
-	slide.addImage({ path: IMAGE_PATHS.sydneyBridge.path, x: 0.5, y: 5.16, h: 1.8, w: 12.33 });
 }
 
 /**
@@ -289,7 +295,7 @@ function genSlide04(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide05(pptx) {
-	let slide = pptx.addSlide({ sectionTitle: "Images" });
+	const slide = pptx.addSlide({ sectionTitle: "Images" });
 
 	slide.addTable([[{ text: "Image Examples: Shadows", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
@@ -297,15 +303,30 @@ function genSlide05(pptx) {
 
 	// EXAMPLES
 
-	// OUTER SHADOW
-	slide.addText("Shadow: `type:outer`, `opacity:0.5`, `blur:20`, `color:000000`, `offset:20`, `angle:270`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 0.78, y: 2.46, w: 3.3, h: 2, shadow: { type: 'outer', opacity: 0.5, blur: 20, color: '000000', offset: 20, angle: 270 } });
+	// type:none
+	const shadow1 = { shadow: { type: 'none' } };
+	slide.addText("Shadow: `type:none`", { ...{ x: 0.5, y: 0.6, h: 0.4, w: 6.0 }, ...TITLE_STYLE });
+	slide.addText(
+		[{ text: JSON.stringify(shadow1, '', 2) }],
+		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 1.0, h: 1.0, w: 6 }, ...CODE_STYLE }
+	);
+	slide.addImage({ ...{ path: IMAGE_PATHS.ccLicenseComp.path, x: 7.0, y: 0.6, w: 3.3, h: 2 }, ...shadow1 });
 
-	// NO SHADOW
-	slide.addText("Shadow: `type:none`", { x: 5, y: 1.2, w: 6.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 4.52, y: 2.46, w: 3.3, h: 2, shadow: { type: 'none' } });
+	// type:inner
+	const shadow2 = { shadow: { type: 'inner', opacity: 1, blur: 20, color: '000000', offset: 20, angle: 270 } };
+	slide.addText("Shadow: `type:inner`", { ...{ x: 0.5, y: 2.6, h: 0.4, w: 6.0 }, ...TITLE_STYLE });
+	slide.addText(
+		[{ text: JSON.stringify(shadow2, '', 2) }],
+		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 3.0, h: 1.7, w: 6 }, ...CODE_STYLE }
+	);
+	slide.addImage({ ...{ path: IMAGE_PATHS.ccLicenseComp.path, x: 7.0, y: 3.0, w: 3.3, h: 2 }, ...shadow2 });
 
-	// INNER SHADOW
-	slide.addText("Shadow: `type:inner`, `opacity:1`, `blur:20`, `color:000000`, `offset:20`, `angle:270`", { x: 8, y: 0.6, w: 6.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 8.42, y: 2.46, w: 3.3, h: 2, shadow: { type: 'inner', opacity: 1, blur: 20, color: '000000', offset: 20, angle: 270 } });
+	// type:outer
+	const shadow3 = { shadow: { type: 'outer', opacity: 0.25, blur: 20, color: '000000', offset: 20, angle: 270 } };
+	slide.addText("Shadow: `type:outer`", { ...{ x: 0.5, y: 5.1, h: 0.4, w: 6.0 }, ...TITLE_STYLE });
+	slide.addText(
+		[{ text: JSON.stringify(shadow3, '', 2) }],
+		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 5.5, h: 1.7, w: 6 }, ...CODE_STYLE }
+	);
+	slide.addImage({ ...{ path: IMAGE_PATHS.ccLicenseComp.path, x: 7.0, y: 5.5, w: 3.3, h: 2 }, ...shadow3 });
 }
