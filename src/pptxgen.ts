@@ -725,31 +725,33 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {SlideMasterProps} props - layout properties
 	 */
 	defineSlideMaster (props: SlideMasterProps): void {
-		if (!props.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+		//deep clone the props object so we don't mutate the original ISSUE #1175
+		const propsClone = JSON.parse(JSON.stringify(props))
+		if (!propsClone.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		const newLayout: SlideLayout = {
-			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
-			_name: props.title,
+			_margin: propsClone.margin || DEF_SLIDE_MARGIN_IN,
+			_name: propsClone.title,
 			_presLayout: this.presLayout,
 			_rels: [],
 			_relsChart: [],
 			_relsMedia: [],
 			_slide: null,
 			_slideNum: 1000 + this.slideLayouts.length + 1,
-			_slideNumberProps: props.slideNumber || null,
+			_slideNumberProps: propsClone.slideNumber || null,
 			_slideObjects: [],
-			background: props.background || null,
-			bkgd: props.bkgd || null,
+			background: propsClone.background || null,
+			bkgd: propsClone.bkgd || null,
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideMaster(props, newLayout)
+		genObj.createSlideMaster(propsClone, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
 
 		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
-		if (props.background || props.bkgd) genObj.addBackgroundDefinition(props.background, newLayout)
+		if (propsClone.background || propsClone.bkgd) genObj.addBackgroundDefinition(propsClone.background, newLayout)
 
 		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
