@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2023-01-23T05:03:32.268Z */
+/* PptxGenJS 3.12.0-beta @ 2023-01-26T05:59:42.918Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5468,8 +5468,7 @@ function slideObjectToXml(slide) {
                     slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
                     slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
                     strSlideXml += '<a:effectLst>';
-                    // NEW: WIP: strSlideXml += ` <a:${slideItemObj.options.shadow.type}Shdw sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0" blurRad="${slideItemObj.options.shadow.blur}" dist="${slideItemObj.options.shadow.offset}" dir="${slideItemObj.options.shadow.angle}">`
-                    strSlideXml += " <a:".concat(slideItemObj.options.shadow.type, "Shdw ").concat(slideItemObj.options.shadow.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '', " blurRad=\"").concat(slideItemObj.options.shadow.blur, "\"<a:").concat(slideItemObj.options.shadow.type, "Shdw sx=\"100000\" sy=\"100000\" kx=\"0\" ky=\"0\" algn=\"bl\" rotWithShape=\"0\" blurRad=\"").concat(slideItemObj.options.shadow.blur, "\" dist=\"").concat(slideItemObj.options.shadow.offset, "\" dir=\"").concat(slideItemObj.options.shadow.angle, "\">");
+                    strSlideXml += " <a:".concat(slideItemObj.options.shadow.type, "Shdw ").concat(slideItemObj.options.shadow.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '', " blurRad=\"").concat(slideItemObj.options.shadow.blur, "\" dist=\"").concat(slideItemObj.options.shadow.offset, "\" dir=\"").concat(slideItemObj.options.shadow.angle, "\">");
                     strSlideXml += " <a:srgbClr val=\"".concat(slideItemObj.options.shadow.color, "\">");
                     strSlideXml += " <a:alpha val=\"".concat(slideItemObj.options.shadow.opacity, "\"/></a:srgbClr>");
                     strSlideXml += ' </a:outerShdw>';
@@ -5552,10 +5551,7 @@ function slideObjectToXml(slide) {
                     slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
                     slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
                     strSlideXml += '<a:effectLst>';
-                    strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw';
-                    strSlideXml += slideItemObj.options.shadow.type === 'outer' ? ' sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '';
-                    strSlideXml += " blurRad=\"".concat(slideItemObj.options.shadow.blur, "\"");
-                    strSlideXml += " dist=\"".concat(slideItemObj.options.shadow.offset, "\" dir=\"").concat(slideItemObj.options.shadow.angle, "\">");
+                    strSlideXml += "<a:".concat(slideItemObj.options.shadow.type, "Shdw ").concat(slideItemObj.options.shadow.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '', " blurRad=\"").concat(slideItemObj.options.shadow.blur, "\" dist=\"").concat(slideItemObj.options.shadow.offset, "\" dir=\"").concat(slideItemObj.options.shadow.angle, "\">");
                     strSlideXml += "<a:srgbClr val=\"".concat(slideItemObj.options.shadow.color, "\">");
                     strSlideXml += "<a:alpha val=\"".concat(slideItemObj.options.shadow.opacity, "\"/></a:srgbClr>");
                     strSlideXml += "</a:".concat(slideItemObj.options.shadow.type, "Shdw>");
@@ -6688,7 +6684,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0-beta-20230122-2300';
+var VERSION = '3.12.0-beta-20230125-2350';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
