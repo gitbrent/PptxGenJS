@@ -284,7 +284,10 @@ function genSlide04(pptx) {
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: COLOR_BLUE };
 
 	// EXAMPLES
-	slide.addText("Rotate: `rotate:45`, `rotate:180`, `rotate:315`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: COLOR_BLUE });
+	slide.addText("`rotate:45`", { ...{ x: 0.5, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
+	slide.addText("`rotate:180`", { ...{ x: 4.66, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
+	slide.addText("`rotate:315`", { ...{ x: 8.82, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
+
 	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 0.78, y: 2.46, w: 4.3, h: 3, rotate: 45 });
 	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 4.52, y: 2.25, w: 4.3, h: 3, rotate: 180 });
 	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 8.25, y: 2.84, w: 4.3, h: 3, rotate: 315 });
@@ -297,7 +300,7 @@ function genSlide04(pptx) {
 function genSlide05(pptx) {
 	const slide = pptx.addSlide({ sectionTitle: "Images" });
 
-	slide.addTable([[{ text: "Image Examples: Shadows", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Image Examples: Image Shadows", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: COLOR_BLUE };
 
