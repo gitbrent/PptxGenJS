@@ -1301,6 +1301,13 @@ declare namespace PptxGenJS {
 		 */
 		rounding?: boolean
 		/**
+		 * Shadow Props
+		 * - MS-PPT > Format Picture > Shadow
+		 * @example
+		 * { type: 'outer', color: '000000', opacity: 0.5, blur: 20,  offset: 20, angle: 270 }
+		 */
+		shadow?: ShadowProps
+		/**
 		 * Image sizing options
 		 */
 		sizing?: {

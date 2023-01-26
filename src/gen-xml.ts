@@ -516,7 +516,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				}
 
 				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
-				if (slideItemObj.options.shadow) {
+				if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
 					slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer'
 					slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8)
 					slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4)
@@ -525,7 +525,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 					slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color
 
 					strSlideXml += '<a:effectLst>'
-					strSlideXml += ` <a:${slideItemObj.options.shadow.type}Shdw sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0" blurRad="${slideItemObj.options.shadow.blur}" dist="${slideItemObj.options.shadow.offset}" dir="${slideItemObj.options.shadow.angle}">`
+					strSlideXml += ` <a:${slideItemObj.options.shadow.type}Shdw ${slideItemObj.options.shadow.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : ''} blurRad="${slideItemObj.options.shadow.blur}" dist="${slideItemObj.options.shadow.offset}" dir="${slideItemObj.options.shadow.angle}">`
 					strSlideXml += ` <a:srgbClr val="${slideItemObj.options.shadow.color}">`
 					strSlideXml += ` <a:alpha val="${slideItemObj.options.shadow.opacity}"/></a:srgbClr>`
 					strSlideXml += ' </a:outerShdw>'
@@ -611,6 +611,23 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				strSlideXml += `  <a:ext cx="${imgWidth}" cy="${imgHeight}"/>`
 				strSlideXml += ' </a:xfrm>'
 				strSlideXml += ` <a:prstGeom prst="${rounding ? 'ellipse' : 'rect'}"><a:avLst/></a:prstGeom>`
+
+				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
+				if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
+					slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer'
+					slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8)
+					slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4)
+					slideItemObj.options.shadow.angle = Math.round((slideItemObj.options.shadow.angle || 270) * 60000)
+					slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000)
+					slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color
+
+					strSlideXml += '<a:effectLst>'
+					strSlideXml += `<a:${slideItemObj.options.shadow.type}Shdw ${slideItemObj.options.shadow.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : ''} blurRad="${slideItemObj.options.shadow.blur}" dist="${slideItemObj.options.shadow.offset}" dir="${slideItemObj.options.shadow.angle}">`
+					strSlideXml += `<a:srgbClr val="${slideItemObj.options.shadow.color}">`
+					strSlideXml += `<a:alpha val="${slideItemObj.options.shadow.opacity}"/></a:srgbClr>`
+					strSlideXml += `</a:${slideItemObj.options.shadow.type}Shdw>`
+					strSlideXml += '</a:effectLst>'
+				}
 				strSlideXml += '</p:spPr>'
 				strSlideXml += '</p:pic>'
 				break
@@ -1837,41 +1854,41 @@ export function makeXmlViewProps (): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowProps} ShadowProps - shadow options
+ * @param {ShadowProps} shadowProps - shadow options
  */
-export function correctShadowOptions (ShadowProps: ShadowProps): void {
-	if (!ShadowProps || typeof ShadowProps !== 'object') {
+export function correctShadowOptions (shadowProps: ShadowProps): void {
+	if (!shadowProps || typeof shadowProps !== 'object') {
 		// console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
 		return
 	}
 
 	// OPT: `type`
-	if (ShadowProps.type !== 'outer' && ShadowProps.type !== 'inner' && ShadowProps.type !== 'none') {
+	if (shadowProps.type !== 'outer' && shadowProps.type !== 'inner' && shadowProps.type !== 'none') {
 		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
-		ShadowProps.type = 'outer'
+		shadowProps.type = 'outer'
 	}
 
 	// OPT: `angle`
-	if (ShadowProps.angle) {
+	if (shadowProps.angle) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(ShadowProps.angle)) || ShadowProps.angle < 0 || ShadowProps.angle > 359) {
+		if (isNaN(Number(shadowProps.angle)) || shadowProps.angle < 0 || shadowProps.angle > 359) {
 			console.warn('Warning: shadow.angle can only be 0-359')
-			ShadowProps.angle = 270
+			shadowProps.angle = 270
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		ShadowProps.angle = Math.round(Number(ShadowProps.angle))
+		shadowProps.angle = Math.round(Number(shadowProps.angle))
 	}
 
 	// OPT: `opacity`
-	if (ShadowProps.opacity) {
+	if (shadowProps.opacity) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(ShadowProps.opacity)) || ShadowProps.opacity < 0 || ShadowProps.opacity > 1) {
+		if (isNaN(Number(shadowProps.opacity)) || shadowProps.opacity < 0 || shadowProps.opacity > 1) {
 			console.warn('Warning: shadow.opacity can only be 0-1')
-			ShadowProps.opacity = 0.75
+			shadowProps.opacity = 0.75
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		ShadowProps.opacity = Number(ShadowProps.opacity)
+		shadowProps.opacity = Number(shadowProps.opacity)
 	}
 }
