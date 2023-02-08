@@ -47,8 +47,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
-import { correctShadowOptions } from './gen-xml'
+import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts, correctShadowOptions } from './gen-utils'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter = 0
@@ -138,6 +137,10 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
 		if (glOpts.style && !['solid', 'dash', 'dot'].includes(glOpts.style)) {
 			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.')
 			delete glOpts.style
+		}
+		if (glOpts.cap && !['flat', 'square', 'round'].includes(glOpts.cap)) {
+			console.warn('Warning: chart.gridLine.cap options: `flat`, `square`, `round`.')
+			delete glOpts.cap
 		}
 	}
 
@@ -449,6 +452,7 @@ export function addImageDefinition (target: PresSlide, opt: ImageProps): void {
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
 		objectName,
+		shadow: correctShadowOptions(opt.shadow),
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
