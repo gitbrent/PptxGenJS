@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { Coord, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -220,4 +220,56 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
  */
 export function getNewRelId (target: PresSlide): number {
 	return target._rels.length + target._relsChart.length + target._relsMedia.length + 1
+}
+
+/**
+ * Checks shadow options passed by user and performs corrections if needed.
+ * @param {ShadowProps} ShadowProps - shadow options
+ */
+export function correctShadowOptions (ShadowProps: ShadowProps): ShadowProps | undefined {
+	if (!ShadowProps || typeof ShadowProps !== 'object') {
+		// console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
+		return
+	}
+
+	// OPT: `type`
+	if (ShadowProps.type !== 'outer' && ShadowProps.type !== 'inner' && ShadowProps.type !== 'none') {
+		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
+		ShadowProps.type = 'outer'
+	}
+
+	// OPT: `angle`
+	if (ShadowProps.angle) {
+		// A: REALITY-CHECK
+		if (isNaN(Number(ShadowProps.angle)) || ShadowProps.angle < 0 || ShadowProps.angle > 359) {
+			console.warn('Warning: shadow.angle can only be 0-359')
+			ShadowProps.angle = 270
+		}
+
+		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+		ShadowProps.angle = Math.round(Number(ShadowProps.angle))
+	}
+
+	// OPT: `opacity`
+	if (ShadowProps.opacity) {
+		// A: REALITY-CHECK
+		if (isNaN(Number(ShadowProps.opacity)) || ShadowProps.opacity < 0 || ShadowProps.opacity > 1) {
+			console.warn('Warning: shadow.opacity can only be 0-1')
+			ShadowProps.opacity = 0.75
+		}
+
+		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+		ShadowProps.opacity = Number(ShadowProps.opacity)
+	}
+
+	// OPT: `color`
+	if (ShadowProps.color) {
+		// INCORRECT FORMAT
+		if (ShadowProps.color.startsWith('#')) {
+			console.warn('Warning: shadow.color should not include hash (#) character, , e.g. "FF0000"')
+			ShadowProps.color = ShadowProps.color.replace('#', '')
+		}
+	}
+
+	return ShadowProps
 }

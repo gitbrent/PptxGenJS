@@ -45,6 +45,7 @@ export default class Slide {
 	public _slideNum: number
 	public _slideNumberProps: SlideNumberProps
 	public _slideObjects: ISlideObject[]
+	public _newAutoPagedSlides: PresSlide[]
 
 	constructor (params: {
 		addSlide: (options?: AddSlideProps) => PresSlide
@@ -152,6 +153,10 @@ export default class Slide {
 		return this._slideNumberProps
 	}
 
+	public get newAutoPagedSlides(): PresSlide[] {
+		return this._newAutoPagedSlides
+	}
+
 	/**
 	 * Add chart to Slide
 	 * @param {CHART_NAME|IChartMulti[]} type - chart type
@@ -223,7 +228,7 @@ export default class Slide {
 	 */
 	addTable (tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
+		this._newAutoPagedSlides = genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 

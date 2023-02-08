@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.11.0
- * BLD.: 20220806
+ * VER.: 3.12.0
+ * BLD.: 20230116
  */
 
 import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, FOOTER_TEXT_OPTS, IMAGE_PATHS, TESTMODE } from "./enums.mjs";
@@ -901,8 +901,8 @@ function genSlide07(pptx) {
 			valAxisMaxVal: 1,
 			barDir: "bar",
 			axisLabelFormatCode: "#%",
-			catGridLine: { color: "D8D8D8", style: "dash", size: 1 },
-			valGridLine: { color: "D8D8D8", style: "dash", size: 1 },
+			catGridLine: { color: "D8D8D8", style: "dash", size: 1, cap: "round" },
+			valGridLine: { color: "D8D8D8", style: "dash", size: 1, cap: "square" },
 			catAxisLineShow: false,
 			valAxisLineShow: false,
 			barGrouping: "stacked",
@@ -1029,6 +1029,7 @@ function genSlide10(pptx) {
 			y: idx < 3 ? 0.5 : idx < 6 ? 2.85 : 5.1,
 			w: 4.25,
 			h: 2.25,
+			lineCap: 'round',
 			lineDataSymbol: opt,
 			lineDataSymbolSize: idx == 5 ? 9 : idx == 6 ? 12 : null,
 			chartColors: COLORS_VIVID,

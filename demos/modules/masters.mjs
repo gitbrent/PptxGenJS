@@ -62,6 +62,24 @@ export function createMasterSlides(pptx) {
 		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: "center" },
 	});
 
+	// MASTER_AUTO_PAGE_TABLE_PLACEHOLDER
+	pptx.defineSlideMaster({
+		title: "MASTER_AUTO_PAGE_TABLE_PLACEHOLDER",
+		background: { fill: "F1F1F1" },
+		margin: [0.5, 0.25, 1.0, 0.25],
+		objects: [
+			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
+			{ image: { x: 11.45, y: 5.95, w: 1.67, h: 0.75, data: STARLABS_LOGO_SM } },
+			{
+				placeholder: {
+					options: { name: "footer", x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
+					text: "(footer placeholder)",
+				},
+			},
+		],
+		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: "center" },
+	});
+
 	// MASTER_SLIDE (MASTER_PLACEHOLDER)
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
