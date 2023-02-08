@@ -2534,6 +2534,10 @@ declare namespace PptxGenJS {
 		 */
 		slideNumber: SlideNumberProps
 		/**
+		 * New slides added by an auto paged table
+		 */
+		newAutoPagedSlides: PresSlide[]
+		/**
 		 * Add chart to Slide
 		 * @param {CHART_NAME|IChartMulti[]} type - chart type
 		 * @param {object[]} data - data object
