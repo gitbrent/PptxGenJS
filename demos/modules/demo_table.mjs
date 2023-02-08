@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.10.0
- * BLD.: 20220220
+ * VER.: 3.12.0
+ * BLD.: 20230207
  */
 
 import {
@@ -604,6 +604,8 @@ function genSlide07(pptx) {
 		);
 		slide.addText("Auto-Paging table", { placeholder: "footer" });
 		slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 0.05, border: { color: "CFCFCF" }, autoPage: true });
+		// HOWTO: In cases where you want to add custom text, placeholders, etc. to slidemasters, a reference to these slide(s) is needed
+		// HOWTO: Use the `newAutoPagedSlides` to access references (see [Issue #625](https://github.com/gitbrent/PptxGenJS/issues/625))
 		slide.newAutoPagedSlides.forEach((slide) => slide.addText("Auto-Paging table continued...", { placeholder: "footer" }));
 	}
 
