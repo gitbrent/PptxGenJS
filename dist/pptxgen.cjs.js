@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2023-01-26T05:59:42.905Z */
+/* PptxGenJS 3.12.0-beta @ 2023-02-08T05:24:17.216Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6292,6 +6292,7 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     strXml += '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
     strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>';
     strXml += '<Default Extension="jpg" ContentType="image/jpg"/>';
+    strXml += '<Default Extension="svg" ContentType="image/svg+xml"/>';
     // STEP 1: Add standard/any media types used in Presentation
     strXml += '<Default Extension="png" ContentType="image/png"/>';
     strXml += '<Default Extension="gif" ContentType="image/gif"/>';
@@ -6690,7 +6691,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0-beta-20230125-2350';
+var VERSION = '3.12.0-beta-20230207-2320';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
