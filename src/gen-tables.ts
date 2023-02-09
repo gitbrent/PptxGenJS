@@ -102,7 +102,10 @@ function parseTextToLines (cell: TableCell, colWidth: number, verbose?: boolean)
 		}
 
 		// Flush buffer
-		if (newLine.length > 0) inputLines1.push(newLine)
+		if (newLine.length > 0) {
+			inputLines1.push(newLine)
+			newLine = []
+		}
 	})
 	if (verbose) {
 		console.log(`[2/4] inputLines1 (${inputLines1.length})`)
