@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0-beta @ 2023-02-08T05:24:17.216Z */
+/* PptxGenJS 3.12.0-beta @ 2023-02-09T05:33:31.122Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1009,8 +1009,10 @@ function parseTextToLines(cell, colWidth, verbose) {
             }
         }
         // Flush buffer
-        if (newLine.length > 0)
+        if (newLine.length > 0) {
             inputLines1.push(newLine);
+            newLine = [];
+        }
     });
     if (verbose) {
         console.log("[2/4] inputLines1 (".concat(inputLines1.length, ")"));
@@ -2520,6 +2522,8 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             // TODO: FIXME: WIP: 20210807: We cant do this anymore
         });
     });
+    // If autoPage = true, we need to return references to newly created slides if any
+    var newAutoPagedSlides = [];
     // STEP 6: Auto-Paging: (via {options} and used internally)
     // (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
     if (opt && !opt.autoPage) {
@@ -2551,9 +2555,13 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                 createHyperlinkRels(newSlide, slide.rows);
                 // Add rows to new slide
                 newSlide.addTable(slide.rows, Object.assign({}, opt));
+                // Add reference to the new slide so it can be returned, but don't add the first one because the user already has a reference to that one.
+                if (idx > 0)
+                    newAutoPagedSlides.push(newSlide);
             }
         });
     }
+    return newAutoPagedSlides;
 }
 /**
  * Adds a text object to a slide definition.
@@ -2869,6 +2877,13 @@ var Slide = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(Slide.prototype, "newAutoPagedSlides", {
+        get: function () {
+            return this._newAutoPagedSlides;
+        },
+        enumerable: false,
+        configurable: true
+    });
     /**
      * Add chart to Slide
      * @param {CHART_NAME|IChartMulti[]} type - chart type
@@ -2935,7 +2950,7 @@ var Slide = /** @class */ (function () {
      */
     Slide.prototype.addTable = function (tableRows, options) {
         // FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-        addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide);
+        this._newAutoPagedSlides = addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide);
         return this;
     };
     /**
@@ -6691,7 +6706,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0-beta-20230207-2320';
+var VERSION = '3.12.0-beta-20230208-2330';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
