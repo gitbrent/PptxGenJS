@@ -3,29 +3,30 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.11.0
- * BLD.: 20220724
+ * VER.: 3.12.0
+ * BLD.: 20230227
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.mjs";
-import { COVER_AUDIO, COVER_VIDEO_16X9 } from "./media.mjs";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS, BKGD_LTGRAY, COLOR_BLUE, CODE_STYLE, TITLE_STYLE } from "./enums.mjs";
+import { COVER_AUDIO, COVER_VIDEO_16X9, COVER_YOUTUBE } from "./media.mjs";
 
 export function genSlides_Media(pptx) {
 	pptx.addSection({ title: "Media" });
 
 	genSlide01(pptx);
-	genSlide02(pptx);
+	if (typeof window !== "undefined" && $ && $("#chkYoutube").prop("checked")) genSlide02(pptx);
+	genSlide03(pptx);
 	//if (window && window.location.href.indexOf("localhost:8000") > -1) genSlide03(pptx);
 }
 
 /**
- * SLIDE 1: Video and YouTube
+ * SLIDE 1: Various Video Formats
  * @param {PptxGenJS} pptx
  */
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Media" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
-	slide.addTable([[{ text: "Media: Misc Video Formats; YouTube", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Media: Various Video Formats", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	slide.addText("Video: m4v", { x: 0.5, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
 	slide.addMedia({
@@ -77,34 +78,47 @@ function genSlide01(pptx) {
 		type: "video",
 		path: IMAGE_PATHS.sample_avi.path,
 	});
-
-	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
-	if (typeof window !== "undefined" && $ && $("#chkYoutube").prop("checked")) {
-		slide.addText("Online: YouTube", { x: 9.4, y: 3.6, w: 3.0, h: 0.4, color: "0088CC" });
-		// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
-		slide.addMedia({ x: 9.4, y: 4.0, w: 3.0, h: 2.25, type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
-
-		slide.addText("**NOTE** YouTube videos will issue a content warning in older desktop PPT (they only work in PPT Online/Desktop v16+)", {
-			shape: pptx.shapes.RECTANGLE,
-			x: 0.0,
-			y: 7.0,
-			w: "100%",
-			h: 0.53,
-			fill: { color: "FFF000" },
-			align: "center",
-			fontSize: 12,
-		});
-	}
 }
 
 /**
- * SLIDE 2: Audio
+ * SLIDE 2: YouTube
  * @param {PptxGenJS} pptx
  */
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Media" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
-	slide.addTable([[{ text: "Media: Misc Audio Formats", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Media: YouTube Embed", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	slide.addText("Online: YouTube", { ...{ x: 0.5, y: 0.75, h: 5.6, w: 12.3 }, ...TITLE_STYLE });
+	// YouTube `link` is the embed URL (share > embed > copy URL like what you see below)
+	slide.addMedia({ x: 2.1, y: 1.2, h: 5.1, w: 9.1, type: "online", link: "https://www.youtube.com/embed/g36-noRtKR4", cover: COVER_YOUTUBE });
+	slide.addText(
+		[{ text: 'slide.addMedia({ type: "online", link: "https://www.youtube.com/embed/g36-noRtKR4" })' }],
+		{ ...BASE_CODE_OPTS, ...{ x: 0.5, y: 6.35, h: 0.4, w: 12.3 }, ...CODE_STYLE, ...{ align: 'center' } }
+	);
+
+	// FOOTER
+	slide.addText("Note: YouTube videos require newer versions of PowerPoint (v16+/M365). Older versions will show content warning messages.", {
+		shape: pptx.shapes.RECTANGLE,
+		x: 0.0,
+		y: 7.0,
+		w: "100%",
+		h: 0.53,
+		color: "BF9000",
+		fill: { color: "FFFCCC" },
+		align: "center",
+		fontSize: 12,
+	});
+}
+
+/**
+ * SLIDE 3: Various Audio Formats
+ * @param {PptxGenJS} pptx
+ */
+function genSlide03(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Media" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
+	slide.addTable([[{ text: "Media: Various Audio Formats", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	slide.addText("Audio: mp3", { x: 0.5, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
 	slide.addMedia({
@@ -139,7 +153,7 @@ function genSlide02(pptx) {
  * - filesize s/b ~24mb (the size of a single big-earth.mp4 file (17MB) plus other media files)
  * @param {PptxGenJS} pptx
  */
-function genSlide03(pptx) {
+function genSlide_Test_LargeMedia(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Media" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
 	slide.addTable([[{ text: "Media: Test: Large Files Only Added Once", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
