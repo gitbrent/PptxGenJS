@@ -14,13 +14,8 @@
  * - Image source: either `data` or `path` is required
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS } from "./enums.mjs";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS, BKGD_LTGRAY, COLOR_BLUE, CODE_STYLE, TITLE_STYLE } from "./enums.mjs";
 import { HYPERLINK_SVG, LOGO_STARLABS, SVG_BASE64, UNITE_PNG } from "./media.mjs";
-
-const BKGD_LTGRAY = "F1F1F1";
-const COLOR_BLUE = "0088CC";
-const CODE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 6, fontSize: 10, color: '696969' };
-const TITLE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 4, fontSize: 18, fontFace: "Segoe UI", color: COLOR_BLUE, valign: "top", align: "center" };
 
 export function genSlides_Image(pptx) {
 	pptx.addSection({ title: "Images" });
