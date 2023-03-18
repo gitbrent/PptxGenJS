@@ -542,6 +542,8 @@ export function addMediaDefinition (target: PresSlide, opt: MediaProps): void {
 		throw new Error('addMedia() error: either `data` or `path` are required!')
 	} else if (strData && !strData.toLowerCase().includes('base64,')) {
 		throw new Error('addMedia() error: `data` value lacks a base64 header! Ex: \'video/mpeg;base64,NMP[...]\')')
+	} else if (strCover && !strCover.toLowerCase().includes('base64,')) {
+		throw new Error('addMedia() error: `cover` value lacks a base64 header! Ex: \'data:image/png;base64,iV[...]\')')
 	}
 	// Online Video: requires `link`
 	if (strType === 'online' && !strLink) {
