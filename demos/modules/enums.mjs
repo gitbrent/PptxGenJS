@@ -73,6 +73,7 @@ export const IMAGE_PATHS = {
 	sample_wav: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.wav" },
 	big_earth_mp4: { path: "/common/media/earth-big.mp4" },
 	UPPERCASE: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/UPPERCASE.PNG" },
+	video_mp4_thumb: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/video-mp4-thumb.png" },
 };
 
 // LOREM IPSUM
