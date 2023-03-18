@@ -64,6 +64,7 @@ export const IMAGE_PATHS = {
 		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg",
 	},
 	tokyoSubway: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg" },
+	sample_aif: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.aif" },
 	sample_avi: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi" },
 	sample_m4v: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.m4v" },
 	sample_mov: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mov" },
