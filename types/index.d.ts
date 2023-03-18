@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.11.0
+// Type definitions for pptxgenjs 3.12.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -1083,80 +1083,80 @@ declare namespace PptxGenJS {
 		 * @default false
 		 */
 		bullet?:
-			| boolean
-			| {
-					/**
-					 * Bullet type
-					 * @default bullet
-					 */
-					type?: 'bullet' | 'number'
-					/**
-					 * Bullet character code (unicode)
-					 * @since v3.3.0
-					 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
-					 */
-					characterCode?: string
-					/**
-					 * Indentation (space between bullet and text) (points)
-					 * @since v3.3.0
-					 * @default 27 // DEF_BULLET_MARGIN
-					 * @example 10 // Indents text 10 points from bullet
-					 */
-					indent?: number
-					/**
-					 * Number type
-					 * @since v3.3.0
-					 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
-					 */
-					numberType?:
-						| 'alphaLcParenBoth'
-						| 'alphaLcParenR'
-						| 'alphaLcPeriod'
-						| 'alphaUcParenBoth'
-						| 'alphaUcParenR'
-						| 'alphaUcPeriod'
-						| 'arabicParenBoth'
-						| 'arabicParenR'
-						| 'arabicPeriod'
-						| 'arabicPlain'
-						| 'romanLcParenBoth'
-						| 'romanLcParenR'
-						| 'romanLcPeriod'
-						| 'romanUcParenBoth'
-						| 'romanUcParenR'
-						| 'romanUcPeriod'
-					/**
-					 * Number bullets start at
-					 * @since v3.3.0
-					 * @default 1
-					 * @example 10 // numbered bullets start with 10
-					 */
-					numberStartAt?: number
+		| boolean
+		| {
+			/**
+			 * Bullet type
+			 * @default bullet
+			 */
+			type?: 'bullet' | 'number'
+			/**
+			 * Bullet character code (unicode)
+			 * @since v3.3.0
+			 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+			 */
+			characterCode?: string
+			/**
+			 * Indentation (space between bullet and text) (points)
+			 * @since v3.3.0
+			 * @default 27 // DEF_BULLET_MARGIN
+			 * @example 10 // Indents text 10 points from bullet
+			 */
+			indent?: number
+			/**
+			 * Number type
+			 * @since v3.3.0
+			 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
+			 */
+			numberType?:
+			| 'alphaLcParenBoth'
+			| 'alphaLcParenR'
+			| 'alphaLcPeriod'
+			| 'alphaUcParenBoth'
+			| 'alphaUcParenR'
+			| 'alphaUcPeriod'
+			| 'arabicParenBoth'
+			| 'arabicParenR'
+			| 'arabicPeriod'
+			| 'arabicPlain'
+			| 'romanLcParenBoth'
+			| 'romanLcParenR'
+			| 'romanLcPeriod'
+			| 'romanUcParenBoth'
+			| 'romanUcParenR'
+			| 'romanUcPeriod'
+			/**
+			 * Number bullets start at
+			 * @since v3.3.0
+			 * @default 1
+			 * @example 10 // numbered bullets start with 10
+			 */
+			numberStartAt?: number
 
-					// DEPRECATED
+			// DEPRECATED
 
-					/**
-					 * Bullet code (unicode)
-					 * @deprecated v3.3.0 - use `characterCode`
-					 */
-					code?: string
-					/**
-					 * Margin between bullet and text
-					 * @since v3.2.1
-					 * @deplrecated v3.3.0 - use `indent`
-					 */
-					marginPt?: number
-					/**
-					 * Number to start with (only applies to type:number)
-					 * @deprecated v3.3.0 - use `numberStartAt`
-					 */
-					startAt?: number
-					/**
-					 * Number type
-					 * @deprecated v3.3.0 - use `numberType`
-					 */
-					style?: string
-			  }
+			/**
+			 * Bullet code (unicode)
+			 * @deprecated v3.3.0 - use `characterCode`
+			 */
+			code?: string
+			/**
+			 * Margin between bullet and text
+			 * @since v3.2.1
+			 * @deplrecated v3.3.0 - use `indent`
+			 */
+			marginPt?: number
+			/**
+			 * Number to start with (only applies to type:number)
+			 * @deprecated v3.3.0 - use `numberStartAt`
+			 */
+			startAt?: number
+			/**
+			 * Number type
+			 * @deprecated v3.3.0 - use `numberType`
+			 */
+			style?: string
+		}
 		/**
 		 * Text color
 		 * - `HexColor` or `ThemeColor`
@@ -1218,23 +1218,23 @@ declare namespace PptxGenJS {
 		 */
 		underline?: {
 			style?:
-				| 'dash'
-				| 'dashHeavy'
-				| 'dashLong'
-				| 'dashLongHeavy'
-				| 'dbl'
-				| 'dotDash'
-				| 'dotDashHeave'
-				| 'dotDotDash'
-				| 'dotDotDashHeavy'
-				| 'dotted'
-				| 'dottedHeavy'
-				| 'heavy'
-				| 'none'
-				| 'sng'
-				| 'wavy'
-				| 'wavyDbl'
-				| 'wavyHeavy'
+			| 'dash'
+			| 'dashHeavy'
+			| 'dashLong'
+			| 'dashLongHeavy'
+			| 'dbl'
+			| 'dotDash'
+			| 'dotDashHeave'
+			| 'dotDotDash'
+			| 'dotDotDashHeavy'
+			| 'dotted'
+			| 'dottedHeavy'
+			| 'heavy'
+			| 'none'
+			| 'sng'
+			| 'wavy'
+			| 'wavyDbl'
+			| 'wavyHeavy'
 			color?: Color
 		}
 		/**
@@ -1302,6 +1302,13 @@ declare namespace PptxGenJS {
 		 * @default false
 		 */
 		rounding?: boolean
+		/**
+		 * Shadow Props
+		 * - MS-PPT > Format Picture > Shadow
+		 * @example
+		 * { type: 'outer', color: '000000', opacity: 0.5, blur: 20,  offset: 20, angle: 270 }
+		 */
+		shadow?: ShadowProps
 		/**
 		 * Image sizing options
 		 */
@@ -1903,6 +1910,8 @@ declare namespace PptxGenJS {
 	*/
 
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+	export type ChartLineCap = 'flat' | 'round' | 'square'
+
 	export interface OptsChartData {
 		/**
 		 * category labels
@@ -1932,6 +1941,12 @@ declare namespace PptxGenJS {
 		//color?: string // TODO: WIP: (Pull #727)
 	}
 	export interface OptsChartGridLine {
+		/**
+		 * MS-PPT > Chart format > Format Major Gridlines > Line > Cap type
+		 * - line cap type
+		 * @default flat
+		 */
+		cap?: ChartLineCap
 		/**
 		 * Gridline color (hex)
 		 * @example 'FF3399'
@@ -2181,6 +2196,16 @@ declare namespace PptxGenJS {
 		holeSize?: number
 	}
 	export interface IChartPropsChartLine {
+		/**
+		 * MS-PPT > Chart format > Format Data Series > Line > Cap type
+		 * - line cap type
+		 * @default flat
+		 */
+		lineCap?: ChartLineCap
+		/**
+		 * Line dash type
+		 * @default solid
+		 */
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 		/**
 		 * MS-PPT > Chart format > Format Data Series > Marker Options > Built-in > Type
@@ -2291,21 +2316,21 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartOpts
 		extends IChartPropsAxisCat,
-			IChartPropsAxisSer,
-			IChartPropsAxisVal,
-			IChartPropsBase,
-			IChartPropsChartBar,
-			IChartPropsChartDoughnut,
-			IChartPropsChartLine,
-			IChartPropsChartPie,
-			IChartPropsChartRadar,
-			IChartPropsDataLabel,
-			IChartPropsDataTable,
-			IChartPropsLegend,
-			IChartPropsTitle,
-			ObjectNameProps,
-			OptsChartGridLine,
-			PositionProps {
+		IChartPropsAxisSer,
+		IChartPropsAxisVal,
+		IChartPropsBase,
+		IChartPropsChartBar,
+		IChartPropsChartDoughnut,
+		IChartPropsChartLine,
+		IChartPropsChartPie,
+		IChartPropsChartRadar,
+		IChartPropsDataLabel,
+		IChartPropsDataTable,
+		IChartPropsLegend,
+		IChartPropsTitle,
+		ObjectNameProps,
+		OptsChartGridLine,
+		PositionProps {
 		/**
 		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
@@ -2395,15 +2420,15 @@ declare namespace PptxGenJS {
 			| { rect: {} }
 			| { text: TextProps }
 			| {
-					placeholder: {
-						options: PlaceholderProps
-						/**
-						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-						 */
-						text?: string
-					}
-			  }
+				placeholder: {
+					options: PlaceholderProps
+					/**
+					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+					 */
+					text?: string
+				}
+			}
 		)[]
 
 		/**
@@ -2510,6 +2535,10 @@ declare namespace PptxGenJS {
 		 * Slide number options
 		 */
 		slideNumber: SlideNumberProps
+		/**
+		 * New slides added by an auto paged table
+		 */
+		newAutoPagedSlides: PresSlide[]
 		/**
 		 * Add chart to Slide
 		 * @param {CHART_NAME|IChartMulti[]} type - chart type

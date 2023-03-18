@@ -1,16 +1,11 @@
 # PptxGenJS Release Checklist
 
-- [PptxGenJS Release Checklist](#pptxgenjs-release-checklist)
-	- [Build Library, Update Files](#build-library-update-files)
-	- [Run Platform Tests](#run-platform-tests)
-		- [Browser Test](#browser-test)
-		- [Node Test](#node-test)
-		- [React/TypeScript](#reacttypescript)
-	- [Release New Version](#release-new-version)
-		- [Pre-Release Check](#pre-release-check)
-		- [GitHub](#github)
-		- [NPM](#npm)
-	- [Post-Release Tasks](#post-release-tasks)
+## Beta Releases
+
+1. Update `package.json` version (ex: `3.12.0-beta.0`)
+2. Update `src/pptxgen.ts` version
+3. Build library: npm scripts > `ship`
+4. `npm publish --tag beta`
 
 ## Build Library, Update Files
 

@@ -47,8 +47,7 @@ import {
 	TextPropsOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts } from './gen-utils'
-import { correctShadowOptions } from './gen-xml'
+import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts, correctShadowOptions } from './gen-utils'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter = 0
@@ -138,6 +137,10 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
 		if (glOpts.style && !['solid', 'dash', 'dot'].includes(glOpts.style)) {
 			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.')
 			delete glOpts.style
+		}
+		if (glOpts.cap && !['flat', 'square', 'round'].includes(glOpts.cap)) {
+			console.warn('Warning: chart.gridLine.cap options: `flat`, `square`, `round`.')
+			delete glOpts.cap
 		}
 	}
 
@@ -449,6 +452,7 @@ export function addImageDefinition (target: PresSlide, opt: ImageProps): void {
 		flipH: opt.flipH || false,
 		transparency: opt.transparency || 0,
 		objectName,
+		shadow: correctShadowOptions(opt.shadow),
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -538,6 +542,8 @@ export function addMediaDefinition (target: PresSlide, opt: MediaProps): void {
 		throw new Error('addMedia() error: either `data` or `path` are required!')
 	} else if (strData && !strData.toLowerCase().includes('base64,')) {
 		throw new Error('addMedia() error: `data` value lacks a base64 header! Ex: \'video/mpeg;base64,NMP[...]\')')
+	} else if (strCover && !strCover.toLowerCase().includes('base64,')) {
+		throw new Error('addMedia() error: `cover` value lacks a base64 header! Ex: \'data:image/png;base64,iV[...]\')')
 	}
 	// Online Video: requires `link`
 	if (strType === 'online' && !strLink) {
@@ -724,7 +730,7 @@ export function addTableDefinition (
 	presLayout: PresLayout,
 	addSlide: (options?: AddSlideProps) => PresSlide,
 	getSlide: (slideNumber: number) => PresSlide
-): void {
+): PresSlide[] {
 	const slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
 	const opt: TableProps = options && typeof options === 'object' ? options : {}
 	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.table).length}`
@@ -928,6 +934,9 @@ export function addTableDefinition (
 		})
 	})
 
+	// If autoPage = true, we need to return references to newly created slides if any
+	const newAutoPagedSlides: PresSlide[] = []
+
 	// STEP 6: Auto-Paging: (via {options} and used internally)
 	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
 	if (opt && !opt.autoPage) {
@@ -962,9 +971,13 @@ export function addTableDefinition (
 
 				// Add rows to new slide
 				newSlide.addTable(slide.rows, Object.assign({}, opt))
+
+				// Add reference to the new slide so it can be returned, but don't add the first one because the user already has a reference to that one.
+				if (idx > 0) newAutoPagedSlides.push(newSlide)
 			}
 		})
 	}
+	return newAutoPagedSlides
 }
 
 /**
