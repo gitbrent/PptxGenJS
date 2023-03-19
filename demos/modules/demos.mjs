@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.6.0
- * BLD.: 20210403
+ * VER.: 3.12.0
+ * BLD.: 20230319
  */
 
 import { COMPRESS, CUST_NAME } from "../modules/enums.mjs";
@@ -38,6 +38,8 @@ export function execGenSlidesFuncs(type, pptxgen) {
 	pptx.author = "Brent Ely";
 	pptx.company = CUST_NAME;
 	pptx.revision = "15";
+	// FYI: use `headFontFace` and/or `bodyFontFace` to set the default font for the entire presentation (including slide Masters)
+	// pptx.theme = { bodyFontFace: "Arial" };
 
 	// STEP 3: Set layout
 	pptx.layout = "LAYOUT_WIDE";
