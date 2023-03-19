@@ -445,6 +445,20 @@ export interface ObjectNameProps {
 	 */
 	objectName?: string
 }
+export interface ThemeProps {
+	/**
+	 * Headings font face name
+	 * @example 'Arial Narrow'
+	 * @default 'Calibri Light'
+	 */
+	headFontFace?: string
+	/**
+	 * Body font face name
+	 * @example 'Arial'
+	 * @default 'Calibri'
+	 */
+	bodyFontFace?: string
+}
 
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
@@ -1835,6 +1849,7 @@ export interface PresentationProps {
 	 */
 	rtlMode: boolean
 	subject: string
+	theme: ThemeProps
 	title: string
 }
 // PRIVATE interface
