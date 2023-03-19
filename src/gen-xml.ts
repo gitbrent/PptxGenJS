@@ -1505,7 +1505,7 @@ export function makeXmlApp (slides: PresSlide[], company: string): string {
 /**
  * Creates `docProps/core.xml`
  * @param {string} title - metadata data
- * @param {string} company - metadata data
+ * @param {string} subject - metadata data
  * @param {string} author - metadata value
  * @param {string} revision - metadata value
  * @returns XML
