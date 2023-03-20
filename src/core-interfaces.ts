@@ -164,6 +164,10 @@ export interface ShadowProps {
 	 * @example 'FF3399'
 	 */
 	color?: HexColor
+	/**
+	 * whether to rotate shadow with shape
+	 * @default false
+	 */
 	rotateWithShape?: boolean
 }
 // used by: shape, table, text
