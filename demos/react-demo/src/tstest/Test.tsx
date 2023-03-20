@@ -395,7 +395,7 @@ function testMethod_Media(pptx: pptxgen) {
 		type: "video",
 		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi",
 	});
-	slide.addMedia({ x: 9.4, y: 4.0, w: 3.0, h: 2.25, type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
+	slide.addMedia({ x: 9.4, y: 4.0, w: 4.5, h: 2.5, type: "online", link: "https://www.youtube.com/embed/g36-noRtKR4" });
 }
 function testMethod_Shape(pptx: pptxgen) {
 	let slide = pptx.addSlide();
