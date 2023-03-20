@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.12.0
- * BLD.: 20230122
+ * BLD.: 20230319
  */
 
 /**
@@ -209,6 +209,9 @@ function genSlide02(pptx) {
 
 	// TOP-RIGHT: relative-path test
 	// NOTE: Node will throw exception when using "/" path
+	// FIXME:
+	console.log(`${typeof window === "undefined" ? ".." : ""}${IMAGE_PATHS.ccLicenseComp.path}`);
+	// WIP: ^^^
 	slide.addImage({
 		path: `${typeof window === "undefined" ? ".." : ""}${IMAGE_PATHS.ccLicenseComp.path}`,
 		x: 8.57, y: 0.6, h: 2.52, w: 4.26
@@ -307,7 +310,7 @@ function genSlide05(pptx) {
 	slide.addText(
 		[{ text: JSON.stringify(shadow1, '', 2) }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 1.0, h: 1.0, w: 6 }, ...CODE_STYLE }
 	);
-	slide.addImage({ ...{ path: IMAGE_PATHS.ccLicenseComp.path, x: 7.0, y: 0.6, h: 1.4, w: 2.31 }, ...shadow1 });
+	slide.addImage({ ...{ path: IMAGE_PATHS.tokyoSubway.path, x: 7.0, y: 0.6, h: 1.4, w: 2.31 }, ...shadow1 });
 
 	// type:inner
 	const shadow2 = { shadow: { type: 'inner', opacity: 0.5, blur: 20, color: '000000', offset: 20, angle: 320 } };
@@ -315,7 +318,7 @@ function genSlide05(pptx) {
 	slide.addText(
 		[{ text: JSON.stringify(shadow2, '', 2) }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 2.85, h: 1.7, w: 6 }, ...CODE_STYLE }
 	);
-	slide.addImage({ ...{ path: IMAGE_PATHS.ccLicenseComp.path, x: 7.0, y: 2.45, h: 2.1, w: 3.47 }, ...shadow2 });
+	slide.addImage({ ...{ path: IMAGE_PATHS.tokyoSubway.path, x: 7.0, y: 2.45, h: 2.1, w: 3.47 }, ...shadow2 });
 
 	// type:outer
 	const shadow3 = { shadow: { type: 'outer', opacity: 0.35, blur: 20, color: '000000', offset: 20, angle: 320 } };
@@ -323,5 +326,5 @@ function genSlide05(pptx) {
 	slide.addText(
 		[{ text: JSON.stringify(shadow3, '', 2) }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 5.4, h: 1.7, w: 6 }, ...CODE_STYLE }
 	);
-	slide.addImage({ ...{ path: IMAGE_PATHS.ccLicenseComp.path, x: 7.0, y: 5.0, h: 2.1, w: 3.47 }, ...shadow3 });
+	slide.addImage({ ...{ path: IMAGE_PATHS.tokyoSubway.path, x: 7.0, y: 5.0, h: 2.1, w: 3.47 }, ...shadow3 });
 }
