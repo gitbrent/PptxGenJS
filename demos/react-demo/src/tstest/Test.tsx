@@ -35,7 +35,7 @@ export function testMainMethods() {
 		margin: [0.5, 0.25, 1.0, 0.25],
 		slideNumber: { x: 0.6, y: 7.0, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: pptx.AlignH.center },
 		objects: [
-			{ rect: { x: 0.0, y: "90%", w: "100%", h: 0.75, fill: "003b75" } },
+			{ rect: { x: 0.0, y: "90%", w: "100%", h: 0.75, fill: { color: "003b75" } } },
 			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } },
 			{
 				text: {
