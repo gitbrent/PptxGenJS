@@ -20,7 +20,7 @@ module.exports = {
 		project: ["./tsconfig.json"],
 	},
 	plugins: ["react", "@typescript-eslint"],
-	ignorePatterns: [".eslintrc.js", "*.mjs", "demos/*"],
+	ignorePatterns: [".eslintrc.js", "*.mjs", "demos/*", "index.d.ts"],
 	rules: {
 		"@typescript-eslint/indent": ["error", "tab"],
 		"@typescript-eslint/prefer-nullish-coalescing": 0, // "warn", too many items!
