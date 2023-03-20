@@ -43,7 +43,7 @@ npm run demo-stream
 Test
 
 1. Ensure newest `dist/pptxgen.es.js` and `types/index.d.ts` under local node_modules
-2. Update `demos/react-demo/package.json` version
+2. Update `demos/react-demo/package.json` version (note, may need to update package-lock.json)
 3. Open `demos/react-demo/src/tstest/Test.tsx`, check for typescript errors/warnings: use auto-complete, "pptxgen.ChartType." etc.
 
 ```bash
@@ -71,7 +71,7 @@ Build
 1. Update: `demos/browser/index.html` head to use "RELEASE (CDN)"
 2. Check: Is `version` updated in package.json?
 3. Check: Is `version` updated in src/pptxgen.ts?
-4. Check: Is `types/index.d.ts` file updated?
+4. Check: Is `types/index.d.ts` version in header updated?
 
 ### GitHub
 
