@@ -74,3 +74,16 @@ Notes:
 
 * You may also need to set an RTL lang value such as `lang='he'` as the default lang is 'EN-US'
 * See [Issue#600](https://github.com/gitbrent/PptxGenJS/issues/600) for more
+
+## Default Font
+
+### Default Font Options
+
+Use the `headFontFace` and `bodyFontFace` properties to set the default font used in the presentation.
+
+### Default Font Examples
+
+```javascript
+pptx.theme = { headFontFace: "Arial Light" };
+pptx.theme = { bodyFontFace: "Arial" };
+```
