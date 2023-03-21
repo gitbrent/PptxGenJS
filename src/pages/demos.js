@@ -66,7 +66,7 @@ export default () => {
 				<div className="row g-5 mb-5">
 					<div className="col-12 col-md-6">
 						<div className="bgTheme h-100 p-4">
-							<h3 className="mb-3">Complete Library Demo</h3>
+							<h3>Complete Library Demo</h3>
 							<p>
 								Function demos for every feature are available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/browser">browser demo</a>,
 								which is hosted online below. Over 70 slides worth of various PowerPoint objects can be produced.
@@ -78,9 +78,9 @@ export default () => {
 					</div>
 					<div className="col-12 col-md-6">
 						<div className="bgTheme h-100 p-4">
-							<h4>React App Demo</h4>
+							<h3>React App Demo</h3>
 							<p>
-								There is a complete react application available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo">demos/react</a>{" "}
+								There is a functional react application (based on CRA) available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo">demos/react</a>{" "}
 								folder. The latest build can be run as a demo below.
 							</p>
 							<button type="button" className="btn btn-primary" onClick={() => window.open("/PptxGenJS/demo/react/index.html", "_blank")}>
