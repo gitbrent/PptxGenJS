@@ -52,7 +52,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 
 ## Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
+### Position/Size Props ([PositionProps](./types.md#position-props-positionprops))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -184,6 +184,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 | `dataLabelPosition`       | string      | `bestFit`   | data label position                          | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t`                                |
 | `dataNoEffects`           | boolean     | `false`     | whether to omit effects on data              | (_Doughnut/Pie Charts_) `true` or `false`                                                |
 | `displayBlanksAs`         | string      | `span`      | whether to draw line or gap                  | (_Line Charts_) `span` or `gap`                                                          |
+| `lineCap`                 | string      |             | line cap style                               | `flat`, `round`, `square`                                                                |
 | `lineDash`                | string      | `solid`     | (_Bar/Scatter Chart_) border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
 | `lineDataSymbol`          | string      | `circle`    | symbol used on line marker                   | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle`                               |
 | `lineDataSymbolSize`      | number      | `6`         | size of line data symbol                     | 1-256. Ex: `{ lineDataSymbolSize:12 }`                                                   |
@@ -191,7 +192,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 | `lineDataSymbolLineColor` | string      | `000000`    | color of data symbol line                    | hex color code. Ex: `{ lineDataSymbolLineColor:'0088CC' }`                               |
 | `lineSize`                | number      | `2`         | thickness of data line (0 is no line)        | 0-256. Ex: `{ lineSize: 1 }`                                                             |
 | `lineSmooth`              | boolean     | `false`     | whether to smooth lines                      | `true` or `false` - Ex: `{ lineSmooth: true }`                                           |
-| `shadow`                  | ShadowProps |             | data element shadow options                  | `none` or [`ShadowProps`](/PptxGenJS/docs/types#shadow-props-shadowprops)                |
+| `shadow`                  | ShadowProps |             | data element shadow options                  | `none` or [`ShadowProps`](./types.md#shadow-props-shadowprops)                           |
 
 ### 3D Bar Chart (`IChartPropsChartBar`), Series Axis (`IChartPropsDataTable`)
 
