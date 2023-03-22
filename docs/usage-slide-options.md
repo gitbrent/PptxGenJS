@@ -5,53 +5,28 @@ title: Slide Properties
 
 ## Slide Properties
 
-| Option       | Type            | Default  | Description             | Possible Values                                                                                                                                                                      |
-| :----------- | :-------------- | :------- | :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `background` | BackgroundProps | `FFFFFF` | background color/images | add background color or image [DataOrPathProps](/PptxGenJS/docs/types#datapath-props-dataorpathprops) and/or [ShapeFillProps](/PptxGenJS/docs/types#shape-fill-props-shapefillprops) |
-| `color`      | string          | `000000` | default text color      | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes).                                                                                                                     |
-| `hidden`     | boolean         | `false`  | whether slide is hidden | Ex: `slide.hidden = true`                                                                                                                                                            |
+| Option               | Type                                                                 | Default  | Description                      | Possible Values                                                                                                                                                    |
+| :------------------- | :------------------------------------------------------------------- | :------- | :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `background`         | `BackgroundProps`                                                    | `FFFFFF` | background color/images          | add background color or image [`DataOrPathProps`](./types.md#datapath-props-dataorpathprops) and/or [`ShapeFillProps`](./types.md#shape-fill-props-shapefillprops) |
+| `color`              | string                                                               | `000000` | default text color               | hex color or [scheme color](./shapes-and-schemes/).                                                                                                                |
+| `hidden`             | boolean                                                              | `false`  | whether slide is hidden          | Ex: `slide.hidden = true`                                                                                                                                          |
+| `newAutoPagedSlides` | PresSlide[]                                                          |          | all slides created by autopaging | Useful for placeholder work on auto=pages slides (see [#1133](https://github.com/gitbrent/PptxGenJS/pull/1133))                                                    |
+| `slideNumber`        | [`SlideNumberProps`](./types.md#slide-number-props-slidenumberprops) |          | slide number props               | (see exmaples below)                                                                                                                                               |
 
-### Examples
+### Background/Foreground Examples
 
 ```javascript
+// EX: Use several methods to set a background
 slide.background = { color: "F1F1F1" }; // Solid color
 slide.background = { color: "FF3399", transparency: 50 }; // hex fill color with transparency of 50%
 slide.background = { data: "image/png;base64,ABC[...]123" }; // image: base64 data
 slide.background = { path: "https://some.url/image.jpg" }; // image: url
-
-slide.color = "696969"; // Set slide default font color
 ```
-
-## Slide Numbers
-
-### Syntax
 
 ```javascript
-slide.slideNumber = { x: 1.0, y: "90%" };
+// EX: Set slide default font color
+slide.color = "696969";
 ```
-
-## Properties
-
-### Position Props ([PositionProps](/PptxGenJS/docs/types#position-props))
-
-| Option | Type   | Default | Description            | Possible Values                              |
-| :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
-| `x`    | number | `1.0`   | hor location (inches)  | 0-n                                          |
-| `x`    | string |         | hor location (percent) | 'n%'. (Ex: `{x:'50%'}` middle of the Slide)  |
-| `y`    | number | `1.0`   | ver location (inches)  | 0-n                                          |
-| `y`    | string |         | ver location (percent) | 'n%'. (Ex: `{y:'50%'}` middle of the Slide)  |
-| `w`    | number | `1.0`   | width (inches)         | 0-n                                          |
-| `w`    | string |         | width (percent)        | 'n%'. (Ex: `{w:'50%'}` 50% the Slide width)  |
-| `h`    | number | `1.0`   | height (inches)        | 0-n                                          |
-| `h`    | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
-
-### Slide Number Props (`SlideNumberProps`)
-
-| Option     | Type   | Default  | Description | Possible Values                                                  |
-| :--------- | :----- | :------- | :---------- | :--------------------------------------------------------------- |
-| `color`    | string | `000000` | color       | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). |
-| `fontFace` | string |          | font face   | any available font. Ex: `{ fontFace:'Arial' }`                   |
-| `fontSize` | number |          | font size   | 8-256. Ex: `{ fontSize:12 }`                                     |
 
 ### Slide Number Examples
 
