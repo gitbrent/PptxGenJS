@@ -42,7 +42,7 @@ It takes CPU time to read and encode images! The more images you include and the
 
 ## Base Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
+### Position/Size Props ([PositionProps](./types.md#datapath-props-dataorpathprops))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -55,21 +55,21 @@ It takes CPU time to read and encode images! The more images you include and the
 | `h`    | number | `1.0`   | height (inches)        | 0-n                                          |
 | `h`    | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
-### Data/Path Props ([DataOrPathProps](/PptxGenJS/docs/types#datapath-props-dataorpathprops))
+### Data/Path Props ([DataOrPathProps](./types.md#datapath-props-dataorpathprops))
 
 | Option | Type   | Default | Description         | Possible Values                                                            |
 | :----- | :----- | :------ | :------------------ | :------------------------------------------------------------------------- |
 | `data` | string |         | image data (base64) | base64-encoded image string. (either `data` or `path` is required)         |
 | `path` | string |         | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
-### Image Props ([ImageProps](/PptxGenJS/docs/types#image-props-imageprops))
+### Image Props ([ImageProps](./types.md#image-props-imageprops))
 
 | Option         | Type                                                                   | Default | Description                 | Possible Values                                       |
 | :------------- | :--------------------------------------------------------------------- | :------ | :-------------------------- | :---------------------------------------------------- |
 | `altText`      | string                                                                 |         | alt text value              | description of what image shows                       |
 | `flipH`        | boolean                                                                | `false` | Flip horizontally?          | `true`, `false`                                       |
 | `flipV`        | boolean                                                                | `false` | Flip vertical?              | `true`, `false`                                       |
-| `hyperlink`    | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops) |         | add hyperlink               | object with `url` or `slide`                          |
+| `hyperlink`    | [HyperlinkProps](./types.md#hyperlink-props-hyperlinkprops) |         | add hyperlink               | object with `url` or `slide`                          |
 | `placeholder`  | string                                                                 |         | image placeholder           | Placeholder location: `title`, `body`                 |
 | `rotate`       | integer                                                                | `0`     | rotation (degrees)          | Rotation degress: `0`-`359`                           |
 | `rounding`     | boolean                                                                | `false` | image rounding              | Shapes an image into a circle                         |
@@ -98,22 +98,34 @@ The `sizing` option provides cropping and scaling an image to a specified area. 
 
 - If you specify an area size larger than the image for the `contain` and `cover` type, then the image will be stretched, not shrunken.
 - In case of the `crop` option, if the specified area reaches out of the image, then the covered empty space will be a part of the image.
-- When the `sizing` property is used, its `w` and `h` values represent the effective image size. For example, in the following snippet, width and height of the image will both equal to 2 inches and its top-left corner will be located at [1 inch, 1 inch]:
+- When the `sizing` property is used, its `w` and `h` values represent the effective image size. For example, in the following snippet, width and height of the image will both equal to 2 inches and its top-left corner will be located at `[1 inch, 1 inch]`:
+
+## Shadow Properties (`ShadowProps`)
+
+The [ShadowProps](./types.md#shadow-props-shadowprops) property adds a shadow to an image.
 
 ## Examples
 
-### Image Types
+### Image Types Examples
 
-![Image Types](./assets/ex-image-types.gif)
+![Image Types Examples](./assets/ex-image-types.gif)
 
-### From URL
+### Data/Path Examples
 
-![Image Sizing Examples](./assets/ex-image-paths.png)
+![Image Paths Examples](./assets/ex-image-paths.png)
 
-### Sizing Options
+### Rotate Examples
+
+![Image Rotate Examples](./assets/ex-image-rotate.png)
+
+### Shadow Examples
+
+![Image Shadow Examples](./assets/ex-image-shadow.png)
+
+### Sizing Examples
 
 ![Image Sizing Examples](./assets/ex-image-sizing.png)
 
-## Samples
+## All Image Samples
 
-Sample code: [demos/modules/demo_image.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_image.mjs)
+All sample javascript code: [demos/modules/demo_image.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_image.mjs)
