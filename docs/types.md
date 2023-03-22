@@ -80,7 +80,7 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 
 | Name           | Type   | Default  | Description  | Possible Values                                     |
 | :------------- | :----- | :------- | :----------- | :-------------------------------------------------- |
-| `color`        | string | `000000` | fill color   | hex color or [scheme color](./shapes-and-schemes/). |
+| `color`        | string | `000000` | fill color   | hex color or [scheme color](./shapes-and-schemes.md). |
 | `transparency` | number | `0`      | transparency | transparency percentage: 0-100                      |
 | `type`         | string | `solid`  | fill type    | shape fill type                                     |
 
@@ -89,7 +89,7 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 | Name             | Type   | Default | Description         | Possible Values                                                                          |
 | :--------------- | :----- | :------ | :------------------ | :--------------------------------------------------------------------------------------- |
 | `beginArrowType` | string |         | line ending         | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                              |
-| `color`          | string |         | line color          | hex color or [scheme color](./shapes-and-schemes/). Ex: `{line:'0088CC'}`                |
+| `color`          | string |         | line color          | hex color or [scheme color](./shapes-and-schemes.md). Ex: `{line:'0088CC'}`                |
 | `dashType`       | string | `solid` | line dash style     | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
 | `endArrowType`   | string |         | line heading        | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                              |
 | `transparency`   | number | `0`     | line transparency   | Percentage: 0-100                                                                        |
@@ -99,7 +99,7 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 
 | Option     | Type   | Default  | Description | Possible Values                                     |
 | :--------- | :----- | :------- | :---------- | :-------------------------------------------------- |
-| `color`    | string | `000000` | color       | hex color or [scheme color](./shapes-and-schemes/). |
+| `color`    | string | `000000` | color       | hex color or [scheme color](./shapes-and-schemes.md). |
 | `fontFace` | string |          | font face   | any available font. Ex: `{ fontFace:'Arial' }`      |
 | `fontSize` | number |          | font size   | 8-256. Ex: `{ fontSize:12 }`                        |
 
@@ -107,5 +107,5 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 
 | Name    | Type   | Description     | Possible Values                                                                                                                                                                                       |
 | :------ | :----- | :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color` | string | underline color | hex color or [scheme color](./shapes-and-schemes/).                                                                                                                                                   |
+| `color` | string | underline color | hex color or [scheme color](./shapes-and-schemes.md).                                                                                                                                                   |
 | `style` | string | underline style | `dash`, `dashHeavy`, `dashLong`, `dashLongHeavy`, `dbl`, `dotDash`, `dotDashHeave`, `dotDotDash`, `dotDotDashHeavy`, `dotted`, `dottedHeavy`, `heavy`, `none`, `sng`, `wavy` , `wavyDbl`, `wavyHeavy` |
