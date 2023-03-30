@@ -114,9 +114,9 @@ function parseTextToLines (cell: TableCell, colWidth: number, verbose?: boolean)
 	}
 
 	// STEP 3: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text, add its `options`, etc.)
+	let lineCells: TableCell[] = []
 	inputLines1.forEach(line => {
 		line.forEach(cell => {
-			const lineCells: TableCell[] = []
 			const cellTextStr = String(cell.text) // force convert to string (compiled JS is better with this than a cast)
 			const lineWords = cellTextStr.split(' ')
 
@@ -127,9 +127,15 @@ function parseTextToLines (cell: TableCell, colWidth: number, verbose?: boolean)
 				lineCells.push({ _type: SLIDE_OBJECT_TYPES.tablecell, text: word + (idx + 1 < lineWords.length ? ' ' : ''), options: cellProps })
 			})
 
-			inputLines2.push(lineCells)
 		})
+		if(lineCells.length > 0 && lineCells[lineCells.length - 1].options?.breakLine) {
+			inputLines2.push(lineCells)
+			lineCells = []
+		}
 	})
+	if(lineCells.length > 0) {
+		inputLines2.push(lineCells);
+	}
 	if (verbose) {
 		console.log(`[3/4] inputLines2 (${inputLines2.length})`)
 		inputLines2.forEach(line => console.log(`[3/4] line: ${JSON.stringify(line)}`))
