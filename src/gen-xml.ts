@@ -828,6 +828,7 @@ function slideObjectRelationsToXml (slide: PresSlide | SlideLayout, defaultRels:
  * @return {string} XML
  */
 function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault: boolean): string {
+	let strXmlBulletColor = ''
 	let strXmlBullet = ''
 	let strXmlLnSpc = ''
 	let strXmlParaSpc = ''
@@ -922,6 +923,14 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 				}" indent="-${bulletMarL}"`
 				strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES.DEFAULT}"/>`
 			}
+			if(textObj.options.bullet.color) {
+				// check if color is hex
+				if (!/^([0-9A-Fa-f]{3}){1,2}$/.test(textObj.options.bullet.color)) {
+					console.warn('Warning: `bullet.color should be a hex code (ex: FF0000)`!');
+					textObj.options.bullet.color = '000000';
+				}
+				strXmlBulletColor = `<a:buClr><a:srgbClr val="${textObj.options.bullet.color}" /></a:buClr>`
+			}
 		} else if (textObj.options.bullet) {
 			paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
 			}" indent="-${bulletMarL}"`
@@ -940,7 +949,7 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet + strXmlTabStops
+		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBulletColor + strXmlBullet + strXmlTabStops
 		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
 		paragraphPropXml += '</' + tag + '>'
 	}

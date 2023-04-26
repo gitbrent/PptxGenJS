@@ -316,7 +316,7 @@ function genSlide03(pptx) {
 			{ text: "`bullet: { code: '25BA' }`", options: { fontSize: 18, color: pptx.colors.ACCENT1, bullet: { code: "25BA" } } },
 			{ text: "`bullet: { code: '25D1' }`", options: { fontSize: 18, color: pptx.colors.ACCENT5, bullet: { code: "25D1" } } },
 			{ text: "`bullet: { code: '25CC' }`", options: { fontSize: 18, color: pptx.colors.ACCENT6, bullet: { code: "25CC" } } },
-			{ text: "Mix and... ", options: { fontSize: 24, color: "FF0000", bullet: { code: "25BA" } } },
+			{ text: "Mix and... ", options: { fontSize: 24, color: "FF0000", bullet: { code: "25BA", color: "0000FF" } } },
 			{ text: "match formatting as well.", options: { fontSize: 16, color: "00CD00" } },
 		],
 		{ x: 7.0, y: 5.5, w: 5.75, h: 1.5, fontFace: "Arial", fill: pptx.colors.BACKGROUND2 }
