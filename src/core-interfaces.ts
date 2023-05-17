@@ -392,6 +392,15 @@ export interface TextBaseProps {
 	 */
 	tabStops?: Array<{ position: number, alignment?: 'l' | 'r' | 'ctr' | 'dec' }>
 	/**
+	 * text direction
+	 * `horz` = horizontal
+	 * `vert` = rotate 90^
+	 * `vert270` = rotate 270^
+	 * `wordArtVert` = stacked
+	 * @default 'horz'
+	 */
+	textDirection?: 'horz' | 'vert' | 'vert270' | 'wordArtVert'
+	/**
 	 * Transparency (percent)
 	 * - MS-PPT > Format Shape > Text Options > Text Fill & Outline > Text Fill > Transparency
 	 * - range: 0-100
