@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0 @ 2023-03-20T03:12:31.367Z */
+/* PptxGenJS 3.13.0-beta.0 @ 2023-05-17T03:15:58.392Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5296,13 +5296,14 @@ function slideObjectToXml(slide) {
                         // 2: OPTIONS: Build/set cell options
                         var cellOpts = cell.options || {};
                         cell.options = cellOpts;
-                        ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function (name) {
+                        ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'textDirection', 'underline', 'valign'].forEach(function (name) {
                             if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] !== 0)
                                 cellOpts[name] = objTabOpts[name];
                         });
                         var cellValign = cellOpts.valign
                             ? " anchor=\"".concat(cellOpts.valign.replace(/^c$/i, 'ctr').replace(/^m$/i, 'ctr').replace('center', 'ctr').replace('middle', 'ctr').replace('top', 't').replace('btm', 'b').replace('bottom', 'b'), "\"")
                             : '';
+                        var cellTextDir = (cellOpts.textDirection && cellOpts.textDirection !== 'horz') ? " vert=\"".concat(cellOpts.textDirection, "\"") : '';
                         var fillColor = ((_d = (_c = cell._optImp) === null || _c === void 0 ? void 0 : _c.fill) === null || _d === void 0 ? void 0 : _d.color)
                             ? cell._optImp.fill.color
                             : ((_e = cell._optImp) === null || _e === void 0 ? void 0 : _e.fill) && typeof cell._optImp.fill === 'string'
@@ -5326,7 +5327,7 @@ function slideObjectToXml(slide) {
                         }
                         // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 4: Set CELL content and properties ==================================
-                        strXml += "<a:tc".concat(cellSpanAttrStr, ">").concat(genXmlTextBody(cell), "<a:tcPr").concat(cellMarginXml).concat(cellValign, ">");
+                        strXml += "<a:tc".concat(cellSpanAttrStr, ">").concat(genXmlTextBody(cell), "<a:tcPr").concat(cellMarginXml).concat(cellValign).concat(cellTextDir, ">");
                         // strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
                         // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -6706,7 +6707,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0';
+var VERSION = '3.13.0-beta.0-20230416-2140';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
