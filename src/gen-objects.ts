@@ -735,6 +735,15 @@ export function addTableDefinition (
 	const opt: TableProps = options && typeof options === 'object' ? options : {}
 	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.table).length}`
 
+	if (opt.placeholder && target._slideLayout && target._slideLayout._slideObjects) {
+		// Placeholder
+		let placeHold = target._slideLayout._slideObjects.filter(
+			item => item._type == 'placeholder' && item.options && item.options.placeholder && item.options.placeholder == opt.placeholder
+		)[0]
+
+		if (placeHold && placeHold.options) opt = { ...opt, ...placeHold.options}
+	}
+	
 	// STEP 1: REALITY-CHECK
 	{
 		// A: check for empty
