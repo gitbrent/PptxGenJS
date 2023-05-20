@@ -21,19 +21,19 @@ export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_W
 // STYLES
 export const BKGD_LTGRAY = "F1F1F1";
 export const COLOR_BLUE = "0088CC";
-export const CODE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 6, fontSize: 10, color: '696969' };
-export const TITLE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 4, fontSize: 18, fontFace: "Segoe UI", color: COLOR_BLUE, valign: "top", align: "center" };
+export const CODE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 0.086, fontSize: 10, color: '696969' };
+export const TITLE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 0.057, fontSize: 18, fontFace: "Segoe UI", color: COLOR_BLUE, valign: "top", align: "center" };
 
 // OPTIONS
-export const BASE_TEXT_OPTS_L = { color: "9F9F9F", margin: 3, border: [null, null, { pt: "1", color: "CFCFCF" }, null] };
+export const BASE_TEXT_OPTS_L = { color: "9F9F9F", margin: 0.043, border: [null, null, { pt: "1", color: "CFCFCF" }, null] };
 export const BASE_TEXT_OPTS_R = {
 	text: "PptxGenJS",
-	options: { color: "9F9F9F", margin: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0], align: "right" },
+	options: { color: "9F9F9F", margin: 0.043, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0], align: "right" },
 };
-export const FOOTER_TEXT_OPTS = { x: 0.0, y: 7.16, w: "100%", h: 0.3, margin: 3, color: "9F9F9F", align: "center", fontSize: 10 };
+export const FOOTER_TEXT_OPTS = { x: 0.0, y: 7.16, w: "100%", h: 0.3, margin: 0.043, color: "9F9F9F", align: "center", fontSize: 10 };
 export const BASE_CODE_OPTS = {
 	color: "9F9F9F",
-	margin: 3,
+	margin: 0.043,
 	border: { pt: "1", color: "CFCFCF" },
 	fill: { color: "F1F1F1" },
 	fontFace: "Courier",

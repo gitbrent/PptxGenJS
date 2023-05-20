@@ -1070,7 +1070,20 @@ export function addTextDefinition (target: PresSlide, text: TextProps[], opts: T
 				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.inset)
 			}
 
-			// F: Transform @deprecated props
+			// F: Margin
+			if (itemOpts.margin && Array.isArray(itemOpts.margin)) {
+				itemOpts._bodyProp.tIns = inch2Emu(itemOpts.margin[0] || 0)
+				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.margin[1] || 0)
+				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.margin[2] || 0)
+				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.margin[3] || 0)
+			} else if (typeof itemOpts.margin === 'number') {
+				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.margin)
+				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.margin)
+				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.margin)
+				itemOpts._bodyProp.tIns = inch2Emu(itemOpts.margin)
+			}
+
+			// G: Transform @deprecated props
 			if (typeof itemOpts.underline === 'boolean' && itemOpts.underline === true) itemOpts.underline = { style: 'sng' }
 		}
 

@@ -49,7 +49,7 @@ function genSlide01(pptx) {
 			{ text: "(left/top)", options: { fontSize: 12, breakLine: true } },
 			{ text: "Textbox", options: { bold: true } },
 		],
-		{ x: 10, y: 0.75, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "00B050" }, valign: "top", align: "left", margin: 15 }
+		{ x: 10, y: 0.75, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "00B050" }, valign: "top", align: "left", margin: 0.214 }
 	);
 	slide.addText(
 		[
@@ -162,7 +162,7 @@ function genSlide02(pptx) {
 			{ text: "highlighted", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right", highlight: "FFFF00" } },
 			{ text: " text!", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right" } },
 		],
-		{ x: 0.5, y: 1.0, w: 5.75, h: 6.0, margin: 5, fill: { color: pptx.colors.TEXT1 } }
+		{ x: 0.5, y: 1.0, w: 5.75, h: 6.0, margin: 0.071, fill: { color: pptx.colors.TEXT1 } }
 	);
 
 	// RIGHT COLUMN ------------------------------------------------------------
@@ -208,7 +208,7 @@ function genSlide02(pptx) {
 		y: 6.0,
 		w: 5.75,
 		h: 1,
-		margin: [0, 0, 0, 10],
+		margin: [0, 0, 0, 0.143],
 		fill: { color: "F1F1F1" },
 	});
 }
@@ -340,14 +340,14 @@ function genSlide04(pptx) {
 	slide.addText("Hyperlinks:", { x: 0.5, y: 0.6, w: "90%", h: 0.3, margin: 0.123, color: pptx.colors.ACCENT1 });
 	slide.addText(
 		[{ text: "Link with Tooltip", options: { hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" } } }],
-		{ x: 0.5, y: 1.0, w: 2.5, h: 0.6, margin: 10, fill: { color: "F1F1F1" }, fontSize: 14, align: "center" }
+		{ x: 0.5, y: 1.0, w: 2.5, h: 0.6, margin: 0.143, fill: { color: "F1F1F1" }, fontSize: 14, align: "center" }
 	);
 	slide.addText([{ text: "Link without Tooltip", options: { hyperlink: { url: "https://github.com/gitbrent" } } }], {
 		x: 3.78,
 		y: 1.0,
 		w: 2.5,
 		h: 0.6,
-		margin: 10,
+		margin: 0.143,
 		fill: { color: "F1F1F1" },
 		fontSize: 14,
 		align: "center",
@@ -357,7 +357,7 @@ function genSlide04(pptx) {
 		y: 1.0,
 		w: 2.5,
 		h: 0.6,
-		margin: 10,
+		margin: 0.143,
 		fill: { color: "F1F1F1" },
 		fontSize: 14,
 		align: "center",
@@ -367,7 +367,7 @@ function genSlide04(pptx) {
 		y: 1.0,
 		w: 2.5,
 		h: 0.6,
-		margin: 10,
+		margin: 0.143,
 		fill: { color: "E2F0D9" },
 		fontSize: 14,
 		align: "center",
@@ -456,7 +456,7 @@ function genSlide05(pptx) {
 				text: "- the textboxes above have their shrink & resize props set already, just add a space or resize them to trigger shrink and resize behavior",
 			},
 		],
-		{ x: 0.5, y: 6.0, w: 12, h: 1.1, margin: 10, fontSize: 12, color: "393939", fill: { color: "fffccc" } }
+		{ x: 0.5, y: 6.0, w: 12, h: 1.1, margin: 0.143, fontSize: 12, color: "393939", fill: { color: "fffccc" } }
 	);
 }
 
