@@ -1282,9 +1282,52 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 			textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
 			textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore
 			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
-			paragraphPropXml = genXmlParagraphProperties(textObj, false)
 
-			strSlideXml += paragraphPropXml.replace('<a:pPr></a:pPr>', '') // IMPORTANT: Empty "pPr" blocks will generate needs-repair/corrupt msg
+			if(idx === 0){
+                let mergeOption = {
+                    align: opts.align,
+                    lineSpacing: opts.lineSpacing,
+                    lineSpacingMultiple: opts.lineSpacingMultiple,
+                    indentLevel: opts.indentLevel,
+                    paraSpaceBefore: opts.paraSpaceBefore,
+                    paraSpaceAfter: opts.paraSpaceAfter,
+                    rtlMode: opts.rtlMode,
+                    tabStops: opts.tabStops,
+                    bullet: opts.bullet
+                }
+                line.forEach(({options:{align, lineSpacing, lineSpacingMultiple, indentLevel, paraSpaceBefore, paraSpaceAfter, rtlMode, tabStops, bullet}}) => {
+                    if(align){
+                        mergeOption.align = align
+                    }
+                    if(lineSpacing){
+                        mergeOption.lineSpacing = lineSpacing
+                    }
+                    if(lineSpacingMultiple){
+                        mergeOption.lineSpacingMultiple = lineSpacingMultiple
+                    }
+                    if(indentLevel){
+                        mergeOption.indentLevel = indentLevel
+                    }
+                    if(paraSpaceBefore){
+                        mergeOption.paraSpaceBefore = paraSpaceBefore
+                    }
+                    if(paraSpaceAfter){
+                        mergeOption.paraSpaceAfter = paraSpaceAfter
+                    }
+                    if(rtlMode){
+                        mergeOption.rtlMode = rtlMode
+                    }
+                    if(tabStops){
+                        mergeOption.tabStops = tabStops
+                    }
+                    if(bullet || bullet === false){
+                        mergeOption.bullet = bullet
+                    }
+
+                })
+                paragraphPropXml = genXmlParagraphProperties({options:mergeOption}, false);
+                strSlideXml += paragraphPropXml;              
+            }
 			// C: Inherit any main options (color, fontSize, etc.)
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
