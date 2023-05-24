@@ -78,12 +78,38 @@ const ImageSizingXml = {
 	},
 }
 
+// Manages Ids
+class IdManager {
+	constructor (
+		private nextVal: number = 1,
+		private readonly lookupTable: Record<string, number> = {}
+	) {}
+
+	public getId (label?: string): number {
+		const currVal = (label && this.lookupTable[label]) || undefined
+		if (currVal) {
+			return currVal
+		}
+
+		const val = this.nextVal
+		if (label) {
+			this.lookupTable[label] = val
+		}
+		this.nextVal++
+		return val
+	}
+}
+
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
  * @param {PresSlide|SlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
-function slideObjectToXml (slide: PresSlide | SlideLayout): string {
+function slideObjectToXml (slide: PresSlide | SlideLayout, idMgr?: IdManager): string {
+	if (!idMgr) {
+		idMgr = new IdManager()
+	}
+
 	let strSlideXml: string = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>'
 	let intTableNum = 1
 
@@ -99,7 +125,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 	// STEP 2: Continue slide by starting spTree node
 	strSlideXml += '<p:spTree>'
-	strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>'
+	strSlideXml += `<p:nvGrpSpPr><p:cNvPr id="${idMgr.getId()}" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>`
 	strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>'
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
@@ -173,7 +199,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 				// STEP 1: Start Table XML
 				// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-				strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="${slideItemObj.options.objectName}"/>`
+				strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${idMgr.getId()}" name="${slideItemObj.options.objectName}"/>`
 				strXml +=
 					'<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 					'  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -410,7 +436,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`
+				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idMgr.getId()}" name="${slideItemObj.options.objectName}">`
 				// <Hyperlink>
 				if (slideItemObj.options.hyperlink?.url) {
 					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}"/>`
@@ -557,7 +583,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 			case SLIDE_OBJECT_TYPES.image:
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += `<p:cNvPr id="${slideItemObj.imageRid}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
+				strSlideXml += `<p:cNvPr id="${idMgr.getId()}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
 					slideItemObj.options.altText || slideItemObj.image
 				)}" ${!slideItemObj.hyperlink && '/'}>`
 				if (slideItemObj.hyperlink) {
@@ -574,6 +600,8 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 					strSlideXml += '    </p:cNvPr>' + CRLF
 					strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>' + CRLF
 					strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>' + CRLF
+				} else {
+					strSlideXml += '<p:cNvPicPr /><p:nvPr />'
 				}
 				strSlideXml += '  </p:nvPicPr>' + CRLF
 				strSlideXml += '<p:blipFill>' + CRLF
@@ -748,7 +776,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 	return strSlideXml
 }
 
-function generateTiming (slide: PresSlide): string {
+function generateTiming (slide: PresSlide, idMgr: IdManager): string {
 	const types = [
 		SLIDE_OBJECT_TYPES.image,
 		SLIDE_OBJECT_TYPES.media,
@@ -761,51 +789,47 @@ function generateTiming (slide: PresSlide): string {
 	}
 
 	// We're incrementing with 2 here because the slide number takes the previous relId.
-	const baseId = getNewRelId(slide) + 2
-
 	let out = `
 		<p:timing>
 			<p:tnLst>
 				<p:par>
-					<p:cTn id="${baseId}" dur="indefinite" restart="never" nodeType="tmRoot">
+					<p:cTn id="${idMgr.getId()}" dur="indefinite" restart="never" nodeType="tmRoot">
 						<p:childTnLst>
 							<p:seq>
-								<p:cTn id="${baseId + 1}" dur="indefinite" nodeType="mainSeq">
+								<p:cTn id="${idMgr.getId()}" dur="indefinite" nodeType="mainSeq">
 									<p:childTnLst>
 	`
 
 	for (let i = 0; i < images.length; i++) {
-		const id = baseId + 2 + (i * 4)
 		// console.log('Setting appearance for image ', id, ', image: ', images[i].imageRid)
-		const imageRid = images[i].imageRid
 		out += `
       <p:par>
-        <p:cTn id="${id}" fill="hold">
+        <p:cTn id="${idMgr.getId()}" fill="hold">
           <p:stCondLst>
             <p:cond delay="indefinite"/>
           </p:stCondLst>
           <p:childTnLst>
             <p:par>
-              <p:cTn id="${id + 1}" fill="hold">
+              <p:cTn id="${idMgr.getId()}" fill="hold">
                 <p:stCondLst>
                   <p:cond delay="0"/>
                 </p:stCondLst>
                 <p:childTnLst>
                   <p:par>
-                    <p:cTn id="${id + 2}" nodeType="clickEffect" fill="hold" presetClass="entr" presetID="1">
+                    <p:cTn id="${idMgr.getId()}" nodeType="clickEffect" fill="hold" presetClass="entr" presetID="1">
                       <p:stCondLst>
                         <p:cond delay="0"/>
                       </p:stCondLst>
                       <p:childTnLst>
                         <p:set>
                           <p:cBhvr>
-                            <p:cTn id="${id + 3}" dur="1" fill="hold">
+                            <p:cTn id="${idMgr.getId()}" dur="1" fill="hold">
                               <p:stCondLst>
                                 <p:cond delay="0"/>
                               </p:stCondLst>
                             </p:cTn>
                             <p:tgtEl>
-                              <p:spTgt spid="${imageRid}"/>
+                              <p:spTgt spid="${images[i].imageRid}"/>
                             </p:tgtEl>
                             <p:attrNameLst>
                               <p:attrName>style.visibility</p:attrName>
@@ -1651,14 +1675,15 @@ export function makeXmlPresentationRels (slides: PresSlide[]): string {
  * @return {string} XML
  */
 export function makeXmlSlide (slide: PresSlide): string {
+	const idMgr = new IdManager()
 	return (
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
 		'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
 		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
 		`${slide?.hidden ? ' show="0"' : ''}>` +
-		`${slideObjectToXml(slide)}` +
+		`${slideObjectToXml(slide, idMgr)}` +
 		// '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>' +
-		`${generateTiming(slide)}` +
+		`${generateTiming(slide, idMgr)}` +
 		'</p:sld>'
 	)
 }

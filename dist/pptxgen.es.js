@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.1-alpha4 @ 2023-01-04T16:17:20.265Z */
+/* PptxGenJS 3.12.1-alpha7 @ 2023-05-24T12:01:28.193Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -1621,15 +1621,39 @@ var ImageSizingXml = {
         return "<a:srcRect l=\"".concat(lPerc, "\" r=\"").concat(rPerc, "\" t=\"").concat(tPerc, "\" b=\"").concat(bPerc, "\"/><a:stretch/>");
     },
 };
+// Manages Ids
+var IdManager = /** @class */ (function () {
+    function IdManager(nextVal, lookupTable) {
+        if (nextVal === void 0) { nextVal = 1; }
+        if (lookupTable === void 0) { lookupTable = {}; }
+        this.nextVal = nextVal;
+        this.lookupTable = lookupTable;
+    }
+    IdManager.prototype.getId = function (label) {
+        var currVal = (label && this.lookupTable[label]) || undefined;
+        if (currVal) {
+            return currVal;
+        }
+        var val = this.nextVal;
+        if (label) {
+            this.lookupTable[label] = val;
+        }
+        this.nextVal++;
+        return val;
+    };
+    return IdManager;
+}());
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
  * @param {PresSlide|SlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
-function slideObjectToXml(slide) {
+function slideObjectToXml(slide, idMgr) {
     var _a;
+    if (!idMgr) {
+        idMgr = new IdManager();
+    }
     var strSlideXml = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>';
-    var intTableNum = 1;
     // STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
     if (slide._bkgdImgRid) {
         strSlideXml += "<p:bg><p:bgPr><a:blipFill dpi=\"0\" rotWithShape=\"1\"><a:blip r:embed=\"rId".concat(slide._bkgdImgRid, "\"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>");
@@ -1643,7 +1667,7 @@ function slideObjectToXml(slide) {
     }
     // STEP 2: Continue slide by starting spTree node
     strSlideXml += '<p:spTree>';
-    strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>';
+    strSlideXml += "<p:nvGrpSpPr><p:cNvPr id=\"".concat(idMgr.getId(), "\" name=\"\"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>");
     strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>';
     strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
     // STEP 3: Loop over all Slide.data objects and add them to this slide
@@ -1716,7 +1740,7 @@ function slideObjectToXml(slide) {
                 });
                 // STEP 1: Start Table XML
                 // NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-                strXml = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"".concat(intTableNum * slide._slideNum + 1, "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
+                strXml = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"".concat(idMgr.getId(), "\" name=\"").concat(slideItemObj.options.objectName, "\"/>");
                 strXml +=
                     '<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
                         '  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -1920,8 +1944,6 @@ function slideObjectToXml(slide) {
                 strXml += '</p:graphicFrame>';
                 // STEP 6: Set table XML
                 strSlideXml += strXml;
-                // LAST: Increment counter
-                intTableNum++;
                 break;
             case SLIDE_OBJECT_TYPES.text:
             case SLIDE_OBJECT_TYPES.placeholder:
@@ -1946,7 +1968,7 @@ function slideObjectToXml(slide) {
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
                 // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"".concat(idx + 2, "\" name=\"").concat(slideItemObj.options.objectName, "\">");
+                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"".concat(idMgr.getId(), "\" name=\"").concat(slideItemObj.options.objectName, "\">");
                 // <Hyperlink>
                 if ((_c = slideItemObj.options.hyperlink) === null || _c === void 0 ? void 0 : _c.url) {
                     strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.options.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '', "\"/>");
@@ -2067,7 +2089,7 @@ function slideObjectToXml(slide) {
             case SLIDE_OBJECT_TYPES.image:
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += "<p:cNvPr id=\"".concat(slideItemObj.imageRid, "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\" ").concat(!slideItemObj.hyperlink && '/', ">");
+                strSlideXml += "<p:cNvPr id=\"".concat(idMgr.getId(), "\" name=\"").concat(slideItemObj.options.objectName, "\" descr=\"").concat(encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image), "\" ").concat(!slideItemObj.hyperlink && '/', ">");
                 if (slideItemObj.hyperlink) {
                     if ((_g = slideItemObj.hyperlink) === null || _g === void 0 ? void 0 : _g.url) {
                         strSlideXml += "<a:hlinkClick r:id=\"rId".concat(slideItemObj.hyperlink._rId, "\" tooltip=\"").concat(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '', "\"/>");
@@ -2078,6 +2100,9 @@ function slideObjectToXml(slide) {
                     strSlideXml += '    </p:cNvPr>' + CRLF;
                     strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>' + CRLF;
                     strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>' + CRLF;
+                }
+                else {
+                    strSlideXml += '<p:cNvPicPr /><p:nvPr />';
                 }
                 strSlideXml += '  </p:nvPicPr>' + CRLF;
                 strSlideXml += '<p:blipFill>' + CRLF;
@@ -2250,7 +2275,7 @@ function slideObjectToXml(slide) {
     // LAST: Return
     return strSlideXml;
 }
-function generateTiming(slide) {
+function generateTiming(slide, idMgr) {
     var types = [
         SLIDE_OBJECT_TYPES.image,
         SLIDE_OBJECT_TYPES.media,
@@ -2262,13 +2287,10 @@ function generateTiming(slide) {
         return '';
     }
     // We're incrementing with 2 here because the slide number takes the previous relId.
-    var baseId = getNewRelId(slide) + 2;
-    var out = "\n\t\t<p:timing>\n\t\t\t<p:tnLst>\n\t\t\t\t<p:par>\n\t\t\t\t\t<p:cTn id=\"".concat(baseId, "\" dur=\"indefinite\" restart=\"never\" nodeType=\"tmRoot\">\n\t\t\t\t\t\t<p:childTnLst>\n\t\t\t\t\t\t\t<p:seq>\n\t\t\t\t\t\t\t\t<p:cTn id=\"").concat(baseId + 1, "\" dur=\"indefinite\" nodeType=\"mainSeq\">\n\t\t\t\t\t\t\t\t\t<p:childTnLst>\n\t");
+    var out = "\n\t\t<p:timing>\n\t\t\t<p:tnLst>\n\t\t\t\t<p:par>\n\t\t\t\t\t<p:cTn id=\"".concat(idMgr.getId(), "\" dur=\"indefinite\" restart=\"never\" nodeType=\"tmRoot\">\n\t\t\t\t\t\t<p:childTnLst>\n\t\t\t\t\t\t\t<p:seq>\n\t\t\t\t\t\t\t\t<p:cTn id=\"").concat(idMgr.getId(), "\" dur=\"indefinite\" nodeType=\"mainSeq\">\n\t\t\t\t\t\t\t\t\t<p:childTnLst>\n\t");
     for (var i = 0; i < images.length; i++) {
-        var id = baseId + 2 + (i * 4);
         // console.log('Setting appearance for image ', id, ', image: ', images[i].imageRid)
-        var imageRid = images[i].imageRid;
-        out += "\n      <p:par>\n        <p:cTn id=\"".concat(id, "\" fill=\"hold\">\n          <p:stCondLst>\n            <p:cond delay=\"indefinite\"/>\n          </p:stCondLst>\n          <p:childTnLst>\n            <p:par>\n              <p:cTn id=\"").concat(id + 1, "\" fill=\"hold\">\n                <p:stCondLst>\n                  <p:cond delay=\"0\"/>\n                </p:stCondLst>\n                <p:childTnLst>\n                  <p:par>\n                    <p:cTn id=\"").concat(id + 2, "\" nodeType=\"clickEffect\" fill=\"hold\" presetClass=\"entr\" presetID=\"1\">\n                      <p:stCondLst>\n                        <p:cond delay=\"0\"/>\n                      </p:stCondLst>\n                      <p:childTnLst>\n                        <p:set>\n                          <p:cBhvr>\n                            <p:cTn id=\"").concat(id + 3, "\" dur=\"1\" fill=\"hold\">\n                              <p:stCondLst>\n                                <p:cond delay=\"0\"/>\n                              </p:stCondLst>\n                            </p:cTn>\n                            <p:tgtEl>\n                              <p:spTgt spid=\"").concat(imageRid, "\"/>\n                            </p:tgtEl>\n                            <p:attrNameLst>\n                              <p:attrName>style.visibility</p:attrName>\n                            </p:attrNameLst>\n                          </p:cBhvr>\n                          <p:to>\n                            <p:strVal val=\"visible\"/>\n                          </p:to>\n                        </p:set>\n                      </p:childTnLst>\n                    </p:cTn>\n                  </p:par>\n                </p:childTnLst>\n              </p:cTn>\n            </p:par>\n          </p:childTnLst>\n        </p:cTn>\n      </p:par>\n\t\t");
+        out += "\n      <p:par>\n        <p:cTn id=\"".concat(idMgr.getId(), "\" fill=\"hold\">\n          <p:stCondLst>\n            <p:cond delay=\"indefinite\"/>\n          </p:stCondLst>\n          <p:childTnLst>\n            <p:par>\n              <p:cTn id=\"").concat(idMgr.getId(), "\" fill=\"hold\">\n                <p:stCondLst>\n                  <p:cond delay=\"0\"/>\n                </p:stCondLst>\n                <p:childTnLst>\n                  <p:par>\n                    <p:cTn id=\"").concat(idMgr.getId(), "\" nodeType=\"clickEffect\" fill=\"hold\" presetClass=\"entr\" presetID=\"1\">\n                      <p:stCondLst>\n                        <p:cond delay=\"0\"/>\n                      </p:stCondLst>\n                      <p:childTnLst>\n                        <p:set>\n                          <p:cBhvr>\n                            <p:cTn id=\"").concat(idMgr.getId(), "\" dur=\"1\" fill=\"hold\">\n                              <p:stCondLst>\n                                <p:cond delay=\"0\"/>\n                              </p:stCondLst>\n                            </p:cTn>\n                            <p:tgtEl>\n                              <p:spTgt spid=\"").concat(images[i].imageRid, "\"/>\n                            </p:tgtEl>\n                            <p:attrNameLst>\n                              <p:attrName>style.visibility</p:attrName>\n                            </p:attrNameLst>\n                          </p:cBhvr>\n                          <p:to>\n                            <p:strVal val=\"visible\"/>\n                          </p:to>\n                        </p:set>\n                      </p:childTnLst>\n                    </p:cTn>\n                  </p:par>\n                </p:childTnLst>\n              </p:cTn>\n            </p:par>\n          </p:childTnLst>\n        </p:cTn>\n      </p:par>\n\t\t");
     }
     out += "\n\t\t\t\t\t\t\t\t\t</p:childTnLst>\n\t      \t\t\t\t\t\t</p:cTn>\n\t\t\t\t\t\t\t\t<p:prevCondLst>\n\t\t\t\t\t\t\t\t\t<p:cond evt=\"onPrev\">\n\t\t\t\t\t\t\t\t\t\t<p:tgtEl>\n\t\t\t\t\t\t\t\t\t\t\t<p:sldTgt/>\n\t\t\t\t\t\t\t\t\t\t</p:tgtEl>\n\t\t\t\t\t\t\t\t\t</p:cond>\n\t\t\t\t\t\t\t\t</p:prevCondLst>\n\t\t\t\t\t\t\t\t<p:nextCondLst>\n\t\t\t\t\t\t\t\t\t<p:cond evt=\"onNext\">\n\t\t\t\t\t\t\t\t\t\t<p:tgtEl>\n\t\t\t\t\t\t\t\t\t\t\t<p:sldTgt/>\n\t\t\t\t\t\t\t\t\t\t</p:tgtEl>\n\t\t\t\t\t\t\t\t\t</p:cond>\n\t\t\t\t\t\t\t\t</p:nextCondLst>\n\t\t\t\t\t\t\t</p:seq>\n\t\t\t\t\t\t</p:childTnLst>\n\t\t\t\t\t</p:cTn>\n\t\t\t\t</p:par>\n\t\t\t</p:tnLst>\n\t\t</p:timing>\n\t";
     return out;
@@ -2984,13 +3006,14 @@ function makeXmlPresentationRels(slides) {
  * @return {string} XML
  */
 function makeXmlSlide(slide) {
+    var idMgr = new IdManager();
     return ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".concat(CRLF) +
         '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
         'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
         "".concat((slide === null || slide === void 0 ? void 0 : slide.hidden) ? ' show="0"' : '', ">") +
-        "".concat(slideObjectToXml(slide)) +
+        "".concat(slideObjectToXml(slide, idMgr)) +
         // '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>' +
-        "".concat(generateTiming(slide)) +
+        "".concat(generateTiming(slide, idMgr)) +
         '</p:sld>');
 }
 /**
