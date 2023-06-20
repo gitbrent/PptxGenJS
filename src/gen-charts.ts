@@ -770,7 +770,6 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let colorIndex = -1 // Maintain the color index by region
 	let idxColLtr = 1
-	let optsChartData: IOptsChartData = null
 	let strXml = ''
 
 	switch (chartType) {
@@ -832,6 +831,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				]
              */
 			data.forEach(obj => {
+				const series = { ...opts, ...obj }
 				colorIndex++
 				strXml += '<c:ser>'
 				strXml += `  <c:idx val="${obj._dataIndex}"/><c:order val="${obj._dataIndex}"/>`
@@ -844,30 +844,29 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 
 				// Fill and Border
 				// TODO: CURRENT: Pull#727
-				// TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
-				const seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
+				const seriesColor = series.color ? series.color : series.chartColors ? series.chartColors[0] : null;
 
 				strXml += '  <c:spPr>'
 				if (seriesColor === 'transparent') {
 					strXml += '<a:noFill/>'
-				} else if (opts.chartColorsOpacity) {
-					strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(opts.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>'
+				} else if (series.chartColorsOpacity) {
+					strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(series.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>'
 				} else {
 					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 				}
 
 				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
-					if (opts.lineSize === 0) {
+					if (series.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += `<a:ln w="${valToPts(opts.lineSize)}" cap="${createLineCap(opts.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`
-						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
+						strXml += `<a:ln w="${valToPts(series.lineSize)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`
+						strXml += '<a:prstDash val="' + (series.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
-				} else if (opts.dataBorder) {
-					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="${createLineCap(opts.lineCap)}"><a:solidFill>${createColorElement(opts.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+				} else if (series.dataBorder) {
+					strXml += `<a:ln w="${valToPts(series.dataBorder.pt)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(series.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 				}
 
-				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
+				strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW)
 
 				strXml += '  </c:spPr>'
 				strXml += '  <c:invertIfNegative val="0"/>'
@@ -876,54 +875,52 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
 				if (chartType !== CHART_TYPE.RADAR) {
 					strXml += '<c:dLbls>'
-					strXml += `<c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
-					if (opts.dataLabelBkgrdColors) strXml += `<c:spPr><a:solidFill>${createColorElement(seriesColor)}</a:solidFill></c:spPr>`
+					strXml += `<c:numFmt formatCode="${encodeXmlEntities(series.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+					if (series.dataLabelBkgrdColors) strXml += `<c:spPr><a:solidFill>${createColorElement(seriesColor)}</a:solidFill></c:spPr>`
 					strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>'
-					strXml += `<a:defRPr b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" strike="noStrike" sz="${Math.round(
-						(opts.dataLabelFontSize || DEF_FONT_SIZE) * 100
+					strXml += `<a:defRPr b="${series.dataLabelFontBold ? 1 : 0}" i="${series.dataLabelFontItalic ? 1 : 0}" strike="noStrike" sz="${Math.round(
+						(series.dataLabelFontSize || DEF_FONT_SIZE) * 100
 					)}" u="none">`
-					strXml += `<a:solidFill>${createColorElement(opts.dataLabelColor || DEF_FONT_COLOR)}</a:solidFill>`
-					strXml += `<a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
+					strXml += `<a:solidFill>${createColorElement(series.dataLabelColor || DEF_FONT_COLOR)}</a:solidFill>`
+					strXml += `<a:latin typeface="${series.dataLabelFontFace || 'Arial'}"/>`
 					strXml += '</a:defRPr></a:pPr></a:p></c:txPr>'
-					if (opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
+					if (series.dataLabelPosition) strXml += `<c:dLblPos val="${series.dataLabelPosition}"/>`
 					strXml += '<c:showLegendKey val="0"/>'
-					strXml += `<c:showVal val="${opts.showValue ? '1' : '0'}"/>`
-					strXml += `<c:showCatName val="0"/><c:showSerName val="${opts.showSerName ? '1' : '0'}"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>`
-					strXml += `<c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
+					strXml += `<c:showVal val="${series.showValue ? '1' : '0'}"/>`
+					strXml += `<c:showCatName val="0"/><c:showSerName val="${series.showSerName ? '1' : '0'}"/><c:showPercent val="0"/><c:showBubbleSize val="0"/>`
+					strXml += `<c:showLeaderLines val="${series.showLeaderLines ? '1' : '0'}"/>`
 					strXml += '</c:dLbls>'
 				}
 
 				// 'c:marker' tag: `lineDataSymbol`
 				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
 					strXml += '<c:marker>'
-					strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>'
-					if (opts.lineDataSymbolSize) strXml += `<c:size val="${opts.lineDataSymbolSize}"/>` // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+					strXml += '  <c:symbol val="' + series.lineDataSymbol + '"/>'
+					if (series.lineDataSymbolSize) strXml += `<c:size val="${series.lineDataSymbolSize}"/>` // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
 					strXml += '  <c:spPr>'
-					strXml += `    <a:solidFill>${createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex])}</a:solidFill>`
-					strXml += `    <a:ln w="${opts.lineDataSymbolLineSize}" cap="flat"><a:solidFill>${createColorElement(opts.lineDataSymbolLineColor || seriesColor)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+					strXml += `    <a:solidFill>${createColorElement(series.chartColors[obj._dataIndex + 1 > series.chartColors.length ? Math.floor(Math.random() * series.chartColors.length) : obj._dataIndex])}</a:solidFill>`
+					strXml += `    <a:ln w="${series.lineDataSymbolLineSize}" cap="flat"><a:solidFill>${createColorElement(series.lineDataSymbolLineColor || seriesColor)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
 					strXml += '</c:marker>'
 				}
 
-				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-				// Color chart bars various colors when >1 color
+				// Color chart bars.
 				// NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
 				if (
 					(chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
-					data.length === 1 &&
-					((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors?.length))
+					((series.chartColors && series.chartColors !== BARCHART_COLORS && series.chartColors.length > 1) || (series.invertedColors?.length))
 				) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
-						const arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
+						const arrColors = value < 0 ? series.invertedColors || series.chartColors || BARCHART_COLORS : series.chartColors || []
 
 						strXml += '  <c:dPt>'
 						strXml += `    <c:idx val="${index}"/>`
 						strXml += '      <c:invertIfNegative val="0"/>'
 						strXml += '    <c:bubble3D val="0"/>'
 						strXml += '    <c:spPr>'
-						if (opts.lineSize === 0) {
+						if (series.lineSize === 0) {
 							strXml += '<a:ln><a:noFill/></a:ln>'
 						} else if (chartType === CHART_TYPE.BAR) {
 							strXml += '<a:solidFill>'
@@ -936,7 +933,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 							strXml += '  </a:solidFill>'
 							strXml += '</a:ln>'
 						}
-						strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
+						strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW)
 						strXml += '    </c:spPr>'
 						strXml += '  </c:dPt>'
 					})
@@ -945,12 +942,12 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// 2: "Categories"
 				{
 					strXml += '<c:cat>'
-					if (opts.catLabelFormatCode) {
+					if (series.catLabelFormatCode) {
 						// Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
 						strXml += '  <c:numRef>'
 						strXml += `    <c:f>Sheet1!$A$2:$A$${obj.labels[0].length + 1}</c:f>`
 						strXml += '    <c:numCache>'
-						strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>'
+						strXml += '      <c:formatCode>' + (series.catLabelFormatCode || 'General') + '</c:formatCode>'
 						strXml += `      <c:ptCount val="${obj.labels[0].length}"/>`
 						obj.labels[0].forEach((label, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${encodeXmlEntities(label)}</c:v></c:pt>`))
 						strXml += '    </c:numCache>'
@@ -977,7 +974,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '  <c:numRef>'
 					strXml += `<c:f>Sheet1!$${getExcelColName(obj._dataIndex + obj.labels.length + 1)}$2:$${getExcelColName(obj._dataIndex + obj.labels.length + 1)}$${obj.labels[0].length + 1}</c:f>`
 					strXml += '    <c:numCache>'
-					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
+					strXml += '      <c:formatCode>' + (series.valLabelFormatCode || series.dataTableFormatCode || 'General') + '</c:formatCode>'
 					strXml += `      <c:ptCount val="${obj.labels[0].length}"/>`
 					obj.values.forEach((value, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${value || value === 0 ? value : ''}</c:v></c:pt>`))
 					strXml += '    </c:numCache>'
@@ -986,7 +983,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				}
 
 				// Option: `smooth`
-				if (chartType === CHART_TYPE.LINE) strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>'
+				if (chartType === CHART_TYPE.LINE) strXml += '<c:smooth val="' + (series.lineSmooth ? '1' : '0') + '"/>'
 
 				// 4: Close "SERIES"
 				strXml += '</c:ser>'
@@ -1480,8 +1477,11 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 		case CHART_TYPE.DOUGHNUT:
 		case CHART_TYPE.PIE:
 			// Use the same let name so code blocks from barChart are interchangeable
-			optsChartData = data[0]
+			// 1: Start Chart
+			strXml += '<c:' + chartType + 'Chart>'
+			strXml += '  <c:varyColors val="1"/>'
 
+			// optsChartData = data[0]
 			/* EX:
 				data: [
 				 {
@@ -1490,128 +1490,133 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				   values: [10, 20, 38, 2]
 				 }
 				]
-            */
+			*/
+			data.forEach(obj => {
+				const series = { ...opts, ...obj }
 
-			// 1: Start Chart
-			strXml += '<c:' + chartType + 'Chart>'
-			strXml += '  <c:varyColors val="1"/>'
-			strXml += '<c:ser>'
-			strXml += '  <c:idx val="0"/>'
-			strXml += '  <c:order val="0"/>'
-			strXml += '  <c:tx>'
-			strXml += '    <c:strRef>'
-			strXml += '      <c:f>Sheet1!$B$1</c:f>'
-			strXml += '      <c:strCache>'
-			strXml += '        <c:ptCount val="1"/>'
-			strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(optsChartData.name) + '</c:v></c:pt>'
-			strXml += '      </c:strCache>'
-			strXml += '    </c:strRef>'
-			strXml += '  </c:tx>'
-			strXml += '  <c:spPr>'
-			strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>'
-			strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
-			if (opts.dataNoEffects) {
-				strXml += '<a:effectLst/>'
-			} else {
-				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
-			}
-			strXml += '  </c:spPr>'
-			// strXml += '<c:explosion val="0"/>'
-
-			// 2: "Data Point" block for every data row
-			optsChartData.labels[0].forEach((_label, idx) => {
-				strXml += '<c:dPt>'
-				strXml += ` <c:idx val="${idx}"/>`
-				strXml += ' <c:bubble3D val="0"/>'
-				strXml += ' <c:spPr>'
-				strXml += `<a:solidFill>${createColorElement(
-					opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]
-				)}</a:solidFill>`
-				if (opts.dataBorder) {
-					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(
-						opts.dataBorder.color
-					)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+				strXml += '<c:ser>'
+				strXml += `  <c:idx val="${obj._dataIndex}"/><c:order val="${obj._dataIndex}"/>`
+				strXml += '  <c:tx>'
+				strXml += '    <c:strRef>'
+				strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + series.labels.length + 1) + '$1</c:f>'
+				strXml += '      <c:strCache>'
+				strXml += '        <c:ptCount val="1"/>'
+				strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(series.name) + '</c:v></c:pt>'
+				strXml += '      </c:strCache>'
+				strXml += '    </c:strRef>'
+				strXml += '  </c:tx>'
+				strXml += '  <c:spPr>'
+				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>'
+				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
+				if (series.dataNoEffects) {
+					strXml += '<a:effectLst/>'
+				} else {
+					strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW)
 				}
-				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
 				strXml += '  </c:spPr>'
-				strXml += '</c:dPt>'
-			})
+				// strXml += '<c:explosion val="0"/>'
 
-			// 3: "Data Label" block for every data Label
-			strXml += '<c:dLbls>'
-			optsChartData.labels[0].forEach((_label, idx) => {
-				strXml += '<c:dLbl>'
-				strXml += ` <c:idx val="${idx}"/>`
-				strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
-				strXml += '  <c:spPr/><c:txPr>'
-				strXml += '   <a:bodyPr/><a:lstStyle/>'
-				strXml += '   <a:p><a:pPr>'
-				strXml += `   <a:defRPr sz="${Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0
-				}" u="none" strike="noStrike">`
-				strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
-				strXml += `    <a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
-				strXml += '   </a:defRPr>'
-				strXml += '      </a:pPr></a:p>'
+				// 2: "Data Point" block for every data row
+				series.labels[0].forEach((_label, idx) => {
+					const nextColor = series.chartColors[idx % series.chartColors.length];
+					strXml += '<c:dPt>'
+					strXml += ` <c:idx val="${idx}"/>`
+					strXml += ' <c:bubble3D val="0"/>'
+					strXml += ' <c:spPr>'
+					strXml += `<a:solidFill>${createColorElement(nextColor)}</a:solidFill>`
+					if (series.dataBorder) {
+						strXml += `<a:ln w="${valToPts(series.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(
+							series.dataBorder.color
+						)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+					}
+					strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW)
+					strXml += '  </c:spPr>'
+					strXml += '</c:dPt>'
+				})
+
+				// 3: "Data Label" block for every data Label
+				strXml += '<c:dLbls>'
+				series.labels[0].forEach((_label, idx) => {
+					let showPercent;
+					if (Array.isArray(series.showPercent)) {
+						showPercent = idx in series.showPercent
+					} else {
+						showPercent = series.showPercent
+					}
+					strXml += '<c:dLbl>'
+					strXml += ` <c:idx val="${idx}"/>`
+					strXml += `  <c:numFmt formatCode="${encodeXmlEntities(series.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+					strXml += '  <c:spPr/><c:txPr>'
+					strXml += '   <a:bodyPr/><a:lstStyle/>'
+					strXml += '   <a:p><a:pPr>'
+					strXml += `   <a:defRPr sz="${Math.round((series.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${series.dataLabelFontBold ? 1 : 0}" i="${series.dataLabelFontItalic ? 1 : 0
+					}" u="none" strike="noStrike">`
+					strXml += '    <a:solidFill>' + createColorElement(series.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
+					strXml += `    <a:latin typeface="${series.dataLabelFontFace || 'Arial'}"/>`
+					strXml += '   </a:defRPr>'
+					strXml += '      </a:pPr></a:p>'
+					strXml += '    </c:txPr>'
+					if (chartType === CHART_TYPE.PIE && series.dataLabelPosition) strXml += `<c:dLblPos val="${series.dataLabelPosition}"/>`
+					strXml += '    <c:showLegendKey val="0"/>'
+					strXml += '    <c:showVal val="' + (series.showValue ? '1' : '0') + '"/>'
+					strXml += '    <c:showCatName val="' + (series.showLabel ? '1' : '0') + '"/>'
+					strXml += '    <c:showSerName val="' + (series.showSerName ? '1' : '0') + '"/>'
+					strXml += '    <c:showPercent val="' + (showPercent ? '1' : '0') + '"/>'
+					strXml += '    <c:showBubbleSize val="0"/>'
+					strXml += '  </c:dLbl>'
+				})
+				strXml += ` <c:numFmt formatCode="${encodeXmlEntities(series.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+				strXml += '    <c:txPr>'
+				strXml += '      <a:bodyPr/>'
+				strXml += '      <a:lstStyle/>'
+				strXml += '      <a:p>'
+				strXml += '        <a:pPr>'
+				strXml += `          <a:defRPr sz="1800" b="${series.dataLabelFontBold ? '1' : '0'}" i="${series.dataLabelFontItalic ? '1' : '0'}" u="none" strike="noStrike">`
+				strXml += '            <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>'
+				strXml += '          </a:defRPr>'
+				strXml += '        </a:pPr>'
+				strXml += '      </a:p>'
 				strXml += '    </c:txPr>'
-				if (chartType === CHART_TYPE.PIE && opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
+				strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : ''
 				strXml += '    <c:showLegendKey val="0"/>'
-				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
-				strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>'
-				strXml += '    <c:showSerName val="' + (opts.showSerName ? '1' : '0') + '"/>'
-				strXml += '    <c:showPercent val="' + (opts.showPercent ? '1' : '0') + '"/>'
+				strXml += '    <c:showVal val="0"/>'
+				strXml += '    <c:showCatName val="1"/>'
+				strXml += '    <c:showSerName val="0"/>'
+				strXml += '    <c:showPercent val="1"/>'
 				strXml += '    <c:showBubbleSize val="0"/>'
-				strXml += '  </c:dLbl>'
-			})
-			strXml += ` <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
-			strXml += '    <c:txPr>'
-			strXml += '      <a:bodyPr/>'
-			strXml += '      <a:lstStyle/>'
-			strXml += '      <a:p>'
-			strXml += '        <a:pPr>'
-			strXml += `          <a:defRPr sz="1800" b="${opts.dataLabelFontBold ? '1' : '0'}" i="${opts.dataLabelFontItalic ? '1' : '0'}" u="none" strike="noStrike">`
-			strXml += '            <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>'
-			strXml += '          </a:defRPr>'
-			strXml += '        </a:pPr>'
-			strXml += '      </a:p>'
-			strXml += '    </c:txPr>'
-			strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : ''
-			strXml += '    <c:showLegendKey val="0"/>'
-			strXml += '    <c:showVal val="0"/>'
-			strXml += '    <c:showCatName val="1"/>'
-			strXml += '    <c:showSerName val="0"/>'
-			strXml += '    <c:showPercent val="1"/>'
-			strXml += '    <c:showBubbleSize val="0"/>'
-			strXml += ` <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
-			strXml += '</c:dLbls>'
+				strXml += ` <c:showLeaderLines val="${series.showLeaderLines ? '1' : '0'}"/>`
+				strXml += '</c:dLbls>'
 
-			// 2: "Categories"
-			strXml += '<c:cat>'
-			strXml += '  <c:strRef>'
-			strXml += `    <c:f>Sheet1!$A$2:$A$${optsChartData.labels[0].length + 1}</c:f>`
-			strXml += '    <c:strCache>'
-			strXml += `         <c:ptCount val="${optsChartData.labels[0].length}"/>`
-			optsChartData.labels[0].forEach((label, idx) => {
-				strXml += `<c:pt idx="${idx}"><c:v>${encodeXmlEntities(label)}</c:v></c:pt>`
-			})
-			strXml += '    </c:strCache>'
-			strXml += '  </c:strRef>'
-			strXml += '</c:cat>'
+				// 2: "Categories"
+				strXml += '<c:cat>'
+				strXml += '  <c:strRef>'
+				strXml += `    <c:f>Sheet1!$A$2:$A$${series.labels[0].length + 1}</c:f>`
+				strXml += '    <c:strCache>'
+				strXml += `         <c:ptCount val="${series.labels[0].length}"/>`
+				series.labels[0].forEach((label, idx) => {
+					strXml += `<c:pt idx="${idx}"><c:v>${encodeXmlEntities(label)}</c:v></c:pt>`
+				})
+				strXml += '    </c:strCache>'
+				strXml += '  </c:strRef>'
+				strXml += '</c:cat>'
 
-			// 3: Create vals
-			strXml += '  <c:val>'
-			strXml += '    <c:numRef>'
-			strXml += `      <c:f>Sheet1!$B$2:$B$${optsChartData.labels[0].length + 1}</c:f>`
-			strXml += '      <c:numCache>'
-			strXml += `           <c:ptCount val="${optsChartData.labels[0].length}"/>`
-			optsChartData.values.forEach((value, idx) => {
-				strXml += `<c:pt idx="${idx}"><c:v>${value || value === 0 ? value : ''}</c:v></c:pt>`
-			})
-			strXml += '      </c:numCache>'
-			strXml += '    </c:numRef>'
-			strXml += '  </c:val>'
+				// 3: Create vals
+				strXml += '  <c:val>'
+				strXml += '    <c:numRef>'
+				strXml += `      <c:f>Sheet1!$B$2:$B$${series.labels[0].length + 1}</c:f>`
+				strXml += '      <c:numCache>'
+				strXml += `           <c:ptCount val="${series.labels[0].length}"/>`
+				series.values.forEach((value, idx) => {
+					strXml += `<c:pt idx="${idx}"><c:v>${value || value === 0 ? value : ''}</c:v></c:pt>`
+				})
+				strXml += '      </c:numCache>'
+				strXml += '    </c:numRef>'
+				strXml += '  </c:val>'
 
-			// 4: Close "SERIES"
-			strXml += '  </c:ser>'
+				// 4: Close "SERIES"
+				strXml += '  </c:ser>'
+			})
+
 			strXml += `  <c:firstSliceAng val="${opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0}"/>`
 			if (chartType === CHART_TYPE.DOUGHNUT) strXml += `<c:holeSize val="${typeof opts.holeSize === 'number' ? opts.holeSize : '50'}"/>`
 			strXml += '</c:' + chartType + 'Chart>'
