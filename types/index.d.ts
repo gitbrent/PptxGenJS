@@ -2151,7 +2151,7 @@ declare namespace PptxGenJS {
 		catAxisMinVal?: number
 		/** @since v3.11.0 */
 		catAxisMultiLevelLabels?: boolean
-		catAxisOrientation?: 'minMax'
+		catAxisOrientation?: 'minMax' | 'maxMin'
 		catAxisTitle?: string
 		catAxisTitleColor?: string
 		catAxisTitleFontFace?: string
@@ -2230,7 +2230,7 @@ declare namespace PptxGenJS {
 		valAxisMaxVal?: number
 		valAxisMinorTickMark?: ChartAxisTickMark
 		valAxisMinVal?: number
-		valAxisOrientation?: 'minMax'
+		valAxisOrientation?: 'minMax' | 'maxMin'
 		valAxisTitle?: string
 		valAxisTitleColor?: string
 		valAxisTitleFontFace?: string
