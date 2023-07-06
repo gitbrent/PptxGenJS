@@ -926,14 +926,11 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 						if (opts.lineSize === 0) {
 							strXml += '<a:ln><a:noFill/></a:ln>'
 						} else if (chartType === CHART_TYPE.BAR) {
-							strXml += '<a:solidFill>'
-							strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
-							strXml += '</a:solidFill>'
+							strXml += "<a:solidFill>".concat(createColorElement(arrColors[index % arrColors.length]), "</a:solidFill>");
+                        
 						} else {
 							strXml += '<a:ln>'
-							strXml += '  <a:solidFill>'
-							strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
-							strXml += '  </a:solidFill>'
+							strXml += "  <a:solidFill>".concat(createColorElement(arrColors[index % arrColors.length]), "  </a:solidFill>");
 							strXml += '</a:ln>'
 						}
 						strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
