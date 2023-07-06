@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.0 @ 2023-05-17T03:15:58.392Z */
+/* PptxGenJS 3.13.0-beta.2 @ 2023-07-06T07:25:35.517Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -768,6 +768,49 @@ function componentToHex(c) {
 function rgbToHex(r, g, b) {
     return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase();
 }
+var percentColorModifiers = [
+    'alpha',
+    'alphaMod',
+    'alphaOff',
+    'blue',
+    'blueMod',
+    'blueOff',
+    'green',
+    'greenMod',
+    'greenOff',
+    'red',
+    'redMod',
+    'redOff',
+    'hue',
+    'hueMod',
+    'hueOff',
+    'lum',
+    'lumMod',
+    'lumOff',
+    'sat',
+    'satMod',
+    'satOff',
+    'shade',
+    'tint',
+];
+var flagColorModifiers = ['comp', 'gray', 'inv', 'gamma'];
+function handleModifiedColorProps(color) {
+    var output = '';
+    for (var _i = 0, percentColorModifiers_1 = percentColorModifiers; _i < percentColorModifiers_1.length; _i++) {
+        var modifier = percentColorModifiers_1[_i];
+        var modifierValue = color[modifier];
+        if (modifierValue !== undefined) {
+            output += "<a:".concat(modifier, " val=\"").concat(Math.round(modifierValue * 1000), "\"/>");
+        }
+    }
+    for (var _a = 0, flagColorModifiers_1 = flagColorModifiers; _a < flagColorModifiers_1.length; _a++) {
+        var modifier = flagColorModifiers_1[_a];
+        if (color[modifier]) {
+            output += "<a:".concat(modifier, "/>");
+        }
+    }
+    return output;
+}
 /**  TODO: FUTURE: TODO-4.0:
  * @date 2022-04-10
  * @tldr this s/b a private method with all current calls switched to `genXmlColorSelection()`
@@ -781,8 +824,12 @@ function rgbToHex(r, g, b) {
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-function createColorElement(colorStr, innerElements) {
+function createColorElement(colorInput, innerElements) {
+    var colorStr = typeof colorInput === 'object' ? colorInput.baseColor : colorInput;
     var colorVal = (colorStr || '').replace('#', '');
+    if (typeof colorInput == 'object') {
+        innerElements = (innerElements || '') + handleModifiedColorProps(colorInput);
+    }
     if (!REGEX_HEX_COLOR.test(colorVal) &&
         colorVal !== SchemeColor.background1 &&
         colorVal !== SchemeColor.background2 &&
@@ -832,6 +879,10 @@ function genXmlColorSelection(props) {
     if (props) {
         if (typeof props === 'string')
             colorVal = props;
+        else if ('baseColor' in props) {
+            internalElements = handleModifiedColorProps(props);
+            colorVal = props.baseColor;
+        }
         else {
             if (props.type)
                 fillType = props.type;
@@ -3810,15 +3861,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                             strXml += '<a:ln><a:noFill/></a:ln>';
                         }
                         else if (chartType === CHART_TYPE.BAR) {
-                            strXml += '<a:solidFill>';
-                            strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>';
-                            strXml += '</a:solidFill>';
+                            strXml += "<a:solidFill>".concat(createColorElement(arrColors[index % arrColors.length]), "</a:solidFill>");
                         }
                         else {
                             strXml += '<a:ln>';
-                            strXml += '  <a:solidFill>';
-                            strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>';
-                            strXml += '  </a:solidFill>';
+                            strXml += "  <a:solidFill>".concat(createColorElement(arrColors[index % arrColors.length]), "  </a:solidFill>");
                             strXml += '</a:ln>';
                         }
                         strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
