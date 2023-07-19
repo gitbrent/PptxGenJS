@@ -1073,7 +1073,7 @@ function genXmlTextRun (textObj: TextProps): string {
 function genXmlBodyProperties (slideObject: ISlideObject | TableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
-	if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options._bodyProp) {
+	if (slideObject && (slideObject._type === SLIDE_OBJECT_TYPES.text || slideObject._type === SLIDE_OBJECT_TYPES.placeholder) && slideObject.options._bodyProp) {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
@@ -1618,7 +1618,7 @@ export function makeXmlMaster (slide: PresSlide, layouts: SlideLayout[]): string
 	strXml +=
 		'<p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>'
 	strXml += '<p:sldLayoutIdLst>' + layoutDefs.join('') + '</p:sldLayoutIdLst>'
-	strXml += '<p:hf sldNum="0" hdr="0" ftr="0" dt="0"/>'
+	strXml += slide._slideNumberProps !== null ? '<p:hf hdr="0" ftr="0" dt="0"/>' : '<p:hf sldNum="0" hdr="0" ftr="0" dt="0"/>'
 	strXml +=
 		'<p:txStyles>' +
 		' <p:titleStyle>' +
