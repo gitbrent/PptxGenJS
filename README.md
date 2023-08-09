@@ -13,31 +13,33 @@
 
 # Table of Contents
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
-- [Live Demo](#live-demo)
+	- [Works Everywhere](#works-everywhere)
+	- [Full Featured](#full-featured)
+	- [Simple and Powerful](#simple-and-powerful)
+	- [Export Your Way](#export-your-way)
+	- [HTML to PowerPoint](#html-to-powerpoint)
+- [Live Demos](#live-demos)
 - [Installation](#installation)
-  - [CDN](#cdn)
-  - [Download](#download)
-  - [Npm](#npm)
-  - [Yarn](#yarn)
-  - [Additional Builds](#additional-builds)
+	- [Npm](#npm)
+	- [Yarn](#yarn)
+	- [CDN](#cdn)
+	- [Download](#download)
+	- [Additional Builds](#additional-builds)
 - [Documentation](#documentation)
-  - [Quick Start Guide](#quick-start-guide)
-    - [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
-    - [Script/Web Browser](#scriptweb-browser)
-  - [Library API](#library-api)
-  - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
+	- [Quick Start Guide](#quick-start-guide)
+		- [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
+		- [Script/Web Browser](#scriptweb-browser)
+	- [Library API](#library-api)
+	- [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Library Ports](#library-ports)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Contributors](#contributors)
+- [Sponsor Us](#sponsor-us)
 - [License](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Introduction
 
@@ -45,71 +47,41 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 # Features
 
-**Extensive Support**
+## Works Everywhere
 
-- Generate presentations on every modern desktop & mobile web browser
-- IE11 is supported via bundle polyfill
+- Every modern desktop and mobile browser is supported
+- Integrates with Node, Angular, React, and Electron
+- Compatible with PowerPoint, Keynote, and more
 
-**Comprehensive Objects**
+## Full Featured
 
-- Create any object type: Charts, Images, Links, Media, Shapes, Tables, Text
-- SVG images and YouTube videos are supported when viewed in PowerPoint online/2019+ desktop application
+- All major object types are available (charts, shapes, tables, etc.)
+- Master Slides for academic/corporate branding
+- SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts
 
-**Modern Architecture**
+## Simple and Powerful
 
-- Supports client web browsers, NodeJS, and React/Angular/Electron
-- Export methods return promises
-- Client browsers have only a single dependency: JSZip
-- Easy Angular/React integration (available via npm, cjs or es files)
-- Typescript definitions included
+- The absolute easiest PowerPoint library to use
+- Learn as you code will full typescript definitions included
+- Tons of demo code comes included (over 75 slides of features)
 
-**HTML to PowerPoint**
+## Export Your Way
+
+- Exports files direct to client browsers with proper MIME-type
+- Other export formats available: base64, blob, stream, etc.
+- Presentation compression options and more
+
+## HTML to PowerPoint
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
-# Live Demo
+# Live Demos
 
-Use the online demo to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
+Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
-- [Simple Demo](https://gitbrent.github.io/PptxGenJS)
-- [Complete Feature Demo](https://gitbrent.github.io/PptxGenJS/demo/)
-- [PptxGenJS jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
+- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demos/)
 
 # Installation
-
-## CDN
-
-[jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
-
-Bundle: Modern Browsers and IE11
-
-```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.1/dist/pptxgen.bundle.js"></script>
-```
-
-Min files: Modern Browsers
-
-```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.1/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.1/dist/pptxgen.min.js"></script>
-```
-
-## Download
-
-[GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
-
-Bundle: Modern Browsers and IE11
-
-```html
-<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
-```
-
-Min files: Modern Browsers
-
-```html
-<script src="PptxGenJS/libs/jszip.min.js"></script>
-<script src="PptxGenJS/dist/pptxgen.min.js"></script>
-```
 
 ## Npm
 
@@ -123,6 +95,42 @@ npm install pptxgenjs --save
 
 ```bash
 yarn add pptxgenjs
+```
+
+## CDN
+
+[jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
+
+Bundle: Modern Browsers and IE11
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+```
+
+Min files: Modern Browsers
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+```
+
+## Download
+
+[GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
+
+Bundle: Modern Browsers
+
+- Use the bundle for IE11 support
+
+```html
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+```
+
+Min files: Modern Browsers
+
+```html
+<script src="PptxGenJS/libs/jszip.min.js"></script>
+<script src="PptxGenJS/dist/pptxgen.min.js"></script>
 ```
 
 ## Additional Builds
@@ -155,7 +163,7 @@ let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile();
 ```
 
 ### Script/Web Browser
@@ -173,7 +181,7 @@ let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile();
 ```
 
 That's really all there is to it!
@@ -184,21 +192,21 @@ That's really all there is to it!
 
 Full documentation and code examples are available
 
-- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)
-- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)
-- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)
-- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
-- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving.html)
-- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
-- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts.html)
-- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images.html)
-- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media.html)
-- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
-- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
-- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
-- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html)
-- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
-- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration.html)
+- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create/)
+- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options/)
+- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide/)
+- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options/)
+- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving/)
+- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters/)
+- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts/)
+- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images/)
+- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media/)
+- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes/)
+- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables/)
+- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text/)
+- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes/)
+- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
+- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
 
 ---
 
@@ -209,13 +217,12 @@ Easily convert HTML tables to PowerPoint presentations in a single call.
 ```javascript
 let pptx = new PptxGenJS();
 pptx.tableToSlides("tableElementId");
-pptx.writeFile("HTML2PPT.pptx");
+pptx.writeFile({ fileName: "html2pptx-demo.pptx" });
 ```
 
 Learn more:
 
-- [HTML-to-PowerPoint Documentation](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html)
-- [Online HTML-to-PowerPoint Demo](https://gitbrent.github.io/PptxGenJS/demo/#html2pptx)
+- [HTML-to-PowerPoint Docs/Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
 
 ---
 
@@ -264,8 +271,14 @@ PowerPoint shape definitions and some XML code via [Officegen Project](https://g
 
 ---
 
+# Sponsor Us
+
+If you find this library useful, please consider sponsoring us through a [donation](https://gitbrent.github.io/PptxGenJS/sponsor/)
+
+---
+
 # License
 
-Copyright &copy; 2015-2020 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)

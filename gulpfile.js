@@ -1,6 +1,8 @@
 const pkg = require('./package.json')
 const rollup = require('rollup')
-const rollupTypescript = require('rollup-plugin-typescript2')
+const { resolve } = require('@rollup/plugin-node-resolve')
+const { commonjs } = require('@rollup/plugin-commonjs')
+const typescript = require('rollup-plugin-typescript2')
 const { watch, series } = require('gulp')
 const gulp = require('gulp'),
 	concat = require('gulp-concat'),
@@ -14,7 +16,7 @@ gulp.task('build', () => {
 		.rollup({
 			input: './src/pptxgen.ts',
 			external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {})],
-			plugins: [rollupTypescript()]
+			plugins: [typescript(), resolve, commonjs]
 		})
 		.then(bundle => {
 			bundle.write({
@@ -31,7 +33,8 @@ gulp.task('build', () => {
 		.then(bundle => {
 			bundle.write({
 				file: './src/bld/pptxgen.cjs.js',
-				format: 'cjs'
+				format: 'cjs',
+				exports: 'default'
 			})
 			return bundle
 		})
@@ -65,6 +68,7 @@ gulp.task('bundle', () => {
 		.pipe(ignore.exclude(['**/*.map']))
 		.pipe(source.write('./'))
 		.pipe(gulp.dest('./dist/'))
+		.pipe(gulp.dest('./demos/browser/js/'))
 })
 
 gulp.task('cjs', () => {
@@ -110,5 +114,5 @@ gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTe
 
 // Watch
 exports.default = function() {
-	watch('src/*.ts', series('build', 'min', 'cjs', 'es', 'bundle'))
+	watch('src/*.ts', series('build', 'min', 'cjs', 'es', 'bundle', 'nodeTest'))
 }

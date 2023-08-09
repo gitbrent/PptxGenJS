@@ -5,7 +5,7 @@
     "dist/pptxgen.js"
   ],
   "dependencies": {
-    "jszip": "^3.4.0"
+    "jszip": "^3.10.1"
   },
   "authors": [
     "Brent Ely <https://github.com/gitbrent>"
@@ -37,6 +37,8 @@
     "**/.*",
     "node_modules",
     "bower_components",
+	"demo",
+	"docs",
     "test",
     "tests"
   ]
