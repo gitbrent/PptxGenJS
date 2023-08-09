@@ -1181,14 +1181,7 @@ export interface OptsChartData {
 	 */
 	// color?: string // TODO: WIP: (Pull #727)
 }
-/*
-	index?: number
-	name?: string
-	labels?: string[]
-	values?: number[]
-	sizes?: number[]
-	errorrate?: number[]
-*/
+
 // Used internally, probably shouldn't be used by end users
 export interface IOptsChartData extends OptsChartData {
 	labels?: string[][]
