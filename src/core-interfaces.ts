@@ -604,15 +604,6 @@ export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 */
 	path?: string
 }
-export interface OptsChartData {
-	index?: number
-	name?: string
-	labels?: string[]
-	values?: number[]
-	sizes?: number[]
-	errorrate?: number[]
-}
-
 // shapes =========================================================================================
 
 export interface ShapeProps extends PositionProps, ObjectNameProps {
@@ -1182,10 +1173,22 @@ export interface OptsChartData {
 	 */
 	values?: number[]
 	/**
+	 * Error rates to display in charts
+	 */
+	errorrate?: number[]
+	/**
 	 * Override `chartColors`
 	 */
 	// color?: string // TODO: WIP: (Pull #727)
 }
+/*
+	index?: number
+	name?: string
+	labels?: string[]
+	values?: number[]
+	sizes?: number[]
+	errorrate?: number[]
+*/
 // Used internally, probably shouldn't be used by end users
 export interface IOptsChartData extends OptsChartData {
 	labels?: string[][]
