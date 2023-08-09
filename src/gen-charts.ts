@@ -374,46 +374,6 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 					6|May-17 |   75|   93|  170|
 					-|-------|-----|-----|-----|
 				*/
-				/*
-				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-				strSheetXml += '<row r="1" spans="1:' + (fulllength + 1) + '">'
-				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
-				for (let idx = 1; idx <= data.length; idx++) {
-					// FIXED: Max cols is over 52 now
-					strSheetXml += '<c r="' + getColumnLetter(idx) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
-					strSheetXml += '<v>' + idx + '</v>'
-					strSheetXml += '</c>'
-				}
-
-				let errorcount = 1;
-				for (let i = 0; i < data.length; i++) {
-					let idx = data.length + errorcount;
-					if (!data[i].errorrate) {
-						continue;
-					}
-					if(data[i].errorrate.length < 1){
-						continue;
-					}
-					strSheetXml += '<c r="' + getColumnLetter(idx) + '1" t="s">' // NOTE: use `t="s"` for label cols!
-					strSheetXml += '<v>' + idx + '</v>'
-					strSheetXml += '</c>'
-					errorcount++;
-				}
-
-				strSheetXml += '</row>'
-
-				// B: Add data row(s) for each category
-				data[0].labels.forEach((_cat, idx) => {
-					// Leading col is reserved for the label, so hard-code it, then loop over col values
-					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (fulllength + 1) + '">'
-					strSheetXml += '<c r="A' + (idx + 2) + '" t="s">'
-					strSheetXml += '<v>' + (fulllength + idx + 1) + '</v>'
-					strSheetXml += '</c>'
-					for (let idy = 0; idy < data.length; idy++) {
-						strSheetXml += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">' //NOTE: idy+1 to start from column B
-						strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>'
-						strSheetXml += '</c>'
-				*/
 
 				if (!IS_MULTI_CAT_AXES) {
 					// A: Create header row first
