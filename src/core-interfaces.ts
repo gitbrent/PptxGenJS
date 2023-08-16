@@ -1864,6 +1864,7 @@ export interface PresentationProps {
 	subject: string
 	theme: ThemeProps
 	title: string
+	firstSlideNum: number
 }
 // PRIVATE interface
 export interface IPresentationProps extends PresentationProps {
