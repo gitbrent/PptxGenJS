@@ -1334,6 +1334,12 @@ declare namespace PptxGenJS {
 		 * @default 'Calibri'
 		 */
 		bodyFontFace?: string
+			/**
+	 * Theme hex colors in following order: Text/Background - Dark 1, Text/Background - Light 1, Text/Background - Dark 2, Text/Background - Light 2, Accent 1, Accent 2, Accent 3, Accent 4, Accent 5, Accent 6, Hyperlink, Followed Hyperlink
+	 * @example '['000000', 'FFFFFF', '44546A', 'E7E6E6', '4472C4', 'ED7D31', 'A5A5A5', 'FFC000', '5B9BD5', '70AD47', '0563C1', '954F72']'
+	 * @default '['000000', 'FFFFFF', '44546A', 'E7E6E6', '4472C4', 'ED7D31', 'A5A5A5', 'FFC000', '5B9BD5', '70AD47', '0563C1', '954F72']'
+	 */
+	themeColors?: string[]
 	}
 
 	// image / media ==================================================================================
