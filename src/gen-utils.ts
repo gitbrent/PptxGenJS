@@ -182,7 +182,8 @@ function handleModifiedColorProps(color: ModifiedThemeColor): string {
  */
 export function createColorElement (colorInput: string | SCHEME_COLORS | ModifiedThemeColor, innerElements?: string): string {
 	let colorStr = typeof colorInput === 'object' ? colorInput.baseColor : colorInput
-	let colorVal = (colorStr || '').replace('#', '')
+	colorStr =  typeof colorStr === 'string' ? colorStr : '#FFFFFF'
+	let colorVal = (colorStr || '').replace('#', '');
 
 	if (typeof colorInput == 'object') {
 		innerElements = (innerElements || '') + handleModifiedColorProps(colorInput)

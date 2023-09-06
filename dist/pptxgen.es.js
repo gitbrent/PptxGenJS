@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.2 @ 2023-08-30T09:16:26.937Z */
+/* PptxGenJS 3.13.0-beta.2 @ 2023-09-06T14:26:55.431Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -826,6 +826,7 @@ function handleModifiedColorProps(color) {
  */
 function createColorElement(colorInput, innerElements) {
     var colorStr = typeof colorInput === 'object' ? colorInput.baseColor : colorInput;
+    colorStr = typeof colorStr === 'string' ? colorStr : '#FFFFFF';
     var colorVal = (colorStr || '').replace('#', '');
     if (typeof colorInput == 'object') {
         innerElements = (innerElements || '') + handleModifiedColorProps(colorInput);
