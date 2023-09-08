@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps } from './core-interfaces'
+import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, ModifiedThemeColor } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -120,6 +120,53 @@ export function rgbToHex (r: number, g: number, b: number): string {
 	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase()
 }
 
+const percentColorModifiers = [
+	'alpha',
+	'alphaMod',
+	'alphaOff',
+	'blue',
+	'blueMod',
+	'blueOff',
+	'green',
+	'greenMod',
+	'greenOff',
+	'red',
+	'redMod',
+	'redOff',
+	'hue',
+	'hueMod',
+	'hueOff',
+	'lum',
+	'lumMod',
+	'lumOff',
+	'sat',
+	'satMod',
+	'satOff',
+	'shade',
+	'tint',
+]
+
+const flagColorModifiers = ['comp', 'gray', 'inv', 'gamma']
+
+function handleModifiedColorProps(color: ModifiedThemeColor): string {
+	let output = ''
+
+	for (let modifier of percentColorModifiers) {
+		let modifierValue = color[modifier]
+		if (modifierValue !== undefined) {
+			output += `<a:${modifier} val="${Math.round(modifierValue * 1000)}"/>`
+		}
+	}
+
+	for (let modifier of flagColorModifiers) {
+		if (color[modifier]) {
+			output += `<a:${modifier}/>`
+		}
+	}
+
+	return output
+}
+
 /**  TODO: FUTURE: TODO-4.0:
  * @date 2022-04-10
  * @tldr this s/b a private method with all current calls switched to `genXmlColorSelection()`
@@ -133,8 +180,14 @@ export function rgbToHex (r: number, g: number, b: number): string {
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-export function createColorElement (colorStr: string | SCHEME_COLORS, innerElements?: string): string {
-	let colorVal = (colorStr || '').replace('#', '')
+export function createColorElement (colorInput: string | SCHEME_COLORS | ModifiedThemeColor, innerElements?: string): string {
+	let colorStr = typeof colorInput === 'object' ? colorInput.baseColor : colorInput
+	colorStr =  typeof colorStr === 'string' ? colorStr : '#FFFFFF'
+	let colorVal = (colorStr || '').replace('#', '');
+
+	if (typeof colorInput == 'object') {
+		innerElements = (innerElements || '') + handleModifiedColorProps(colorInput)
+	}
 
 	if (
 		!REGEX_HEX_COLOR.test(colorVal) &&
@@ -187,12 +240,16 @@ export function createGlowElement (options: TextGlowProps, defaults: TextGlowPro
  */
 export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineProps): string {
 	let fillType = 'solid'
-	let colorVal = ''
+	let colorVal: string | ModifiedThemeColor = ''
 	let internalElements = ''
 	let outText = ''
 
 	if (props) {
 		if (typeof props === 'string') colorVal = props
+		else if ('baseColor' in props) {
+			internalElements = handleModifiedColorProps(props)
+			colorVal = props.baseColor
+		}
 		else {
 			if (props.type) fillType = props.type
 			if (props.color) colorVal = props.color

@@ -899,7 +899,7 @@ declare namespace PptxGenJS {
 		 * Color (hex format)
 		 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 		 */
-		fill?: HexColor
+		fill?: Color
 
 		/**
 		 * source URL
@@ -913,10 +913,44 @@ declare namespace PptxGenJS {
 	 */
 	export type HexColor = string
 	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
-	export type Color = HexColor | ThemeColor
+	export type Color = HexColor | ThemeColor | ModifiedThemeColor
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
+
+	export interface ModifiedThemeColor {
+		baseColor: HexColor | ThemeColor
+		/**
+		 * - number 0-100
+		 */
+		alpha?: number
+		alphaMod?: number
+		alphaOff?: number
+		blue?: number
+		blueMod?: number
+		blueOff?: number
+		green?: number
+		greenMod?: number
+		greenOff?: number
+		red?: number
+		redMod?: number
+		redOff?: number
+		hue?: number
+		hueMod?: number
+		hueOff?: number
+		lum?: number
+		lumMod?: number
+		lumOff?: number
+		sat?: number
+		satMod?: number
+		satOff?: number
+		shade?: number
+		tint?: number
+		comp?: boolean
+		gray?: boolean
+		inv?: boolean
+		gamma?: boolean
+	}
 
 	// used by charts, shape, text
 	export interface BorderProps {
@@ -1300,6 +1334,11 @@ declare namespace PptxGenJS {
 		 * @default 'Calibri'
 		 */
 		bodyFontFace?: string
+		/**
+	 	 * Theme hex colors in following order: Text/Background - Dark 1, Text/Background - Light 1, Text/Background - Dark 2, Text/Background - Light 2, Accent 1, Accent 2, Accent 3, Accent 4, Accent 5, Accent 6, Hyperlink, Followed Hyperlink
+	 	 * @example and default['000000', 'FFFFFF', '44546A', 'E7E6E6', '4472C4', 'ED7D31', 'A5A5A5', 'FFC000', '5B9BD5', '70AD47', '0563C1', '954F72']
+	 	 */
+		themeColors?: string[]
 	}
 
 	// image / media ==================================================================================
@@ -1992,7 +2031,7 @@ declare namespace PptxGenJS {
 		 * Gridline color (hex)
 		 * @example 'FF3399'
 		 */
-		color?: HexColor
+		color?: Color
 		/**
 		 * Gridline size (points)
 		 */
@@ -2036,7 +2075,7 @@ declare namespace PptxGenJS {
 		 * Axis position
 		 */
 		axisPos?: 'b' | 'l' | 'r' | 't'
-		chartColors?: HexColor[]
+		chartColors?: Color[]
 		/**
 		 * opacity (0 - 100)
 		 * @example 50 // 50% opaque
@@ -2044,7 +2083,7 @@ declare namespace PptxGenJS {
 		chartColorsOpacity?: number
 		dataBorder?: BorderProps
 		displayBlanksAs?: string
-		invertedColors?: HexColor[]
+		invertedColors?: Color[]
 		lang?: string
 		layout?: PositionProps
 		shadow?: ShadowProps
@@ -2119,7 +2158,7 @@ declare namespace PptxGenJS {
 		/**
 		 * @deprecated v3.11.0 - use `plotArea.fill`
 		 */
-		fill?: HexColor
+		fill?: Color
 	}
 	export interface IChartPropsAxisCat {
 		/**
@@ -2550,7 +2589,7 @@ declare namespace PptxGenJS {
 		 * @example 'FF3399'
 		 * @default '000000' (DEF_FONT_COLOR)
 		 */
-		color?: HexColor
+		color?: Color
 		/**
 		 * Whether slide is hidden
 		 * @default false
