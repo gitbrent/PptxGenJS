@@ -40,6 +40,7 @@ import {
 	ShapeProps,
 	SlideLayout,
 	SlideMasterProps,
+	SolidShapeFillProps,
 	TableCell,
 	TableProps,
 	TableRow,
@@ -316,7 +317,14 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
 	if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string')) { options.plotArea.border.color = DEF_CHART_BORDER.color }
 	if (options.border) options.plotArea.border = options.border // @deprecated [[remove in v4.0]]
 	options.plotArea.fill = options.plotArea.fill || { color: null, transparency: null }
-	if (options.fill) options.plotArea.fill.color = options.fill // @deprecated [[remove in v4.0]]
+	if (options.fill) {
+		const fill: SolidShapeFillProps = {
+			type: 'solid',
+			color: options.fill, // @deprecated [[remove in v4.0]]
+			transparency: null,
+		}
+		options.plotArea.fill = fill
+	}
 	//
 	options.chartArea = options.chartArea || {}
 	options.chartArea.border = options.chartArea.border && typeof options.chartArea.border === 'object' ? options.chartArea.border : null
@@ -897,8 +905,8 @@ export function addTableDefinition (
 	// STEP 4: Convert units to EMU now (we use different logic in makeSlide->table - smartCalc is not used)
 	if (opt.x && opt.x < 20) opt.x = inch2Emu(opt.x)
 	if (opt.y && opt.y < 20) opt.y = inch2Emu(opt.y)
-	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
-	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
+	if (opt.w && typeof opt.w === 'number' && opt.w < 20) opt.w = inch2Emu(opt.w)
+	if (opt.h && typeof opt.h === 'number' && opt.h < 20) opt.h = inch2Emu(opt.h)
 
 	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to unset `autoPage` while here
 	arrRows.forEach(row => {
