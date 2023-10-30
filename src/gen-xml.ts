@@ -1,3 +1,4 @@
+/* eslint-disable no-tabs */
 /**
  * PptxGenJS: XML Generation
  */
@@ -17,6 +18,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
+	FontInfo,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -1364,9 +1366,15 @@ export function genXmlPlaceholder (placeholderObj: ISlideObject): string {
  * @param {PresSlide} masterSlide - master slide
  * @returns XML
  */
-export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout[], masterSlide?: PresSlide): string {
+export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout[], masterSlide?: PresSlide, hasEmbedFonts?: boolean): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+
+	// for fntdata
+	if (hasEmbedFonts) {
+		strXml += '<Default Extension="fntdata" ContentType="application/x-fontdata"/>'
+	}
+
 	strXml += '<Default Extension="xml" ContentType="application/xml"/>'
 	strXml += '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
 	strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>'
@@ -1517,7 +1525,7 @@ export function makeXmlCore (title: string, subject: string, author: string, rev
  * @param {PresSlide[]} slides - Presenation Slides
  * @returns XML
  */
-export function makeXmlPresentationRels (slides: PresSlide[]): string {
+export function makeXmlPresentationRels (slides: PresSlide[], fonts: FontInfo[], updateFonts: (nFonts: FontInfo[]) => void): string {
 	let intRelNum = 1
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -1531,9 +1539,18 @@ export function makeXmlPresentationRels (slides: PresSlide[]): string {
 		`<Relationship Id="rId${intRelNum + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>` +
 		`<Relationship Id="rId${intRelNum + 2}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>` +
 		`<Relationship Id="rId${intRelNum + 3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>` +
-		`<Relationship Id="rId${intRelNum + 4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>` +
-		'</Relationships>'
+		`<Relationship Id="rId${intRelNum + 4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>`
 
+	const nFonts = fonts.slice()
+	// add font rels
+	fonts.forEach(({ fntDataPath }, fontIdx) => {
+		const rId = `rId${intRelNum + 5 + fontIdx}`
+		nFonts[fontIdx].rId = rId
+		strXml += `<Relationship Id="${rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/font" Target="${fntDataPath}"/>`
+	})
+	updateFonts(nFonts)
+
+	strXml += '</Relationships>'
 	return strXml
 }
 
@@ -1766,9 +1783,11 @@ export function makeXmlTheme (pres: IPresentationProps): string {
  * @return {string} XML
  */
 export function makeXmlPresentation (pres: IPresentationProps): string {
+	const hasEmbedFonts = pres.fonts.length > 0
+
 	let strXml =
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
-		'<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
+		`<p:presentation ${hasEmbedFonts ? 'embedTrueTypeFonts="1" ' : ''}xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +
 		`xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ${pres.rtlMode ? 'rtl="1"' : ''} saveSubsetFonts="1" autoCompressPictures="0">`
 
 	// STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
@@ -1791,14 +1810,14 @@ export function makeXmlPresentation (pres: IPresentationProps): string {
 	strXml += `<p:notesSz cx="${pres.presLayout.height}" cy="${pres.presLayout.width}"/>`
 
 	// STEP 5: Add text styles
-	strXml += '<p:defaultTextStyle>'
-	for (let idy = 1; idy < 10; idy++) {
-		strXml +=
-			`<a:lvl${idy}pPr marL="${(idy - 1) * 457200}" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">` +
-			'<a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
-			`</a:defRPr></a:lvl${idy}pPr>`
-	}
-	strXml += '</p:defaultTextStyle>'
+	// strXml += '<p:defaultTextStyle>'
+	// for (let idy = 1; idy < 10; idy++) {
+	// 	strXml +=
+	// 		`<a:lvl${idy}pPr marL="${(idy - 1) * 457200}" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">` +
+	// 		'<a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
+	// 		`</a:defRPr></a:lvl${idy}pPr>`
+	// }
+	// strXml += '</p:defaultTextStyle>'
 
 	// STEP 6: Add Sections (if any)
 	if (pres.sections && pres.sections.length > 0) {
@@ -1812,6 +1831,19 @@ export function makeXmlPresentation (pres: IPresentationProps): string {
 		strXml += '</p14:sectionLst></p:ext>'
 		strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
 		strXml += '</p:extLst>'
+	}
+
+	if (hasEmbedFonts) {
+		strXml += '<p:embeddedFontLst>'
+
+		pres.fonts.forEach(({ rId, typeface }) => {
+			// fontdata
+			if (rId) {
+				strXml += `<p:embeddedFont><p:font typeface="${typeface}" /><p:regular r:id="${rId}"/></p:embeddedFont>`
+			}
+		})
+
+		strXml += '</p:embeddedFontLst>'
 	}
 
 	// Done

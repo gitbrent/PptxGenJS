@@ -1870,4 +1870,16 @@ export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
+	fonts: FontInfo[]
+}
+
+export interface AddFontProps {
+	typeface: string
+	fontBlob: Blob
+}
+
+export interface FontInfo extends AddFontProps {
+	/** fntData relative path */
+	fntDataPath?: string
+	rId?: string
 }
