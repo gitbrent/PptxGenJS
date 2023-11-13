@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { PresLayout, TextGlowProps, PresSlide, SolidShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, LinearGradientShapeFillProps } from './core-interfaces'
+import { PresLayout, TextGlowProps, PresSlide, SolidShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, LinearGradientShapeFillProps, PatternShapeFillProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -182,17 +182,17 @@ export function createGlowElement (options: TextGlowProps, defaults: TextGlowPro
 
 /**
  * Create color selection
- * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
+ * @param {Color | ShapeFillProps | ShapeLineProps | PatternShapeFillProps} props fill props
  * @returns XML string
  */
-export function genXmlColorSelection (props: Color | SolidShapeFillProps | ShapeLineProps | LinearGradientShapeFillProps): string {
+export function genXmlColorSelection (props: Color | SolidShapeFillProps | ShapeLineProps | LinearGradientShapeFillProps | PatternShapeFillProps): string {
 	if (!props) {
 		return ''
 	}
 
 	let outText = ''
 
-	let safeProps: SolidShapeFillProps | ShapeLineProps | LinearGradientShapeFillProps = {}
+	let safeProps: SolidShapeFillProps | ShapeLineProps | LinearGradientShapeFillProps | PatternShapeFillProps = {}
 	if (typeof props === 'string') {
 		safeProps.type = 'solid'
 		safeProps.color = props
@@ -260,7 +260,17 @@ export function genXmlColorSelection (props: Color | SolidShapeFillProps | Shape
 			outText += '</a:gradFill>'
 			break
 		}
-
+		case 'patternFill': {
+			outText += `<a:pattFill prst="${safeProps.prst}">
+				<a:bgClr>
+					<a:srgbClr val="${safeProps.bgColor}"/>
+				</a:bgClr>
+				<a:fgClr>
+					<a:srgbClr val="${safeProps.color}"/>
+				</a:fgClr>
+			</a:pattFill>`
+			break
+		}
 		default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
 			outText += ''
 			break

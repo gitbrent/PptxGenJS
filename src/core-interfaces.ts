@@ -88,6 +88,7 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type PresetPatternValues = 'cross' | 'dkDnDiag' | 'dkHorz' | 'dkUpDiag' | 'dkVert' | 'dashDnDiag' | 'dashHorz' | 'dashUpDiag' | 'dashVert' | 'diagBrick' | 'diagCross' | 'divot' | 'dotGrid' | 'dotDmnd' | 'dnDiag' | 'horz' | 'horzBrick' | 'lgCheck' | 'lgConfetti' | 'lgGrid' | 'ltDnDiag' | 'ltHorz' | 'ltUpDiag' | 'ltVert' | 'narHorz' | 'narVert' | 'openDmnd' | 'pct10' | 'pct20' | 'pct25' | 'pct30' | 'pct40' | 'pct5' | 'pct50' | 'pct60' | 'pct70' | 'pct75' | 'pct80' | 'pct90' | 'plaid' | 'shingle' | 'smCheck' | 'smConfetti' | 'smGrid' | 'solidDmnd' | 'sphere' | 'trellis' | 'upDiag' | 'vert' | 'wave' | 'weave' | 'wdDnDiag' | 'wdUpDiag' | 'zigZag'
 
 // used by charts, shape, text
 export interface BorderProps {
@@ -258,6 +259,32 @@ export interface SolidShapeFillProps {
 	 */
 	alpha?: number
 }
+
+export interface PatternShapeFillProps {
+	/**
+	 * Foreground color
+	 * - `HexColor`
+	 * @example 'FF0000' // hex color (red)
+	 */
+	color?: HexColor
+	/**
+	 * Background color
+	 * - `HexColor`
+	 * @example 'FF0000' // hex color (red)
+	 */
+	bgColor?: HexColor
+	/**
+	 * Fill type
+	 */
+	type: 'patternFill'
+
+	/**
+	 * Preset Pattern
+	 * @default 'cross'
+	 */
+	prst?: PresetPatternValues
+}
+
 export interface ShapeLineProps extends SolidShapeFillProps {
 	/**
 	 * Line width (pt)
