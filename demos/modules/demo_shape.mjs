@@ -98,20 +98,35 @@ function genSlide01(pptx) {
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, {
 		x: 0.4,
 		y: 4.3,
-		w: 6.0,
+		w: 5.0,
 		h: 3.0,
 		fill: { color: pptx.colors.ACCENT5 },
 		line: { color: pptx.colors.ACCENT1, width: 3 },
 		shapeName: "First Right Triangle",
 	});
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, {
-		x: 7.0,
+		x: 8.0,
 		y: 4.3,
-		w: 6.0,
+		w: 5.0,
 		h: 3.0,
 		fill: { color: pptx.colors.ACCENT5 },
 		line: { color: pptx.colors.ACCENT1, width: 2 },
 		flipH: true,
+	});
+	slide.addShape(pptx.shapes.RECTANGLE, {
+		x: 5.1,
+		y: 6,
+		w: 3.0,
+		h: 1,
+		fill: {
+			type: "linearGradient",
+			stops: [
+				{ position: 0, color: '000000', transparency: 10 },
+				{ position: 100, color: '333333', transparency: 50 },
+			],
+			angle: 45,
+			scaled: 1,
+		},
 	});
 }
 
@@ -253,7 +268,7 @@ function genSlide02(pptx) {
 		align: "center",
 		x: 0.4,
 		y: 4.3,
-		w: 6,
+		w: 5,
 		h: 3,
 		fill: { color: pptx.colors.ACCENT5 },
 		line: { color: "696969", width: 3 },
@@ -261,13 +276,30 @@ function genSlide02(pptx) {
 	slide.addText("HYPERLINK-SHAPE", {
 		shape: pptx.shapes.RIGHT_TRIANGLE,
 		align: "center",
-		x: 7.0,
+		x: 8.0,
 		y: 4.3,
-		w: 6,
+		w: 5,
 		h: 3,
 		fill: { color: pptx.colors.ACCENT5 },
 		line: { color: "696969", width: 2 },
 		flipH: true,
 		hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" },
+	});
+	slide.addText("LINEAR GRADIENT", {
+		shape: pptx.shapes.RECTANGLE,
+		align: "center",
+		x: 5.1,
+		y: 6,
+		w: 3.0,
+		h: 1,
+		fill: {
+			type: "linearGradient",
+			stops: [
+				{ position: 0, color: '000000', transparency: 10 },
+				{ position: 100, color: '333333', transparency: 50 },
+			],
+			angle: 45,
+			scaled: 1,
+		},
 	});
 }
