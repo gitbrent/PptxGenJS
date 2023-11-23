@@ -1,12 +1,12 @@
 {
-  "name": "pptxgenjs",
-  "version": "3.13.0-beta.1",
+  "name": "pptxgenjs-pro",
+  "version": "3.14.0",
   "author": {
-    "name": "Brent Ely",
-    "url": "https://github.com/gitbrent/"
+    "name": "Maxpsc",
+    "url": "https://github.com/Maxpsc"
   },
-  "description": "Create JavaScript PowerPoint Presentations",
-  "homepage": "https://gitbrent.github.io/PptxGenJS/",
+  "description": "Create JavaScript PowerPoint Presentations, forked from gitbrent/PptxGenJS",
+  "homepage": "https://github.com/Maxpsc/PptxGenJS",
   "license": "MIT",
   "main": "dist/pptxgen.cjs.js",
   "module": "dist/pptxgen.es.js",

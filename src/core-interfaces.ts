@@ -1080,6 +1080,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 */
 	rtlMode?: boolean
 	shadow?: ShadowProps
+	textShadow?: ShadowProps
 	shape?: SHAPE_NAME
 	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
@@ -1870,4 +1871,16 @@ export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
+	fonts: FontInfo[]
+}
+
+export interface AddFontProps {
+	typeface: string
+	fontBlob: Blob
+}
+
+export interface FontInfo extends AddFontProps {
+	/** fntData relative path */
+	fntDataPath?: string
+	rId?: string
 }
