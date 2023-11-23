@@ -37,6 +37,7 @@ import {
 	convertRotationDegrees,
 	createColorElement,
 	createGlowElement,
+	createTextShadow,
 	encodeXmlEntities,
 	genXmlColorSelection,
 	getSmartParseNumber,
@@ -994,7 +995,18 @@ function genXmlTextRunProperties (opts: ObjectOptions | TextPropsOptions, isDefa
 		if (opts.color) runProps += genXmlColorSelection({ color: opts.color, transparency: opts.transparency })
 		if (opts.highlight) runProps += `<a:highlight>${createColorElement(opts.highlight)}</a:highlight>`
 		if (typeof opts.underline === 'object' && opts.underline.color) runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
-		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
+
+		if (opts.glow || opts.textShadow) {
+			runProps += '<a:effectLst>'
+			if (opts.glow) {
+				runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW)
+			}
+			if (opts.textShadow) {
+				runProps += createTextShadow(opts.textShadow)
+			}
+			runProps += '</a:effectLst>'
+		}
+
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
 			runProps += `<a:latin typeface="${opts.fontFace}" pitchFamily="34" charset="0"/><a:ea typeface="${opts.fontFace}" pitchFamily="34" charset="-122"/><a:cs typeface="${opts.fontFace}" pitchFamily="34" charset="-120"/>`

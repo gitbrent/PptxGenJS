@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.1 @ 2023-10-30T12:27:07.201Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2023-11-23T12:40:58.512Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -800,6 +800,15 @@ function createColorElement(colorStr, innerElements) {
     var tagName = REGEX_HEX_COLOR.test(colorVal) ? 'srgbClr' : 'schemeClr';
     var colorAttr = 'val="' + (REGEX_HEX_COLOR.test(colorVal) ? colorVal.toUpperCase() : colorVal) + '"';
     return innerElements ? "<a:".concat(tagName, " ").concat(colorAttr, ">").concat(innerElements, "</a:").concat(tagName, ">") : "<a:".concat(tagName, " ").concat(colorAttr, "/>");
+}
+function createTextShadow(options) {
+    var strXml = '';
+    var nOptions = __assign(__assign({}, options), { type: 'outer', offset: valToPts(options.offset || 4), angle: Math.round((options.angle || 270) * 60000), opacity: Math.round((options.opacity || 0.75) * 100000), color: options.color || DEF_TEXT_SHADOW.color });
+    strXml += " <a:outerShdw ".concat(nOptions.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : '', " blurRad=\"").concat(nOptions.blur, "\" dist=\"").concat(nOptions.offset, "\" dir=\"").concat(nOptions.angle, "\">");
+    strXml += " <a:srgbClr val=\"".concat(nOptions.color, "\">");
+    strXml += " <a:alpha val=\"".concat(nOptions.opacity, "\"/></a:srgbClr>");
+    strXml += ' </a:outerShdw>';
+    return strXml;
 }
 /**
  * Creates `a:glow` element
@@ -5939,8 +5948,16 @@ function genXmlTextRunProperties(opts, isDefault) {
             runProps += "<a:highlight>".concat(createColorElement(opts.highlight), "</a:highlight>");
         if (typeof opts.underline === 'object' && opts.underline.color)
             runProps += "<a:uFill>".concat(genXmlColorSelection(opts.underline.color), "</a:uFill>");
-        if (opts.glow)
-            runProps += "<a:effectLst>".concat(createGlowElement(opts.glow, DEF_TEXT_GLOW), "</a:effectLst>");
+        if (opts.glow || opts.textShadow) {
+            runProps += '<a:effectLst>';
+            if (opts.glow) {
+                runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW);
+            }
+            if (opts.textShadow) {
+                runProps += createTextShadow(opts.textShadow);
+            }
+            runProps += '</a:effectLst>';
+        }
         if (opts.fontFace) {
             // NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
             runProps += "<a:latin typeface=\"".concat(opts.fontFace, "\" pitchFamily=\"34\" charset=\"0\"/><a:ea typeface=\"").concat(opts.fontFace, "\" pitchFamily=\"34\" charset=\"-122\"/><a:cs typeface=\"").concat(opts.fontFace, "\" pitchFamily=\"34\" charset=\"-120\"/>");

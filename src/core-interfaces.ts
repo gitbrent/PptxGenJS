@@ -1080,6 +1080,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 */
 	rtlMode?: boolean
 	shadow?: ShadowProps
+	textShadow?: ShadowProps
 	shape?: SHAPE_NAME
 	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
