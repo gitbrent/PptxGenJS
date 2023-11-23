@@ -1522,6 +1522,8 @@ declare namespace PptxGenJS {
 		 */
 		shadow?: ShadowProps
 
+		textShadow?: ShadowProps
+
 		/**
 		 * @deprecated v3.3.0
 		 */
@@ -1885,6 +1887,7 @@ declare namespace PptxGenJS {
 		 */
 		rtlMode?: boolean
 		shadow?: ShadowProps
+		textShadow?: ShadowProps
 		shape?: SHAPE_NAME
 		strike?: boolean | 'dblStrike' | 'sngStrike'
 		subscript?: boolean
