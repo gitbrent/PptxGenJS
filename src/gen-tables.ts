@@ -469,12 +469,10 @@ export function getSlidesForTableRows (tableRows: TableCell[][] = [], tableProps
 			// 3: set array of words that comprise this line
 			const currLine: TableCell[] = srcCell._lines.shift()
 
-			// 4: create new line by adding all words from curr line (or add empty if there are no words to avoid "needs repair" issue triggered when cells have null content)
-			if (Array.isArray(tgtCell.text)) {
-				if (currLine) tgtCell.text = tgtCell.text.concat(currLine)
-				else if (tgtCell.text.length === 0) tgtCell.text = tgtCell.text.concat({ _type: SLIDE_OBJECT_TYPES.tablecell, text: '' })
-				// IMPORTANT: ^^^ add empty if there are no words to avoid "needs repair" issue triggered when cells have null content
-			}
+            // 4: create new line by adding all words from curr line
+            if (Array.isArray(tgtCell.text) && currLine) {
+                tgtCell.text = tgtCell.text.concat(currLine);
+            }
 
 			// 5: increase table height by the curr line height (if we're on the last column)
 			if (currCellIdx === rowCellLines.length - 1) emuTabCurrH += emuLineMaxH
@@ -486,6 +484,17 @@ export function getSlidesForTableRows (tableRows: TableCell[][] = [], tableProps
 			const brent = rowCellLines.map(cell => cell._lines.length).reduce((prev, next) => prev + next)
 			if (brent === 0) isDone = true
 		}
+
+		// Fill in any empty text cells that may still exist
+        // NOTE: This fixes the "needs repair" issue when a cell has no text
+        currTableRow.forEach(function (cell) {
+            if (Array.isArray(cell.text) && cell.text.length === 0) {
+                cell.text.push({
+                    _type: SLIDE_OBJECT_TYPES.tablecell,
+                    text: "",
+                });
+            }
+        });
 
 		// F: Flush/capture row buffer before it resets at the top of this loop
 		if (currTableRow.length > 0) newTableRowSlide.rows.push(currTableRow)
