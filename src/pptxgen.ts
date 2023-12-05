@@ -498,7 +498,7 @@ export default class PptxGenJS implements IPresentationProps {
 		arrMediaPromises = arrMediaPromises.concat(genFonts.encodePresFontRels(this.fonts))
 
 		// STEP 2: Wait for Promises (if any) then generate the PPTX file
-		return Promise.all(arrMediaPromises).then(() => {
+		return Promise.allSettled(arrMediaPromises).then(() => {
 			// A: Add empty placeholder objects to slides that don't already have them
 			this.slides.forEach(slide => {
 				if (slide._slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
