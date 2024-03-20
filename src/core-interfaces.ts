@@ -372,6 +372,13 @@ export interface TextBaseProps {
 	 */
 	fontSize?: number
 	/**
+	 * Text gradient
+	 * - Key inside object is the color position in percentage
+	 * - `HextColor` or `ThemeColor`
+	 * @example { angle:45, stops: { 0:'FF0000', 100:'00FF00' } }
+	 */
+	gradient?: Gradient
+	/**
 	 * Text highlight color (hex format)
 	 * @example 'FFFF00' // yellow
 	 */
