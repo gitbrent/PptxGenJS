@@ -1074,6 +1074,9 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
+		// gradient always wins in a case we get both color and gradient
+		// thus, here we have a known bug (PITCH-1492) that inline text will be rendered as gradient
+		// if we have block level text gradient and inline text with solid colour
 		if (opts.color || opts.gradient) runProps += genXmlColorSelection({
 			color: opts.color,
 			transparency: opts.transparency,
