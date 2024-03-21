@@ -1,4 +1,4 @@
-/* PptxGenJS 3.11.0-beta @ 2023-12-05T13:48:09.706Z */
+/* PptxGenJS 3.11.0-beta @ 2024-03-20T17:21:23.048Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6070,12 +6070,16 @@ function genXmlTextRunProperties(opts, isDefault) {
     runProps += opts.charSpacing ? " spc=\"".concat(Math.round(opts.charSpacing * 100), "\" kern=\"0\"") : ''; // IMPORTANT: Also disable kerning; otherwise text won't actually expand
     runProps += ' dirty="0">';
     // Color / Font / Highlight / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
-    if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
+    if (opts.color || opts.gradient || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
         if (opts.outline && typeof opts.outline === 'object') {
             runProps += "<a:ln w=\"".concat(valToPts(opts.outline.size || 0.75), "\">").concat(genXmlColorSelection(opts.outline.color || 'FFFFFF'), "</a:ln>");
         }
-        if (opts.color)
-            runProps += genXmlColorSelection({ color: opts.color, transparency: opts.transparency });
+        if (opts.color || opts.gradient)
+            runProps += genXmlColorSelection({
+                color: opts.color,
+                transparency: opts.transparency,
+                gradient: opts.gradient
+            });
         if (opts.highlight)
             runProps += "<a:highlight>".concat(createColorElement(opts.highlight), "</a:highlight>");
         if (typeof opts.underline === 'object' && opts.underline.color)
