@@ -172,8 +172,11 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						strSharedStrings += `<si><t>${xAxisSharedString}</t></si>`
 					} else {
 						const yAxisSharedString = encodeXmlEntities(objData.name || `Y-Axis${idx}`)
-						strSharedStrings += `<si><t>${yAxisSharedString}</t></si>`
-						sharedStrings[yAxisSharedString] = Object.keys(yAxisSharedString).length
+						if (!sharedStrings[yAxisSharedString]) {
+							strSharedStrings += `<si><t>${yAxisSharedString}</t></si>`
+							sharedStrings[yAxisSharedString] = Object.keys(yAxisSharedString).length
+						}
+
 						const sizeSharedString = encodeXmlEntities(`Size${idx}`)
 						strSharedStrings += `<si><t>${sizeSharedString}</t></si>`
 						sharedStrings[sizeSharedString] = Object.keys(sizeSharedString).length
@@ -182,8 +185,10 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 			} else {
 				data.forEach(objData => {
 					const sharedString = encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values'))
-					strSharedStrings += `<si><t>${sharedString}</t></si>`
-					sharedStrings[sharedString] = Object.keys(sharedStrings).length
+					if (!sharedStrings[sharedString]) {
+						strSharedStrings += `<si><t>${sharedString}</t></si>`
+						sharedStrings[sharedString] = Object.keys(sharedStrings).length
+					}
 				})
 			}
 
@@ -197,8 +202,11 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						labelsGroup
 							.filter(label => label && label !== '')
 							.forEach(label => {
-								strSharedStrings += `<si><t>${encodeXmlEntities(label)}</t></si>`
-								sharedStrings[encodeXmlEntities(label)] = Object.keys(sharedStrings).length
+								const sharedString = encodeXmlEntities(label)
+								if (!sharedStrings[sharedString]) {
+									strSharedStrings += `<si><t>${sharedString}</t></si>`
+									sharedStrings[sharedString] = Object.keys(sharedStrings).length
+								}
 							})
 					})
 			}
@@ -484,7 +492,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						     */
 							const colLabel = labelsGroup[idx]
 							if (colLabel) {
-								strSheetXml += `<c r="${getExcelColName(1 + idy)}${idx + 2}" t="s"><v>${sharedStrings[colLabel]}</v></c>`
+								strSheetXml += `<c r="${getExcelColName(idy + 1)}${idx + 2}" t="s"><v>${sharedStrings[colLabel]}</v></c>`
 							}
 						})
 
