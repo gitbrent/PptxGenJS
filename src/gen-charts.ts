@@ -135,8 +135,8 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 			)
 		}
 
-		// dictionary of shared strings mapped to indexes
-		const sharedStrings: Record<string, number> = {}
+		// dictionary of shared strings mapped to their indexes indexes
+		const sharedStringsObject: Record<string, number> = {}
 
 		// sharedStrings.xml
 		{
@@ -151,7 +151,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				data[0].labels.forEach(arrLabel => (totCount += arrLabel.filter(label => label && label !== '').length))
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${totCount}" uniqueCount="${totCount}">`
 				strSharedStrings += '<si><t/></si>'
-				sharedStrings[''] = 0
+				sharedStringsObject[''] = 0
 			} else {
 				// series names + all labels of one series + number of label groups (data.labels.length) of one series (i.e. how many times the blank string is used)
 				const totCount = data.length + data[0].labels.length * data[0].labels[0].length + data[0].labels.length
@@ -161,33 +161,36 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				strSharedStrings += `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${totCount}" uniqueCount="${unqCount}">`
 				// B: Add 'blank' for A1, B1, ..., of every label group inside data[n].labels
 				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
-				sharedStrings[''] = 0
+				sharedStringsObject[''] = 0
 			}
 
 			// C: Add `name`/Series
 			if (chartObject.opts._type === CHART_TYPE.BUBBLE || chartObject.opts._type === CHART_TYPE.BUBBLE3D) {
 				data.forEach((objData, idx) => {
 					if (idx === 0) {
-						const xAxisSharedString = 'X-Axis'
-						strSharedStrings += `<si><t>${xAxisSharedString}</t></si>`
+						const sharedString = 'X-Axis'
+						if (!sharedStringsObject[sharedString]) {
+							strSharedStrings += `<si><t>${sharedString}</t></si>`
+							sharedStringsObject[sharedString] = Object.keys(sharedStringsObject).length
+						}
 					} else {
-						const yAxisSharedString = encodeXmlEntities(objData.name || `Y-Axis${idx}`)
-						if (!sharedStrings[yAxisSharedString]) {
-							strSharedStrings += `<si><t>${yAxisSharedString}</t></si>`
-							sharedStrings[yAxisSharedString] = Object.keys(yAxisSharedString).length
+						const sharedString = encodeXmlEntities(objData.name || `Y-Axis${idx}`)
+						if (!sharedStringsObject[sharedString]) {
+							strSharedStrings += `<si><t>${sharedString}</t></si>`
+							sharedStringsObject[sharedString] = Object.keys(sharedStringsObject).length
 						}
 
 						const sizeSharedString = encodeXmlEntities(`Size${idx}`)
 						strSharedStrings += `<si><t>${sizeSharedString}</t></si>`
-						sharedStrings[sizeSharedString] = Object.keys(sizeSharedString).length
+						sharedStringsObject[sizeSharedString] = Object.keys(sharedStringsObject).length
 					}
 				})
 			} else {
 				data.forEach(objData => {
 					const sharedString = encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values'))
-					if (!sharedStrings[sharedString]) {
+					if (!sharedStringsObject[sharedString]) {
 						strSharedStrings += `<si><t>${sharedString}</t></si>`
-						sharedStrings[sharedString] = Object.keys(sharedStrings).length
+						sharedStringsObject[sharedString] = Object.keys(sharedStringsObject).length
 					}
 				})
 			}
@@ -203,9 +206,9 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 							.filter(label => label && label !== '')
 							.forEach(label => {
 								const sharedString = encodeXmlEntities(label)
-								if (!sharedStrings[sharedString]) {
+								if (!sharedStringsObject[sharedString]) {
 									strSharedStrings += `<si><t>${sharedString}</t></si>`
-									sharedStrings[sharedString] = Object.keys(sharedStrings).length
+									sharedStringsObject[sharedString] = Object.keys(sharedStringsObject).length
 								}
 							})
 					})
@@ -492,7 +495,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						     */
 							const colLabel = labelsGroup[idx]
 							if (colLabel) {
-								strSheetXml += `<c r="${getExcelColName(idy + 1)}${idx + 2}" t="s"><v>${sharedStrings[colLabel]}</v></c>`
+								strSheetXml += `<c r="${getExcelColName(idy + 1)}${idx + 2}" t="s"><v>${sharedStringsObject[colLabel]}</v></c>`
 							}
 						})
 
