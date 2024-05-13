@@ -375,7 +375,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 							strSheetXml += '</c>'
 						}
 						for (let idy = 0; idy < data.length; idy++) {
-							strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || ''}</v></c>`
+							strSheetXml += `<c r="${getExcelColName(data[0].labels.length + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] ?? ''}</v></c>`
 						}
 						strSheetXml += '</row>'
 					})
