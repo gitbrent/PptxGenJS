@@ -1574,7 +1574,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 			strXml += '        </a:pPr>'
 			strXml += '      </a:p>'
 			strXml += '    </c:txPr>'
-			strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : ''
+			strXml += chartType === CHART_TYPE.PIE ? `<c:dLblPos val="${opts.dataLabelPosition ?? 'ctr'}"/>` : ''
 			strXml += '    <c:showLegendKey val="0"/>'
 			strXml += '    <c:showVal val="0"/>'
 			strXml += '    <c:showCatName val="1"/>'
