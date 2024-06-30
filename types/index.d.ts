@@ -2620,7 +2620,6 @@ export interface OptsChartData {
 
 	// color?: string // TODO: WIP: (Pull #727)
 }
-
 	// LAST: Slide
 	/**
 	 * `slide.d.ts`
@@ -2663,7 +2662,7 @@ export interface OptsChartData {
 		 * @return {Slide} this Slide
 		 * @type {Function}
 		 */
-		addChart(type: CHART_NAME | IChartMulti[], data: OptsChartData[], options?: IChartOpts): Slide
+		addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide
 		/**
 		 * Add image to Slide
 		 * @param {ImageProps} options - image options
