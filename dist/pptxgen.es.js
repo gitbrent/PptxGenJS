@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.0 @ 2023-05-17T03:15:58.392Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2024-06-30T19:00:38.416Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -3763,7 +3763,35 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
                 if (chartType !== CHART_TYPE.RADAR) {
                     strXml += '<c:dLbls>';
-                    strXml += "<c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                    if (obj.dataLabels) {
+                        obj.dataLabels.forEach(function (value, i) {
+                            strXml += '  <c:dLbl>';
+                            strXml += "    <c:idx val=\"".concat(i, "\"/>");
+                            strXml += '    <c:tx>';
+                            strXml += '      <c:rich>';
+                            strXml += '        <a:bodyPr/>';
+                            strXml += '        <a:lstStyle/>';
+                            strXml += '        <a:p>';
+                            strXml += '          <a:r>';
+                            strXml += '            <a:rPr lang="en-US"/>';
+                            strXml += "            <a:t>".concat(encodeXmlEntities(value), "</a:t>");
+                            strXml += '          </a:r>';
+                            strXml += '        </a:p>';
+                            strXml += '      </c:rich>';
+                            strXml += '    </c:tx>';
+                            strXml += '    <c:dLblPos val="ctr"/>';
+                            strXml += '    <c:showLegendKey val="0"/>';
+                            strXml += '    <c:showVal val="1"/>';
+                            strXml += '    <c:showCatName val="0"/>';
+                            strXml += '    <c:showSerName val="0"/>';
+                            strXml += '    <c:showPercent val="0"/>';
+                            strXml += '    <c:showBubbleSize val="0"/>';
+                            strXml += '  </c:dLbl>';
+                        });
+                    }
+                    else {
+                        strXml += "<c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                    }
                     if (opts.dataLabelBkgrdColors)
                         strXml += "<c:spPr><a:solidFill>".concat(createColorElement(seriesColor), "</a:solidFill></c:spPr>");
                     strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>';
@@ -4384,9 +4412,26 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 3: "Data Label" block for every data Label
             strXml += '<c:dLbls>';
             optsChartData.labels[0].forEach(function (_label, idx) {
+                var _a, _b;
                 strXml += '<c:dLbl>';
                 strXml += " <c:idx val=\"".concat(idx, "\"/>");
-                strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                if ((_a = optsChartData === null || optsChartData === void 0 ? void 0 : optsChartData.dataLabels) === null || _a === void 0 ? void 0 : _a.at(idx)) {
+                    strXml += '    <c:tx>';
+                    strXml += '      <c:rich>';
+                    strXml += '        <a:bodyPr/>';
+                    strXml += '        <a:lstStyle/>';
+                    strXml += '        <a:p>';
+                    strXml += '          <a:r>';
+                    strXml += '            <a:rPr lang="en-US"/>';
+                    strXml += "            <a:t>".concat(encodeXmlEntities((_b = optsChartData.dataLabels) === null || _b === void 0 ? void 0 : _b.at(idx)), "</a:t>");
+                    strXml += '          </a:r>';
+                    strXml += '        </a:p>';
+                    strXml += '      </c:rich>';
+                    strXml += '    </c:tx>';
+                }
+                else {
+                    strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                }
                 strXml += '  <c:spPr/><c:txPr>';
                 strXml += '   <a:bodyPr/><a:lstStyle/>';
                 strXml += '   <a:p><a:pPr>';
