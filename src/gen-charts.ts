@@ -887,7 +887,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 							strXml += '        <a:p>'
 							strXml += '          <a:r>'
 							strXml += '            <a:rPr lang="en-US"/>'
-							strXml += `            <a:t>${value}</a:t>`
+							strXml += `            <a:t>${encodeXmlEntities(value)}</a:t>`
 							strXml += '          </a:r>'
 							strXml += '        </a:p>'
 							strXml += '      </c:rich>'
@@ -1577,7 +1577,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '        <a:p>'
 					strXml += '          <a:r>'
 					strXml += '            <a:rPr lang="en-US"/>'
-					strXml += `            <a:t>${optsChartData.dataLabels?.at(idx)}</a:t>`
+					strXml += `            <a:t>${encodeXmlEntities(optsChartData.dataLabels?.at(idx))}</a:t>`
 					strXml += '          </a:r>'
 					strXml += '        </a:p>'
 					strXml += '      </c:rich>'
