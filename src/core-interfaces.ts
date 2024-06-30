@@ -1181,6 +1181,7 @@ export interface OptsChartData {
 // Used internally, probably shouldn't be used by end users
 export interface IOptsChartData extends OptsChartData {
 	labels?: string[][]
+	dataLabels?: string[]
 }
 export interface OptsChartGridLine {
 	/**
