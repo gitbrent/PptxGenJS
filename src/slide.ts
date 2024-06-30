@@ -153,7 +153,7 @@ export default class Slide {
 		return this._slideNumberProps
 	}
 
-	public get newAutoPagedSlides(): PresSlide[] {
+	public get newAutoPagedSlides (): PresSlide[] {
 		return this._newAutoPagedSlides
 	}
 
