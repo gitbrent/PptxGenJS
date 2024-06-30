@@ -2586,6 +2586,41 @@ declare namespace PptxGenJS {
 		title: string
 	}
 
+export interface OptsChartData {
+	/**
+	 * category labels
+	 * @example [['Year 2000', 'Year 2010', 'Year 2020'], ['Decades', '', '']] // multi-level category axes labels
+	 * @since `labels` string[][] type added v3.11.0
+	 */
+	labels?: string[][]
+	/**
+	 * series name
+	 * @example 'Locations'
+	 */
+	name?: string
+	/**
+	 * bubble sizes
+	 * @example [5, 1, 5, 1]
+	 */
+	sizes?: number[]
+	/**
+	 * category values
+	 * @example [2000, 2010, 2020]
+	 */
+	values?: number[]
+	/**
+	 * Override `chartColors`
+	 */
+
+	/**
+	 * Custom text that show on top of data points
+	 * @example ['Q1', 'Q2', 'Q3', 'Q4']
+	 */
+	dataLabels?: string[]
+
+	// color?: string // TODO: WIP: (Pull #727)
+}
+
 	// LAST: Slide
 	/**
 	 * `slide.d.ts`
@@ -2628,7 +2663,7 @@ declare namespace PptxGenJS {
 		 * @return {Slide} this Slide
 		 * @type {Function}
 		 */
-		addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide
+		addChart(type: CHART_NAME | IChartMulti[], data: OptsChartData[], options?: IChartOpts): Slide
 		/**
 		 * Add image to Slide
 		 * @param {ImageProps} options - image options
