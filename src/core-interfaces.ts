@@ -1174,6 +1174,14 @@ export interface OptsChartData {
 	 */
 	values?: number[]
 	/**
+	 * custom styles, e.g border
+	 * @example [
+		{border: {pt:'1', color:'ff0000'} },
+		{border: {pt:'2', color:'000000'} }
+	]
+	 */
+	styles?: object[]
+	/**
 	 * Override `chartColors`
 	 */
 	// color?: string // TODO: WIP: (Pull #727)
