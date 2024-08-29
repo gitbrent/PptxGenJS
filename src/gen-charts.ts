@@ -886,7 +886,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 							strXml += '        <a:lstStyle/>'
 							strXml += '        <a:p>'
 							strXml += '          <a:r>'
-							strXml += '            <a:rPr lang="en-US"/>'
+							strXml += `            <a:rPr lang="en-US" sz="${opts.fontSize * 100}"/>`
 							strXml += `            <a:t>${encodeXmlEntities(value)}</a:t>`
 							strXml += '          </a:r>'
 							strXml += '        </a:p>'
