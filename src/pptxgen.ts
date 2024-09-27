@@ -599,6 +599,10 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @returns {Promise<string>} the presentation name
 	 */
 	async writeFile (props?: WriteFileProps | string): Promise<string> {
+		let isWorker = false
+		if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+			isWorker = true
+		}
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
@@ -608,9 +612,9 @@ export default class PptxGenJS implements IPresentationProps {
 
 		return await this.exportPresentation({
 			compression: propsCompress,
-			outputType: fs ? 'nodebuffer' : null,
+			outputType: (fs && !isWorker) ? 'nodebuffer' : null,
 		}).then(async content => {
-			if (fs) {
+			if (fs && !isWorker) {
 				// Node: Output
 				return await new Promise<string>((resolve, reject) => {
 					fs.writeFile(fileName, content, err => {

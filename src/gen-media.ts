@@ -11,8 +11,13 @@ import { PresSlide, SlideLayout, ISlideRelMedia } from './core-interfaces'
  * @return {Promise} promise
  */
 export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Promise<string>> {
+	let isWorker = false
+	if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+		isWorker = true
+	}
 	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 	const https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null // NodeJS
+
 	const imageProms: Array<Promise<string>> = []
 
 	// A: Capture all audio/image/video candidates for encoding (filtering online/pre-encoded)
@@ -35,7 +40,7 @@ export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Pr
 		.forEach(rel => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
-					if (fs && rel.path.indexOf('http') !== 0) {
+					if (!isWorker && fs && rel.path.indexOf('http') !== 0) {
 						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 						try {
 							const bitmap = fs.readFileSync(rel.path)
@@ -47,7 +52,7 @@ export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Pr
 							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 							reject(new Error(`ERROR: Unable to read media: "${rel.path}"\n${String(ex)}`))
 						}
-					} else if (fs && https && rel.path.indexOf('http') === 0) {
+					} else if (!isWorker && fs && https && rel.path.indexOf('http') === 0) {
 						https.get(rel.path, (res) => {
 							let rawData = ''
 							res.setEncoding('binary') // IMPORTANT: Only binary encoding works
@@ -105,7 +110,7 @@ export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Pr
 	layout._relsMedia
 		.filter(rel => rel.isSvgPng && rel.data)
 		.forEach(rel => {
-			if (fs) {
+			if (fs || isWorker) {
 				// console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
 				rel.data = IMG_BROKEN
 				imageProms.push(Promise.resolve().then(() => 'done'))

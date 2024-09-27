@@ -5,13 +5,13 @@
     "baseUrl": "./node_modules",
     "declaration": true,
     "declarationDir": "./out/defs",
-    "lib": ["dom", "es2015", "es2017.object"],
+    "lib": ["webworker", "dom", "es2015", "es2017.object"],
     "module": "es6",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "outDir": "./out",
     "sourceMap": true,
-    "target": "es5"
+    "target": "es6"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
