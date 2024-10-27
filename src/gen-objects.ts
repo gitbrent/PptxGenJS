@@ -897,8 +897,8 @@ export function addTableDefinition (
 	// STEP 4: Convert units to EMU now (we use different logic in makeSlide->table - smartCalc is not used)
 	if (opt.x && opt.x < 20) opt.x = inch2Emu(opt.x)
 	if (opt.y && opt.y < 20) opt.y = inch2Emu(opt.y)
-	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
-	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
+	if (opt.w && typeof opt.w === 'number' && opt.w < 20) opt.w = inch2Emu(opt.w)
+	if (opt.h && typeof opt.h === 'number' && opt.h < 20) opt.h = inch2Emu(opt.h)
 
 	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to unset `autoPage` while here
 	arrRows.forEach(row => {
