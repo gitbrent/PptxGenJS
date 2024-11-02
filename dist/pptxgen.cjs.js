@@ -1,11 +1,7 @@
-/* PptxGenJS 3.13.0-beta.0 @ 2023-05-17T03:15:58.384Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2024-10-27T21:26:57.785Z */
 'use strict';
 
 var JSZip = require('jszip');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var JSZip__default = /*#__PURE__*/_interopDefaultLegacy(JSZip);
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -21,6 +17,8 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
 
 var __assign = function() {
     __assign = Object.assign || function __assign(t) {
@@ -44,8 +42,8 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -80,6 +78,11 @@ function __spreadArray(to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 }
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 /**
  * PptxGenJS Enums
@@ -968,11 +971,6 @@ function parseTextToLines(cell, colWidth, verbose) {
     else if (Array.isArray(cell.text)) {
         inputCells = cell.text;
     }
-    if (verbose) {
-        console.log('[1/4] inputCells');
-        inputCells.forEach(function (cell, idx) { return console.log("[1/4] [".concat(idx + 1, "] cell: ").concat(JSON.stringify(cell))); });
-        // console.log('...............................................\n\n')
-    }
     // STEP 2: Group table cells into lines based on "\n" or `breakLine` prop
     /**
      * - EX: `[{ text:"Input Output" }, { text:"Extra" }]`                       == 1 line
@@ -1002,8 +1000,6 @@ function parseTextToLines(cell, colWidth, verbose) {
                 });
             }
             if ((_a = cell.options) === null || _a === void 0 ? void 0 : _a.breakLine) {
-                if (verbose)
-                    console.log("inputCells: new line > ".concat(JSON.stringify(newLine)));
                 inputLines1.push(newLine);
                 newLine = [];
             }
@@ -1014,11 +1010,6 @@ function parseTextToLines(cell, colWidth, verbose) {
             newLine = [];
         }
     });
-    if (verbose) {
-        console.log("[2/4] inputLines1 (".concat(inputLines1.length, ")"));
-        inputLines1.forEach(function (line, idx) { return console.log("[2/4] [".concat(idx + 1, "] line: ").concat(JSON.stringify(line))); });
-        // console.log('...............................................\n\n')
-    }
     // STEP 3: Tokenize every text object into words (then it's really easy to assemble lines below without having to break text, add its `options`, etc.)
     inputLines1.forEach(function (line) {
         line.forEach(function (cell) {
@@ -1035,11 +1026,6 @@ function parseTextToLines(cell, colWidth, verbose) {
             inputLines2.push(lineCells);
         });
     });
-    if (verbose) {
-        console.log("[3/4] inputLines2 (".concat(inputLines2.length, ")"));
-        inputLines2.forEach(function (line) { return console.log("[3/4] line: ".concat(JSON.stringify(line))); });
-        // console.log('...............................................\n\n')
-    }
     // STEP 4: Group cells/words into lines based upon space consumed by word letters
     inputLines2.forEach(function (line) {
         var lineCells = [];
@@ -1061,11 +1047,6 @@ function parseTextToLines(cell, colWidth, verbose) {
         if (lineCells.length > 0)
             parsedLines.push(lineCells);
     });
-    if (verbose) {
-        console.log("[4/4] parsedLines (".concat(parsedLines.length, ")"));
-        parsedLines.forEach(function (line, idx) { return console.log("[4/4] [Line ".concat(idx + 1, "]:\n").concat(JSON.stringify(line))); });
-        console.log('...............................................\n\n');
-    }
     // Done:
     return parsedLines;
 }
@@ -1274,7 +1255,7 @@ function getSlidesForTableRows(tableRows, tableProps, presLayout, masterSlide) {
                 totalColW = tableProps.colW.filter(function (_cell, idx) { return idx >= iCell && idx < idx + cell.options.colspan; }).reduce(function (prev, curr) { return prev + curr; });
             }
             // E-4: Create lines based upon available column width
-            newCell._lines = parseTextToLines(cell, totalColW, false);
+            newCell._lines = parseTextToLines(cell, totalColW);
             // E-5: Add cell to array
             rowCellLines.push(newCell);
         });
@@ -1573,7 +1554,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                 // LAST: Add cell
                 arrObjTabCells.push({
                     _type: SLIDE_OBJECT_TYPES.tablecell,
-                    text: cell.innerText,
+                    text: cell.innerText, // `innerText` returns <br> as "\n", so linebreak etc. work later!
                     options: cellOpts,
                 });
             });
@@ -2488,9 +2469,9 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         opt.x = inch2Emu(opt.x);
     if (opt.y && opt.y < 20)
         opt.y = inch2Emu(opt.y);
-    if (opt.w && opt.w < 20)
+    if (opt.w && typeof opt.w === 'number' && opt.w < 20)
         opt.w = inch2Emu(opt.w);
-    if (opt.h && opt.h < 20)
+    if (opt.h && typeof opt.h === 'number' && opt.h < 20)
         opt.h = inch2Emu(opt.h);
     // STEP 5: Loop over cells: transform each to ITableCell; check to see whether to unset `autoPage` while here
     arrRows.forEach(function (row) {
@@ -2988,7 +2969,7 @@ function createExcelWorksheet(chartObject, zip) {
                     data = chartObject.data;
                     return [4 /*yield*/, new Promise(function (resolve, reject) {
                             var _a, _b;
-                            var zipExcel = new JSZip__default["default"]();
+                            var zipExcel = new JSZip();
                             var intBubbleCols = (data.length - 1) * 2 + 1; // 1 for "X-Values", then 2 for every Y-Axis
                             var IS_MULTI_CAT_AXES = ((_b = (_a = data[0]) === null || _a === void 0 ? void 0 : _a.labels) === null || _b === void 0 ? void 0 : _b.length) > 1;
                             // A: Add folders
@@ -6713,7 +6694,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.13.0-beta.0-20230416-2140';
+var VERSION = '3.13.0-beta.0-20241027-1614';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6839,7 +6820,7 @@ var PptxGenJS = /** @class */ (function () {
                     case 0:
                         arrChartPromises = [];
                         arrMediaPromises = [];
-                        zip = new JSZip__default["default"]();
+                        zip = new JSZip();
                         // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
                         this.slides.forEach(function (slide) {
                             arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
