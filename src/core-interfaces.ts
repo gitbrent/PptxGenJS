@@ -1619,6 +1619,7 @@ export interface IChartOpts
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
 	 */
 	altText?: string
+	colors?: string[]
 }
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`

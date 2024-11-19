@@ -22,6 +22,7 @@ import {
 import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData, ChartLineCap } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getUuid, valToPts } from './gen-utils'
 import JSZip from 'jszip'
+import fs from 'fs'
 
 /**
  * Based on passed data, creates Excel Worksheet that is used as a data source for a chart.
@@ -61,6 +62,14 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				'  <Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>' +
 				'  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
 				'  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>' +
+				((chartObject.type === 'waterfall')
+					? [
+						`
+						<Override PartName="/ppt/charts/style1.xml" ContentType="application/vnd.ms-office.chartstyle+xml" />
+						<Override PartName="/ppt/charts/colors1.xml" ContentType="application/vnd.ms-office.chartcolorstyle+xml"/>
+						`
+					]
+					: []).join('\n') +
 				'</Types>\n'
 			)
 			zipExcel.file(
@@ -113,7 +122,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 			)
 			zipExcel.file(
 				'xl/theme/theme1.xml',
-				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light" panose="020F0302020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:majorFont><a:minorFont><a:latin typeface="Calibri" panose="020F0502020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/><a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}"><thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst></a:theme>'
+				getTheme1(chartObject)
 			)
 			zipExcel.file(
 				'xl/workbook.xml',
@@ -211,7 +220,12 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 					}
 				})
 			} else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
-				strTableXml += `<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:${getExcelColName(data.length)}${data[0].values.length + 1}" totalsRowShown="0">`
+				strTableXml +=
+					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
+					getExcelColName(data.length + data[0].labels.length) +
+					(data[0].labels[0].length + 1) +
+					'" totalsRowShown="0">'
+
 				strTableXml += `<tableColumns count="${data.length}">`
 				data.forEach((_obj, idx) => {
 					strTableXml += `<tableColumn id="${idx + 1}" name="${idx === 0 ? 'X-Values' : 'Y-Value '}${idx}"/>`
@@ -464,11 +478,11 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						const revLabelGroups = data[0].labels.slice().reverse()
 						revLabelGroups.forEach((labelsGroup, idy) => {
 							/**
-						     * const LABELS_REVERSED = [
-						     *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
-						     *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-						     * ];
-						     */
+							 * const LABELS_REVERSED = [
+							 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+							 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+							 * ];
+							 */
 							const colLabel = labelsGroup[idx]
 							if (colLabel) {
 								const totGrpLbls = idy === 0 ? 1 : revLabelGroups[idy - 1].filter(label => label && label !== '').length // get unique label so we can add to get proper shared-string #
@@ -516,17 +530,30 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 		zipExcel
 			.generateAsync({ type: 'base64' })
 			.then(content => {
+
+				const fileNumber = chartObject.globalId
+				const fileName = `Microsoft_Excel_Worksheet${fileNumber}.xlsx`
 				// 1: Create the embedded Excel worksheet with labels and data
-				zip.file(`ppt/embeddings/Microsoft_Excel_Worksheet${chartObject.globalId}.xlsx`, content, { base64: true })
+				// zip.file(`ppt/embeddings/${chartObject.globalId}.xlsx`, content, { base64: true })
+				zip.file(`ppt/embeddings/${fileName}`, content, { base64: true })
 
 				// 2: Create the chart.xml and rel files
-				zip.file(
-					'ppt/charts/_rels/' + chartObject.fileName + '.rels',
-					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-					'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-					`<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet${chartObject.globalId}.xlsx"/>` +
-					'</Relationships>'
-				)
+				if (chartObject.type === 'waterfall') {
+					zip.file(
+						'ppt/charts/_rels/' + chartObject.fileName + '.rels',
+						'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+						'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+						((chartObject.type === 'waterfall'
+							? [
+								'<Relationship Id="rId3" Type="http://schemas.microsoft.com/office/2011/relationships/chartColorStyle" Target="colors1.xml"/>' +
+								'<Relationship Id="rId2" Type="http://schemas.microsoft.com/office/2011/relationships/chartStyle" Target="style1.xml"/>'
+							]
+							: []).join('\n')) +
+						`<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/${fileName}"/>` +
+						'</Relationships>'
+					)
+				}
+
 				zip.file(`ppt/charts/${chartObject.fileName}`, makeXmlCharts(chartObject))
 
 				// 3: Done
@@ -548,11 +575,19 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 	let usesSecondaryValAxis = false
 
+	if (rel.type === CHART_TYPE.WATERFALL) {
+		return renderedWaterfall(rel)
+	}
+
+	if (rel.type === CHART_TYPE.FUNNEL) {
+		return renderedFunnel(rel)
+	}
+
 	// STEP 1: Create chart
 	{
 		// CHARTSPACE: BEGIN vvv
 		strXml +=
-            '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+			'<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
 		strXml += '<c:date1904 val="0"/>' // ppt defaults to 1904 dates, excel to 1900
 		strXml += `<c:roundedCorners val="${rel.opts.chartArea.roundedCorners ? '1' : '0'}"/>`
 		strXml += '<c:chart>'
@@ -579,8 +614,8 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
 		/** Add 3D view tag
-         * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
-         */
+		 * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
+		 */
 		if (rel.opts._type === CHART_TYPE.BAR3D) {
 			strXml += `<c:view3D><c:rotX val="${rel.opts.v3DRotX}"/><c:rotY val="${rel.opts.v3DRotY}"/><c:rAngAx val="${!rel.opts.v3DRAngAx ? 0 : 1}"/><c:perspective val="${rel.opts.v3DPerspective}"/></c:view3D>`
 		}
@@ -1813,9 +1848,9 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
 		strXml += ' <c:crosses val="' + crosses + '"/>'
 	}
 	strXml +=
-        ' <c:crossBetween val="' +
-        (opts._type === CHART_TYPE.SCATTER || (!!(Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0)) ? 'midCat' : 'between') +
-        '"/>'
+		' <c:crossBetween val="' +
+		(opts._type === CHART_TYPE.SCATTER || (!!(Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0)) ? 'midCat' : 'between') +
+		'"/>'
 	if (opts.valAxisMajorUnit) strXml += ` <c:majorUnit val="${opts.valAxisMajorUnit}"/>`
 	if (opts.valAxisDisplayUnit) { strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/>${opts.valAxisDisplayUnitLabel ? '<c:dispUnitsLbl/>' : ''}</c:dispUnits>` }
 
@@ -2040,4 +2075,949 @@ function createLineCap (lineCap: ChartLineCap): string {
 		// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 		throw new Error(`Invalid chart line cap: ${neverLineCap}`)
 	}
+}
+
+function renderedWaterfall (rel: ISlideRelChart): string {
+
+	const labelColors = 'AA00AA' // rel.opts.chartColors ? rel.opts.chartColors[0] : null
+
+	return `
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cx:chartSpace
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex">
+    <cx:chartData>
+        <cx:data id="0">
+            <cx:strDim type="cat">
+                <cx:f>Sheet1!$A$2:$A$${rel.data[0].labels[0].length + 2}</cx:f>
+                <cx:lvl ptCount="${rel.data[0].labels[0].length}">
+                    ${rel.data[0].labels[0].map((label, index) => {
+		return (`<cx:pt idx="${index}">${label.toString()}</cx:pt>`)
+	}).join('\n')}
+                </cx:lvl>
+            </cx:strDim>
+            <cx:numDim type="val">
+                <cx:f>Sheet1!$B$2:$B$${rel.data[0].values.length + 2}</cx:f>
+                <cx:lvl ptCount="${rel.data[0].values.length}" formatCode="0%">
+                     ${rel.data[0].values.map((value, index) => {
+		return (`<cx:pt idx="${index}">${value}</cx:pt>`)
+	}).join('\n')}
+                </cx:lvl>
+            </cx:numDim>
+        </cx:data>
+    </cx:chartData>
+    
+    <cx:clrMapOvr bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink" />
+    <cx:chart>
+        <cx:plotArea>
+            <cx:plotAreaRegion>
+                <cx:series layoutId="waterfall" uniqueId="{63845D22-DE5B-4E20-B67B-E00AB0598836}">
+                    <cx:tx>
+                        <cx:txData>
+                            <cx:f>Sheet1!$B$1</cx:f>
+                            <cx:v>${rel.data[0].name}</cx:v>
+                        </cx:txData>
+                    </cx:tx>
+                    <cx:spPr>
+                        <a:ln w="34925">
+                            <a:schemeClr val="tx1" />
+                        </a:ln>
+                    </cx:spPr>
+                    <cx:dataId val="0" />
+                    <cx:layoutPr>
+                        <cx:subtotals />
+                    </cx:layoutPr>
+                </cx:series>
+            </cx:plotAreaRegion>
+            <cx:axis id="0">
+                <cx:catScaling gapWidth="0.409999996" />
+                <cx:title>
+                    <cx:tx>
+                        <cx:txData>
+                            <cx:v>${rel.opts.catAxisTitle || ''}</cx:v>
+                        </cx:txData>
+                    </cx:tx>
+                    <cx:txPr>
+                        <a:bodyPr spcFirstLastPara="1" vertOverflow="ellipsis" horzOverflow="overflow" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="1" />
+                        <a:lstStyle />
+                        <a:p>
+                            <a:pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="0" hangingPunct="1">
+                                <a:lnSpc>
+                                    <a:spcPct val="90000" />
+                                </a:lnSpc>
+                                <a:spcBef>
+                                    <a:spcPts val="0" />
+                                </a:spcBef>
+                                <a:spcAft>
+                                    <a:spcPts val="0" />
+                                </a:spcAft>
+                                <a:buClrTx />
+                                <a:buSzTx />
+                                <a:buFontTx />
+                                <a:buNone />
+                                <a:tabLst />
+                                <a:defRPr sz="1200" />
+                            </a:pPr>
+                            <a:r>
+                                <a:rPr kumimoji="0" lang="de-DE" sz="1500" b="0" i="0" u="none" strike="noStrike" cap="none" spc="19" normalizeH="0" baseline="0" dirty="0">
+                                    <a:ln>
+                                        <a:noFill />
+                                    </a:ln>
+                                    <a:solidFill>
+                                        <a:schemeClr val="tx1" />
+                                    </a:solidFill>
+                                    <a:effectLst />
+                                    <a:uFillTx />
+                                    <a:latin typeface="Aeonik Regular" />
+                                    <a:ea typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                                    <a:cs typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                                    <a:sym typeface="Aeonik Regular" />
+                                </a:rPr>
+                                <a:t>${rel.opts.catAxisTitle || ''}</a:t>
+                            </a:r>
+                        </a:p>
+                    </cx:txPr>
+                </cx:title>
+                <cx:tickLabels />
+                <cx:numFmt formatCode="0%" sourceLinked="0" />
+                <cx:txPr>
+                    <a:bodyPr spcFirstLastPara="1" vertOverflow="ellipsis" horzOverflow="overflow" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="1" />
+                    <a:lstStyle />
+                    <a:p>
+                        <a:pPr algn="ctr" rtl="0">
+                            <a:defRPr sz="1600">
+                                <a:solidFill>
+                                    <a:schemeClr val="tx1" />
+                                </a:solidFill>
+                                <a:latin typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                                <a:ea typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                                <a:cs typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                            </a:defRPr>
+                        </a:pPr>
+                        <a:endParaRPr lang="de-DE" sz="1600" b="0" i="0" u="none" strike="noStrike" baseline="0">
+                            <a:solidFill>
+                                <a:schemeClr val="tx1" />
+                            </a:solidFill>
+                            <a:latin typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                            <a:ea typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                            <a:cs typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                        </a:endParaRPr>
+                    </a:p>
+                </cx:txPr>
+            </cx:axis>
+            <cx:axis id="1">
+            	<!-- These are for the value scaling -->
+                <cx:valScaling max="1.2000000000000002" min="0"/>
+                <cx:title>
+                    <cx:tx>
+                        <cx:txData>
+                            <cx:v>${rel.opts.valAxisTitle || ''}</cx:v>
+                        </cx:txData>
+                    </cx:tx>
+                    <cx:txPr>
+                        <a:bodyPr spcFirstLastPara="1" vertOverflow="ellipsis" horzOverflow="overflow" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="1" />
+                        <a:lstStyle />
+                        <a:p>
+                            <a:pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="0" hangingPunct="1">
+                                <a:lnSpc>
+                                    <a:spcPct val="90000" />
+                                </a:lnSpc>
+                                <a:spcBef>
+                                    <a:spcPts val="0" />
+                                </a:spcBef>
+                                <a:spcAft>
+                                    <a:spcPts val="0" />
+                                </a:spcAft>
+                                <a:buClrTx />
+                                <a:buSzTx />
+                                <a:buFontTx />
+                                <a:buNone />
+                                <a:tabLst />
+                                <a:defRPr sz="1200" />
+                            </a:pPr>
+                            <a:r>
+                                <a:rPr kumimoji="0" lang="de-DE" sz="1500" b="0" i="0" u="none" strike="noStrike" cap="none" spc="19" normalizeH="0" baseline="0" dirty="0">
+                                    <a:ln>
+                                        <a:noFill />
+                                    </a:ln>
+                                    <a:solidFill>
+                                        <a:schemeClr val="tx1" />
+                                    </a:solidFill>
+                                    <a:effectLst />
+                                    <a:uFillTx />
+                                    <a:latin typeface="Aeonik Regular" />
+                                    <a:ea typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                                    <a:cs typeface="Inter Semi Bold" panose="02000703000000020004" pitchFamily="2" charset="0" />
+                                    <a:sym typeface="Aeonik Regular" />
+                                </a:rPr>
+                                <a:t>${rel.opts.valAxisTitle || ''}</a:t>
+                            </a:r>
+                        </a:p>
+                    </cx:txPr>
+                </cx:title>
+                <cx:tickLabels />
+                <cx:minorTickMarks />
+                <cx:majorTickMarks />
+                <cx:numFmt formatCode="0%" sourceLinked="0" />
+                <cx:txPr>
+                    <a:bodyPr spcFirstLastPara="1" vertOverflow="ellipsis" horzOverflow="overflow" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="1" />
+                    <a:lstStyle />
+                    <a:p>
+                        <a:pPr algn="ctr" rtl="0">
+                            <a:defRPr sz="1400">
+                                <a:solidFill>
+                                    <a:schemeClr val="tx1" />
+                                </a:solidFill>
+                                <a:latin typeface="Inter Medium" panose="02000603000000020004" pitchFamily="2" charset="0" />
+                                <a:ea typeface="Inter Medium" panose="02000603000000020004" pitchFamily="2" charset="0" />
+                                <a:cs typeface="Inter Medium" panose="02000603000000020004" pitchFamily="2" charset="0" />
+                            </a:defRPr>
+                        </a:pPr>
+                        <a:endParaRPr lang="de-DE" sz="1400" b="0" i="0" u="none" strike="noStrike" baseline="0">
+                            <a:solidFill>
+                                <a:schemeClr val="tx1" />
+                            </a:solidFill>
+                            <a:latin typeface="Inter Medium" panose="02000603000000020004" pitchFamily="2" charset="0" />
+                            <a:ea typeface="Inter Medium" panose="02000603000000020004" pitchFamily="2" charset="0" />
+                            <a:cs typeface="Inter Medium" panose="02000603000000020004" pitchFamily="2" charset="0" />
+                        </a:endParaRPr>
+                    </a:p>
+                </cx:txPr>
+            </cx:axis>
+        </cx:plotArea>
+    </cx:chart>
+</cx:chartSpace>
+	`.trim()
+}
+
+function renderedFunnel (rel: ISlideRelChart): string {
+	const averageY = ((rel.data[0].values[0] / 2) + 58)
+	const offsetY = 0
+	const offsetX = 1.45
+
+	// @CHRISTOPHER
+	// Define Colors
+	const colors = (Array.isArray(rel?.opts?.colors) ? rel.opts?.colors : ['#AA00AA', '#00427B', '#546afc', '#8499fc', '#bbc8fd']).map((v: string) => v.toUpperCase().replace('#', ''))
+
+	return `
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:c16r2="http://schemas.microsoft.com/office/drawing/2015/06/chart">
+  <c:date1904 val="0"/>
+  <c:lang val="en-GB"/>
+  <c:roundedCorners val="0"/>
+  <mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    <mc:Choice xmlns:c14="http://schemas.microsoft.com/office/drawing/2007/8/2/chart" Requires="c14">
+      <c14:style val="102"/>
+    </mc:Choice>
+    <mc:Fallback>
+      <c:style val="2"/>
+    </mc:Fallback>
+  </mc:AlternateContent>
+  <c:clrMapOvr bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
+  <c:chart>
+    <c:autoTitleDeleted val="1"/>
+    <c:plotArea>
+      ${(() => {
+		let strXml = ''
+		if (rel.opts.layout) {
+			strXml += '<c:layout>'
+			strXml += ' <c:manualLayout>'
+			strXml += '  <c:layoutTarget val="inner" />'
+			strXml += '  <c:xMode val="edge" />'
+			strXml += '  <c:yMode val="edge" />'
+			strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />'
+			strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />'
+			strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />'
+			strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />'
+			strXml += ' </c:manualLayout>'
+			strXml += '</c:layout>'
+		} else {
+			strXml += '<c:layout/>'
+		}
+		return strXml
+		// eslint-disable-next-line no-mixed-spaces-and-tabs
+	  })()}
+      <c:areaChart>
+        <c:grouping val="standard"/>
+        <c:varyColors val="0"/>
+      
+        ${'' /* <!-- @CHRISTOPHER: Values must be processed in reverse order --> */}
+      	${rel.data[0].values.map((value, index) => {
+		const realOffset = Math.max(rel.data[0].values.length - index, 0)
+
+		// Last value is flat.
+		const valueOffset = (index === 0) ? realOffset - 1 : realOffset
+
+		return `
+				<c:ser>
+				  <c:idx val="${realOffset}"/>
+				  <c:order val="${index}"/>
+				  <c:spPr>
+					<a:solidFill>
+					  <a:srgbClr val="${colors[realOffset - 1]}"/>
+					</a:solidFill>
+					<a:ln>
+					  <a:noFill/>
+					</a:ln>
+				  </c:spPr>
+				  <c:val>
+					<c:numRef>
+					  <c:f>Sheet1!$AK$11:$AK$16</c:f>
+					  <c:numCache>
+						<c:formatCode>General</c:formatCode>
+						<c:ptCount val="${realOffset + 1}"/>
+				 
+						${'' /* <!-- First number is left corner --> */}
+						<c:pt idx="${realOffset - 1}">
+						  <c:v>${(rel.data[0].values[realOffset - 1] / 2) + averageY}</c:v>
+						</c:pt>
+						
+						${'' /* <!-- Second number is right corner --> */}
+						<c:pt idx="${realOffset}">
+						  <c:v>${(rel.data[0].values[valueOffset] / 2) + averageY}</c:v>
+						</c:pt>
+					  </c:numCache>
+					</c:numRef>
+				  </c:val>
+				  <c:extLst>
+					<c:ext xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart" uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}">
+					  <c16:uniqueId val="{00000000-096B-3942-BF36-84F747CF6E4D}"/>
+					</c:ext>
+				  </c:extLst>
+				</c:ser>
+			`.trim()
+	}).join('\n')}
+        <c:ser>
+          <c:idx val="0"/>
+          <c:order val="${rel.data[0].values.length}"/>
+          <c:spPr>
+            <a:solidFill>
+              ${'' /*
+              	<!-- @CHRISTOPHER: SERIES COLOUR TO MAKE FUNNEL. Likely to be white. -->
+              	<!-- This is what makes the bottom edge of the graph. --> */}
+              <a:srgbClr val="FFFFFF"/>
+            </a:solidFill>
+            <a:ln w="0" cap="rnd">
+              <a:noFill/>
+              <a:round/>
+            </a:ln>
+            <a:effectLst/>
+          </c:spPr>
+          <c:val>
+            <c:numRef>
+              <c:f>Sheet1!$AD$11:$AD$16</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="${rel.data[0].values.length + 1}"/>
+                ${rel.data[0].values.map((value, index) => {
+		// @CHRISTOPHER: Last two values should be flat
+		return `
+						<c:pt idx="${index}">
+						  <c:v>${Math.abs(averageY - (rel.data[0].values[index] / 2))}</c:v>
+						</c:pt>
+					`.trim()
+	}).join('\n')}
+				<c:pt idx="${rel.data[0].values.length}">
+				  <c:v>${Math.abs(averageY - (rel.data[0].values[rel.data[0].values.length - 1] / 2))}</c:v>
+				</c:pt>
+              </c:numCache>
+            </c:numRef>
+          </c:val>
+          <c:extLst>
+            <c:ext xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart" uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}">
+              <c16:uniqueId val="{00000004-096B-3942-BF36-84F747CF6E4D}"/>
+            </c:ext>
+          </c:extLst>
+        </c:ser>
+        <c:dLbls>
+          <c:showLegendKey val="0"/>
+          <c:showVal val="0"/>
+          <c:showCatName val="0"/>
+          <c:showSerName val="0"/>
+          <c:showPercent val="0"/>
+          <c:showBubbleSize val="0"/>
+        </c:dLbls>
+        <c:axId val="270962536"/>
+        <c:axId val="270962928"/>
+      </c:areaChart>
+      
+      <c:scatterChart>
+        <c:scatterStyle val="lineMarker"/>
+        <c:varyColors val="0"/>
+        <c:ser>
+          <c:idx val="${rel.data[0].values.length + 4}"/>
+          <c:order val="${rel.data[0].values.length + 1}"/>
+          <c:tx>
+            <c:v>Percentages</c:v>
+          </c:tx>
+          <c:spPr>
+            <a:ln>
+              <a:noFill/>
+            </a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="none"/>
+          </c:marker>
+          <c:dLbls>
+            <c:dLbl>
+              <c:idx val="0"/>
+              <c:tx>
+                <c:rich>
+                  <a:bodyPr wrap="square" lIns="38100" tIns="19050" rIns="38100" bIns="19050" anchor="ctr">
+                    <a:noAutofit/>
+                  </a:bodyPr>
+                  <a:lstStyle/>
+                  <a:p>
+                    <a:pPr>
+                      <a:defRPr sz="900" b="0">
+                        <a:solidFill>
+                          <a:schemeClr val="bg1"/>
+                        </a:solidFill>
+                        <a:latin typeface="+mj-lt"/>
+                      </a:defRPr>
+                    </a:pPr>
+                    <a:fld id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx').toUpperCase()}}" type="CELLRANGE">
+                      <a:rPr lang="en-US"/>
+                      <a:pPr>
+                        <a:defRPr sz="900" b="0">
+                          <a:solidFill>
+                            <a:schemeClr val="bg1"/>
+                          </a:solidFill>
+                          <a:latin typeface="+mj-lt"/>
+                        </a:defRPr>
+                      </a:pPr>
+                      <a:t>[CELLRANGE]</a:t>
+                    </a:fld>
+                    <a:endParaRPr lang="en-US"/>
+                  </a:p>
+                </c:rich>
+              </c:tx>
+              <c:spPr>
+                <a:noFill/>
+                <a:ln>
+                  <a:noFill/>
+                </a:ln>
+                <a:effectLst/>
+              </c:spPr>
+              <c:dLblPos val="ctr"/>
+              <c:showLegendKey val="0"/>
+              <c:showVal val="0"/>
+              <c:showCatName val="0"/>
+              <c:showSerName val="0"/>
+              <c:showPercent val="0"/>
+              <c:showBubbleSize val="0"/>
+              <c:extLst>
+                <c:ext xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart" uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}">
+                  <c15:spPr xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">
+                     <a:prstGeom prst="rect">
+                       <a:avLst/>
+                     </a:prstGeom>
+                   </c15:spPr>
+                  <c15:dlblFieldTable/>
+                  <c15:xForSave val="1"/>
+                  <c15:showDataLabelsRange val="1"/>
+                </c:ext>
+                <c:ext xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart" uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}">
+                  <c16:uniqueId val="{00000009-096B-3942-BF36-84F747CF6E4D}"/>
+                </c:ext>
+              </c:extLst>
+            </c:dLbl>
+            ${rel.data[0].values.map((value, index) => {
+		return `
+				<c:dLbl>
+				  <c:idx val="${index + 1}"/>
+				  <c:tx>
+					<c:rich>
+					  <a:bodyPr/>
+					  <a:lstStyle/>
+					  <a:p>
+						<a:fld id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx').toUpperCase()}}" type="CELLRANGE">
+						  <a:rPr lang="en-US"/>
+						  <a:pPr/>
+						  <a:t>[CELLRANGE]</a:t>
+						</a:fld>
+						<a:endParaRPr lang="en-US"/>
+					  </a:p>
+					</c:rich>
+				  </c:tx>
+				  <c:dLblPos val="ctr"/>
+				  <c:showLegendKey val="0"/>
+				  <c:showVal val="0"/>
+				  <c:showCatName val="0"/>
+				  <c:showSerName val="0"/>
+				  <c:showPercent val="0"/>
+				  <c:showBubbleSize val="0"/>
+				  <c:extLst>
+					<c:ext xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart" uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}">
+					  <c15:dlblFieldTable/>
+					  ${index === rel.data[0].values.length - 1 ? '' : '<c15:xForSave val="1"/>'}
+					  <c15:showDataLabelsRange val="1"/>
+					</c:ext>
+					<c:ext xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart" uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}">
+					  <c16:uniqueId val="{00000000-5103-D54A-AD37-F550271412EE}"/>
+					</c:ext>
+				  </c:extLst>
+				</c:dLbl>
+				`.trim()
+	}).join('\n')}
+            <c:spPr>
+              <a:noFill/>
+              <a:ln>
+                <a:noFill/>
+              </a:ln>
+              <a:effectLst/>
+            </c:spPr>
+            <c:txPr>
+              <a:bodyPr wrap="square" lIns="38100" tIns="19050" rIns="38100" bIns="19050" anchor="ctr">
+                <a:spAutoFit/>
+              </a:bodyPr>
+              <a:lstStyle/>
+              <a:p>
+                <a:pPr>
+                  <a:defRPr sz="900" b="0">
+                    <a:solidFill>
+                      <a:schemeClr val="bg1"/>
+                    </a:solidFill>
+                    <a:latin typeface="+mj-lt"/>
+                  </a:defRPr>
+                </a:pPr>
+                <a:endParaRPr lang="en-US"/>
+              </a:p>
+            </c:txPr>
+            <c:dLblPos val="ctr"/>
+            <c:showLegendKey val="0"/>
+            <c:showVal val="0"/>
+            <c:showCatName val="0"/>
+            <c:showSerName val="0"/>
+            <c:showPercent val="0"/>
+            <c:showBubbleSize val="0"/>
+            <c:showLeaderLines val="0"/>
+            <c:extLst>
+              <c:ext xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart" uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}">
+                <c15:showDataLabelsRange val="1"/>
+                <c15:showLeaderLines val="0"/>
+              </c:ext>
+            </c:extLst>
+          </c:dLbls>
+          <c:xVal>
+            <c:numRef>
+              <c:f>Sheet1!$G$13:$G$16</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="${rel.data[0].labels.length + 1}"/>
+                  ${rel.data[0].labels.map((label, index) => {
+		return (`
+					  <c:pt idx="${index}">
+						<c:v>${index + offsetX}</c:v>
+					  </c:pt>`).trim()
+	}).join('\n')}
+              </c:numCache>
+            </c:numRef>
+          </c:xVal>
+          <c:yVal>
+            <c:numRef>
+              <c:f>Sheet1!$J$13:$J$16</c:f>
+              <c:numCache>
+                <c:formatCode>General</c:formatCode>
+                <c:ptCount val="${rel.data[0].labels.length + 1}"/>
+                  ${rel.data[0].labels.map((label, index) => {
+		return (`
+				  <c:pt idx="${index}">
+					<c:v>${averageY + offsetY}</c:v>
+				  </c:pt>`).trim()
+	}).join('\n')}
+              </c:numCache>
+            </c:numRef>
+          </c:yVal>
+          <c:smooth val="0"/>
+          <c:extLst>
+            <c:ext xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart" uri="{02D57815-91ED-43cb-92C2-25804820EDAC}">
+              <c15:datalabelsRange>
+                <c15:f>Sheet1!$A$1:A${rel.data[0].labels.length + 1}</c15:f>
+                <c15:dlblRangeCache>
+                  <c:ptCount val="${rel.data[0].labels.length + 1}"/>
+                  ${'' /* <!-- @CHRISTOPHER: Labels --> */}
+                  ${rel.data[0].labels.map((label, index) => {
+		          return (`
+					  <c:pt idx="${index}">
+						<c:v>${renderLabel(label)}</c:v>
+					  </c:pt>`).trim()
+	}).join('\n')}
+                </c15:dlblRangeCache>
+              </c15:datalabelsRange>
+            </c:ext>
+            <c:ext xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart" uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}">
+              <c16:uniqueId val="{0000000D-096B-3942-BF36-84F747CF6E4D}"/>
+            </c:ext>
+          </c:extLst>
+        </c:ser>
+        <c:dLbls>
+          <c:showLegendKey val="0"/>
+          <c:showVal val="0"/>
+          <c:showCatName val="0"/>
+          <c:showSerName val="0"/>
+          <c:showPercent val="0"/>
+          <c:showBubbleSize val="0"/>
+        </c:dLbls>
+        <c:axId val="270962536"/>
+        <c:axId val="270962928"/>
+      </c:scatterChart>
+      <c:catAx>
+        <c:axId val="270962536"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+        </c:scaling>
+        <c:delete val="1"/>
+        <c:axPos val="b"/>
+        <c:majorGridlines>
+          <c:spPr>
+            <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">
+              <a:noFill/>
+              <a:round/>
+            </a:ln>
+            <a:effectLst/>
+          </c:spPr>
+        </c:majorGridlines>
+        <c:numFmt formatCode="General" sourceLinked="1"/>
+        <c:majorTickMark val="out"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:crossAx val="270962928"/>
+        <c:crosses val="autoZero"/>
+        <c:auto val="1"/>
+        <c:lblAlgn val="ctr"/>
+        <c:lblOffset val="100"/>
+        <c:noMultiLvlLbl val="1"/>
+      </c:catAx>
+      <c:valAx>
+        <c:axId val="270962928"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+        </c:scaling>
+        <c:delete val="1"/>
+        <c:axPos val="l"/>
+        <c:majorGridlines>
+          <c:spPr>
+            <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">
+              <a:noFill/>
+              <a:round/>
+            </a:ln>
+            <a:effectLst/>
+          </c:spPr>
+        </c:majorGridlines>
+        <c:numFmt formatCode="General" sourceLinked="1"/>
+        <c:majorTickMark val="none"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:crossAx val="270962536"/>
+        <c:crosses val="autoZero"/>
+        <c:crossBetween val="midCat"/>
+      </c:valAx>
+      <c:spPr>
+        <a:noFill/>
+        <a:ln>
+          <a:noFill/>
+        </a:ln>
+        <a:effectLst/>
+      </c:spPr>
+    </c:plotArea>
+    <c:plotVisOnly val="1"/>
+    <c:dispBlanksAs val="gap"/>
+    <c:showDLblsOverMax val="0"/>
+  </c:chart>
+  <c:spPr>
+    <a:noFill/>
+    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">
+      <a:noFill/>
+      <a:round/>
+    </a:ln>
+    <a:effectLst/>
+  </c:spPr>
+  <c:txPr>
+    <a:bodyPr/>
+    <a:lstStyle/>
+    <a:p>
+      <a:pPr>
+        <a:defRPr/>
+      </a:pPr>
+      <a:endParaRPr lang="en-US"/>
+    </a:p>
+  </c:txPr>
+</c:chartSpace>
+	`.trim()
+}
+
+function renderLabel (label: any): string {
+	if (Array.isArray(label)) {
+		return label.map((l: any) => l.toString()).filter(a => a).join('\n')
+	} else {
+		return label.toString()
+	}
+}
+
+function getTheme1 (chartObject: ISlideRelChart): string {
+	const colors = (chartObject.opts?.colors || chartObject.opts?.chartColors || ['#00427B', '#ED7D31', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47', '#0563C1', '#954F72']).map(a => a.replace('#', '').toUpperCase())
+
+	return `
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">
+  <a:themeElements>
+    <a:clrScheme name="Office">
+      <a:dk1>
+        <a:sysClr val="windowText" lastClr="000000"/>
+      </a:dk1>
+      <a:lt1>
+        <a:sysClr val="window" lastClr="FFFFFF"/>
+      </a:lt1>
+      <a:dk2>
+        <a:srgbClr val="44546A"/>
+      </a:dk2>
+      <a:lt2>
+        <a:srgbClr val="E7E6E6"/>
+      </a:lt2>
+      <a:accent1>
+        <a:srgbClr val="${colors[0]}"/>
+      </a:accent1>
+      <a:accent2>
+        <a:srgbClr val="${colors[1]}"/>
+      </a:accent2>
+      <a:accent3>
+        <a:srgbClr val="${colors[2]}"/>
+      </a:accent3>
+      <a:accent4>
+        <a:srgbClr val="${colors[3]}"/>
+      </a:accent4>
+      <a:accent5>
+        <a:srgbClr val="${colors[4]}"/>
+      </a:accent5>
+      <a:accent6>
+        <a:srgbClr val="${colors[5]}"/>
+      </a:accent6>
+      <a:hlink>
+        <a:srgbClr val="${colors[6]}"/>
+      </a:hlink>
+      <a:folHlink>
+        <a:srgbClr val="${colors[7]}"/>
+      </a:folHlink>
+    </a:clrScheme>
+    <a:fontScheme name="Office">
+      <a:majorFont>
+        <a:latin typeface="Calibri Light" panose="020F0302020204030204"/>
+        <a:ea typeface=""/>
+        <a:cs typeface=""/>
+        <a:font script="Jpan" typeface="Yu Gothic Light"/>
+        <a:font script="Hang" typeface="맑은 고딕"/>
+        <a:font script="Hans" typeface="DengXian Light"/>
+        <a:font script="Hant" typeface="新細明體"/>
+        <a:font script="Arab" typeface="Times New Roman"/>
+        <a:font script="Hebr" typeface="Times New Roman"/>
+        <a:font script="Thai" typeface="Tahoma"/>
+        <a:font script="Ethi" typeface="Nyala"/>
+        <a:font script="Beng" typeface="Vrinda"/>
+        <a:font script="Gujr" typeface="Shruti"/>
+        <a:font script="Khmr" typeface="MoolBoran"/>
+        <a:font script="Knda" typeface="Tunga"/>
+        <a:font script="Guru" typeface="Raavi"/>
+        <a:font script="Cans" typeface="Euphemia"/>
+        <a:font script="Cher" typeface="Plantagenet Cherokee"/>
+        <a:font script="Yiii" typeface="Microsoft Yi Baiti"/>
+        <a:font script="Tibt" typeface="Microsoft Himalaya"/>
+        <a:font script="Thaa" typeface="MV Boli"/>
+        <a:font script="Deva" typeface="Mangal"/>
+        <a:font script="Telu" typeface="Gautami"/>
+        <a:font script="Taml" typeface="Latha"/>
+        <a:font script="Syrc" typeface="Estrangelo Edessa"/>
+        <a:font script="Orya" typeface="Kalinga"/>
+        <a:font script="Mlym" typeface="Kartika"/>
+        <a:font script="Laoo" typeface="DokChampa"/>
+        <a:font script="Sinh" typeface="Iskoola Pota"/>
+        <a:font script="Mong" typeface="Mongolian Baiti"/>
+        <a:font script="Viet" typeface="Times New Roman"/>
+        <a:font script="Uigh" typeface="Microsoft Uighur"/>
+        <a:font script="Geor" typeface="Sylfaen"/>
+      </a:majorFont>
+      <a:minorFont>
+        <a:latin typeface="Calibri" panose="020F0502020204030204"/>
+        <a:ea typeface=""/>
+        <a:cs typeface=""/>
+        <a:font script="Jpan" typeface="Yu Gothic"/>
+        <a:font script="Hang" typeface="맑은 고딕"/>
+        <a:font script="Hans" typeface="DengXian"/>
+        <a:font script="Hant" typeface="新細明體"/>
+        <a:font script="Arab" typeface="Arial"/>
+        <a:font script="Hebr" typeface="Arial"/>
+        <a:font script="Thai" typeface="Tahoma"/>
+        <a:font script="Ethi" typeface="Nyala"/>
+        <a:font script="Beng" typeface="Vrinda"/>
+        <a:font script="Gujr" typeface="Shruti"/>
+        <a:font script="Khmr" typeface="DaunPenh"/>
+        <a:font script="Knda" typeface="Tunga"/>
+        <a:font script="Guru" typeface="Raavi"/>
+        <a:font script="Cans" typeface="Euphemia"/>
+        <a:font script="Cher" typeface="Plantagenet Cherokee"/>
+        <a:font script="Yiii" typeface="Microsoft Yi Baiti"/>
+        <a:font script="Tibt" typeface="Microsoft Himalaya"/>
+        <a:font script="Thaa" typeface="MV Boli"/>
+        <a:font script="Deva" typeface="Mangal"/>
+        <a:font script="Telu" typeface="Gautami"/>
+        <a:font script="Taml" typeface="Latha"/>
+        <a:font script="Syrc" typeface="Estrangelo Edessa"/>
+        <a:font script="Orya" typeface="Kalinga"/>
+        <a:font script="Mlym" typeface="Kartika"/>
+        <a:font script="Laoo" typeface="DokChampa"/>
+        <a:font script="Sinh" typeface="Iskoola Pota"/>
+        <a:font script="Mong" typeface="Mongolian Baiti"/>
+        <a:font script="Viet" typeface="Arial"/>
+        <a:font script="Uigh" typeface="Microsoft Uighur"/>
+        <a:font script="Geor" typeface="Sylfaen"/>
+      </a:minorFont>
+    </a:fontScheme>
+    <a:fmtScheme name="Office">
+      <a:fillStyleLst>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:lumMod val="110000"/>
+                <a:satMod val="105000"/>
+                <a:tint val="67000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="50000">
+              <a:schemeClr val="phClr">
+                <a:lumMod val="105000"/>
+                <a:satMod val="103000"/>
+                <a:tint val="73000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:lumMod val="105000"/>
+                <a:satMod val="109000"/>
+                <a:tint val="81000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:lin ang="5400000" scaled="0"/>
+        </a:gradFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:satMod val="103000"/>
+                <a:lumMod val="102000"/>
+                <a:tint val="94000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="50000">
+              <a:schemeClr val="phClr">
+                <a:satMod val="110000"/>
+                <a:lumMod val="100000"/>
+                <a:shade val="100000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:lumMod val="99000"/>
+                <a:satMod val="120000"/>
+                <a:shade val="78000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:lin ang="5400000" scaled="0"/>
+        </a:gradFill>
+      </a:fillStyleLst>
+      <a:lnStyleLst>
+        <a:ln w="6350" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:miter lim="800000"/>
+        </a:ln>
+        <a:ln w="12700" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:miter lim="800000"/>
+        </a:ln>
+        <a:ln w="19050" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:miter lim="800000"/>
+        </a:ln>
+      </a:lnStyleLst>
+      <a:effectStyleLst>
+        <a:effectStyle>
+          <a:effectLst/>
+        </a:effectStyle>
+        <a:effectStyle>
+          <a:effectLst/>
+        </a:effectStyle>
+        <a:effectStyle>
+          <a:effectLst>
+            <a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0">
+              <a:srgbClr val="000000">
+                <a:alpha val="63000"/>
+              </a:srgbClr>
+            </a:outerShdw>
+          </a:effectLst>
+        </a:effectStyle>
+      </a:effectStyleLst>
+      <a:bgFillStyleLst>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:solidFill>
+          <a:schemeClr val="phClr">
+            <a:tint val="95000"/>
+            <a:satMod val="170000"/>
+          </a:schemeClr>
+        </a:solidFill>
+        <a:gradFill rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:schemeClr val="phClr">
+                <a:tint val="93000"/>
+                <a:satMod val="150000"/>
+                <a:shade val="98000"/>
+                <a:lumMod val="102000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="50000">
+              <a:schemeClr val="phClr">
+                <a:tint val="98000"/>
+                <a:satMod val="130000"/>
+                <a:shade val="90000"/>
+                <a:lumMod val="103000"/>
+              </a:schemeClr>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:schemeClr val="phClr">
+                <a:shade val="63000"/>
+                <a:satMod val="120000"/>
+              </a:schemeClr>
+            </a:gs>
+          </a:gsLst>
+          <a:lin ang="5400000" scaled="0"/>
+        </a:gradFill>
+      </a:bgFillStyleLst>
+    </a:fmtScheme>
+  </a:themeElements>
+  <a:objectDefaults/>
+  <a:extraClrSchemeLst/>
+  <a:extLst>
+    <a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}">
+      <thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/>
+    </a:ext>
+  </a:extLst>
+</a:theme>
+	`.trim()
 }

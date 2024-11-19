@@ -673,6 +673,79 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				}
 				break
 
+			// @CHRISTOPHER
+			case SLIDE_OBJECT_TYPES.waterfallChart:
+
+				strSlideXml += `
+				<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex">
+					<mc:Choice Requires="cx1">
+					  <p:graphicFrame>
+						<p:nvGraphicFramePr>
+						  <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}">
+							<a:extLst>
+							  <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+								<a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{B42E06F6-D4D4-1613-6DFD-15FA411FE733}"/>
+							  </a:ext>
+							</a:extLst>
+						  </p:cNvPr>
+						  <p:cNvGraphicFramePr/>
+						  <p:nvPr>
+							<p:extLst>
+							  <p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}">
+								<p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="3316034272"/>
+							  </p:ext>
+							</p:extLst>
+						  </p:nvPr>
+						</p:nvGraphicFramePr>
+						<p:xfrm>
+						  <a:off x="${x}" y="${y}"/>
+						  <a:ext cx="${cx}" cy="${cy}"/>
+						</p:xfrm>
+						<a:graphic>
+						  <a:graphicData uri="http://schemas.microsoft.com/office/drawing/2014/chartex">
+							<cx:chart xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId${slideItemObj.chartRid}"/>
+						  </a:graphicData>
+						</a:graphic>
+					  </p:graphicFrame>
+					</mc:Choice>
+					<mc:Fallback xmlns="">
+					  <p:pic>
+						<p:nvPicPr>
+						  <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}">
+							<a:extLst>
+							  <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+								<a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{B42E06F6-D4D4-1613-6DFD-15FA411FE733}"/>
+							  </a:ext>
+							</a:extLst>
+						  </p:cNvPr>
+						  <p:cNvPicPr>
+							<a:picLocks noGrp="1" noRot="1" noChangeAspect="1" noMove="1" noResize="1" noEditPoints="1" noAdjustHandles="1" noChangeArrowheads="1" noChangeShapeType="1"/>
+						  </p:cNvPicPr>
+						  <p:nvPr/>
+						</p:nvPicPr>
+						<p:blipFill>
+						  <a:blip r:embed=""/>
+						  <a:stretch>
+							<a:fillRect/>
+						  </a:stretch>
+						</p:blipFill>
+						<p:spPr>
+						  <a:xfrm>
+							<a:off x="${x}" y="${y}"/>
+							<a:ext cx="${cx}" cy="${cy}"/>
+						  </a:xfrm>
+						  <a:prstGeom prst="rect">
+							<a:avLst/>
+						  </a:prstGeom>
+						</p:spPr>
+					  </p:pic>
+					</mc:Fallback>
+				  </mc:AlternateContent>
+				`
+				break
+
+			// @CHRISTOPHER: Funnel;
+			case SLIDE_OBJECT_TYPES.funnelChart:
 			case SLIDE_OBJECT_TYPES.chart:
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
@@ -683,7 +756,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
 				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
 				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
+				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>`
 				strSlideXml += '  </a:graphicData>'
 				strSlideXml += ' </a:graphic>'
 				strSlideXml += '</p:graphicFrame>'
@@ -750,7 +823,20 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 	// STEP 5: Close spTree and finalize slide XML
 	strSlideXml += '</p:spTree>'
+
+	strSlideXml += `
+	<p:extLst>
+      <p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">
+        <p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1198992366"/>
+      </p:ext>
+    </p:extLst>
+	`
 	strSlideXml += '</p:cSld>'
+
+	// Waterfall
+	// if (slideItemObj._type === SLIDE_OBJECT_TYPES.waterfallChart) {
+	//
+	// }
 
 	// LAST: Return
 	return strSlideXml
@@ -768,8 +854,19 @@ function slideObjectRelationsToXml (slide: PresSlide | SlideLayout, defaultRels:
 	let lastRid = 0 // stores maximum rId used for dynamic relations
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 
-	// STEP 1: Add all rels for this Slide
-	slide._rels.forEach((rel: ISlideRel) => {
+		// STEP 1: Add all rels for this Slide
+	; (slide._relsChart || []).forEach((rel: ISlideRelChart) => {
+		lastRid = Math.max(lastRid, rel.rId)
+
+		if (rel.type === 'waterfall') {
+			strXml += `<Relationship Id="rId${rel.rId}" Type="http://schemas.microsoft.com/office/2014/relationships/chartEx" Target="${rel.Target}"/>`
+		} else {
+			// @CHRISTOPHER: This is being reversed. Why!?
+			strXml += `<Relationship Id="rId${rel.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="${rel.Target}"/>`
+		}
+	})
+
+	; (slide._rels.forEach((rel: ISlideRel) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		if (rel.type.toLowerCase().includes('hyperlink')) {
 			if (rel.data === 'slide') {
@@ -780,11 +877,8 @@ function slideObjectRelationsToXml (slide: PresSlide | SlideLayout, defaultRels:
 		} else if (rel.type.toLowerCase().includes('notesSlide')) {
 			strXml += `<Relationship Id="rId${rel.rId}" Target="${rel.Target}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>`
 		}
-	})
-	; (slide._relsChart || []).forEach((rel: ISlideRelChart) => {
-		lastRid = Math.max(lastRid, rel.rId)
-		strXml += `<Relationship Id="rId${rel.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="${rel.Target}"/>`
-	})
+	}))
+
 	; (slide._relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		const relRid = rel.rId.toString()
 		lastRid = Math.max(lastRid, rel.rId)
@@ -1103,7 +1197,7 @@ function genXmlBodyProperties (slideObject: ISlideObject | TableCell): string {
 		if (slideObject.options.fit) {
 			// NOTE: Use of '<a:noAutofit/>' instead of '' causes issues in PPT-2013!
 			if (slideObject.options.fit === 'none') bodyProperties += ''
-			// NOTE: Shrink does not work automatically - PowerPoint calculates the `fontScale` value dynamically upon resize
+				// NOTE: Shrink does not work automatically - PowerPoint calculates the `fontScale` value dynamically upon resize
 			// else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
 			else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit/>'
 			else if (slideObject.options.fit === 'resize') bodyProperties += '<a:spAutoFit/>'
@@ -1391,19 +1485,30 @@ export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout
 	// STEP 2: Add presentation and slide master(s)/slide(s)
 	strXml += '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
 	strXml += '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>'
+	//strXml += `<Override PartName="/ppt/slideMasters/slideMaster${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>`
+	strXml += `<Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>`
 	slides.forEach((slide, idx) => {
-		strXml += `<Override PartName="/ppt/slideMasters/slideMaster${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>`
 		strXml += `<Override PartName="/ppt/slides/slide${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`
 		// Add charts if any
 		slide._relsChart.forEach(rel => {
-			strXml += `<Override PartName="${rel.Target}" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`
+			if (rel.type === 'waterfall') {
+				strXml += `<Override PartName="${rel.Target.replace('..', '/ppt')}" ContentType="application/vnd.ms-office.chartex+xml"/>`
+			} else {
+				strXml += `<Override PartName="${rel.Target.replace('..', '/ppt')}" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`
+			}
 		})
 	})
+
+	strXml += `
+	<Override PartName="/ppt/charts/style1.xml" ContentType="application/vnd.ms-office.chartstyle+xml"/>
+  	<Override PartName="/ppt/charts/colors1.xml" ContentType="application/vnd.ms-office.chartcolorstyle+xml"/>
+	`.trim()
 
 	// STEP 3: Core PPT
 	strXml += '<Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>'
 	strXml += '<Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>'
 	strXml += '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
+	strXml += '<Override PartName="/ppt/theme/theme2.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
 	strXml += '<Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>'
 
 	// STEP 4: Add Slide Layouts
@@ -1435,6 +1540,10 @@ export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout
 	return strXml
 }
 
+/**
+ * Creates `_rels/.rels`
+ * @returns XML
+ */
 /**
  * Creates `_rels/.rels`
  * @returns XML

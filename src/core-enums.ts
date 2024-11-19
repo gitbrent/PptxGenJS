@@ -39,7 +39,7 @@ export const AXIS_ID_SERIES_PRIMARY = '2094734556'
 
 export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 export type WRITE_OUTPUT_TYPE = JSZIP_OUTPUT_TYPE | 'STREAM'
-export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'bubble3D' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'bubble3D' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter' | 'waterfall' | 'funnel'
 export type SCHEME_COLORS = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 
 export const LETTERS: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -117,6 +117,8 @@ export enum ChartType {
 	'pie' = 'pie',
 	'radar' = 'radar',
 	'scatter' = 'scatter',
+	'waterfall' = 'waterfall',
+	'funnel' = 'funnel'
 }
 export enum ShapeType {
 	'accentBorderCallout1' = 'accentBorderCallout1',
@@ -704,6 +706,8 @@ export enum CHART_TYPE {
 	'PIE' = 'pie',
 	'RADAR' = 'radar',
 	'SCATTER' = 'scatter',
+	'WATERFALL' = 'waterfall',
+	'FUNNEL' = 'funnel'
 }
 
 export enum SCHEME_COLOR_NAMES {
@@ -739,6 +743,8 @@ export enum SLIDE_OBJECT_TYPES {
 	'tablecell' = 'tablecell',
 	'text' = 'text',
 	'notes' = 'notes',
+	'waterfallChart' = 'waterfallChart',
+	'funnelChart' = 'funnelChart'
 }
 export enum PLACEHOLDER_TYPES {
 	'title' = 'title',

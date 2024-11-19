@@ -51,6 +51,7 @@ import { encodeXmlEntities, getNewRelId, getSmartParseNumber, inch2Emu, valToPts
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter = 0
+let _extendedChartCounter = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
@@ -67,7 +68,10 @@ export function createSlideMaster (props: SlideMasterProps, target: SlideLayout)
 		props.objects.forEach((object, idx) => {
 			const key = Object.keys(object)[0]
 			const tgt = target as PresSlide
+
+			// @CHRISTOPHER: This may be where we need to process it.
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
+
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
@@ -350,18 +354,30 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
 
 	// STEP 4: Set props
 	resultObject._type = 'chart'
+
+	// @CHRISTOPHER: We need to handle Waterfall and Funnel Charts Differently
+	if (type === CHART_TYPE.WATERFALL) {
+		resultObject._type = SLIDE_OBJECT_TYPES.waterfallChart
+		++_extendedChartCounter
+	}
+
 	resultObject.options = options
 	resultObject.chartRid = getNewRelId(target)
+	const _chartID = (type === CHART_TYPE.WATERFALL) ? _extendedChartCounter : chartId
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+
+	// @CHRISTOPHER: Waterfalls have to be treated specially.
+	const fileName = (type === CHART_TYPE.WATERFALL) ? `chartEx${_chartID}.xml` : `chart${_chartID}.xml`
+
 	target._relsChart.push({
 		rId: getNewRelId(target),
 		data: tmpData,
 		opts: options,
-		type: options._type,
-		globalId: chartId,
-		fileName: `chart${chartId}.xml`,
-		Target: `/ppt/charts/chart${chartId}.xml`,
+		type: (type === CHART_TYPE.WATERFALL) ? 'waterfall' : options._type,
+		globalId: _chartID,
+		fileName,
+		Target: `../charts/${fileName}`,
 	})
 
 	target._slideObjects.push(resultObject)
