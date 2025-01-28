@@ -42,6 +42,8 @@ import {
 	inch2Emu,
 	valToPts,
 } from './gen-utils'
+import PptxGenJS from "../types";
+import TableToSlidesProps = PptxGenJS.TableToSlidesProps;
 
 const ImageSizingXml = {
 	cover: function (imgSize: { w: number, h: number }, boxDim: { w: number, h: number, x: number, y: number }) {
@@ -179,7 +181,17 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 					'</p:nvGraphicFramePr>'
 				strXml += `<p:xfrm><a:off x="${x || (x === 0 ? 0 : EMU)}" y="${y || (y === 0 ? 0 : EMU)}"/><a:ext cx="${cx || (cx === 0 ? 0 : EMU)}" cy="${cy || EMU
 				}"/></p:xfrm>`
-				strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>'
+
+				// Bob Dolan 2025-01-27
+				// strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>'
+				// if autoPageRepeatHeader is true, first row of table should be marked as a header row to improve accessibility and to pass PowerPoint accessibility review
+				strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr'
+				if ((objTabOpts as TableToSlidesProps).autoPageRepeatHeader) {
+					strXml += ' firstRow="1"'
+				}
+				strXml += '/>'
+				// Bob Dolan 2025-01-27
+
 				// + '        <a:tblPr bandRow="1"/>';
 				// TODO: Support banded rows, first/last row, etc.
 				// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
