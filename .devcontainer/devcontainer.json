@@ -3,5 +3,23 @@
     "test": "echo \"No test scripts found in the package.json file.\"",
     "build": "npm install && npm run build",
     "launch": "npm install && npm start"
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "msjsdiag.debugger-for-chrome",
+    "streetsidesoftware.code-spell-checker"
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "**/build": true
+    }
   }
 }
