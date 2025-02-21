@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React from "react";
 import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 import { testMainMethods, testTableMethod } from "./tstest/Test";
 import logo from "./logo.png";
@@ -26,50 +26,9 @@ slide.addText(
 pptx.writeFile({ fileName: 'pptxgenjs-demo-react.pptx' });`;
 
 function App() {
-	// Function to convert ppt JSON or XML to React components
-	const convertPptToReact = useCallback((pptx) => {
-		console.log("Converting ppt to React components...");
-		// Placeholder implementation
-	}, []);
-
-	// Function to create a new slide with text
-	const createTextSlide = useCallback((pptx, text, options) => {
-		let slide = pptx.addSlide();
-		slide.addText(text, options);
-		return slide;
-	}, []);
-
-	// Function to create a new slide with a chart
-	const createChartSlide = useCallback((pptx, chartType, data, options) => {
-		let slide = pptx.addSlide();
-		slide.addChart(chartType, data, options);
-		return slide;
-	}, []);
-
-	// Function to create a new slide with a shape
-	const createShapeSlide = useCallback((pptx, shapeType, options) => {
-		let slide = pptx.addSlide();
-		slide.addShape(shapeType, options);
-		return slide;
-	}, []);
-
-	// Function to create a new slide with an image
-	const createImageSlide = useCallback((pptx, imagePath, options) => {
-		let slide = pptx.addSlide();
-		slide.addImage({ path: imagePath, ...options });
-		return slide;
-	}, []);
-
-	// Function to create a new slide with a table
-	const createTableSlide = useCallback((pptx, tableData, options) => {
-		let slide = pptx.addSlide();
-		slide.addTable(tableData, options);
-		return slide;
-	}, []);
-
-	// Function to run the demo
-	const runDemo = useCallback(() => {
+	function runDemo() {
 		let pptx = new pptxgen();
+		let slide = pptx.addSlide();
 
 		let dataChartRadar = [
 			{
@@ -77,14 +36,13 @@ function App() {
 				labels: ["May", "June", "July", "August", "September"],
 				values: [26, 53, 100, 75, 41],
 			},
-			{
-				name: "Region 2",
-				labels: ["May", "June", "July", "August", "September"],
-				values: [20, 30, 50, 40, 60],
-			},
 		];
+		//slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 0.36, y: 2.25, w: 4.0, h: 4.0, radarStyle: "standard" });
 
-		createTextSlide(pptx, "React Demo!", {
+		//slide.addShape(pptx.ShapeType.rect, { x: 4.36, y: 2.36, w: 5, h: 2.5, fill: pptx.SchemeColor.background2 });
+
+		//slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: "center" });
+		slide.addText("React Demo!", {
 			x: 1,
 			y: 0.5,
 			w: "80%",
@@ -95,23 +53,29 @@ function App() {
 			color: "008899",
 		});
 
-		createChartSlide(pptx, pptx.ChartType.radar, dataChartRadar, { x: 1, y: 1.9, w: 8, h: 3 });
+		slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 1, y: 1.9, w: 8, h: 3 });
 
-		createTextSlide(pptx, `PpptxGenJS version: ${pptx.version}`, {
+		slide.addText(`PpptxGenJS version: ${pptx.version}`, {
 			x: 0,
 			y: 5.3,
 			w: "100%",
 			h: 0.33,
 			fontSize: 10,
 			align: "center",
-			fill: "E1E1E1",
-			color: "A1A1A1",
+			fill: "E1E1E1", //{ color: pptx.SchemeColor.background2 },
+			color: "A1A1A1", // pptx.SchemeColor.accent3,
 		});
 
-		convertPptToReact(pptx);
+		convertPptToReact(pptx); // Call convertPptToReact function
 
 		pptx.writeFile({ fileName: "pptxgenjs-demo-react.pptx" });
-	}, [convertPptToReact, createTextSlide, createChartSlide]);
+	}
+
+	function convertPptToReact(pptx) {
+		// Function to convert ppt JSON or XML to React components
+		// Placeholder implementation
+		console.log("Converting ppt to React components...");
+	}
 
 	return (
 		<section>
