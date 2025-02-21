@@ -4,6 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Function to render generated React components
+const renderGeneratedComponents = (components) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+      {components}
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
+};
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

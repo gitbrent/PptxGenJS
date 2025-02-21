@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "test": "echo \"No test scripts found in the package.json file.\"",
+    "build": "npm install && npm run build",
+    "launch": "npm install && npm start"
+  }
+}
