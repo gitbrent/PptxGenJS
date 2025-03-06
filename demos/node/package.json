@@ -1,9 +1,9 @@
 {
 	"name": "pptxgenjs-demos-node",
-	"version": "3.12.0",
+	"version": "3.12.1",
 	"author": {
-		"name": "Brent Ely",
-		"url": "https://github.com/gitbrent/"
+		"name": "Ipsos Simstore",
+		"url": "https://github.com/ipsos-simstore"
 	},
 	"type": "module",
 	"description": "Create PowerPoint Presentations with JavaScript",
@@ -16,10 +16,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/gitbrent/PptxGenJS.git"
+		"url": "git+https://github.com/ipsos-simstore/PptxGenJS.git"
 	},
 	"license": "MIT",
 	"dependencies": {
-		"pptxgenjs": "^3.12.0"
+		"pptxgenjs": "^3.12.1"
 	}
 }

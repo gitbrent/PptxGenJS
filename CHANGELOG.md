@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
+## [3.12.1] - 2025-03-06
+
+### Added
+
+- Allow data labels text color overrides on bar charts for a specific index `dataLabelColorOverride`
+- Allow specific bar-cell(s) fill color overrides on bar charts | `chartColorsOverrideValueIdx`
+
 ## [3.12.0] - 2023-03-19
 
 ### Added

@@ -1,12 +1,12 @@
 {
   "name": "pptxgenjs",
-  "version": "3.12.0",
+  "version": "3.12.1",
   "author": {
-    "name": "Brent Ely",
-    "url": "https://github.com/gitbrent/"
+    "name": "Ipsos Simstore Dev",
+    "url": "https://github.com/orgs/ipsos-simstore/people"
   },
   "description": "Create JavaScript PowerPoint Presentations",
-  "homepage": "https://gitbrent.github.io/PptxGenJS/",
+  "homepage": "https://github.com/ipsos-simstore",
   "license": "MIT",
   "main": "dist/pptxgen.cjs.js",
   "module": "dist/pptxgen.es.js",
@@ -64,7 +64,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gitbrent/PptxGenJS.git"
+    "url": "git+https://github.com/ipsos-simstore/PptxGenJS.git"
   },
   "keywords": [
     "html-to-powerpoint",
@@ -84,6 +84,6 @@
     "typescript-powerpoint"
   ],
   "bugs": {
-    "url": "https://github.com/gitbrent/PptxGenJS/issues"
+    "url": "https://github.com/ipsos-simstore/PptxGenJS/issues"
   }
 }

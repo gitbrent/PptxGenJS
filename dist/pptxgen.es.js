@@ -1,4 +1,4 @@
-/* PptxGenJS 3.12.0 @ 2023-03-20T03:12:31.367Z */
+/* PptxGenJS 3.12.1 @ 2025-03-06T17:11:32.722Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -2964,6 +2964,10 @@ var Slide = /** @class */ (function () {
     return Slide;
 }());
 
+function isArrEqual(arr1, arr2) {
+    return arr1.length !== arr2.length ? false : arr1.every(function (element, index) { return element === arr2[index]; });
+}
+
 /**
  * PptxGenJS: Chart Generation
  */
@@ -3659,12 +3663,15 @@ function makeXmlCharts(rel) {
  * @return {string} XML chart
  */
 function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeChart) {
+    var _a, _b;
     // NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
     // ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
     var colorIndex = -1; // Maintain the color index by region
     var idxColLtr = 1;
     var optsChartData = null;
     var strXml = '';
+    var dataItemDisplayLabelColorOverride = new Map(Object.entries((_a = opts.dataLabelColorOverride) !== null && _a !== void 0 ? _a : {}));
+    var dataItemValueIdxFillOverride = new Map(Object.entries((_b = opts.chartColorsOverrideValueIdx) !== null && _b !== void 0 ? _b : {}));
     switch (chartType) {
         case CHART_TYPE.AREA:
         case CHART_TYPE.BAR:
@@ -3720,7 +3727,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 ]
              */
             data.forEach(function (obj) {
-                var _a;
+                var _a, _b, _c, _d, _e, _f;
                 colorIndex++;
                 strXml += '<c:ser>';
                 strXml += "  <c:idx val=\"".concat(obj._dataIndex, "\"/><c:order val=\"").concat(obj._dataIndex, "\"/>");
@@ -3733,7 +3740,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Fill and Border
                 // TODO: CURRENT: Pull#727
                 // TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
-                var seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null;
+                var boundedColorIdx = colorIndex % opts.chartColors.length;
+                var seriesColor = opts.chartColors ? opts.chartColors[boundedColorIdx] : null;
+                var dataItemAtIdxValueColor = (_b = (_a = dataItemDisplayLabelColorOverride.get("".concat(boundedColorIdx))) !== null && _a !== void 0 ? _a : opts.dataLabelColor) !== null && _b !== void 0 ? _b : DEF_FONT_COLOR;
                 strXml += '  <c:spPr>';
                 if (seriesColor === 'transparent') {
                     strXml += '<a:noFill/>';
@@ -3768,7 +3777,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += "<c:spPr><a:solidFill>".concat(createColorElement(seriesColor), "</a:solidFill></c:spPr>");
                     strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>';
                     strXml += "<a:defRPr b=\"".concat(opts.dataLabelFontBold ? 1 : 0, "\" i=\"").concat(opts.dataLabelFontItalic ? 1 : 0, "\" strike=\"noStrike\" sz=\"").concat(Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" u=\"none\">");
-                    strXml += "<a:solidFill>".concat(createColorElement(opts.dataLabelColor || DEF_FONT_COLOR), "</a:solidFill>");
+                    strXml += "<a:solidFill>".concat(createColorElement(dataItemAtIdxValueColor), "</a:solidFill>");
                     strXml += "<a:latin typeface=\"".concat(opts.dataLabelFontFace || 'Arial', "\"/>");
                     strXml += '</a:defRPr></a:pPr></a:p></c:txPr>';
                     if (opts.dataLabelPosition)
@@ -3796,13 +3805,19 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Color chart bars various colors when >1 color
                 // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
                 if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
-                    data.length === 1 &&
-                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || ((_a = opts.invertedColors) === null || _a === void 0 ? void 0 : _a.length))) {
+                    data.length > 0 &&
+                    ((!isArrEqual((_c = opts.chartColors) !== null && _c !== void 0 ? _c : [], BARCHART_COLORS) && ((_d = opts.chartColors) !== null && _d !== void 0 ? _d : []).length > 1)
+                        || ((_e = opts.invertedColors) === null || _e === void 0 ? void 0 : _e.length))) {
+                    var chartColorOverrideSeriesColor_1 = (_f = dataItemValueIdxFillOverride.get("".concat(boundedColorIdx))) !== null && _f !== void 0 ? _f : { indices: [], fill: null };
                     // Series Data Point colors
-                    obj.values.forEach(function (value, index) {
+                    obj.values.forEach(function (value, valueItemIdx) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
+                        var fallbackCellColor = arrColors[colorIndex % arrColors.length];
+                        var valueItemCellColor = typeof chartColorOverrideSeriesColor_1.fill === 'string' && chartColorOverrideSeriesColor_1.indices.indexOf(valueItemIdx) > -1
+                            ? chartColorOverrideSeriesColor_1.fill
+                            : fallbackCellColor;
                         strXml += '  <c:dPt>';
-                        strXml += "    <c:idx val=\"".concat(index, "\"/>");
+                        strXml += "    <c:idx val=\"".concat(valueItemIdx, "\"/>");
                         strXml += '      <c:invertIfNegative val="0"/>';
                         strXml += '    <c:bubble3D val="0"/>';
                         strXml += '    <c:spPr>';
@@ -3811,13 +3826,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         }
                         else if (chartType === CHART_TYPE.BAR) {
                             strXml += '<a:solidFill>';
-                            strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>';
+                            strXml += '  <a:srgbClr val="' + valueItemCellColor + '"/>';
                             strXml += '</a:solidFill>';
                         }
                         else {
                             strXml += '<a:ln>';
                             strXml += '  <a:solidFill>';
-                            strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>';
+                            strXml += '   <a:srgbClr val="' + arrColors[valueItemIdx % arrColors.length] + '"/>';
                             strXml += '  </a:solidFill>';
                             strXml += '</a:ln>';
                         }
@@ -6706,7 +6721,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.12.0';
+var VERSION = '3.12.1';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
