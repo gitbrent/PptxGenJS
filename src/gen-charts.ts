@@ -21,6 +21,7 @@ import {
 } from './core-enums'
 import { IChartOptsLib, ISlideRelChart, ShadowProps, IChartPropsTitle, OptsChartGridLine, IOptsChartData, ChartLineCap } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getUuid, valToPts } from './gen-utils'
+import { isArrEqual } from './utils'
 import JSZip from 'jszip'
 
 /**
@@ -773,6 +774,9 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 	let optsChartData: IOptsChartData = null
 	let strXml = ''
 
+	const dataItemDisplayLabelColorOverride = new Map(Object.entries(opts.dataLabelColorOverride ?? {}))
+	const dataItemValueIdxFillOverride = new Map(Object.entries(opts.chartColorsOverrideValueIdx ?? {}))
+
 	switch (chartType) {
 		case CHART_TYPE.AREA:
 		case CHART_TYPE.BAR:
@@ -845,7 +849,9 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// Fill and Border
 				// TODO: CURRENT: Pull#727
 				// TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
-				const seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
+				const boundedColorIdx = colorIndex % opts.chartColors.length
+				const seriesColor = opts.chartColors ? opts.chartColors[boundedColorIdx] : null
+				const dataItemAtIdxValueColor = dataItemDisplayLabelColorOverride.get(`${boundedColorIdx}`) ?? opts.dataLabelColor ?? DEF_FONT_COLOR
 
 				strXml += '  <c:spPr>'
 				if (seriesColor === 'transparent') {
@@ -882,7 +888,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += `<a:defRPr b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" strike="noStrike" sz="${Math.round(
 						(opts.dataLabelFontSize || DEF_FONT_SIZE) * 100
 					)}" u="none">`
-					strXml += `<a:solidFill>${createColorElement(opts.dataLabelColor || DEF_FONT_COLOR)}</a:solidFill>`
+					strXml += `<a:solidFill>${createColorElement(dataItemAtIdxValueColor)}</a:solidFill>`
 					strXml += `<a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
 					strXml += '</a:defRPr></a:pPr></a:p></c:txPr>'
 					if (opts.dataLabelPosition) strXml += `<c:dLblPos val="${opts.dataLabelPosition}"/>`
@@ -911,15 +917,23 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
 				if (
 					(chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
-					data.length === 1 &&
-					((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || (opts.invertedColors?.length))
+						data.length > 0 &&
+						( 
+							(!isArrEqual(opts.chartColors ?? [], BARCHART_COLORS) && (opts.chartColors ?? []).length > 1)
+						  || (opts.invertedColors?.length)
+						)
 				) {
+					const chartColorOverrideSeriesColor = dataItemValueIdxFillOverride.get(`${boundedColorIdx}`) ?? { indices: [], fill: null }
 					// Series Data Point colors
-					obj.values.forEach((value, index) => {
+					obj.values.forEach((value, valueItemIdx) => {
 						const arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
+						const fallbackCellColor = arrColors[colorIndex % arrColors.length]
+						const valueItemCellColor = typeof chartColorOverrideSeriesColor.fill === 'string' && chartColorOverrideSeriesColor.indices.indexOf(valueItemIdx) > -1
+							? chartColorOverrideSeriesColor.fill
+							: fallbackCellColor
 
 						strXml += '  <c:dPt>'
-						strXml += `    <c:idx val="${index}"/>`
+						strXml += `    <c:idx val="${valueItemIdx}"/>`
 						strXml += '      <c:invertIfNegative val="0"/>'
 						strXml += '    <c:bubble3D val="0"/>'
 						strXml += '    <c:spPr>'
@@ -927,12 +941,12 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 							strXml += '<a:ln><a:noFill/></a:ln>'
 						} else if (chartType === CHART_TYPE.BAR) {
 							strXml += '<a:solidFill>'
-							strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
+							strXml += '  <a:srgbClr val="' + valueItemCellColor + '"/>'
 							strXml += '</a:solidFill>'
 						} else {
 							strXml += '<a:ln>'
 							strXml += '  <a:solidFill>'
-							strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
+							strXml += '   <a:srgbClr val="' + arrColors[valueItemIdx % arrColors.length] + '"/>'
 							strXml += '  </a:solidFill>'
 							strXml += '</a:ln>'
 						}

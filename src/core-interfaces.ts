@@ -1230,6 +1230,10 @@ export interface IChartPropsBase {
 	axisPos?: 'b' | 'l' | 'r' | 't'
 	chartColors?: HexColor[]
 	/**
+	 * Record<`{dataItemIdx}`, { indices: `valuesIdxs` , fill: `hexColor` }}
+	 */
+	chartColorsOverrideValueIdx?: { [dataItemIdx: number]: { indices: number[], fill: HexColor } }
+	/**
 	 * opacity (0 - 100)
 	 * @example 50 // 50% opaque
 	 */
@@ -1538,6 +1542,7 @@ export interface IChartPropsChartRadar {
 export interface IChartPropsDataLabel {
 	dataLabelBkgrdColors?: boolean
 	dataLabelColor?: string
+	dataLabelColorOverride?: { [idx: number]: HexColor }
 	dataLabelFontBold?: boolean
 	dataLabelFontFace?: string
 	dataLabelFontItalic?: boolean
