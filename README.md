@@ -1,3 +1,38 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [PptxGenJS](#pptxgenjs)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Features](#features)
+  - [Works Everywhere](#works-everywhere)
+  - [Full Featured](#full-featured)
+  - [Simple and Powerful](#simple-and-powerful)
+  - [Export Your Way](#export-your-way)
+  - [HTML to PowerPoint](#html-to-powerpoint)
+- [Live Demos](#live-demos)
+- [Installation](#installation)
+  - [Npm](#npm)
+  - [Yarn](#yarn)
+  - [CDN](#cdn)
+  - [Download](#download)
+  - [Additional Builds](#additional-builds)
+- [Documentation](#documentation)
+  - [Quick Start Guide](#quick-start-guide)
+    - [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
+    - [Script/Web Browser](#scriptweb-browser)
+  - [Library API](#library-api)
+  - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
+- [Library Ports](#library-ports)
+- [Issues / Suggestions](#issues--suggestions)
+- [Need Help?](#need-help)
+- [Contributors](#contributors)
+- [Sponsor Us](#sponsor-us)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 <h1 align="center">PptxGenJS</h1>
 <h5 align="center">
   Create JavaScript PowerPoint Presentations
