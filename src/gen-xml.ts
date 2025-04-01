@@ -1329,6 +1329,11 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 		strSlideXml += '</a:p>'
 	})
 
+	// PowerPoint shows repair message if txBody misses p #1048
+	if (!arrLines.length) {
+		strSlideXml += '<a:p><a:endParaRPr /></a:p>'
+	}
+
 	// STEP 7: Close the textBody
 	strSlideXml += slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 
