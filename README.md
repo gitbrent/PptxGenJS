@@ -14,38 +14,38 @@
 # Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Introduction](#introduction)
-- [Features](#features)
+- [🎉 Introduction](#-introduction)
+- [🚀 Features](#-features)
 	- [Works Everywhere](#works-everywhere)
 	- [Full Featured](#full-featured)
 	- [Simple and Powerful](#simple-and-powerful)
 	- [Export Your Way](#export-your-way)
 	- [HTML to PowerPoint](#html-to-powerpoint)
-- [Live Demos](#live-demos)
-- [Installation](#installation)
+- [🌐 Live Demos](#-live-demos)
+- [📦 Installation](#-installation)
 	- [Npm](#npm)
 	- [Yarn](#yarn)
 	- [CDN](#cdn)
 	- [Download](#download)
 	- [Additional Builds](#additional-builds)
-- [Documentation](#documentation)
+- [📖 Documentation](#-documentation)
 	- [Quick Start Guide](#quick-start-guide)
 		- [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
 		- [Script/Web Browser](#scriptweb-browser)
 	- [Library API](#library-api)
 	- [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
-- [Library Ports](#library-ports)
-- [Issues / Suggestions](#issues--suggestions)
-- [Need Help?](#need-help)
-- [Contributors](#contributors)
-- [Support the Open Source Community](#support-the-open-source-community)
-- [License](#license)
+- [🔗 Library Ports](#-library-ports)
+- [🛠️ Issues / Suggestions](#️-issues--suggestions)
+- [❓ Need Help?](#-need-help)
+- [🙏 Contributors](#-contributors)
+- [🌟 Support the Open Source Community](#-support-the-open-source-community)
+- [📜 License](#-license)
 
-# Introduction
+# 🎉 Introduction
 
 This library creates Open Office XML (OOXML) Presentations which are compatible with Microsoft PowerPoint, Apple Keynote, and other applications.
 
-# Features
+# 🚀 Features
 
 ## Works Everywhere
 
@@ -75,13 +75,13 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
-# Live Demos
+# 🌐 Live Demos
 
 Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
 - [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demos/)
 
-# Installation
+# 📦 Installation
 
 ## Npm
 
@@ -132,7 +132,7 @@ Bundle or min files:
 - CommonJS: `dist/pptxgen.cjs.js`
 - ES Module: `dist/pptxgen.es.js`
 
-# Documentation
+# 📖 Documentation
 
 ## Quick Start Guide
 
@@ -212,18 +212,18 @@ Learn more:
 
 - [HTML-to-PowerPoint Docs/Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
 
-# Library Ports
+# 🔗 Library Ports
 
 React: [react-pptx](https://github.com/wyozi/react-pptx) - thanks to [Joonas](https://github.com/wyozi)!
 
-# Issues / Suggestions
+# 🛠️ Issues / Suggestions
 
 Please file issues or suggestions on the [issues page on github](https://github.com/gitbrent/PptxGenJS/issues/new), or even better, [submit a pull request](https://github.com/gitbrent/PptxGenJS/pulls). Feedback is always welcome!
 
 When reporting issues, please include a code snippet or a link demonstrating the problem.
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/) that is already configured and uses the latest PptxGenJS code.
 
-# Need Help?
+# ❓ Need Help?
 
 Sometimes implementing a new library can be a difficult task and the slightest mistake will keep something from working. We've all been there!
 
@@ -234,7 +234,7 @@ are demos for both client browsers, node and react that contain working examples
 - [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50). If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `PptxGenJS`.
 - Ask your AI pair programmer! All major LLMs have ingested the pptxgenjs library and have the ability to answer functionality questions and provide code.
 
-# Contributors
+# 🙏 Contributors
 
 Thank you to everyone for the contributions and suggestions! ❤️
 
@@ -250,13 +250,13 @@ Special Thanks:
 
 PowerPoint shape definitions and some XML code via [Officegen Project](https://github.com/Ziv-Barber/officegen)
 
-# Support the Open Source Community
+# 🌟 Support the Open Source Community
 
 If you find this library useful, consider contributing to open-source projects, or sharing your knowledge on the open social web. Together, we can build free tools and resources that empower everyone.
 
 [gitbrent@fosstodon.org](https://fosstodon.org/@gitbrent)
 
-# License
+# 📜 License
 
 Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/)
 
