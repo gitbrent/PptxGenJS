@@ -132,8 +132,6 @@ Bundle or min files:
 - CommonJS: `dist/pptxgen.cjs.js`
 - ES Module: `dist/pptxgen.es.js`
 
----
-
 # Documentation
 
 ## Quick Start Guide
@@ -180,8 +178,6 @@ pres.writeFile();
 
 That's really all there is to it!
 
----
-
 ## Library API
 
 Full documentation and code examples are available
@@ -202,8 +198,6 @@ Full documentation and code examples are available
 - [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
 - [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
 
----
-
 ## HTML-to-PowerPoint Feature
 
 Easily convert HTML tables to PowerPoint presentations in a single call.
@@ -218,13 +212,9 @@ Learn more:
 
 - [HTML-to-PowerPoint Docs/Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
 
----
-
 # Library Ports
 
 React: [react-pptx](https://github.com/wyozi/react-pptx) - thanks to [Joonas](https://github.com/wyozi)!
-
----
 
 # Issues / Suggestions
 
@@ -232,8 +222,6 @@ Please file issues or suggestions on the [issues page on github](https://github.
 
 When reporting issues, please include a code snippet or a link demonstrating the problem.
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/) that is already configured and uses the latest PptxGenJS code.
-
----
 
 # Need Help?
 
@@ -245,8 +233,6 @@ are demos for both client browsers, node and react that contain working examples
 - Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
 - [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50). If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `PptxGenJS`.
 - Ask your AI pair programmer! All major LLMs have ingested the pptxgenjs library and have the ability to answer functionality questions and provide code.
-
----
 
 # Contributors
 
@@ -264,15 +250,11 @@ Special Thanks:
 
 PowerPoint shape definitions and some XML code via [Officegen Project](https://github.com/Ziv-Barber/officegen)
 
----
-
 # Support the Open Source Community
 
 If you find this library useful, consider contributing to open-source projects, or sharing your knowledge on the open social web. Together, we can build free tools and resources that empower everyone.
 
 [gitbrent@fosstodon.org](https://fosstodon.org/@gitbrent)
-
----
 
 # License
 
