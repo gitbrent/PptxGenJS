@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.1 @ 2024-10-27T21:26:57.785Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2025-04-10T01:26:03.521Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -98,7 +98,7 @@ var LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
 var DEF_BULLET_MARGIN = 27;
 var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
 var DEF_CELL_MARGIN_IN = [0.05, 0.1, 0.05, 0.1]; // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
-var DEF_CHART_BORDER = { type: 'solid', color: '363636', pt: 1 };
+var DEF_CHART_BORDER = { color: '363636', pt: 1 };
 var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1, cap: 'flat' };
 var DEF_FONT_COLOR = '000000';
 var DEF_FONT_SIZE = 12;
@@ -108,7 +108,7 @@ var DEF_PRES_LAYOUT_NAME = 'DEFAULT';
 var DEF_SHAPE_LINE_COLOR = '333333';
 var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
+var DEF_TEXT_SHADOW = { color: '000000'};
 var DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 };
 var AXIS_ID_VALUE_PRIMARY = '2094734552';
 var AXIS_ID_VALUE_SECONDARY = '2094734553';
@@ -2125,7 +2125,7 @@ function addMediaDefinition(target, opt) {
     else if (strData && !strData.toLowerCase().includes('base64,')) {
         throw new Error('addMedia() error: `data` value lacks a base64 header! Ex: \'video/mpeg;base64,NMP[...]\')');
     }
-    else if (strCover && !strCover.toLowerCase().includes('base64,')) {
+    else if (!strCover.toLowerCase().includes('base64,')) {
         throw new Error('addMedia() error: `cover` value lacks a base64 header! Ex: \'data:image/png;base64,iV[...]\')');
     }
     // Online Video: requires `link`
@@ -6694,7 +6694,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.13.0-beta.0-20241027-1614';
+var VERSION = '3.13.0-beta.1-20250409-2025';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;

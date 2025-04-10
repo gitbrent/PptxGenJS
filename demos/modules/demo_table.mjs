@@ -18,6 +18,7 @@ import {
 	BASE_TEXT_OPTS_R,
 	LOREM_IPSUM,
 } from "./enums.mjs";
+import { TABLE_AUTO_PAGE_TEST } from "./enums_tables.mjs";
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
@@ -1024,6 +1025,43 @@ function genSlide10(pptx) {
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
 			verbose: true,
+		});
+	}
+
+	// SLIDE 4: status report style
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+
+		let projRows = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Content", options: { bold: true, fill: "ffaacc", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{ text: TABLE_AUTO_PAGE_TEST.replace(/\n/g, '') },
+			],
+			[
+				{ text: "2" },
+				{ text: TABLE_AUTO_PAGE_TEST },
+			]
+		];
+
+		slide.addTable(projRows, {
+			x: 0.4,
+			y: 2.0,
+			colW: [0.5, 8.0],
+			border: { pt: 0.2, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Arial",
+			fontSize: 10,
+			margin: 0.05,
+			autoPage: true,
+			autoPageRepeatHeader: true,
+			autoPageCharWeight: -0.5,
+			autoPageLineWeight: 1,
+			//verbose: true,
 		});
 	}
 }
