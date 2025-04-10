@@ -1,31 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.13.0">
-	<meta name="updated" content="2024-10-27">
+	<meta name="updated" content="2025-04-09">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Feature Demos</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/cyborg/bootstrap.min.css"
-		integrity="sha512-b34ZfRIn0Blhmq0epietqXEPLX9y2iWMqh4gWBrS07ZXddJfCTR7MldF7VaYufO/Vu636aTDMLREmizDqkganw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/yeti/bootstrap.min.css"
-		integrity="sha512-weyvl9mBvXvMHAcN2LCuQ5w0i7ihzrg3EQy6HixwCP88lXKbkL8IRYG8K75sCx1bRTQRDBXLfpW3fKlYfAAsaw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-		media="(prefers-color-scheme: no-preference), (prefers-color-scheme: light)" />
+	<!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
+	<!-- bootstrap -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
 		integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="./css/style.css">
-
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"
 		integrity="sha512-axJX7DJduStuBB8ePC8ryGzacZPr3rdLaIDZitiEgWWk2gsXxEFlm4UW0iNzj2h3wp5mOylgHAzBzM4nRSvTZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
 		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
-		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="./css/style.css">
 
 	<!-- RELEASE (CDN)
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
@@ -74,7 +71,7 @@
 		$(document).ready(() => { doAppStart() });
 	</script>
 </head>
-<body class="bg-light">
+<body>
 	<div id="modalBusy" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
@@ -92,7 +89,7 @@
 		</div>
 	</div>
 
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
 				<img src="images/favicon.png" width="30" height="30" class="d-inline-block align-top me-2" alt="" />
@@ -138,40 +135,40 @@
 			</div>
 		</header>
 
-		<ul class="nav nav-pills nav-justified text-nowrap" id="myTab" role="tablist">
-			<li class="nav-item" role="presentation">
+		<ul class="nav nav-pills nav-fill" id="myTab">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase active" id="nav-introduction" data-bs-toggle="tab" data-bs-target="#tab-introduction" type="button" role="tab"
 					aria-controls="itab-ntroduction" aria-selected="true" onclick="location.href='#introduction'">Introduction</button>
 			</li>
-			<li class="nav-item" role="presentation">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase" id="nav-html2pptx" data-bs-toggle="tab" data-bs-target="#tab-html2pptx" type="button" role="tab"
 					aria-controls="tab-html2pptx" aria-selected="false" onclick="location.href='#html2pptx'">HTML to PPTX</button>
 			</li>
-			<li class="nav-item" role="presentation">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase" id="nav-charts" data-bs-toggle="tab" data-bs-target="#tab-charts" type="button" role="tab" aria-controls="tab-charts"
 					aria-selected="false" onclick="location.href='#charts'">Charts</button>
 			</li>
-			<li class="nav-item" role="presentation">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase" id="nav-images" data-bs-toggle="tab" data-bs-target="#tab-images" type="button" role="tab" aria-controls="tab-images"
 					aria-selected="false" onclick="location.href='#images'">Images &amp; Media</button>
 			</li>
-			<li class="nav-item" role="presentation">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase" id="nav-shapes" data-bs-toggle="tab" data-bs-target="#tab-shapes" type="button" role="tab" aria-controls="tab-shapes"
 					aria-selected="false" onclick="location.href='#shapes'">Shapes
 					&amp; Text</button>
 			</li>
-			<li class="nav-item" role="presentation">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase" id="nav-tables" data-bs-toggle="tab" data-bs-target="#tab-tables" type="button" role="tab" aria-controls="tab-tables"
 					aria-selected="false" onclick="location.href='#tables'">Tables</button>
 			</li>
-			<li class="nav-item" role="presentation">
+			<li class="nav-item">
 				<button class="nav-link text-uppercase" id="nav-templates" data-bs-toggle="tab" data-bs-target="#tab-templates" type="button" role="tab"
 					aria-controls="tab-templates" aria-selected="false" onclick="location.href='#templates'">Templates</button>
 			</li>
 		</ul>
 		<main class="tab-content mb-4">
-			<div class="tab-pane p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
-				<section class="bg-gray-100 border px-4 py-3 mb-4">
+			<div class="tab-pane bg-black p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
+				<section class="border px-4 py-3 mb-4">
 					<h4 class="text-primary">Library Information</h4>
 					<div class="row g-4">
 						<div class='col'>
@@ -196,14 +193,14 @@
 						</div>
 					</div>
 				</section>
-				<section id="basicPres" class="bg-gray-100 border p-3">
+				<section id="basicPres" class="border p-3">
 					<h4 class="text-primary mb-3">Basic Presentation</h4>
 					<div class="text-center">
 						<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
 						<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Run Basic Demo</button>
 					</div>
 				</section>
-				<section id="codeSandbox" class="bg-gray-100 border p-4 d-none">
+				<section id="codeSandbox" class="border p-4 d-none">
 					<div class="alert alert-info mb-4" role="alert">
 						<h5>Editable Code</h5>
 						<div>Use the area below to easily try out various library features.</div>
@@ -212,7 +209,7 @@
 					<button type="button" class="btn btn-success w-50" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
 				</section>
 			</div>
-			<div class="tab-pane p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
+			<div class="tab-pane bg-black p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
 				<h4 class="text-primary mb-3">HTML to PowerPoint</h4>
 				<div class="accordion" id="accorHtml2Pptx">
 					<div class="accordion-item" data-desc="html2PptxColl01">
@@ -253,7 +250,7 @@
 							</button>
 						</h2>
 						<div id="html2PptxColl02" class="accordion-collapse collapse show p-4" aria-labelledby="html2PptxHead02" data-bs-parent="#accorHtml2Pptx">
-							<section class="bg-gray-100 border p-3 mb-4">
+							<section class="border p-3 mb-4" style="background: var(--bs-body-bg);">
 								<div class="row mb-3">
 									<div class="col">
 										<label for="numTab2SlideRows" class="form-label">Total Rows</label>
@@ -306,7 +303,7 @@
 								</div>
 							</section>
 							<table id="tabAutoPaging" class="table table-sm mb-0">
-								<thead class="table-light">
+								<thead class="table-dark">
 									<tr style="font-family:Courier">
 										<th data-pptx-width="0.6" style="width:5%"><b>Row</b></th>
 										<th data-pptx-min-width="0.8" style="width:10%">Last</th>
@@ -408,7 +405,7 @@
 										<div class="card-header h6 bg-primary">Colspan</div>
 										<div class="card-body">
 											<table id="tabColspan" class="tabHtmlToPpt w-100">
-												<thead class="table-light">
+												<thead class="table-dark">
 													<tr>
 														<th class="tg-header">First Name</th>
 														<th class="tg-header">Last Name</th>
@@ -447,7 +444,7 @@
 										<div class="card-header h6 bg-primary">Rowspan</div>
 										<div class="card-body">
 											<table id="tabRowspan" class="tabHtmlToPpt w-100">
-												<thead class="table-light">
+												<thead class="table-dark">
 													<tr>
 														<th class="tg-header">Last Name</th>
 														<th class="tg-header">First Name</th>
@@ -481,7 +478,7 @@
 										<div class="card-header h6 bg-primary">Colspan and Rowspan</div>
 										<div class="card-body">
 											<table id="tabRowColspan" class="tabHtmlToPpt w-100">
-												<thead class="table-light">
+												<thead class="table-dark">
 													<tr>
 														<th class="tg-header" colspan="2">Name</th>
 														<th class="tg-header" rowspan="2">Count</th>
@@ -528,7 +525,7 @@
 										<div class="card-header h6 bg-primary">Example: Lots of Single-Line Rows</div>
 										<div class="card-body">
 											<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
-												<thead class="table-light">
+												<thead class="table-dark">
 													<tr>
 														<th class="tg-header">A</th>
 														<th class="tg-header">B</th>
@@ -549,7 +546,7 @@
 										<div class="card-header h6 bg-primary">Example: Paging needed due to cell with large amount of text</div>
 										<div class="card-body">
 											<table id="tabLargeCellText" class="tabHtmlToPpt">
-												<thead class="table-light">
+												<thead class="table-dark">
 													<tr>
 														<th class="tg-header">Executive Status</th>
 													</tr>
@@ -571,7 +568,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
+			<div class="tab-pane bg-black p-4" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
 				<div class="card">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">
@@ -594,83 +591,83 @@
 						<div class="row row-cols-4 g-4 text-sm mb-4">
 							<div class="col">
 								<h6>Bar Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 1: Chart title, axis props</li>
-									<li>Slide 2: Vertical and Horizontal</li>
-									<li>Slide 3: Grid and axis options</li>
-									<li>Slide 4: Stacked & PercentStacked</li>
-									<li>Slide 5: Colors, units, formats</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 1 - Chart title, axis props</li>
+									<li class="list-group-item">Slide 2 - Vertical and Horizontal</li>
+									<li class="list-group-item">Slide 3 - Grid and axis options</li>
+									<li class="list-group-item">Slide 4 - Stacked & PercentStacked</li>
+									<li class="list-group-item">Slide 5 - Colors, units, formats</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>3D Bar Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 6: 3D Bar, 3D Cone, 3D Cylinder, 3D Pyramid</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 6 - 3D Bar, 3D Cone, 3D Cylinder, 3D Pyramid</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Tornado Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 7: Tornado Type</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 7 - Tornado Type</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Line Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 8 - Smoothing, Shadow, Size, Symbols</li>
-									<li>Slide 9 - Data Symbol, Size</li>
-									<li>Slide 10 - Lots of Categories</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 8 - Smoothing, Shadow, Size, Symbols</li>
+									<li class="list-group-item">Slide 9 - Data Symbol, Size</li>
+									<li class="list-group-item">Slide 10 - Lots of Categories</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Area Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 11 - Area Chart, Stacked Area Chart</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 11 - Area Chart, Stacked Area Chart</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Pie Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 12 - Various options</li>
-									<li>Slide 13 - Doughnut Type</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 12 - Various options</li>
+									<li class="list-group-item">Slide 13 - Doughnut Type</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>X Y (Scatter) Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 14 - Various Options</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 14 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Bubble Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 15 - Various Options</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 15 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Radar Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 16 - Various Options</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 16 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Multi-Level Category Axes</h6>
-								<ul class="mb-0">
-									<li>Slide 17 - Multiple Chart Types</li>
-									<li>Slide 18 - Three Level Axes</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 17 - Multiple Chart Types</li>
+									<li class="list-group-item">Slide 18 - Three Level Axes</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Combo Chart</h6>
-								<ul class="mb-0">
-									<li>Slide 19 - Example</li>
-									<li>Slide 20 - Various Options</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 19 - Example</li>
+									<li class="list-group-item">Slide 20 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Misc Options</h6>
-								<ul class="mb-0">
-									<li>Slide 21 - Shadows and Transparent Color</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 21 - Shadows and Transparent Color</li>
 								</ul>
 							</div>
 						</div>
@@ -680,7 +677,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="tab-images" role="tabpanel" aria-labelledby="nav-images">
+			<div class="tab-pane bg-black p-4" id="tab-images" role="tabpanel" aria-labelledby="nav-images">
 				<div class="card mb-4">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">
@@ -702,7 +699,8 @@
 					<div class="card-body">
 						<div class="row text-sm">
 							<div class="col">
-								<h6>Slide 1: Image Types</h6>
+								<h5>Slide 1</h5>
+								<h6>Image Types</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Type: Animated GIF</li>
 									<li class="list-group-item">Type: GIF</li>
@@ -712,7 +710,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 2: Image URLs</h6>
+								<h5>Slide 2</h5>
+								<h6>Image URLs</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Source: GitHub CDN</li>
 									<li class="list-group-item">Source: Wikimedia URL</li>
@@ -720,7 +719,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 3: Sizing/Rounding</h6>
+								<h5>Slide 3</h5>
+								<h6>Sizing/Rounding</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Rounding: options</li>
 									<li class="list-group-item">Sizing: contain</li>
@@ -772,7 +772,7 @@
 						<div class="row text-sm">
 							<div class="col">
 								<h6>Slide 1: Video Types</h6>
-								<ul class="list-group list-group-flush">
+								<ul class="list-group">
 									<li class="list-group-item">Type: avi</li>
 									<li class="list-group-item">Type: m4v</li>
 									<li class="list-group-item">Type: mov</li>
@@ -781,7 +781,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 2: Audio Types</h6>
-								<ul class="list-group list-group-flush">
+								<ul class="list-group">
 									<li class="list-group-item">Type: mp3</li>
 									<li class="list-group-item">Type: aif</li>
 									<li class="list-group-item">Type: wav</li>
@@ -810,7 +810,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="tab-shapes" role="tabpanel" aria-labelledby="nav-shapes">
+			<div class="tab-pane bg-black p-4" id="tab-shapes" role="tabpanel" aria-labelledby="nav-shapes">
 				<div class="card mb-4">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">
@@ -833,20 +833,20 @@
 						<div class="row text-sm">
 							<div class="col">
 								<h6>Slide 1: Shapes without Text</h6>
-								<ul class="mb-0">
-									<li>Shapes: Rectangle, Line, Oval, Triangle</li>
-									<li>Shapes: Flipped Horizontal</li>
-									<li>Shapes: Borders</li>
-									<li>Lines: Arrowheads and Dashes</li>
+								<ul class="list-group">
+									<li class="list-group-item">Shapes: Rectangle, Line, Oval, Triangle</li>
+									<li class="list-group-item">Shapes: Flipped Horizontal</li>
+									<li class="list-group-item">Shapes: Borders</li>
+									<li class="list-group-item">Lines: Arrowheads and Dashes</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Slide 2: Shapes with Text</h6>
-								<ul class="mb-0">
-									<li>Shapes: Rectangle, Line, Oval, Triangle</li>
-									<li>Shapes: Flipped Horizontal</li>
-									<li>Shapes: Borders</li>
-									<li>Lines: Arrowheads and Dashes</li>
+								<ul class="list-group">
+									<li class="list-group-item">Shapes: Rectangle, Line, Oval, Triangle</li>
+									<li class="list-group-item">Shapes: Flipped Horizontal</li>
+									<li class="list-group-item">Shapes: Borders</li>
+									<li class="list-group-item">Lines: Arrowheads and Dashes</li>
 								</ul>
 							</div>
 						</div>
@@ -877,50 +877,50 @@
 						<div class="row row-cols-auto row-cols-md-3 g-4 text-sm">
 							<div class="col">
 								<h6>Slide 1: Alignment, Location, Sub/Super Script</h6>
-								<ul class="mb-0">
-									<li>Text: alignment</li>
-									<li>Text: locations</li>
-									<li>Text: subscript / superscript</li>
+								<ul class="list-group">
+									<li class="list-group-item">Text: alignment</li>
+									<li class="list-group-item">Text: locations</li>
+									<li class="list-group-item">Text: subscript / superscript</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Slide 2: Formatting, Line Breaks, Line Spacing</h6>
-								<ul class="mb-0">
-									<li>Text: formatting</li>
-									<li>Text: line-breaks</li>
-									<li>Text: line-spacing</li>
+								<ul class="list-group">
+									<li class="list-group-item">Text: formatting</li>
+									<li class="list-group-item">Text: line-breaks</li>
+									<li class="list-group-item">Text: line-spacing</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Slide 3: Bullet Styles, Shapes, Indent</h6>
-								<ul class="mb-0">
-									<li>Bullets: indent levels</li>
-									<li>Bullets: spacing</li>
-									<li>Bullets: custom styles</li>
-									<li>Bullets: custom shapes</li>
+								<ul class="list-group">
+									<li class="list-group-item">Bullets: indent levels</li>
+									<li class="list-group-item">Bullets: spacing</li>
+									<li class="list-group-item">Bullets: custom styles</li>
+									<li class="list-group-item">Bullets: custom shapes</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Slide 4: Hyperlinks, Tab stops, Text Effects</h6>
-								<ul class="mb-0">
-									<li>Text: hyperlinks</li>
-									<li>Text: tab stops</li>
-									<li>Effects: outline, glow, shadow</li>
+								<ul class="list-group">
+									<li class="list-group-item">Text: hyperlinks</li>
+									<li class="list-group-item">Text: tab stops</li>
+									<li class="list-group-item">Effects: outline, glow, shadow</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Slide 5: Text Fit</h6>
-								<ul class="mb-0">
-									<li>Fit: none</li>
-									<li>Fit: resize</li>
-									<li>Fit: shrink</li>
+								<ul class="list-group">
+									<li class="list-group-item">Fit: none</li>
+									<li class="list-group-item">Fit: resize</li>
+									<li class="list-group-item">Fit: shrink</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Slide 6: Scheme Colors</h6>
-								<ul class="mb-0">
-									<li>Scheme Colors: background</li>
-									<li>Scheme Colors: text</li>
+								<ul class="list-group">
+									<li class="list-group-item">Scheme Colors: background</li>
+									<li class="list-group-item">Scheme Colors: text</li>
 								</ul>
 							</div>
 						</div>
@@ -930,7 +930,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="tab-tables" role="tabpanel" aria-labelledby="nav-tables">
+			<div class="tab-pane bg-black p-4" id="tab-tables" role="tabpanel" aria-labelledby="nav-tables">
 				<div class="card">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">
@@ -949,97 +949,97 @@
 							</div>
 						</div>
 					</div>
-					<div class="card-body">
+					<div class="card-body lg-bm">
 						<div class="row row-cols-auto row-cols-md-3 g-4 text-sm">
 							<div class="col">
-								<h6>Table Layout/Format</h6>
-								<strong>Slide 1</strong>
-								<ul>
-									<li>text alignment</li>
-									<li>cell styles</li>
-									<li>row height</li>
-									<li>col width</li>
+								<h5>Table Layout/Format</h5>
+								<h6>Slide 1</h6>
+								<ul class="list-group">
+									<li class="list-group-item">text alignment</li>
+									<li class="list-group-item">cell styles</li>
+									<li class="list-group-item">row height</li>
+									<li class="list-group-item">col width</li>
 								</ul>
-								<strong>Slide 2</strong>
-								<ul>
-									<li>colspans and rowspans</li>
+								<h6>Slide 2</h6>
+								<ul class="list-group">
+									<li class="list-group-item">colspans and rowspans</li>
 								</ul>
-								<strong>Slide 3</strong>
-								<ul class="mb-0">
-									<li>extreme colspans and rowspans</li>
-								</ul>
-							</div>
-							<div class="col">
-								<h6>Cell Formatting</h6>
-								<strong>Slide 4</strong>
-								<ul>
-									<li>cell margins</li>
-									<li>complex cell borders</li>
-									<li>escaped special characters</li>
-								</ul>
-								<strong>Slide 5</strong>
-								<ul>
-									<li>cell text formatting overview</li>
-								</ul>
-								<strong>Slide 6</strong>
-								<ul class="mb-0">
-									<li>cell text formatting examples</li>
+								<h6>Slide 3</h6>
+								<ul class="list-group">
+									<li class="list-group-item">extreme colspans and rowspans</li>
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Auto-Paging Examples</h6>
-								<strong>Slides 7-8</strong>
-								<ul>
-									<li>basic auto-paging example</li>
+								<h5>Cell Formatting</h5>
+								<h6>Slide 4</h6>
+								<ul class="list-group">
+									<li class="list-group-item">cell margins</li>
+									<li class="list-group-item">complex cell borders</li>
+									<li class="list-group-item">escaped special characters</li>
 								</ul>
-								<strong>Slides 9-12</strong>
-								<ul>
-									<li>paging with small table dimensions</li>
+								<h6>Slide 5</h6>
+								<ul class="list-group">
+									<li class="list-group-item">cell text formatting overview</li>
 								</ul>
-								<strong>Slides 13-15</strong>
-								<ul>
-									<li>auto-paging with a Master Page</li>
-								</ul>
-								<strong>Slide 16</strong>
-								<ul class="mb-0">
-									<li>auto-paging disabled <code>{autoPage:false}</code></li>
+								<h6>Slide 6</h6>
+								<ul class="list-group">
+									<li class="list-group-item">cell text formatting examples</li>
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Auto-Paging Props</h6>
-								<strong>Slides 17-19</strong>
-								<ul>
-									<li>start at <code>{y:4.0}</code>, subsequent start at top margin</li>
+								<h5>Auto-Paging Examples</h5>
+								<h6>Slides 7-8</h6>
+								<ul class="list-group">
+									<li class="list-group-item">basic auto-paging example</li>
 								</ul>
-								<strong>Slides 20-22</strong>
-								<ul class="mb-0">
-									<li>start at <code>{y:4.0}</code>, subsequent start at <code>{autoPageSlideStartY:1.5}</code></li>
+								<h6>Slides 9-12</h6>
+								<ul class="list-group">
+									<li class="list-group-item">paging with small table dimensions</li>
 								</ul>
-							</div>
-							<div class="col">
-								<h6>Auto-Paging Props</h6>
-								<strong>Slides 23-24</strong>
-								<ul>
-									<li>various <code>autoPageRepeatHeader</code> thead configs</li>
+								<h6>Slides 13-15</h6>
+								<ul class="list-group">
+									<li class="list-group-item">auto-paging with a Master Page</li>
 								</ul>
-								<strong>Slides 25-28</strong>
-								<ul>
-									<li>various <code>autoPageLineWeight</code> values</li>
-								</ul>
-								<strong>Slides 29-32</strong>
-								<ul class="mb-0">
-									<li>various <code>autoPageCharWeight</code> values</li>
+								<h6>Slide 16</h6>
+								<ul class="list-group">
+									<li class="list-group-item">auto-paging disabled <code>{autoPage:false}</code></li>
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Auto-Paging Complex Cell Text</h6>
-								<strong>Slides 33-35</strong>
-								<ul>
-									<li>complex cell text</li>
+								<h5>Auto-Paging Props</h5>
+								<h6>Slides 17-19</h6>
+								<ul class="list-group">
+									<li class="list-group-item">start at <code>{y:4.0}</code>, subsequent start at top margin</li>
 								</ul>
-								<strong>Slides 36-39</strong>
-								<ul class="mb-0">
-									<li>complex cell text with calculated lines</li>
+								<h6>Slides 20-22</h6>
+								<ul class="list-group">
+									<li class="list-group-item">start at <code>{y:4.0}</code>, subsequent start at <code>{autoPageSlideStartY:1.5}</code></li>
+								</ul>
+							</div>
+							<div class="col">
+								<h5>Auto-Paging Props</h5>
+								<h6>Slides 23-24</h6>
+								<ul class="list-group">
+									<li class="list-group-item">various <code>autoPageRepeatHeader</code> thead configs</li>
+								</ul>
+								<h6>Slides 25-28</h6>
+								<ul class="list-group">
+									<li class="list-group-item">various <code>autoPageLineWeight</code> values</li>
+								</ul>
+								<h6>Slides 29-32</h6>
+								<ul class="list-group">
+									<li class="list-group-item">various <code>autoPageCharWeight</code> values</li>
+								</ul>
+							</div>
+							<div class="col">
+								<h5>Auto-Paging Complex Cell Text</h5>
+								<h6>Slides 33-35</h6>
+								<ul class="list-group">
+									<li class="list-group-item">complex cell text</li>
+								</ul>
+								<h6>Slides 36-39</h6>
+								<ul class="list-group">
+									<li class="list-group-item">complex cell text with calculated lines</li>
 								</ul>
 							</div>
 						</div>
@@ -1049,7 +1049,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane p-4" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">
+			<div class="tab-pane bg-black p-4" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">
 				<div class="card">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">

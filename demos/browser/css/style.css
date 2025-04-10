@@ -1,5 +1,22 @@
-@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap);
+.tab-pane > section {
+	background: var(--bs-body-bg);
+}
+.tab-pane .card-body h6 {
+	color: var(--bs-cyan);
+}
+.tab-pane .card-body .list-group-item {
+	background-color: var(--bs-black);
+}
 
+.accordion-collapse {
+	background: black;
+}
+.lg-bm h6 {
+	color: var(--bs-cyan);
+}
+.lg-bm ul.list-group {
+	margin-bottom: 0.5rem;
+}
 pre {
 	font-size: 0.8rem !important;
 }
@@ -28,7 +45,7 @@ pre {
 .cursor-help {
 	cursor: help;
 }
-
+/*
 .bde-arrow-cont {
 	cursor: pointer;
 	-webkit-user-select: none;
@@ -60,7 +77,7 @@ pre {
 	transform: rotate(135deg);
 	margin-bottom: 3px;
 }
-
+*/
 /* -- HTML2PPTX ---------- */
 #tabAutoPaging thead tr th:first-child {
 	background-color: var(--bs-cyan);
@@ -83,6 +100,7 @@ pre {
 		}
 	}
 */
+/*
 @media (prefers-color-scheme: dark) {
 	.h1,
 	.h2,
@@ -159,7 +177,7 @@ pre {
 	.tab-pane {
 		background-color: var(--bs-white);
 	}
-	/* 20210829: cyborg comes first in stylehseet order, but the way its written (diff from yeti?), it overrides these colors to white, which sucks */
+	// 20210829: cyborg comes first in stylehseet order, but the way its written (diff from yeti?), it overrides these colors to white, which sucks
 	.nav-pills .nav-link,
 	.nav-tabs .nav-link {
 		color: var(--bs-primary) !important;
@@ -192,3 +210,4 @@ pre {
 		background: var(--bs-gray-100);
 	}
 }
+*/
