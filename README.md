@@ -38,7 +38,7 @@
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Contributors](#contributors)
-- [Sponsor Us](#sponsor-us)
+- [Support the Open Source Community](#support-the-open-source-community)
 - [License](#license)
 
 # Introduction
@@ -101,13 +101,11 @@ yarn add pptxgenjs
 
 [jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
-Bundle: Modern Browsers and IE11
+Bundle or min files:
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 ```
-
-Min files: Modern Browsers
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
@@ -118,15 +116,11 @@ Min files: Modern Browsers
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
-Bundle: Modern Browsers
-
-- Use the bundle for IE11 support
+Bundle or min files:
 
 ```html
 <script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 ```
-
-Min files: Modern Browsers
 
 ```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>
@@ -250,12 +244,13 @@ are demos for both client browsers, node and react that contain working examples
 
 - Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
 - [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50). If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `PptxGenJS`.
+- Ask your AI pair programmer! All major LLMs have ingested the pptxgenjs library and have the ability to answer functionality questions and provide code.
 
 ---
 
 # Contributors
 
-Thank you to everyone for the issues, contributions and suggestions! ❤️
+Thank you to everyone for the contributions and suggestions! ❤️
 
 Special Thanks:
 
@@ -271,14 +266,16 @@ PowerPoint shape definitions and some XML code via [Officegen Project](https://g
 
 ---
 
-# Sponsor Us
+# Support the Open Source Community
 
-If you find this library useful, please consider sponsoring us through a [donation](https://gitbrent.github.io/PptxGenJS/sponsor/)
+If you find this library useful, consider contributing to open-source projects, or sharing your knowledge on the open social web. Together, we can build free tools and resources that empower everyone.
+
+[gitbrent@fosstodon.org](https://fosstodon.org/@gitbrent)
 
 ---
 
 # License
 
-Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)
