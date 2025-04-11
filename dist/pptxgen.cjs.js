@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.1 @ 2025-04-10T01:26:03.521Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2025-04-10T22:34:55.274Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5315,6 +5315,10 @@ function slideObjectToXml(slide) {
                         // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 4: Set CELL content and properties ==================================
                         strXml += "<a:tc".concat(cellSpanAttrStr, ">").concat(genXmlTextBody(cell), "<a:tcPr").concat(cellMarginXml).concat(cellValign).concat(cellTextDir, ">");
+                        // WIP: ^^^ VVVV
+                        // FIXME: WIP: This DOES CAUSE NEEDS REPAIR!!!
+                        //let brent = genXmlTextBody(cell)
+                        //strXml += '<a:tc><a:txBody><a:bodyPr/><a:lstStyle/></a:txBody>'
                         // strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
                         // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -6258,6 +6262,17 @@ function genXmlTextBody(slideObj) {
         // D: End paragraph
         strSlideXml += '</a:p>';
     });
+    // IMPORTANT: An empty txBody will cause "needs repair" error! Add <p> content if missing.
+    // [FIXED in v3.13.0]: This fixes issue with table auto-paging where some cells w/b empty on subsequent pages.
+    /*
+        <a:txBody>
+            <a:bodyPr/>
+            <a:lstStyle/>
+        </a:txBody>
+    */
+    if (strSlideXml.indexOf('<a:p>') === -1) {
+        strSlideXml += '<a:p><a:endParaRPr/></a:p>';
+    }
     // STEP 7: Close the textBody
     strSlideXml += slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>';
     // LAST: Return XML
@@ -6694,7 +6709,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.13.0-beta.1-20250409-2025';
+var VERSION = '3.13.0-beta.1-20250410-1220';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
