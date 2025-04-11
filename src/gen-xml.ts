@@ -1329,6 +1329,18 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 		strSlideXml += '</a:p>'
 	})
 
+	// IMPORTANT: An empty txBody will cause "needs repair" error! Add <p> content if missing.
+	// [FIXED in v3.13.0]: This fixes issue with table auto-paging where some cells w/b empty on subsequent pages.
+	/*
+		<a:txBody>
+			<a:bodyPr/>
+			<a:lstStyle/>
+		</a:txBody>
+	*/
+	if (strSlideXml.indexOf('<a:p>') === -1) {
+		strSlideXml += '<a:p><a:endParaRPr/></a:p>'
+	}
+
 	// STEP 7: Close the textBody
 	strSlideXml += slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 
