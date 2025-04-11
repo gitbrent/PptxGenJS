@@ -431,10 +431,10 @@ function genSlide05(pptx) {
 	);
 	slide.addText(
 		"[\n" +
-			"  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right',  breakLine:true } },\n" +
-			"  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n" +
-			"  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left'    } }\n" +
-			"]",
+		"  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right',  breakLine:true } },\n" +
+		"  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n" +
+		"  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left'    } }\n" +
+		"]",
 		{ x: 1, y: 1.1, w: 11, h: 1.25, margin: 0.1, fontFace: "Courier", fontSize: 13, fill: { color: "F1F1F1" }, color: "333333" }
 	);
 
@@ -1058,9 +1058,11 @@ function genSlide10(pptx) {
 			fontSize: 10,
 			margin: 0.05,
 			autoPage: true,
-			autoPageRepeatHeader: true,
 			autoPageCharWeight: -0.5,
 			autoPageLineWeight: 1,
+			autoPageSlideStartY: 0.7,
+			autoPageRepeatHeader: true,
+			autoPageHeaderRows: 1,
 			//verbose: true,
 		});
 	}
