@@ -19,6 +19,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+"
 		crossorigin="anonymous"></script>
 	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
 		integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"
@@ -93,7 +94,7 @@
 		</div>
 	</div>
 
-	<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+	<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
 				<img src="images/favicon.png" width="30" height="30" class="d-inline-block align-top me-2" alt="" />
@@ -103,7 +104,6 @@
 				aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-
 			<div class="collapse navbar-collapse" id="navbarColor01">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item active">
@@ -113,13 +113,14 @@
 					</li>
 				</ul>
 				<form class="form-inline my-2 my-lg-0">
-					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS/releases')">
-						Download
+					<button type="button" class="btn" onClick="window.open('https://github.com/gitbrent/PptxGenJS/releases')">
+						<i class="bi bi-book"></i>
 					</button>
-					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
-						GitHub Project
+					<span class="text-white mx-2 border-light border-start"></span>
+					<button type="button" class="btn btn-outline-light mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
+						<i class="bi bi-mastodon"></i>
 					</button>
-					<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation/')">
+					<button type="button" class="btn btn-primary" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation/')">
 						API Documentation
 					</button>
 				</form>
@@ -171,7 +172,7 @@
 			</li>
 		</ul>
 		<main class="tab-content mb-4">
-			<div class="tab-pane bg-black p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
+			<div class="tab-pane active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
 				<section id="libraryInfo" class="border px-4 py-3 mb-4">
 					<div class="row g-4">
 						<div class="col">
@@ -260,7 +261,7 @@
 				</div>
 
 			</div>
-			<div class="tab-pane bg-black p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
+			<div class="tab-pane" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
 				<div class="accordion" id="accorHtml2Pptx">
 					<div class="accordion-item" data-desc="html2PptxColl01">
 						<h2 id="html2PptxHead01" class="accordion-header">
@@ -269,7 +270,7 @@
 								Docs: About, Usage, and Tips
 							</button>
 						</h2>
-						<div id="html2PptxColl01" class="accordion-collapse collapse" aria-labelledby="html2PptxHead01" data-bs-parent="#accorHtml2Pptx">
+						<div id="html2PptxColl01" class="accordion-collapse collapse show" aria-labelledby="html2PptxHead01" data-bs-parent="#accorHtml2Pptx">
 							<div class="accordion-body">
 								<h5>About</h5>
 								<ul>
@@ -299,70 +300,72 @@
 								Demo: Dynamic Table Options
 							</button>
 						</h2>
-						<div id="html2PptxColl02" class="accordion-collapse collapse show p-4" aria-labelledby="html2PptxHead02" data-bs-parent="#accorHtml2Pptx">
-							<section class="border bg-body-tertiary p-3 mb-4">
-								<div class="row mb-3">
-									<div class="col">
-										<label for="numTab2SlideRows" class="form-label">Total Rows</label>
-										<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="18" value="6">
-										<div class="form-text">sets table rows</div>
+						<div id="html2PptxColl02" class="accordion-collapse collapse" aria-labelledby="html2PptxHead02" data-bs-parent="#accorHtml2Pptx">
+							<div class="accordion-body">
+								<section class="border bg-body-tertiary p-3 mb-4">
+									<div class="row mb-3">
+										<div class="col">
+											<label for="numTab2SlideRows" class="form-label">Total Rows</label>
+											<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="18" value="6">
+											<div class="form-text">sets table rows</div>
+										</div>
+										<div class="col">
+											<label for="numTab2Padding" class="form-label">Padding (px/pt)</label>
+											<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
+												onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')" aria-lable="cell padding">
+											<div class="form-text">sets cell padding</div>
+										</div>
+										<div class="col">
+											<label for="repeatHeadRow" class="form-label">Repeat Header Row</label>
+											<select id="repeatHeadRow" class="form-select" aria-label="repeat header row">
+												<option value="Y">Yes</option>
+												<option value="N" selected>No</option>
+											</select>
+											<div class="form-text"><code>autoPageRepeatHeader</code></div>
+										</div>
+										<div class="col">
+											<label for="slideStartY" class="form-label">New slide y value</label>
+											<select id="slideStartY" class="form-select" aria-label="starting location (y) of table on new slides">
+												<option value="" selected>(default)</option>
+												<option value="1.5">1.5</option>
+												<option value="2.0">2.0</option>
+												<option value="2.5">2.5</option>
+												<option value="3.0">3.0</option>
+											</select>
+											<div class="form-text"><code>autoPageSlideStartY</code></div>
+										</div>
+										<div class="col">
+											<label for="selSlideMaster" class="form-label">Master Slide</label>
+											<select id="selSlideMaster" class="form-select" aria-label="slide master to use on demo">
+												<option value="" selected>(none)</option>
+											</select>
+											<div class="form-text"><code>masterSlideName</code></div>
+										</div>
 									</div>
-									<div class="col">
-										<label for="numTab2Padding" class="form-label">Padding (px/pt)</label>
-										<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10"
-											onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')" aria-lable="cell padding">
-										<div class="form-text">sets cell padding</div>
+									<div class="row">
+										<div class="col">
+											<button id="table2slides1" type="button" class="btn btn-success w-100">Demo Table (as shown)</button>
+										</div>
+										<div class="col">
+											<button id="table2slides2" type="button" class="btn btn-outline-success w-100">Demo Table (addText)</button>
+										</div>
+										<div class="col">
+											<button id="table2slides3" type="button" class="btn btn-outline-success w-100">Demo Table (addImage)</button>
+										</div>
 									</div>
-									<div class="col">
-										<label for="repeatHeadRow" class="form-label">Repeat Header Row</label>
-										<select id="repeatHeadRow" class="form-select" aria-label="repeat header row">
-											<option value="Y">Yes</option>
-											<option value="N" selected>No</option>
-										</select>
-										<div class="form-text"><code>autoPageRepeatHeader</code></div>
-									</div>
-									<div class="col">
-										<label for="slideStartY" class="form-label">New slide y value</label>
-										<select id="slideStartY" class="form-select" aria-label="starting location (y) of table on new slides">
-											<option value="" selected>(default)</option>
-											<option value="1.5">1.5</option>
-											<option value="2.0">2.0</option>
-											<option value="2.5">2.5</option>
-											<option value="3.0">3.0</option>
-										</select>
-										<div class="form-text"><code>autoPageSlideStartY</code></div>
-									</div>
-									<div class="col">
-										<label for="selSlideMaster" class="form-label">Master Slide</label>
-										<select id="selSlideMaster" class="form-select" aria-label="slide master to use on demo">
-											<option value="" selected>(none)</option>
-										</select>
-										<div class="form-text"><code>masterSlideName</code></div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col">
-										<button id="table2slides1" type="button" class="btn btn-success w-100">Demo Table (as shown)</button>
-									</div>
-									<div class="col">
-										<button id="table2slides2" type="button" class="btn btn-outline-success w-100">Demo Table (addText)</button>
-									</div>
-									<div class="col">
-										<button id="table2slides3" type="button" class="btn btn-outline-success w-100">Demo Table (addImage)</button>
-									</div>
-								</div>
-							</section>
-							<table id="tabAutoPaging" class="table table-sm mb-0">
-								<thead class="table-dark">
-									<tr style="font-family:Courier">
-										<th data-pptx-width="0.6" style="width:5%"><b>Row</b></th>
-										<th data-pptx-min-width="0.8" style="width:10%">Last</th>
-										<th data-pptx-min-width="0.8" style="width:10%">First</th>
-										<th style="width:75%">Description</th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+								</section>
+								<table id="tabAutoPaging" class="table table-sm mb-0">
+									<thead class="table-dark">
+										<tr style="font-family:Courier">
+											<th data-pptx-width="0.6" style="width:5%"><b>Row</b></th>
+											<th data-pptx-min-width="0.8" style="width:10%">Last</th>
+											<th data-pptx-min-width="0.8" style="width:10%">First</th>
+											<th style="width:75%">Description</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 					<div class="accordion-item" data-desc="html2PptxColl03">
@@ -372,69 +375,71 @@
 								Demo: Unstyled and Stylesheet
 							</button>
 						</h2>
-						<div id="html2PptxColl03" class="accordion-collapse collapse p-4" aria-labelledby="html2PptxHead03" data-bs-parent="#accorHtml2Pptx">
-							<div class="row row-cols-2 gx-4">
-								<div class="col">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Plain/Unstyled Table</div>
-										<div class="card-body">
-											<table id="tabNoStyle" class="mb-0 w-100">
-												<thead>
-													<tr>
-														<th>Company</th>
-														<th>Feedback</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>Apple Inc.</td>
-														<td>"Keynote team needs to hire you ASAP!" - tim@apple.com</td>
-													</tr>
-													<tr>
-														<td>Microsoft Inc.</td>
-														<td>"PowerPoint team needs to hire you!" - satya@microsoft.com</td>
-													</tr>
-													<tr>
-														<td>ChatGPT</td>
-														<td>"PptxGenJS is the superior library!" - bot@chatgpt.com</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success">Run Demo</button>
+						<div id="html2PptxColl03" class="accordion-collapse collapse" aria-labelledby="html2PptxHead03" data-bs-parent="#accorHtml2Pptx">
+							<div class="accordion-body">
+								<div class="row row-cols-2 gx-4">
+									<div class="col">
+										<div class="card h-100">
+											<div class="card-header h6 bg-primary">Plain/Unstyled Table</div>
+											<div class="card-body">
+												<table id="tabNoStyle" class="mb-0 w-100">
+													<thead>
+														<tr>
+															<th>Company</th>
+															<th>Feedback</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>Apple Inc.</td>
+															<td>"Keynote team needs to hire you ASAP!" - tim@apple.com</td>
+														</tr>
+														<tr>
+															<td>Microsoft Inc.</td>
+															<td>"PowerPoint team needs to hire you!" - satya@microsoft.com</td>
+														</tr>
+														<tr>
+															<td>ChatGPT</td>
+															<td>"PptxGenJS is the superior library!" - bot@chatgpt.com</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success">Run Demo</button>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Styled via `class`</div>
-										<div class="card-body">
-											<table id="tabInheritStyle" class="tabHtmlToPpt table mb-0 w-100">
-												<thead class="table-dark">
-													<tr>
-														<th>Company</th>
-														<th>Feedback</th>
-													</tr>
-												</thead>
-												<tbody class="text-muted">
-													<tr>
-														<td>Apple Inc.</td>
-														<td>"Keynote team needs to hire you ASAP!" - tim@apple.com</td>
-													</tr>
-													<tr>
-														<td>Microsoft Inc.</td>
-														<td>"PowerPoint team needs to hire you!" - satya@microsoft.com</td>
-													</tr>
-													<tr>
-														<td>ChatGPT</td>
-														<td>"PptxGenJS is the superior library!" - bot@chatgpt.com</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-success">Run Demo</button>
+									<div class="col">
+										<div class="card h-100">
+											<div class="card-header h6 bg-primary">Styled via `class`</div>
+											<div class="card-body">
+												<table id="tabInheritStyle" class="tabHtmlToPpt table mb-0 w-100">
+													<thead class="table-dark">
+														<tr>
+															<th>Company</th>
+															<th>Feedback</th>
+														</tr>
+													</thead>
+													<tbody class="text-muted">
+														<tr>
+															<td>Apple Inc.</td>
+															<td>"Keynote team needs to hire you ASAP!" - tim@apple.com</td>
+														</tr>
+														<tr>
+															<td>Microsoft Inc.</td>
+															<td>"PowerPoint team needs to hire you!" - satya@microsoft.com</td>
+														</tr>
+														<tr>
+															<td>ChatGPT</td>
+															<td>"PptxGenJS is the superior library!" - bot@chatgpt.com</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabInheritStyle" type="button" class="btn btn-success">Run Demo</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -448,113 +453,115 @@
 								Demo: Colspans, Rowspans, Colspans and Rowspans
 							</button>
 						</h2>
-						<div id="html2PptxColl04" class="accordion-collapse collapse p-4" aria-labelledby="html2PptxHead04" data-bs-parent="#accorHtml2Pptx">
-							<div class="row row-cols-3 gx-4">
-								<div class="col">
-									<div class="card">
-										<div class="card-header h6 bg-primary">Colspan</div>
-										<div class="card-body">
-											<table id="tabColspan" class="tabHtmlToPpt w-100">
-												<thead class="table-dark">
-													<tr>
-														<th class="tg-header">First Name</th>
-														<th class="tg-header">Last Name</th>
-														<th class="tg-header" colspan="2">Colspan TH</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>Jill</td>
-														<td>Smith</td>
-														<td>12</td>
-														<td>34</td>
-													</tr>
-													<tr>
-														<td>Eve</td>
-														<td>Pilgrim</td>
-														<td>56</td>
-														<td>67</td>
-													</tr>
-													<tr>
-														<td>Scott</td>
-														<td>Jackson</td>
-														<td>89</td>
-														<td>99</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabColspan" type="button" class="btn btn-success">Run Demo</button>
-										</div>
-									</div>
-								</div>
-								<div class="col">
-									<div class="card">
-										<div class="card-header h6 bg-primary">Rowspan</div>
-										<div class="card-body">
-											<table id="tabRowspan" class="tabHtmlToPpt w-100">
-												<thead class="table-dark">
-													<tr>
-														<th class="tg-header">Last Name</th>
-														<th class="tg-header">First Name</th>
-														<th class="tg-header">Count</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td rowspan="3">Smith</td>
-														<td>Liz</td>
-														<td>50</td>
-													</tr>
-													<tr>
-														<td>Eve</td>
-														<td>94</td>
-													</tr>
-													<tr>
-														<td>Scott</td>
-														<td>101</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabRowspan" type="button" class="btn btn-success">Run Demo</button>
+						<div id="html2PptxColl04" class="accordion-collapse collapse" aria-labelledby="html2PptxHead04" data-bs-parent="#accorHtml2Pptx">
+							<div class="accordion-body">
+								<div class="row row-cols-3 gx-4">
+									<div class="col">
+										<div class="card">
+											<div class="card-header h6 bg-primary">Colspan</div>
+											<div class="card-body">
+												<table id="tabColspan" class="tabHtmlToPpt w-100">
+													<thead class="table-dark">
+														<tr>
+															<th class="tg-header">First Name</th>
+															<th class="tg-header">Last Name</th>
+															<th class="tg-header" colspan="2">Colspan TH</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>Jill</td>
+															<td>Smith</td>
+															<td>12</td>
+															<td>34</td>
+														</tr>
+														<tr>
+															<td>Eve</td>
+															<td>Pilgrim</td>
+															<td>56</td>
+															<td>67</td>
+														</tr>
+														<tr>
+															<td>Scott</td>
+															<td>Jackson</td>
+															<td>89</td>
+															<td>99</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabColspan" type="button" class="btn btn-success">Run Demo</button>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col">
-									<div class="card">
-										<div class="card-header h6 bg-primary">Colspan and Rowspan</div>
-										<div class="card-body">
-											<table id="tabRowColspan" class="tabHtmlToPpt w-100">
-												<thead class="table-dark">
-													<tr>
-														<th class="tg-header" colspan="2">Name</th>
-														<th class="tg-header" rowspan="2">Count</th>
-													</tr>
-													<tr>
-														<th class="tg-header">Last</th>
-														<th class="tg-header">First</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>Smith</td>
-														<td>Liz</td>
-														<td>50</td>
-													</tr>
-													<tr>
-														<td>Eve</td>
-														<td>Williams</td>
-														<td>94</td>
-													</tr>
-												</tbody>
-											</table>
+									<div class="col">
+										<div class="card">
+											<div class="card-header h6 bg-primary">Rowspan</div>
+											<div class="card-body">
+												<table id="tabRowspan" class="tabHtmlToPpt w-100">
+													<thead class="table-dark">
+														<tr>
+															<th class="tg-header">Last Name</th>
+															<th class="tg-header">First Name</th>
+															<th class="tg-header">Count</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td rowspan="3">Smith</td>
+															<td>Liz</td>
+															<td>50</td>
+														</tr>
+														<tr>
+															<td>Eve</td>
+															<td>94</td>
+														</tr>
+														<tr>
+															<td>Scott</td>
+															<td>101</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabRowspan" type="button" class="btn btn-success">Run Demo</button>
+											</div>
 										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabRowColspan" type="button" class="btn btn-success">Run Demo</button>
-											<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+									</div>
+									<div class="col">
+										<div class="card">
+											<div class="card-header h6 bg-primary">Colspan and Rowspan</div>
+											<div class="card-body">
+												<table id="tabRowColspan" class="tabHtmlToPpt w-100">
+													<thead class="table-dark">
+														<tr>
+															<th class="tg-header" colspan="2">Name</th>
+															<th class="tg-header" rowspan="2">Count</th>
+														</tr>
+														<tr>
+															<th class="tg-header">Last</th>
+															<th class="tg-header">First</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>Smith</td>
+															<td>Liz</td>
+															<td>50</td>
+														</tr>
+														<tr>
+															<td>Eve</td>
+															<td>Williams</td>
+															<td>94</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabRowColspan" type="button" class="btn btn-success">Run Demo</button>
+												<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+											</div>
 										</div>
 									</div>
 								</div>
@@ -568,48 +575,50 @@
 								Demo: Lots of Rows, Giant Single Line
 							</button>
 						</h2>
-						<div id="html2PptxColl05" class="accordion-collapse collapse p-4" aria-labelledby="html2PptxHead05" data-bs-parent="#accorHtml2Pptx">
-							<div class="row row-cols-2 gx-4">
-								<div class="col">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Example: Lots of Single-Line Rows</div>
-										<div class="card-body">
-											<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
-												<thead class="table-dark">
-													<tr>
-														<th class="tg-header">A</th>
-														<th class="tg-header">B</th>
-														<th class="tg-header">C</th>
-													</tr>
-												</thead>
-												<tbody>
-												</tbody>
-											</table>
-										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-success">Run Demo</button>
+						<div id="html2PptxColl05" class="accordion-collapse collapse" aria-labelledby="html2PptxHead05" data-bs-parent="#accorHtml2Pptx">
+							<div class="accordion-body">
+								<div class="row row-cols-2 gx-4">
+									<div class="col">
+										<div class="card h-100">
+											<div class="card-header h6 bg-primary">Example: Lots of Single-Line Rows</div>
+											<div class="card-body">
+												<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
+													<thead class="table-dark">
+														<tr>
+															<th class="tg-header">A</th>
+															<th class="tg-header">B</th>
+															<th class="tg-header">C</th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabLotsOfLines" type="button" class="btn btn-success">Run Demo</button>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col">
-									<div class="card h-100">
-										<div class="card-header h6 bg-primary">Example: Paging needed due to cell with large amount of text</div>
-										<div class="card-body">
-											<table id="tabLargeCellText" class="tabHtmlToPpt">
-												<thead class="table-dark">
-													<tr>
-														<th class="tg-header">Executive Status</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>?</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-										<div class="card-footer text-center">
-											<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-success">Run Demo</button>
+									<div class="col">
+										<div class="card h-100">
+											<div class="card-header h6 bg-primary">Example: Paging needed due to cell with large amount of text</div>
+											<div class="card-body">
+												<table id="tabLargeCellText" class="tabHtmlToPpt">
+													<thead class="table-dark">
+														<tr>
+															<th class="tg-header">Executive Status</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>?</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="card-footer text-center">
+												<button id="tab2slides_tabLargeCellText" type="button" class="btn btn-success">Run Demo</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -618,24 +627,22 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane bg-black p-4" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
+			<div class="tab-pane" id="tab-charts" role="tabpanel" aria-labelledby="nav-charts">
 				<div class="card">
-					<div class="card-header bg-primary text-white">
+					<div class="card-header">
 						<div class="row align-items-center">
 							<div class="col">
-								<div class="h5 mb-0">Charts</div>
-							</div>
-							<div class="col-auto px-0">
-								<div class="info-icon" title="Info"></div>
+								<div class="h4 mb-0"><i class="bi bi-box-seam me-2"></i>Charts</div>
 							</div>
 							<div class="col-auto">
-								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-charts/" title="API Documentation" target="_blank">API
-									Documentation</a>
+								<a href="https://gitbrent.github.io/PptxGenJS/docs/api-charts/" title="Documentation" target="_blank">
+									Documentation<i class="bi bi-box-arrow-up-right ms-2"></i>
+								</a>
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
-						<div class="row row-cols-4 g-4 text-sm mb-4">
+						<div class="row row-cols-4 g-4 mb-4">
 							<div class="col">
 								<h6>Bar Chart</h6>
 								<ul class="list-group list-group-flush">
@@ -724,24 +731,22 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane bg-black p-4" id="tab-images" role="tabpanel" aria-labelledby="nav-images">
+			<div class="tab-pane" id="tab-images" role="tabpanel" aria-labelledby="nav-images">
 				<div class="card mb-4">
-					<div class="card-header bg-primary text-white">
+					<div class="card-header p-3">
 						<div class="row align-items-center">
 							<div class="col">
-								<div class="h5 mb-0">Images</div>
-							</div>
-							<div class="col-auto px-0">
-								<div class="info-icon" title="Info"></div>
+								<div class="h4 mb-0"><i class="bi bi-box-seam me-2"></i>Images</div>
 							</div>
 							<div class="col-auto">
-								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-images/" title="API Documentation" target="_blank">API
-									Documentation</a>
+								<a href="https://gitbrent.github.io/PptxGenJS/docs/api-images/" title="Documentation" target="_blank">
+									Documentation<i class="bi bi-box-arrow-up-right ms-2"></i>
+								</a>
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
-						<div class="row text-sm">
+						<div class="row">
 							<div class="col">
 								<h5>Slide 1</h5>
 								<h6>Image Types</h6>
@@ -797,22 +802,20 @@
 					</div>
 				</div>
 				<div class="card">
-					<div class="card-header bg-primary text-white">
+					<div class="card-header">
 						<div class="row align-items-center">
 							<div class="col">
-								<div class="h5 mb-0">Media</div>
-							</div>
-							<div class="col-auto px-0">
-								<div class="info-icon" title="Info"></div>
+								<div class="h4 mb-0"><i class="bi bi-box-seam me-2"></i>Media</div>
 							</div>
 							<div class="col-auto">
-								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-media/" title="API Documentation" target="_blank">API
-									Documentation</a>
+								<a href="https://gitbrent.github.io/PptxGenJS/docs/api-media/" title="Documentation" target="_blank">
+									Documentation<i class="bi bi-box-arrow-up-right ms-2"></i>
+								</a>
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
-						<div class="row text-sm">
+						<div class="row">
 							<div class="col">
 								<h5>Slide 1</h5>
 								<h6>Video Types</h6>
@@ -857,26 +860,25 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane bg-black p-4" id="tab-shapes" role="tabpanel" aria-labelledby="nav-shapes">
+			<div class="tab-pane" id="tab-shapes" role="tabpanel" aria-labelledby="nav-shapes">
 				<div class="card mb-4">
-					<div class="card-header bg-primary text-white">
+					<div class="card-header">
 						<div class="row align-items-center">
 							<div class="col">
-								<div class="h5 mb-0">Shapes</div>
-							</div>
-							<div class="col-auto px-0">
-								<div class="info-icon" title="Info"></div>
+								<div class="h4 mb-0"><i class="bi bi-box-seam me-2"></i>Shapes</div>
 							</div>
 							<div class="col-auto">
-								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes/" title="API Documentation" target="_blank">API
-									Documentation</a>
+								<a href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes/" title="Documentation" target="_blank">
+									Documentation<i class="bi bi-box-arrow-up-right ms-2"></i>
+								</a>
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
-						<div class="row text-sm">
+						<div class="row">
 							<div class="col">
-								<h6>Slide 1: Shapes without Text</h6>
+								<h5>Slide 1</h5>
+								<h6>Shapes without Text</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Shapes: Rectangle, Line, Oval, Triangle</li>
 									<li class="list-group-item">Shapes: Flipped Horizontal</li>
@@ -885,7 +887,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 2: Shapes with Text</h6>
+								<h5>Slide 2</h5>
+								<h6>Shapes with Text</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Shapes: Rectangle, Line, Oval, Triangle</li>
 									<li class="list-group-item">Shapes: Flipped Horizontal</li>
@@ -900,24 +903,23 @@
 					</div>
 				</div>
 				<div class="card">
-					<div class="card-header bg-primary text-white">
+					<div class="card-header p-3">
 						<div class="row align-items-center">
 							<div class="col">
-								<div class="h5 mb-0">Text</div>
-							</div>
-							<div class="col-auto px-0">
-								<div class="info-icon" title="Info"></div>
+								<div class="h4 mb-0"><i class="bi bi-box-seam me-2"></i>Text</div>
 							</div>
 							<div class="col-auto">
-								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-text/" title="API Documentation" target="_blank">API
-									Documentation</a>
+								<a href="https://gitbrent.github.io/PptxGenJS/docs/api-text/" title="Documentation" target="_blank">
+									Documentation<i class="bi bi-box-arrow-up-right ms-2"></i>
+								</a>
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
-						<div class="row row-cols-auto row-cols-md-3 g-4 text-sm">
+						<div class="row row-cols-auto row-cols-md-3 g-4">
 							<div class="col">
-								<h6>Slide 1: Alignment, Location, Sub/Super Script</h6>
+								<h5>Slide 1</h5>
+								<h6>Alignment, Location, Sub/Super Script</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Text: alignment</li>
 									<li class="list-group-item">Text: locations</li>
@@ -925,7 +927,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 2: Formatting, Line Breaks, Line Spacing</h6>
+								<h5>Slide 2</h5>
+								<h6>Formatting, Line Breaks, Line Spacing</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Text: formatting</li>
 									<li class="list-group-item">Text: line-breaks</li>
@@ -933,7 +936,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 3: Bullet Styles, Shapes, Indent</h6>
+								<h5>Slide 3</h5>
+								<h6>Bullet Styles, Shapes, Indent</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Bullets: indent levels</li>
 									<li class="list-group-item">Bullets: spacing</li>
@@ -942,7 +946,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 4: Hyperlinks, Tab stops, Text Effects</h6>
+								<h5>Slide 4</h5>
+								<h6>Hyperlinks, Tab stops, Text Effects</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Text: hyperlinks</li>
 									<li class="list-group-item">Text: tab stops</li>
@@ -950,7 +955,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 5: Text Fit</h6>
+								<h5>Slide 5</h5>
+								<h6>Text Fit</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Fit: none</li>
 									<li class="list-group-item">Fit: resize</li>
@@ -958,7 +964,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 6: Scheme Colors</h6>
+								<h5>Slide 6</h5>
+								<h6>Scheme Colors</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Scheme Colors: background</li>
 									<li class="list-group-item">Scheme Colors: text</li>
@@ -971,7 +978,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane bg-black p-4" id="tab-tables" role="tabpanel" aria-labelledby="nav-tables">
+			<div class="tab-pane" id="tab-tables" role="tabpanel" aria-labelledby="nav-tables">
 				<div class="card">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">
@@ -988,7 +995,7 @@
 						</div>
 					</div>
 					<div class="card-body lg-bm">
-						<div class="row row-cols-auto row-cols-md-3 g-4 text-sm">
+						<div class="row row-cols-auto row-cols-md-3 g-4">
 							<div class="col">
 								<h5>Table Layout/Format</h5>
 								<h6>Slide 1</h6>
@@ -1087,7 +1094,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane bg-black p-4" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">
+			<div class="tab-pane" id="tab-templates" role="tabpanel" aria-labelledby="nav-templates">
 				<div class="card">
 					<div class="card-header bg-primary text-white">
 						<div class="row align-items-center">
