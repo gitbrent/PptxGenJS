@@ -10,7 +10,7 @@
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
-	<title>PptxGenJS Feature Demos</title>
+	<title>PptxGenJS | Interactive Feature Demos</title>
 	<!-- bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
@@ -24,8 +24,6 @@
 		integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"
 		integrity="sha512-axJX7DJduStuBB8ePC8ryGzacZPr3rdLaIDZitiEgWWk2gsXxEFlm4UW0iNzj2h3wp5mOylgHAzBzM4nRSvTZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
 	<!-- local styles -->
 	<link rel="stylesheet" href="./css/style.css">
 	<!-- RELEASE (CDN)
@@ -47,12 +45,12 @@
 	<script src="./js/pptxgen.bundle.js"></script>
 </head>
 <body>
-	<div id="modalBusy" class="modal fade" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-hidden="true">
+	<div id="modalBusy" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-body">
-					<h3 class="text-primary">Please Wait</h3>
-					<div>Creating and saving presentation...</div>
+					<h3>Please Wait...</h3>
+					<h6 class="text-info mb-0">Creating and saving presentation</h6>
 				</div>
 				<div class="modal-footer">
 					<div class="progress w-100" style="height:2rem;">

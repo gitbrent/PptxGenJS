@@ -9,6 +9,12 @@ import { BKGD_STARLABS, CHECKMARK_GRN, LOGO_STARLABS, STARLABS_LOGO_SM } from ".
 // ==================================================================================================================
 const modalBusy = new bootstrap.Modal(document.getElementById('modalBusy'));
 
+function closeModal() {
+	// FIXED: Do this or modal wont close in bs-5.4
+	//modalBusy.hide();
+	setTimeout(() => modalBusy.hide(), 250);
+}
+
 export function doAppStart() {
 	// REALITY-CHECK: Ensure user has a modern browser
 	if (!window.Blob) {
@@ -117,17 +123,20 @@ export function doAppStart() {
 			"});\n";
 	}
 
-	// TODO: WIP: replace jquery below -----------------------------------------
-
 	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
+	document.querySelectorAll("#tabLargeCellText tbody td").forEach((td) => {
+		td.textContent = LOREM_IPSUM.substring(0, 3000);
+	});
+	const tbody = document.querySelector("#tabLotsOfLines tbody");
 	for (let idx = 0; idx < 36; idx++) {
-		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
+		const row = document.createElement("tr");
+		row.innerHTML = `<td>Row-${idx}</td><td>Col-B</td><td>Col-C</td>`;
+		tbody.appendChild(row);
 	}
 
 	// LAST: Re-highlight code
-	$(".tab-content code.language-javascript").each(function(idx, ele) {
-		Prism.highlightElement($(ele)[0]);
+	document.querySelectorAll(".tab-content code.language-javascript").forEach((ele) => {
+		Prism.highlightElement(ele);
 	});
 
 	// LAST: Nav across sessions
@@ -140,12 +149,12 @@ export function runAllDemos() {
 
 	runEveryTest()
 		.catch(function(err) {
-			console.error(err.toString());
-			modalBusy.hide();
+			console.error(err);
+			closeModal();
 		})
 		.then(function() {
 			if (console.timeEnd) console.timeEnd("runAllDemos");
-			modalBusy.hide();
+			closeModal();
 		});
 }
 
@@ -154,46 +163,48 @@ export function execGenSlidesFunc(type) {
 	modalBusy.show();
 
 	execGenSlidesFuncs(type)
-		.catch(function(err) {
-			modalBusy.hide();
+		.catch((err) => {
 			console.error(err);
+			closeModal();
 		})
-		.then(function() {
-			modalBusy.hide();
+		.then(() => {
 			if (console.timeEnd) console.timeEnd("execGenSlidesFunc: " + type);
+			closeModal();
 		});
 }
 
 export function buildDataTable() {
 	// STEP 1:
-	$("#tabAutoPaging tbody").empty();
+	document.querySelector("#tabAutoPaging tbody").innerHTML = "";
 
 	// STEP 2:
-	for (let idx = 0; idx < $("#numTab2SlideRows").val(); idx++) {
-		const strHtml =
-			"<tr>" +
-			'<td style="text-align:center">' +
-			(idx + 1) +
-			"</td>" +
-			"<td>" +
-			TABLE_NAMES_L[Math.floor(Math.random() * 10)] +
-			"</td>" +
-			"<td>" +
-			TABLE_NAMES_F[Math.floor(Math.random() * 10)] +
-			"</td>" +
-			"<td>Text:<br>" +
-			LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
-			"</td>" +
-			"</tr>";
-		$("#tabAutoPaging tbody").append(strHtml);
+	const tbody = document.querySelector("#tabAutoPaging tbody");
+	const numRows = document.querySelector("#numTab2SlideRows").value;
+	for (let idx = 0; idx < numRows; idx++) {
+		const row = document.createElement("tr");
+		row.innerHTML = `
+		<td style="text-align:center">${idx + 1}</td>
+		<td>${TABLE_NAMES_L[Math.floor(Math.random() * 10)]}</td>
+		<td>${TABLE_NAMES_F[Math.floor(Math.random() * 10)]}</td>
+		<td>Text:<br>${LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130)}</td>
+	  `;
+		tbody.appendChild(row);
 	}
 
 	// STEP 3: Add some style to table for testing
 	// TEST Padding
-	$("#tabAutoPaging thead th").css("padding", "10px 5px");
+	document.querySelectorAll("#tabAutoPaging thead th").forEach((th) => {
+		th.style.padding = "10px 5px";
+	});
 	// TEST font-size/auto-paging
-	$("#tabAutoPaging tbody tr:first-child td:last-child").css("font-size", "12px");
-	$("#tabAutoPaging tbody tr:last-child td:last-child").css("font-size", "16px");
+	const firstRowLastCell = document.querySelector("#tabAutoPaging tbody tr:first-child td:last-child");
+	if (firstRowLastCell) {
+		firstRowLastCell.style.fontSize = "12px";
+	}
+	const lastRowLastCell = document.querySelector("#tabAutoPaging tbody tr:last-child td:last-child");
+	if (lastRowLastCell) {
+		lastRowLastCell.style.fontSize = "16px";
+	}
 }
 
 export function padDataTable() {
@@ -223,9 +234,17 @@ export function table2slides1() {
 		autoPageLineWeight: 0,
 		verbose: false,
 	};
-	if ($("#repeatHeadRow").val() == "Y") objOpts.autoPageRepeatHeader = true;
-	if ($("#slideStartY").val()) objOpts.autoPageSlideStartY = Number($("#slideStartY").val());
-	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
+	if (document.querySelector("#repeatHeadRow").value === "Y") {
+		objOpts.autoPageRepeatHeader = true;
+	}
+	const slideStartY = document.querySelector("#slideStartY").value;
+	if (slideStartY) {
+		objOpts.autoPageSlideStartY = Number(slideStartY);
+	}
+	const selSlideMaster = document.querySelector("#selSlideMaster").value;
+	if (selSlideMaster) {
+		objOpts.masterSlideName = selSlideMaster;
+	}
 
 	// STEP 3: Pass table to tableToSlides function to produce 1-N slides
 	pptx.tableToSlides("tabAutoPaging", objOpts);
@@ -245,9 +264,19 @@ export function table2slides2(addImage) {
 	// STEP 2: Set generated Slide options
 	const objOpts = {};
 	//objOpts.verbose = true;
-	if ($("#repeatHeadRow").val() == "Y") objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
-	if ($("#slideStartY").val()) objOpts.newSlideStartY = Number($("#slideStartY").val()); // TEST: DEPRECATED: `newSlideStartY`
-	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
+	if (document.querySelector("#repeatHeadRow").value === "Y") {
+		// TEST: DEPRECATED: addHeaderToEach
+		objOpts.addHeaderToEach = true;
+	}
+	const slideStartY = document.querySelector("#slideStartY").value;
+	if (slideStartY) {
+		// TEST: DEPRECATED: `newSlideStartY`
+		objOpts.newSlideStartY = Number(slideStartY);
+	}
+	const selSlideMaster = document.querySelector("#selSlideMaster").value;
+	if (selSlideMaster) {
+		objOpts.masterSlideName = selSlideMaster;
+	}
 
 	// STEP 3: Add a custom shape (text in this case) to each Slide
 	// EXAMPLE: Add any dynamic content to each generated Slide
@@ -277,7 +306,7 @@ export function table2slides2(addImage) {
 
 export function doRunBasicDemo() {
 	try {
-		eval(document.getElementById('demo-basic').textContent)
+		new Function(document.getElementById('demo-basic').textContent)();
 	}
 	catch (err) {
 		// TODO: 2025: show errors on screen!
@@ -287,7 +316,7 @@ export function doRunBasicDemo() {
 
 export function doRunSandboxDemo() {
 	try {
-		eval(document.getElementById('demo-sandbox').textContent)
+		new Function(document.getElementById('demo-sandbox').textContent)();
 	}
 	catch (err) {
 		// TODO: 2025: show errors on screen!
@@ -300,7 +329,7 @@ export function doRunSandboxDemo() {
 function doNavRestore() {
 	const triggerTabList = [].slice.call(document.querySelectorAll("#myTab button"));
 	triggerTabList.forEach(function(triggerEl) {
-		var tabTrigger = new bootstrap.Tab(triggerEl);
+		const tabTrigger = new bootstrap.Tab(triggerEl);
 		triggerEl.addEventListener("click", function(event) {
 			event.preventDefault();
 			tabTrigger.show();

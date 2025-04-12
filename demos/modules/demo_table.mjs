@@ -932,7 +932,7 @@ function genSlide10(pptx) {
 			autoPage: true,
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
-			verbose: true,
+			//verbose: true,
 		});
 	}
 
@@ -977,7 +977,7 @@ function genSlide10(pptx) {
 			autoPage: true,
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
-			verbose: true,
+			//verbose: true,
 		});
 	}
 
@@ -1024,7 +1024,7 @@ function genSlide10(pptx) {
 			autoPage: true,
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
-			verbose: true,
+			//verbose: true,
 		});
 	}
 
