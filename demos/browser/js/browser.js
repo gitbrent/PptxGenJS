@@ -4,7 +4,7 @@
  */
 import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.mjs";
 import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.mjs";
-import { BKGD_STARLABS, CHECKMARK_GRN, LOGO_STARLABS, STARLABS_LOGO_SM, SVG_INFO_CIRCLE } from "../../modules/media.mjs";
+import { BKGD_STARLABS, CHECKMARK_GRN, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.mjs";
 
 // ==================================================================================================================
 
@@ -20,47 +20,49 @@ export function doAppStart() {
 
 	// STEP 1: Set UI to dev mode (if you're running locally, congrats you're a dev!)
 	if (window.location.href.indexOf("http://localhost:8000/") > -1) {
-		document.getElementById("basicPres").classList.add("d-none");
-		document.getElementById("codeSandbox").classList.remove("d-none");
+		//document.getElementById("basicPres").classList.add("d-none");
+		//document.getElementById("codeSandbox").classList.remove("d-none");
 	}
 
 	// STEP 2: Introduction tab: Library Info
 	{
 		if (typeof Promise !== "function") {
-			$("header").after(
-				'<div class="alert alert-danger mb-4"><h5>IE11 IS NO LONGER SUPPORTED!</h5>Promise is undefined! (IE11 requires promise.min.js)</div>'
-			);
+			const headerElement = document.querySelector("header");
+			const alertDiv = document.createElement("div");
+			alertDiv.className = "alert alert-danger mb-4";
+			alertDiv.innerHTML = `<h5>IE11 IS NO LONGER SUPPORTED!</h5>Promise is undefined! (IE11 requires promise.min.js)`;
+			headerElement.insertAdjacentElement("afterend", alertDiv);
 		} else {
 			const pptx = new PptxGenJS();
-
-			$("#infoLbl_PptxVers").prepend(`<span class="cursor-help me-1" title="${pptx.version}">${SVG_INFO_CIRCLE}</span>`);
-			$("#infoBox_PptxVers").val(pptx.version);
 			//
-			$("#infoLbl_ChartType").prepend(
-				`<span class="cursor-help me-1" title="${Object.keys(pptx.ChartType).join("; ")}">${SVG_INFO_CIRCLE}</span>`
-			);
-			$("#infoBox_ChartType").val(Object.keys(pptx.ChartType).length);
+			document.getElementById('infoLbl_PptxVers').title = pptx.version;
+			document.getElementById("infoBox_PptxVers").value = pptx.version;
 			//
-			$("#infoLbl_ShapeType").prepend(
-				`<span class="cursor-help me-1" title="${Object.keys(pptx.ShapeType).join("; ")}">${SVG_INFO_CIRCLE}</span>`
-			);
-			$("#infoBox_ShapeType").val(Object.keys(pptx.ShapeType).length);
+			document.getElementById('infoLbl_ChartType').title = Object.keys(pptx.ChartType).join("\n");
+			document.getElementById("infoBox_ChartType").value = Object.keys(pptx.ChartType).length;
 			//
-			$("#infoLbl_SchemeColor").prepend(
-				`<span class="cursor-help me-1" title="${Object.keys(pptx.SchemeColor).join("; ")}">${SVG_INFO_CIRCLE}</span>`
-			);
-			$("#infoBox_SchemeColor").val(Object.keys(pptx.SchemeColor).length);
+			document.getElementById('infoLbl_ShapeType').title = Object.keys(pptx.ShapeType).join(" • ");
+			document.getElementById("infoBox_ShapeType").value = Object.keys(pptx.ShapeType).length;
+			//
+			document.getElementById('infoLbl_SchemeColor').title = Object.keys(pptx.SchemeColor).join("\n");
+			document.getElementById("infoBox_SchemeColor").value = Object.keys(pptx.SchemeColor).length;
 		}
 	}
 
 	// STEP 3: Build UI elements
 	buildDataTable();
 	const pptx = new PptxGenJS();
-	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => $("#selSlideMaster").append(`<option value="${name}">${name}</option>`));
+	const selSlideMaster = document.getElementById("selSlideMaster");
+	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => {
+		const option = document.createElement("option");
+		option.value = name;
+		option.textContent = name;
+		selSlideMaster.appendChild(option);
+	});
 
 	// STEP 4: Populate code areas
 	{
-		$("#demo-basic").text(
+		document.getElementById("demo-basic").textContent =
 			"// STEP 1: Create a new Presentation\n" +
 			"const pptx = new PptxGenJS();\n" +
 			"\n" +
@@ -73,11 +75,10 @@ export function doAppStart() {
 			"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n" +
 			");\n" +
 			"\n" +
-			"// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n" +
-			"pptx.writeFile({ fileName: 'PptxGenJs-Basic-Slide-Demo' });\n"
-		);
+			"// STEP 4: Save/Export\n" +
+			"pptx.writeFile({ fileName: 'basic-demo.pptx' });\n";
 
-		$("#demo-sandbox").html(
+		document.getElementById("demo-sandbox").innerHTML =
 			"const pptx = new PptxGenJS();\n" +
 			"const slide = pptx.addSlide();\n" +
 			//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
@@ -93,10 +94,9 @@ export function doAppStart() {
 			"  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n" +
 			");\n" +
 			"\n" +
-			"pptx.writeFile({ fileName: 'PptxGenJS-Sandbox.pptx' });\n"
-		);
+			"pptx.writeFile({ fileName: 'pptxgenjs-sandbox.pptx' });\n";
 
-		$("#demo-master").html(
+		document.getElementById("demo-master").innerHTML =
 			"pptx.defineSlideMaster({\n" +
 			"  title : 'MASTER_SLIDE',\n" +
 			"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
@@ -113,9 +113,10 @@ export function doAppStart() {
 			//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
 			"  ],\n" +
 			"  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n" +
-			"});\n"
-		);
+			"});\n";
 	}
+
+	// TODO: WIP: replace jquery below -----------------------------------------
 
 	// STEP 5: Demo setup
 	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
@@ -264,6 +265,26 @@ export function table2slides2(addImage) {
 
 	// LAST: Export Presentation
 	pptx.writeFile({ fileName: "Table2Slides_DynamicText" });
+}
+
+export function doRunBasicDemo() {
+	try {
+		eval(document.getElementById('demo-basic').textContent)
+	}
+	catch (err) {
+		// TODO: 2025: show errors on screen!
+		console.error(err);
+	}
+}
+
+export function doRunSandboxDemo() {
+	try {
+		eval(document.getElementById('demo-sandbox').textContent)
+	}
+	catch (err) {
+		// TODO: 2025: show errors on screen!
+		console.error(err);
+	}
 }
 
 // ==================================================================================================================

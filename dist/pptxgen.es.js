@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.1 @ 2025-04-10T22:34:55.276Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2025-04-11T00:36:31.755Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5313,10 +5313,6 @@ function slideObjectToXml(slide) {
                         // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 4: Set CELL content and properties ==================================
                         strXml += "<a:tc".concat(cellSpanAttrStr, ">").concat(genXmlTextBody(cell), "<a:tcPr").concat(cellMarginXml).concat(cellValign).concat(cellTextDir, ">");
-                        // WIP: ^^^ VVVV
-                        // FIXME: WIP: This DOES CAUSE NEEDS REPAIR!!!
-                        //let brent = genXmlTextBody(cell)
-                        //strXml += '<a:tc><a:txBody><a:bodyPr/><a:lstStyle/></a:txBody>'
                         // strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
                         // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
