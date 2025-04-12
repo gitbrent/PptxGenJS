@@ -1,9 +1,11 @@
-.tab-pane > section {
+.tab-pane>section {
 	background: var(--bs-body-bg);
 }
+
 .tab-pane .card-body h6 {
 	color: var(--bs-cyan);
 }
+
 .tab-pane .card-body .list-group-item {
 	background-color: var(--bs-black);
 }
@@ -11,14 +13,22 @@
 .accordion-collapse {
 	background: black;
 }
+
 .lg-bm h6 {
 	color: var(--bs-cyan);
 }
+
 .lg-bm ul.list-group {
 	margin-bottom: 0.5rem;
 }
-pre {
-	font-size: 0.8rem !important;
+
+/* Embed the SVG as a background image */
+.info-icon {
+	width: 16px;
+	height: 16px;
+	background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23ffffff%22%20class%3D%22bi%20bi-info-circle%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2015A7%207%200%201%201%208%201a7%207%200%200%201%200%2014m0%201A8%208%200%201%200%208%200a8%208%200%200%200%200%2016%22/%3E%3Cpath%20d%3D%22m8.93%206.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738%203.468c-.194.897.105%201.319.808%201.319.545%200%201.178-.252%201.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275%200-.375-.193-.304-.533zM9%204.5a1%201%200%201%201-2%200%201%201%200%200%201%202%200%22/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-size: 16px 16px;
 }
 
 #demo-sandbox:focus {
@@ -39,12 +49,15 @@ pre {
 .text-sm {
 	font-size: 0.8rem;
 }
+
 .card-body-text-sm .card .card-body {
 	font-size: 0.8rem;
 }
+
 .cursor-help {
 	cursor: help;
 }
+
 /*
 .bde-arrow-cont {
 	cursor: pointer;
