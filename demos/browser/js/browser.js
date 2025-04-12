@@ -7,6 +7,7 @@ import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.m
 import { BKGD_STARLABS, CHECKMARK_GRN, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.mjs";
 
 // ==================================================================================================================
+const modalBusy = new bootstrap.Modal(document.getElementById('modalBusy'));
 
 export function doAppStart() {
 	// REALITY-CHECK: Ensure user has a modern browser
@@ -135,30 +136,30 @@ export function doAppStart() {
 
 export function runAllDemos() {
 	if (console.time) console.time("runAllDemos");
-	$("#modalBusy").modal("show");
+	modalBusy.show();
 
 	runEveryTest()
 		.catch(function(err) {
 			console.error(err.toString());
-			$("#modalBusy").modal("hide");
+			modalBusy.hide();
 		})
 		.then(function() {
 			if (console.timeEnd) console.timeEnd("runAllDemos");
-			$("#modalBusy").modal("hide");
+			modalBusy.hide();
 		});
 }
 
 export function execGenSlidesFunc(type) {
 	if (console.time) console.time("execGenSlidesFunc: " + type);
-	$("#modalBusy").modal("show");
+	modalBusy.show();
 
 	execGenSlidesFuncs(type)
 		.catch(function(err) {
-			$("#modalBusy").modal("hide");
+			modalBusy.hide();
 			console.error(err);
 		})
 		.then(function() {
-			$("#modalBusy").modal("hide");
+			modalBusy.hide();
 			if (console.timeEnd) console.timeEnd("execGenSlidesFunc: " + type);
 		});
 }
@@ -193,6 +194,13 @@ export function buildDataTable() {
 	// TEST font-size/auto-paging
 	$("#tabAutoPaging tbody tr:first-child td:last-child").css("font-size", "12px");
 	$("#tabAutoPaging tbody tr:last-child td:last-child").css("font-size", "16px");
+}
+
+export function padDataTable() {
+	const paddingValue = document.getElementById('numTab2Padding').value + 'px';
+	document.querySelectorAll('#tabAutoPaging th, #tabAutoPaging td').forEach((element) => {
+		element.style.padding = paddingValue;
+	});
 }
 
 export function table2slidesDemoForTab(inTabId, inOpts) {
