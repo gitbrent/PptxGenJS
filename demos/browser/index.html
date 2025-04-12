@@ -131,7 +131,7 @@
 		<header class="mb-4">
 			<div class="row align-items-middle">
 				<div class="col">
-					<h2 class="text-primary mb-0">PptxGenJS Feature Demos</h2>
+					<h1 class="fw-light mb-0">Interactive Feature Demos</h1>
 				</div>
 				<div class="col-auto">
 					<button id="btnRunAllDemos" type="button" class="btn btn-lg btn-success px-5">Run All Demos</button>
@@ -139,7 +139,7 @@
 			</div>
 		</header>
 
-		<ul class="nav nav-pills nav-fill" id="myTab">
+		<ul class="nav nav-tabs nav-fill" id="myTab">
 			<li class="nav-item">
 				<button class="nav-link text-uppercase active" id="nav-introduction" data-bs-toggle="tab" data-bs-target="#tab-introduction" type="button" role="tab"
 					aria-controls="itab-ntroduction" aria-selected="true" onclick="location.href='#introduction'">Introduction</button>
@@ -184,6 +184,15 @@
 							<div class="form-text"><code>pptx.version</code></div>
 						</div>
 						<div class="col">
+							<h5 class="text-info">Scheme Colors</h5>
+							<div class="input-group">
+								<span class="input-group-text"><span id="infoLbl_SchemeColor" title="" class="cursor-help"></label><img class="text-white"
+											src="images/info-circle.svg" alt="info"></span></span>
+								<input id="infoBox_SchemeColor" type="text" class="form-control" disabled placeholder="Schemes" aria-label="Version">
+							</div>
+							<div class="form-text"><code>Object.keys(pptx.SchemeColor)</code></div>
+						</div>
+						<div class="col">
 							<h5 class="text-info">Chart Types</h5>
 							<div class="input-group">
 								<span class="input-group-text"><span id="infoLbl_ChartType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg"
@@ -201,15 +210,6 @@
 							</div>
 							<div class="form-text"><code>Object.keys(pptx.ShapeType)</code></div>
 						</div>
-						<div class="col">
-							<h5 class="text-info">Scheme Colors</h5>
-							<div class="input-group">
-								<span class="input-group-text"><span id="infoLbl_SchemeColor" title="" class="cursor-help"></label><img class="text-white"
-											src="images/info-circle.svg" alt="info"></span></span>
-								<input id="infoBox_SchemeColor" type="text" class="form-control" disabled placeholder="Schemes" aria-label="Version">
-							</div>
-							<div class="form-text"><code>Object.keys(pptx.SchemeColor)</code></div>
-						</div>
 					</div>
 				</section>
 				<div class="accordion" id="accordCodeSandbox">
@@ -223,7 +223,7 @@
 						<div id="acdCodeBody01" class="accordion-collapse collapse show" aria-labelledby="acdCodeHead01" data-bs-parent="#accordCodeSandbox">
 							<div class="accordion-body bg-dark">
 								<section id="basicPresentation">
-									<div class="bg-primary-subtle text-white mb-3 border-start border-info px-4 py-3 mb-4" style="border-left-width:.5rem!important;">
+									<div class="bg-primary-subtle info-alert text-white mb-3 border-start border-info px-4 py-3 mb-4">
 										<h4 class="text-info">Basic Presentation</h4>
 										<div class="text-white">Live demo of a basic presentation.</div>
 									</div>
@@ -245,7 +245,7 @@
 						<div id="acdCodeBody02" class="accordion-collapse collapse" aria-labelledby="acdCodeHead02" data-bs-parent="#accordCodeSandbox">
 							<div class="accordion-body bg-dark">
 								<section id="codeSandbox">
-									<div class="bg-primary-subtle text-white mb-3 border-start border-info px-4 py-3 mb-4" style="border-left-width:.5rem!important;">
+									<div class="bg-primary-subtle info-alert text-white mb-3 border-start border-info px-4 py-3 mb-4">
 										<h4 class="text-info">Editable Code</h4>
 										<div class="text-white">Use the area below to easily try out various library features.</div>
 									</div>
@@ -638,7 +638,7 @@
 						<div class="row row-cols-4 g-4 text-sm mb-4">
 							<div class="col">
 								<h6>Bar Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 1 - Chart title, axis props</li>
 									<li class="list-group-item">Slide 2 - Vertical and Horizontal</li>
 									<li class="list-group-item">Slide 3 - Grid and axis options</li>
@@ -648,19 +648,19 @@
 							</div>
 							<div class="col">
 								<h6>3D Bar Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 6 - 3D Bar, 3D Cone, 3D Cylinder, 3D Pyramid</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Tornado Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 7 - Tornado Type</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Line Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 8 - Smoothing, Shadow, Size, Symbols</li>
 									<li class="list-group-item">Slide 9 - Data Symbol, Size</li>
 									<li class="list-group-item">Slide 10 - Lots of Categories</li>
@@ -668,52 +668,52 @@
 							</div>
 							<div class="col">
 								<h6>Area Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 11 - Area Chart, Stacked Area Chart</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Pie Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 12 - Various options</li>
 									<li class="list-group-item">Slide 13 - Doughnut Type</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>X Y (Scatter) Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 14 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Bubble Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 15 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Radar Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 16 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Multi-Level Category Axes</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 17 - Multiple Chart Types</li>
 									<li class="list-group-item">Slide 18 - Three Level Axes</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Combo Chart</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 19 - Example</li>
 									<li class="list-group-item">Slide 20 - Various Options</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Misc Options</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 21 - Shadows and Transparent Color</li>
 								</ul>
 							</div>
@@ -877,7 +877,7 @@
 						<div class="row text-sm">
 							<div class="col">
 								<h6>Slide 1: Shapes without Text</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Shapes: Rectangle, Line, Oval, Triangle</li>
 									<li class="list-group-item">Shapes: Flipped Horizontal</li>
 									<li class="list-group-item">Shapes: Borders</li>
@@ -886,7 +886,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 2: Shapes with Text</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Shapes: Rectangle, Line, Oval, Triangle</li>
 									<li class="list-group-item">Shapes: Flipped Horizontal</li>
 									<li class="list-group-item">Shapes: Borders</li>
@@ -918,7 +918,7 @@
 						<div class="row row-cols-auto row-cols-md-3 g-4 text-sm">
 							<div class="col">
 								<h6>Slide 1: Alignment, Location, Sub/Super Script</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Text: alignment</li>
 									<li class="list-group-item">Text: locations</li>
 									<li class="list-group-item">Text: subscript / superscript</li>
@@ -926,7 +926,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 2: Formatting, Line Breaks, Line Spacing</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Text: formatting</li>
 									<li class="list-group-item">Text: line-breaks</li>
 									<li class="list-group-item">Text: line-spacing</li>
@@ -934,7 +934,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 3: Bullet Styles, Shapes, Indent</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Bullets: indent levels</li>
 									<li class="list-group-item">Bullets: spacing</li>
 									<li class="list-group-item">Bullets: custom styles</li>
@@ -943,7 +943,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 4: Hyperlinks, Tab stops, Text Effects</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Text: hyperlinks</li>
 									<li class="list-group-item">Text: tab stops</li>
 									<li class="list-group-item">Effects: outline, glow, shadow</li>
@@ -951,7 +951,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 5: Text Fit</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Fit: none</li>
 									<li class="list-group-item">Fit: resize</li>
 									<li class="list-group-item">Fit: shrink</li>
@@ -959,7 +959,7 @@
 							</div>
 							<div class="col">
 								<h6>Slide 6: Scheme Colors</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Scheme Colors: background</li>
 									<li class="list-group-item">Scheme Colors: text</li>
 								</ul>
@@ -992,91 +992,91 @@
 							<div class="col">
 								<h5>Table Layout/Format</h5>
 								<h6>Slide 1</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">text alignment</li>
 									<li class="list-group-item">cell styles</li>
 									<li class="list-group-item">row height</li>
 									<li class="list-group-item">col width</li>
 								</ul>
 								<h6>Slide 2</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">colspans and rowspans</li>
 								</ul>
 								<h6>Slide 3</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">extreme colspans and rowspans</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h5>Cell Formatting</h5>
 								<h6>Slide 4</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">cell margins</li>
 									<li class="list-group-item">complex cell borders</li>
 									<li class="list-group-item">escaped special characters</li>
 								</ul>
 								<h6>Slide 5</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">cell text formatting overview</li>
 								</ul>
 								<h6>Slide 6</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">cell text formatting examples</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h5>Auto-Paging Examples</h5>
 								<h6>Slides 7-8</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">basic auto-paging example</li>
 								</ul>
 								<h6>Slides 9-12</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">paging with small table dimensions</li>
 								</ul>
 								<h6>Slides 13-15</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">auto-paging with a Master Page</li>
 								</ul>
 								<h6>Slide 16</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">auto-paging disabled <code>{autoPage:false}</code></li>
 								</ul>
 							</div>
 							<div class="col">
 								<h5>Auto-Paging Props</h5>
 								<h6>Slides 17-19</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">start at <code>{y:4.0}</code>, subsequent start at top margin</li>
 								</ul>
 								<h6>Slides 20-22</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">start at <code>{y:4.0}</code>, subsequent start at <code>{autoPageSlideStartY:1.5}</code></li>
 								</ul>
 							</div>
 							<div class="col">
 								<h5>Auto-Paging Props</h5>
 								<h6>Slides 23-24</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">various <code>autoPageRepeatHeader</code> thead configs</li>
 								</ul>
 								<h6>Slides 25-28</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">various <code>autoPageLineWeight</code> values</li>
 								</ul>
 								<h6>Slides 29-32</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">various <code>autoPageCharWeight</code> values</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h5>Auto-Paging Complex Cell Text</h5>
 								<h6>Slides 33-35</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">complex cell text</li>
 								</ul>
 								<h6>Slides 36-39</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">complex cell text with calculated lines</li>
 								</ul>
 							</div>
@@ -1107,7 +1107,7 @@
 						<div class="row g-4">
 							<div class="col-auto">
 								<h6>Demo Master Slides</h6>
-								<ul class="list-group">
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Slide 1: TITLE_SLIDE</li>
 									<li class="list-group-item">Slide 2: MASTER_SLIDE</li>
 									<li class="list-group-item">Slide 3: MASTER_SLIDE</li>
