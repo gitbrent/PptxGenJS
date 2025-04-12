@@ -47,31 +47,31 @@
 	<script src="../modules/demos.mjs" type="module"></script>
 
 	<script type="module">
-		import { buildDataTable, doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab } from './js/browser.js';
-
-		$('#btnRunAllDemos').click(() => runAllDemos());
+		import { buildDataTable, doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab, doRunBasicDemo, doRunSandboxDemo } from './js/browser.js';
 		//
-		$('#btnGenFunc_Chart').click(() => execGenSlidesFunc('Chart'));
-		$('#btnGenFunc_Image').click(() => execGenSlidesFunc('Image'));
-		$('#btnGenFunc_Media').click(() => execGenSlidesFunc('Media'));
-		$('#btnGenFunc_Shape').click(() => execGenSlidesFunc('Shape'));
-		$('#btnGenFunc_Text').click(() => execGenSlidesFunc('Text'));
-		$('#btnGenFunc_Table').click(() => execGenSlidesFunc('Table'));
-		$('#btnGenFunc_Master').click(() => execGenSlidesFunc('Master'));
+		document.getElementById('btnRunAllDemos').addEventListener('click', () => runAllDemos());
+		document.getElementById('btnRunBasicDemo').addEventListener('click', () => doRunBasicDemo());
+		document.getElementById('btnRunSandboxDemo').addEventListener('click', () => doRunSandboxDemo());
+		document.getElementById('btnGenFunc_Chart').addEventListener('click', () => execGenSlidesFunc('Chart'));
+		document.getElementById('btnGenFunc_Image').addEventListener('click', () => execGenSlidesFunc('Image'));
+		document.getElementById('btnGenFunc_Media').addEventListener('click', () => execGenSlidesFunc('Media'));
+		document.getElementById('btnGenFunc_Shape').addEventListener('click', () => execGenSlidesFunc('Shape'));
+		document.getElementById('btnGenFunc_Text').addEventListener('click', () => execGenSlidesFunc('Text'));
+		document.getElementById('btnGenFunc_Table').addEventListener('click', () => execGenSlidesFunc('Table'));
+		document.getElementById('btnGenFunc_Master').addEventListener('click', () => execGenSlidesFunc('Master'));
+		document.getElementById('numTab2SlideRows').addEventListener('change', () => buildDataTable());
+		document.getElementById('table2slides1').addEventListener('click', () => table2slides1());
+		document.getElementById('table2slides2').addEventListener('click', () => table2slides2(false));
+		document.getElementById('table2slides3').addEventListener('click', () => table2slides2(true));
+		document.getElementById('tab2slides_tabNoStyle').addEventListener('click', () => table2slidesDemoForTab('tabNoStyle', { fill: { color: 'f1f1f1' } }));
+		document.getElementById('tab2slides_tabInheritStyle').addEventListener('click', () => table2slidesDemoForTab('tabInheritStyle', { fill: { color: 'f1f1f1' } }));
+		document.getElementById('tab2slides_tabColspan').addEventListener('click', () => table2slidesDemoForTab('tabColspan'));
+		document.getElementById('tab2slides_tabRowspan').addEventListener('click', () => table2slidesDemoForTab('tabRowspan'));
+		document.getElementById('tab2slides_tabRowColspan').addEventListener('click', () => table2slidesDemoForTab('tabRowColspan'));
+		document.getElementById('tab2slides_tabLotsOfLines').addEventListener('click', () => table2slidesDemoForTab('tabLotsOfLines', { verbose: false }));
+		document.getElementById('tab2slides_tabLargeCellText').addEventListener('click', () => table2slidesDemoForTab('tabLargeCellText', { verbose: false }));
 		//
-		$('#numTab2SlideRows').change(() => buildDataTable());
-		$('#table2slides1').click(() => table2slides1());
-		$('#table2slides2').click(() => table2slides2(false));
-		$('#table2slides3').click(() => table2slides2(true));
-		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle', { fill: { color: 'f1f1f1' } }));
-		$('#tab2slides_tabInheritStyle').click(() => table2slidesDemoForTab('tabInheritStyle', { fill: { color: 'f1f1f1' } }));
-		$('#tab2slides_tabColspan').click(() => table2slidesDemoForTab('tabColspan'));
-		$('#tab2slides_tabRowspan').click(() => table2slidesDemoForTab('tabRowspan'));
-		$('#tab2slides_tabRowColspan').click(() => table2slidesDemoForTab('tabRowColspan'));
-		$('#tab2slides_tabLotsOfLines').click(() => table2slidesDemoForTab('tabLotsOfLines', { verbose: false }));
-		$('#tab2slides_tabLargeCellText').click(() => table2slidesDemoForTab('tabLargeCellText', { verbose: false }));
-
-		$(document).ready(() => { doAppStart() });
+		document.addEventListener('DOMContentLoaded', () => doAppStart());
 	</script>
 </head>
 <!-- TODO: 2025: fix modal, remove jQuery, add err msgs to sandbox (e.g: when comments are used nothing happens) -->
@@ -172,60 +172,95 @@
 		</ul>
 		<main class="tab-content mb-4">
 			<div class="tab-pane bg-black p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
-				<section class="border px-4 py-3 mb-4">
+				<section id="libraryInfo" class="border px-4 py-3 mb-4">
 					<div class="row g-4">
 						<div class="col">
 							<h5 class="text-info">Library Version</h5>
 							<div class="input-group">
-								<span class="input-group-text"><span class="cursor-help" id="infoLbl_PptxVers" title=""><img class="text-white" src="images/info-circle.svg" alt="info"></span></span>
+								<span class="input-group-text"><span class="cursor-help" id="infoLbl_PptxVers" title=""><img class="text-white" src="images/info-circle.svg"
+											alt="info"></span></span>
 								<input id="infoBox_PptxVers" type="text" class="form-control" disabled placeholder="Version" aria-label="Version">
 							</div>
-							<div class="form-text font-monospace">pptx.version</div>
+							<div class="form-text"><code>pptx.version</code></div>
 						</div>
 						<div class="col">
 							<h5 class="text-info">Chart Types</h5>
 							<div class="input-group">
-								<span class="input-group-text"><span id="infoLbl_ChartType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg" alt="info"></span></span>
+								<span class="input-group-text"><span id="infoLbl_ChartType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg"
+											alt="info"></span></span>
 								<input id="infoBox_ChartType" type="text" class="form-control" disabled placeholder="Charts" aria-label="Version">
 							</div>
-							<div class="form-text font-monospace">Object.keys(pptx.ChartType)</div>
+							<div class="form-text"><code>Object.keys(pptx.ChartType)</code></div>
 						</div>
 						<div class="col">
 							<h5 class="text-info">Shape Types</h5>
 							<div class="input-group">
-								<span class="input-group-text"><span id="infoLbl_ShapeType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg" alt="info"></span></span>
+								<span class="input-group-text"><span id="infoLbl_ShapeType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg"
+											alt="info"></span></span>
 								<input id="infoBox_ShapeType" type="text" class="form-control" disabled placeholder="Shapes" aria-label="Version">
 							</div>
-							<div class="form-text font-monospace">Object.keys(pptx.ShapeType)</div>
+							<div class="form-text"><code>Object.keys(pptx.ShapeType)</code></div>
 						</div>
 						<div class="col">
 							<h5 class="text-info">Scheme Colors</h5>
 							<div class="input-group">
-								<span class="input-group-text"><label id="infoLbl_SchemeColor" title=""><img class="text-white" src="images/info-circle.svg" alt="info"></label></span>
+								<span class="input-group-text"><span id="infoLbl_SchemeColor" title="" class="cursor-help"></label><img class="text-white"
+											src="images/info-circle.svg" alt="info"></span></span>
 								<input id="infoBox_SchemeColor" type="text" class="form-control" disabled placeholder="Schemes" aria-label="Version">
 							</div>
-							<div class="form-text font-monospace">Object.keys(pptx.SchemeColor)</div>
+							<div class="form-text"><code>Object.keys(pptx.SchemeColor)</code></div>
 						</div>
 					</div>
 				</section>
-				<section id="basicPres" class="border p-3">
-					<h4 class="text-primary mb-3">Basic Presentation</h4>
-					<div class="text-center">
-						<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
-						<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Run Basic Demo</button>
+				<div class="accordion" id="accordCodeSandbox">
+					<div class="accordion-item" data-desc="acdCode01">
+						<h2 id="acdCodeHead01" class="accordion-header">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#acdCodeBody01" aria-expanded="true"
+								aria-controls="acdCodeBody01">
+								Basic Presentation
+							</button>
+						</h2>
+						<div id="acdCodeBody01" class="accordion-collapse collapse show" aria-labelledby="acdCodeHead01" data-bs-parent="#accordCodeSandbox">
+							<div class="accordion-body bg-dark">
+								<section id="basicPresentation">
+									<div class="bg-primary-subtle text-white mb-3 border-start border-info px-4 py-3 mb-4" style="border-left-width:.5rem!important;">
+										<h4 class="text-info">Basic Presentation</h4>
+										<div class="text-white">Live demo of a basic presentation.</div>
+									</div>
+									<pre class="bg-black mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
+									<div class="text-center">
+										<button id="btnRunBasicDemo" type="button" class="btn btn-success px-5" onclick="">Run Basic Demo</button>
+									</div>
+								</section>
+							</div>
+						</div>
 					</div>
-				</section>
-				<section id="codeSandbox" class="border p-4 d-none">
-					<div class="bg-info-subtle text-white mb-3 border-start border-info px-4 py-3 mb-4" style="border-left-width:.5rem!important;">
-						<h4 class="text-info">Editable Code</h4>
-						<div class="text-white">Use the area below to easily try out various library features.</div>
+					<div class="accordion-item" data-desc="acdCode02">
+						<h2 id="acdCodeHead02" class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acdCodeBody02" aria-expanded="false"
+								aria-controls="acdCodeBody02">
+								Code Sandbox
+							</button>
+						</h2>
+						<div id="acdCodeBody02" class="accordion-collapse collapse" aria-labelledby="acdCodeHead02" data-bs-parent="#accordCodeSandbox">
+							<div class="accordion-body bg-dark">
+								<section id="codeSandbox">
+									<div class="bg-primary-subtle text-white mb-3 border-start border-info px-4 py-3 mb-4" style="border-left-width:.5rem!important;">
+										<h4 class="text-info">Editable Code</h4>
+										<div class="text-white">Use the area below to easily try out various library features.</div>
+									</div>
+									<pre class="bg-black mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
+									<div class="text-center">
+										<button id="btnRunSandboxDemo" type="button" class="btn btn-success px-5" onclick="">Execute Sandbox Code</button>
+									</div>
+								</section>
+							</div>
+						</div>
 					</div>
-					<pre class="bg-black mb-4"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
-					<button type="button" class="btn btn-success w-50" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
-				</section>
+				</div>
+
 			</div>
 			<div class="tab-pane bg-black p-4" id="tab-html2pptx" role="tabpanel" aria-labelledby="nav-html2pptx">
-				<h4 class="text-primary mb-3">HTML to PowerPoint</h4>
 				<div class="accordion" id="accorHtml2Pptx">
 					<div class="accordion-item" data-desc="html2PptxColl01">
 						<h2 id="html2PptxHead01" class="accordion-header">
@@ -236,19 +271,19 @@
 						</h2>
 						<div id="html2PptxColl01" class="accordion-collapse collapse" aria-labelledby="html2PptxHead01" data-bs-parent="#accorHtml2Pptx">
 							<div class="accordion-body">
-								<strong>About</strong>
+								<h5>About</h5>
 								<ul>
 									<li>Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code
 											class="language-javascript p-1">pptx.tableToSlides('tableId');</code></li>
 									<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint" target="_blank">HTML to PowerPoint documentation</a> for
 										full details and examples</li>
 								</ul>
-								<strong>Usage</strong>
+								<h5>Usage</h5>
 								<ul>
 									<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
 									<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
 								</ul>
-								<strong>Tips</strong>
+								<h5>Tips</h5>
 								<ul class="mb-0">
 									<li>If you need to modify your table before creating the Presentation, use jQuery to clone() it and do the modifications on that table</li>
 									<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
@@ -265,7 +300,7 @@
 							</button>
 						</h2>
 						<div id="html2PptxColl02" class="accordion-collapse collapse show p-4" aria-labelledby="html2PptxHead02" data-bs-parent="#accorHtml2Pptx">
-							<section class="border p-3 mb-4" style="background: var(--bs-body-bg);">
+							<section class="border bg-body-tertiary p-3 mb-4">
 								<div class="row mb-3">
 									<div class="col">
 										<label for="numTab2SlideRows" class="form-label">Total Rows</label>
@@ -590,15 +625,12 @@
 							<div class="col">
 								<div class="h5 mb-0">Charts</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-charts/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-charts/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
@@ -699,15 +731,12 @@
 							<div class="col">
 								<div class="h5 mb-0">Images</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-images/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-images/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
@@ -744,7 +773,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 4: Image Rotation</h6>
+								<h5>Slide 4</h5>
+								<h6>Image Rotation</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Rotate: 45</li>
 									<li class="list-group-item">Rotate: 180</li>
@@ -752,7 +782,8 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 5: Image Shadows</h6>
+								<h5>Slide 5</h5>
+								<h6>Image Shadows</h6>
 								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Type: Outer</li>
 									<li class="list-group-item">Type: None</li>
@@ -771,23 +802,21 @@
 							<div class="col">
 								<div class="h5 mb-0">Media</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-media/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-media/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
 						<div class="row text-sm">
 							<div class="col">
-								<h6>Slide 1: Video Types</h6>
-								<ul class="list-group">
+								<h5>Slide 1</h5>
+								<h6>Video Types</h6>
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Type: avi</li>
 									<li class="list-group-item">Type: m4v</li>
 									<li class="list-group-item">Type: mov</li>
@@ -795,25 +824,28 @@
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 2: Audio Types</h6>
-								<ul class="list-group">
+								<h5>Slide 2</h5>
+								<h6>Audio Types</h6>
+								<ul class="list-group list-group-flush">
 									<li class="list-group-item">Type: mp3</li>
 									<li class="list-group-item">Type: aif</li>
 									<li class="list-group-item">Type: wav</li>
 								</ul>
 							</div>
 							<div class="col">
-								<h6>Slide 3: YouTube</h6>
-								<div class="card bg-info">
-									<div class="card-header">Opt-In</div>
+								<h5>Slide 3</h5>
+								<h6>YouTube Videos</h6>
+								<div class="card border-warning">
 									<div class="card-body">
-										<p class="card-text">Supported in PowerPoint Online &amp; desktop v16+</p>
+										<p class="card-text text-warning">NOTE: Supported in PowerPoint Online &amp; desktop v16+</p>
 										<p class="card-text">PowerPoint shows a security warning banner whenever external media links like YouTube are used.</p>
-										<div class="form-check">
-											<input id="chkYoutube" class="form-check-input" type="checkbox" value="">
-											<label for="chkYoutube" class="form-check-label">
-												Include this demo slide
-											</label>
+										<div class="border p-2 rounded bg-warning-subtle">
+											<div class="form-check mb-0">
+												<input id="chkYoutube" class="form-check-input" type="checkbox" value="">
+												<label for="chkYoutube" class="form-check-label">
+													Include this demo slide
+												</label>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -832,15 +864,12 @@
 							<div class="col">
 								<div class="h5 mb-0">Shapes</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
@@ -876,15 +905,12 @@
 							<div class="col">
 								<div class="h5 mb-0">Text</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-text/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-text/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
@@ -952,15 +978,12 @@
 							<div class="col">
 								<div class="h5 mb-0">Tables</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/api-tables/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/api-tables/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
@@ -1071,15 +1094,12 @@
 							<div class="col">
 								<div class="h5 mb-0">Slide Masters / Templates / Layouts</div>
 							</div>
+							<div class="col-auto px-0">
+								<div class="info-icon" title="Info"></div>
+							</div>
 							<div class="col-auto">
-								<div class="text-sm text-white">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-										<path
-											d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-									</svg>
-									<a class="text-white ms-1" href="https://gitbrent.github.io/PptxGenJS/docs/masters/" title="API Documentation" target="_blank">API
-										Documentation</a>
-								</div>
+								<a class="text-white" href="https://gitbrent.github.io/PptxGenJS/docs/masters/" title="API Documentation" target="_blank">API
+									Documentation</a>
 							</div>
 						</div>
 					</div>
@@ -1087,18 +1107,18 @@
 						<div class="row g-4">
 							<div class="col-auto">
 								<h6>Demo Master Slides</h6>
-								<ul class="text-sm mb-0">
-									<li>Slide 1: TITLE_SLIDE</li>
-									<li>Slide 2: MASTER_SLIDE</li>
-									<li>Slide 3: MASTER_SLIDE</li>
-									<li>Slide 4: MASTER_SLIDE</li>
-									<li>Slide 5: MASTER_SLIDE</li>
-									<li>Slide 6: THANKS_SLIDE</li>
+								<ul class="list-group">
+									<li class="list-group-item">Slide 1: TITLE_SLIDE</li>
+									<li class="list-group-item">Slide 2: MASTER_SLIDE</li>
+									<li class="list-group-item">Slide 3: MASTER_SLIDE</li>
+									<li class="list-group-item">Slide 4: MASTER_SLIDE</li>
+									<li class="list-group-item">Slide 5: MASTER_SLIDE</li>
+									<li class="list-group-item">Slide 6: THANKS_SLIDE</li>
 								</ul>
 							</div>
 							<div class="col">
 								<h6>Master Slide How-To</h6>
-								<pre><code id="demo-master" class="language-javascript"></code></pre>
+								<pre class="bg-black"><code id="demo-master" class="language-javascript"></code></pre>
 							</div>
 						</div>
 					</div>
