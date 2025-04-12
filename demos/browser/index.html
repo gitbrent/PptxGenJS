@@ -12,9 +12,12 @@
 	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Feature Demos</title>
 	<!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+"
+		crossorigin="anonymous"></script>
 	<!-- bootstrap -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
 		integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -71,6 +74,7 @@
 		$(document).ready(() => { doAppStart() });
 	</script>
 </head>
+<!-- TODO: 2025: fix modal, remove jQuery, add err msgs to sandbox (e.g: when comments are used nothing happens) -->
 <body>
 	<div id="modalBusy" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
 		<div class="modal-dialog modal-dialog-centered" role="document">
@@ -169,27 +173,38 @@
 		<main class="tab-content mb-4">
 			<div class="tab-pane bg-black p-4 active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
 				<section class="border px-4 py-3 mb-4">
-					<h4 class="text-primary">Library Information</h4>
 					<div class="row g-4">
-						<div class='col'>
-							<label id="infoLbl_PptxVers" class="form-label">Library Version</label>
-							<input id="infoBox_PptxVers" class="form-control form-control-sm" disabled value="-" />
-							<div class="form-text">pptx.version</div>
+						<div class="col">
+							<h5 class="text-info">Library Version</h5>
+							<div class="input-group">
+								<span class="input-group-text"><span class="cursor-help" id="infoLbl_PptxVers" title=""><img class="text-white" src="images/info-circle.svg" alt="info"></span></span>
+								<input id="infoBox_PptxVers" type="text" class="form-control" disabled placeholder="Version" aria-label="Version">
+							</div>
+							<div class="form-text font-monospace">pptx.version</div>
 						</div>
-						<div class='col'>
-							<label id="infoLbl_ChartType" class="form-label">Chart Types</label>
-							<input id="infoBox_ChartType" class="form-control form-control-sm" disabled value="-" />
-							<div class="form-text">Object.keys(pptx.ChartType)</div>
+						<div class="col">
+							<h5 class="text-info">Chart Types</h5>
+							<div class="input-group">
+								<span class="input-group-text"><span id="infoLbl_ChartType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg" alt="info"></span></span>
+								<input id="infoBox_ChartType" type="text" class="form-control" disabled placeholder="Charts" aria-label="Version">
+							</div>
+							<div class="form-text font-monospace">Object.keys(pptx.ChartType)</div>
 						</div>
-						<div class='col'>
-							<label id="infoLbl_ShapeType" class="form-label">Shape Types</label>
-							<input id="infoBox_ShapeType" class="form-control form-control-sm" disabled value="-" />
-							<div class="form-text">Object.keys(pptx.ShapeType)</div>
+						<div class="col">
+							<h5 class="text-info">Shape Types</h5>
+							<div class="input-group">
+								<span class="input-group-text"><span id="infoLbl_ShapeType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg" alt="info"></span></span>
+								<input id="infoBox_ShapeType" type="text" class="form-control" disabled placeholder="Shapes" aria-label="Version">
+							</div>
+							<div class="form-text font-monospace">Object.keys(pptx.ShapeType)</div>
 						</div>
-						<div class='col'>
-							<label id="infoLbl_SchemeColor" class="form-label">Scheme Colors</label>
-							<input id="infoBox_SchemeColor" class="form-control form-control-sm" disabled value="-" />
-							<div class="form-text">Object.keys(pptx.SchemeColor)</div>
+						<div class="col">
+							<h5 class="text-info">Scheme Colors</h5>
+							<div class="input-group">
+								<span class="input-group-text"><label id="infoLbl_SchemeColor" title=""><img class="text-white" src="images/info-circle.svg" alt="info"></label></span>
+								<input id="infoBox_SchemeColor" type="text" class="form-control" disabled placeholder="Schemes" aria-label="Version">
+							</div>
+							<div class="form-text font-monospace">Object.keys(pptx.SchemeColor)</div>
 						</div>
 					</div>
 				</section>
@@ -201,11 +216,11 @@
 					</div>
 				</section>
 				<section id="codeSandbox" class="border p-4 d-none">
-					<div class="alert alert-info mb-4" role="alert">
-						<h5>Editable Code</h5>
-						<div>Use the area below to easily try out various library features.</div>
+					<div class="bg-info-subtle text-white mb-3 border-start border-info px-4 py-3 mb-4" style="border-left-width:.5rem!important;">
+						<h4 class="text-info">Editable Code</h4>
+						<div class="text-white">Use the area below to easily try out various library features.</div>
 					</div>
-					<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
+					<pre class="bg-black mb-4"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
 					<button type="button" class="btn btn-success w-50" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
 				</section>
 			</div>
