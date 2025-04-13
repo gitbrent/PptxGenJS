@@ -304,24 +304,48 @@ export function table2slides2(addImage) {
 	pptx.writeFile({ fileName: "Table2Slides_DynamicText" });
 }
 
+// ==================================================================================================================
+
 export function doRunBasicDemo() {
 	try {
+		clearAlert();
 		new Function(document.getElementById('demo-basic').textContent)();
 	}
 	catch (err) {
-		// TODO: 2025: show errors on screen!
+		showAlert(err.message);
 		console.error(err);
 	}
 }
 
 export function doRunSandboxDemo() {
 	try {
+		clearAlert();
 		new Function(document.getElementById('demo-sandbox').textContent)();
 	}
 	catch (err) {
-		// TODO: 2025: show errors on screen!
+		showAlert(err.message);
 		console.error(err);
+
 	}
+}
+
+// Utility function to clear any previous alert
+function clearAlert() {
+	const alertContainer = document.getElementById('alert-container');
+	if (alertContainer) {
+		alertContainer.innerHTML = '';
+	}
+}
+
+// Utility function to show a new alert
+function showAlert(message) {
+	let alertContainer = document.getElementById('alert-container');
+	alertContainer.innerHTML = `
+        <div class="alert alert-danger mt-3" role="alert">
+            <h5>Error</h5>
+			<code>${message}</code>
+        </div>
+    `;
 }
 
 // ==================================================================================================================
