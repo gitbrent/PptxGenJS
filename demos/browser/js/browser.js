@@ -113,7 +113,8 @@ export function doAppStart() {
 			"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
 			"    { text:  {\n" +
 			"        text: 'S.T.A.R. Laboratories - Confidential',\n" +
-			"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n" +
+			//"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n" +
+			"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF' }\n" +
 			"    }}\n" +
 			//+ "    }},\n"
 			//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
