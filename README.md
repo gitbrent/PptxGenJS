@@ -254,7 +254,7 @@ PowerPoint shape definitions and some XML code via [Officegen Project](https://g
 
 If you find this library useful, consider contributing to open-source projects, or sharing your knowledge on the open social web. Together, we can build free tools and resources that empower everyone.
 
-[gitbrent@fosstodon.org](https://fosstodon.org/@gitbrent)
+[@gitbrent@fosstodon.org](https://fosstodon.org/@gitbrent)
 
 # 📜 License
 
