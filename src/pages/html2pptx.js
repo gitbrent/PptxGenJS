@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "@theme/Layout";
 import Gist from "react-gist";
 //import "../css/bootstrap-yeti.css";
-import "../css/purged.css";
+//import "../css/purged.css";
 
 export default () => {
 	const Header = () => {

@@ -28,30 +28,30 @@ yarn add pptxgenjs
 
 [jsDelivr Home](https://www.jsdelivr.com/package/npm/pptxgenjs)
 
-Bundle: Modern Browsers and IE11
+Bundle
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs/dist/pptxgen.bundle.js"></script>
 ```
 
-Min files: Modern Browsers
+Min files
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs/dist/pptxgen.min.js"></script>
 ```
 
 ### Download
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
-Bundle: Modern Browsers and IE11
+Bundle
 
 ```html
 <script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 ```
 
-Min files: Modern Browsers
+Min files
 
 ```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>

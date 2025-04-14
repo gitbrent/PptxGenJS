@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpptxgenjs_gh_pages=self.webpackChunkpptxgenjs_gh_pages||[]).push([[1903],{1912:e=>{e.exports=JSON.parse('{"blogBasePath":"/PptxGenJS/blog","blogTitle":"Blog","authorsListPath":"/PptxGenJS/blog/authors"}')}}]);

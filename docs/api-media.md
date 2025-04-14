@@ -3,7 +3,7 @@ id: api-media
 title: Media
 ---
 
-Media enables the addition of audio, video and online video to Slides.
+Media enables the addition of audio, video, and online video to Slides.
 
 ## Usage
 
@@ -36,7 +36,7 @@ Either provide a URL location or base64 data along with type to create media.
 
 ## Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
+### Position/Size Props ([PositionProps](../types#position-props))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -49,14 +49,14 @@ Either provide a URL location or base64 data along with type to create media.
 | `h`    | number | `1.0`   | height (inches)        | 0-n                                          |
 | `h`    | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
-### Data/Path Props ([DataOrPathProps](/PptxGenJS/docs/types#datapath-props-dataorpathprops))
+### Data/Path Props ([DataOrPathProps](../types#datapath-props-dataorpathprops))
 
 | Option | Type   | Description         | Possible Values                                             |
 | :----- | :----- | :------------------ | :---------------------------------------------------------- |
 | `data` | string | image data (base64) | (`data` or `path` is required) base64-encoded image string. |
 | `path` | string | image path          | (`data` or `path` is required) relative or full URL         |
 
-### Media Props ([MediaProps](/PptxGenJS/docs/types#media-props-mediaprops))
+### Media Props ([MediaProps](../types#media-props-mediaprops))
 
 | Option  | Type   | Description     | Possible Values                                                                         |
 | :------ | :----- | :-------------- | :-------------------------------------------------------------------------------------- |

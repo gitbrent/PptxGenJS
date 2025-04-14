@@ -3,6 +3,10 @@ id: integration
 title: Integration
 ---
 
+## TODO: (20250413) Add web worker info
+
+[See GitHub PR](https://github.com/gitbrent/PptxGenJS/pull/1354)
+
 ## Available Distributions
 
 - Browser `dist/pptxgen.min.js`
