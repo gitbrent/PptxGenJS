@@ -2,8 +2,6 @@ import React from "react";
 import Layout from "@theme/Layout";
 import pptxgen from "pptxgenjs";
 import Gist from "react-gist";
-//import "../css/bootstrap-yeti.css";
-import "../css/purged.css";
 
 export default () => {
 	const gistRef = React.useRef(null);

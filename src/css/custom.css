@@ -1,111 +1,116 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Bootstrap 5.3 integration with Docusaurus v3
  */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
 
 :root {
-	--ifm-color-primary-lightest: #9ec5fe;
-	--ifm-color-primary-lighter: #6ea8fe;
-	--ifm-color-primary-light: #3d8bfd;
-	--ifm-color-primary: #0d6efd;
-	--ifm-color-primary-dark: #0a58ca;
-	--ifm-color-primary-darker: #084298;
-	--ifm-color-primary-darkest: #052c65;
+	--ifm-color-primary: var(--bs-primary);
+	--ifm-color-primary-dark: var(--bs-primary-dark);
+	--ifm-color-primary-darker: var(--bs-indigo);
+	--ifm-color-primary-darkest: var(--bs-indigo-dark);
+	--ifm-color-primary-light: var(--bs-primary-light);
+	--ifm-color-primary-lighter: var(--bs-primary-bg-subtle);
+	--ifm-color-primary-lightest: var(--bs-primary-bg-subtle);
 }
 
+/* --- LIGHT MODE ---------------------------------------- */
 html[data-theme="light"] {
 	--ifm-background-color: var(--bs-light);
-}
-html[data-theme="dark"] {
-	--ifm-background-color: var(--bs-gray-dark);
+	--ifm-font-color-base: var(--bs-body-color);
+	background-color: var(--bs-light);
+	color: var(--bs-body-color);
 }
 
-/* ----- LIGHT ---------- */
-[data-theme="light"] header#indexHeader {
-	/* @see https://cssgradient.io/ */
-	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
-	/*
-	backgroundimage: "url('./img/pptxgenjs-bkgd2.png')";
-	backgroundrepeat: "repeat";
-	*/
+html[data-theme="light"] body {
+	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5), #cccccc 75%, #eeeeee);
 }
+
 html[data-theme="light"] header#indexHeader h1 {
 	color: var(--bs-primary);
 }
+
+/*
 html[data-theme="light"] header#indexHeader h3,
 html[data-theme="light"] header#indexHeader h6 {
-	color: rgba(0, 0, 0, 0.5) !important;
+	color: rgba(0, 0, 0, 0.6);
 }
-html[data-theme="light"] body {
-	background-color: var(--bs-light);
-}
-html[data-theme="light"] .useTheme .card-body {
-	background-color: var(--bs-white);
-}
-html[data-theme="light"] .useTheme .card-body ul {
-	color: rgba(0, 0, 0, 0.5) !important;
-}
+*/
+html[data-theme="light"] .useTheme .card-body,
 html[data-theme="light"] .bgTheme {
 	background-color: var(--bs-white);
 }
 
-/* ----- DARK ---------- */
-[data-theme="dark"] {
-	--bs-body-color: rgb(245, 246, 247) !important;
-	--ifm-heading-color: rgb(245, 246, 247);
-	--ifm-font-color-base: rgb(245, 246, 247);
+html[data-theme="light"] .useTheme .card-body ul {
+	color: rgba(0, 0, 0, 0.6);
 }
-html[data-theme="dark"] .docusaurus-highlight-code-line {
-	background-color: rgba(0, 0, 0, 0.3);
-}
-html[data-theme="dark"] header#indexHeader {
+
+/* --- DARK MODE ---------------------------------------- */
+html[data-theme="dark"] {
+	--ifm-background-color: var(--bs-dark);
+	--ifm-font-color-base: var(--bs-light);
 	background-color: var(--bs-dark);
+	color: var(--bs-light);
+	/* OVERRIDE VARS */
+	/* Bootstrap CSS variable overrides for dark mode */
+	--bs-body-color: #adb5bd;
+	--bs-body-bg: #212529;
+	--bs-primary: #0d6efd;
+	--bs-secondary: #6c757d;
+	--bs-success: #198754;
+	--bs-info: #0dcaf0;
+	--bs-warning: #ffc107;
+	--bs-danger: #dc3545;
+	--bs-light: #f8f9fa;
+	--bs-dark: #212529;
+	/* Bootstrap background overrides */
+	--bs-bg-primary-subtle: #2b3035;
+	--bs-text-primary-emphasis: #89b4fa;
 }
+
+html[data-theme="dark"] #home {
+	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5), #010101 75%, #363636);
+}
+
 html[data-theme="dark"] header#indexHeader h1 {
 	color: var(--bs-light);
 }
-html[data-theme="dark"] header#indexHeader h3,
-html[data-theme="dark"] header#indexHeader h6 {
-	color: hsla(0, 0%, 100%, 0.5) !important;
-}
-html[data-theme="dark"] body {
-	background-color: var(--bs-gray-dark);
-}
+
 html[data-theme="dark"] .useTheme.card {
-	border-color: rgba(0, 0, 0, 0.8) !important;
+	border-color: var(--bs-border-color-translucent);
 }
+
 html[data-theme="dark"] .useTheme .card-body {
-	background-color: #111519;
-	color: var(--bs-white);
+	background-color: var(--bs-gray-800);
+	color: var(--bs-light);
 }
+
 html[data-theme="dark"] .useTheme .card-body ul {
-	color: hsla(0, 0%, 100%, 0.5) !important;
+	color: rgba(255, 255, 255, 0.7);
 }
+
 html[data-theme="dark"] .useTheme .card-footer {
-	background-color: #212529; /* var(--bs-gray-900) */
-	color: var(--bs-white);
+	background-color: var(--bs-gray-900);
+	color: var(--bs-light);
 }
+
 html[data-theme="dark"] .bgTheme {
-	background-color: #111519;
+	background-color: var(--bs-gray-800);
 }
 
-/* ----- Bootstrap adjustments ---------- */
+/* ----- Bootstrap Adjustments ----- */
 a {
-	text-decoration: inherit !important;
+	text-decoration: none !important;
 }
 
-/* ----- Local ----- */
+/* ----- Local SVG Icons ----- */
 .icon-svg-coin {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='green' class='bi bi-coin' viewBox='0 0 16 16'%3E%3Cpath d='M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z'/%3E%3Cpath fill-rule='evenodd' d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/%3E%3Cpath fill-rule='evenodd' d='M8 13.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z'/%3E%3C/svg%3E");
-	/*
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='green' class='bi bi-currency-bitcoin' viewBox='0 0 16 16'%3E%3Cpath d='M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25L5.5 13zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28V4.487zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927V8.539z'/%3E%3C/svg%3E");
-	*/
 	background-repeat: no-repeat;
 	background-position-y: 2px;
 	background-size: 28px;
 	padding-left: 36px;
 }
+
 .navbar-sponsor {
 	margin-left: 1rem;
 	color: green;
@@ -113,7 +118,6 @@ a {
 
 .docusaurus-highlight-code-line {
 	background-color: rgba(0, 0, 0, 0.1);
-	display: block;
 	margin: 0 calc(-1 * var(--ifm-pre-padding));
 	padding: 0 var(--ifm-pre-padding);
 }

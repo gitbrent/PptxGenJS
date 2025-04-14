@@ -1,7 +1,5 @@
 import React from "react";
 import Layout from "@theme/Layout";
-//import "../css/bootstrap-yeti.css";
-import "../css/purged.css";
 
 const ADDRESS_BTC = "bc1qm8cqunm00wtxe7eztspfkaysc6n7fedrsvfv6c";
 const ADDRESS_ETH = "0x8F130f0522c9E185E0692B0B2801295732951bAA";
