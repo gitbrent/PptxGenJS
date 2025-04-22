@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.1 @ 2025-04-11T00:36:31.755Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2025-04-22T22:56:12.828Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -6703,7 +6703,8 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.13.0-beta.1-20250410-1220';
+// https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aopen+milestone%3A3.13.0
+var VERSION = '3.13.0-beta.1-20250422-1755';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -7392,29 +7393,31 @@ var PptxGenJS = /** @class */ (function () {
      * @param {SlideMasterProps} props - layout properties
      */
     PptxGenJS.prototype.defineSlideMaster = function (props) {
-        if (!props.title)
+        // (ISSUE#406;PULL#1176) deep clone the props object to avoid mutating the original object
+        var propsClone = JSON.parse(JSON.stringify(props));
+        if (!propsClone.title)
             throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
         var newLayout = {
-            _margin: props.margin || DEF_SLIDE_MARGIN_IN,
-            _name: props.title,
+            _margin: propsClone.margin || DEF_SLIDE_MARGIN_IN,
+            _name: propsClone.title,
             _presLayout: this.presLayout,
             _rels: [],
             _relsChart: [],
             _relsMedia: [],
             _slide: null,
             _slideNum: 1000 + this.slideLayouts.length + 1,
-            _slideNumberProps: props.slideNumber || null,
+            _slideNumberProps: propsClone.slideNumber || null,
             _slideObjects: [],
-            background: props.background || null,
-            bkgd: props.bkgd || null,
+            background: propsClone.background || null,
+            bkgd: propsClone.bkgd || null,
         };
         // STEP 1: Create the Slide Master/Layout
-        createSlideMaster(props, newLayout);
+        createSlideMaster(propsClone, newLayout);
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
-        if (props.background || props.bkgd)
-            addBackgroundDefinition(props.background, newLayout);
+        if (propsClone.background || propsClone.bkgd)
+            addBackgroundDefinition(propsClone.background, newLayout);
         // STEP 4: Add slideNumber to master slide (if any)
         if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps)
             this.masterSlide._slideNumberProps = newLayout._slideNumberProps;
