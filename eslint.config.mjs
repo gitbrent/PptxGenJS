@@ -1,15 +1,23 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import stylistic from '@stylistic/eslint-plugin'
 
 export default tseslint.config({
+	plugins: {
+		'@stylistic': stylistic
+	},
 	files: ['**/*.ts'],
 	extends: [
 		eslint.configs.recommended,
-		tseslint.configs.recommended,
+		tseslint.configs.recommended
 	],
 	rules: {
-		'@typescript-eslint/array-type': 'error',
-		'no-unused-vars': 'warn',
+		"@stylistic/comma-dangle": ["error", "only-multiline"],
+		"@stylistic/indent": ["error", "tab", { "SwitchCase": 1, "ImportDeclaration": 1 }],
+		"@stylistic/no-tabs": ["error", { allowIndentationTabs: true }],
+		"@stylistic/quotes": ["error", "single"],
+		"@stylistic/semi": ["error", "never"],
+		"no-lone-blocks": 0,
 	},
 });
 
