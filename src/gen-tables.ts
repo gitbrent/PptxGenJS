@@ -13,7 +13,7 @@ import PptxGenJS from './pptxgen'
  * @param {number} colWidth - table column width (inches)
  * @return {TableRow[]} - cell's text objects grouped into lines
  */
-function parseTextToLines (cell: TableCell, colWidth: number, verbose?: boolean): TableCell[][] {
+function parseTextToLines(cell: TableCell, colWidth: number, verbose?: boolean): TableCell[][] {
 	// FYI: CPL = Width / (font-size / font-constant)
 	// FYI: CHAR:2.3, colWidth:10, fontSize:12 => CPL=138, (actual chars per line in PPT)=145 [14.5 CPI]
 	// FYI: CHAR:2.3, colWidth:7 , fontSize:12 => CPL= 97, (actual chars per line in PPT)=100 [14.3 CPI]
@@ -178,7 +178,7 @@ function parseTextToLines (cell: TableCell, colWidth: number, verbose?: boolean)
  * @param {SlideLayout} masterSlide - master slide
  * @return {TableRowSlide[]} array of table rows
  */
-export function getSlidesForTableRows (tableRows: TableCell[][] = [], tableProps: TableToSlidesProps = {}, presLayout: PresLayout, masterSlide?: SlideLayout): TableRowSlide[] {
+export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps: TableToSlidesProps = {}, presLayout: PresLayout, masterSlide?: SlideLayout): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN
 	let emuSlideTabW = EMU * 1
 	let emuSlideTabH = EMU * 1
@@ -191,7 +191,7 @@ export function getSlidesForTableRows (tableRows: TableCell[][] = [], tableProps
 	const tablePropH = getSmartParseNumber(tableProps.h, 'Y', presLayout)
 	let tableCalcW = tablePropW
 
-	function calcSlideTabH (): void {
+	function calcSlideTabH(): void {
 		let emuStartY = 0
 		if (tableRowSlides.length === 0) emuStartY = tablePropY || inch2Emu(arrInchMargins[0])
 		if (tableRowSlides.length > 0) emuStartY = inch2Emu(tableProps.autoPageSlideStartY || tableProps.newSlideStartY || arrInchMargins[0])
@@ -342,7 +342,7 @@ export function getSlidesForTableRows (tableRows: TableCell[][] = [], tableProps
 				_lineHeight: inch2Emu(
 					((cell.options?.fontSize ? cell.options.fontSize : tableProps.fontSize ? tableProps.fontSize : DEF_FONT_SIZE) *
 						(LINEH_MODIFIER + (tableProps.autoPageLineWeight ? tableProps.autoPageLineWeight : 0))) /
-						100
+					100
 				),
 				text: [],
 				options: cell.options,
@@ -520,7 +520,7 @@ export function getSlidesForTableRows (tableRows: TableCell[][] = [], tableProps
  * @param {ITableToSlidesOpts} options - array of options (e.g.: tabsize)
  * @param {SlideLayout} masterSlide - masterSlide
  */
-export function genTableToSlides (pptx: PptxGenJS, tabEleId: string, options: TableToSlidesProps = {}, masterSlide?: SlideLayout): void {
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: TableToSlidesProps = {}, masterSlide?: SlideLayout): void {
 	const opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
@@ -559,7 +559,8 @@ export function genTableToSlides (pptx: PptxGenJS, tabEleId: string, options: Ta
 	// STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspans, who cares, we only need col widths from 1
 	let firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child th`)
 	if (firstRowCells.length === 0) firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child td`)
-	firstRowCells.forEach((cell: HTMLElement) => {
+	firstRowCells.forEach((cellEle: Element) => {
+		const cell = cellEle as HTMLTableCellElement
 		if (cell.getAttribute('colspan')) {
 			// Guesstimate (divide evenly) col widths
 			// NOTE: both j$query and vanilla selectors return {0} when table is not visible)
@@ -593,9 +594,10 @@ export function genTableToSlides (pptx: PptxGenJS, tabEleId: string, options: Ta
 	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
 	const tableParts = ['thead', 'tbody', 'tfoot']
 	tableParts.forEach(part => {
-		document.querySelectorAll(`#${tabEleId} ${part} tr`).forEach((row: HTMLTableRowElement) => {
+		document.querySelectorAll(`#${tabEleId} ${part} tr`).forEach((row: Element) => {
+			const htmlRow = row as HTMLTableRowElement
 			const arrObjTabCells: TableCell[] = []
-			Array.from(row.cells).forEach(cell => {
+			Array.from(htmlRow.cells).forEach(cell => {
 				// A: Get RGB text/bkgd colors
 				const arrRGB1 = window.getComputedStyle(cell).getPropertyValue('color').replace(/\s+/gi, '').replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',')
 				let arrRGB2 = window
@@ -619,7 +621,7 @@ export function genTableToSlides (pptx: PptxGenJS, tabEleId: string, options: Ta
 					align: null,
 					bold:
 						!!(window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
-						Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500),
+							Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500),
 					border: null,
 					color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
 					fill: { color: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])) },
