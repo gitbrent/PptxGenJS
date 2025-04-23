@@ -43,10 +43,6 @@ main>.tab-pane .card-body h6 {
 	margin-bottom: 0.5rem;
 }
 
-.info-alert {
-	border-left-width: .25rem !important;
-}
-
 /* Embed the SVG as a background image */
 .info-icon {
 	width: 16px;
