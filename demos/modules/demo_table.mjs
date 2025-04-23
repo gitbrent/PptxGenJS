@@ -28,18 +28,16 @@ export function genSlides_Table(pptx) {
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
-
 	pptx.addSection({ title: "Tables: Auto-Paging" });
 	genSlide07(pptx);
-
 	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
 	genSlide08(pptx);
-
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
-
-	pptx.addSection({ title: "Tables: QA" });
-	genSlide10(pptx);
+	if (window.location.href.indexOf("localhost") > -1) {
+		pptx.addSection({ title: "Tables: QA" });
+		genSlide10(pptx);
+	}
 }
 
 /**
