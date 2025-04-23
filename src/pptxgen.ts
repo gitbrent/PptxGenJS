@@ -99,7 +99,7 @@ import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
 // https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aopen+milestone%3A3.13.0
-const VERSION = '3.13.0-beta.1-20250422-1755'
+const VERSION = '3.13.0-beta.1-20250422-1805'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -600,7 +600,6 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @returns {Promise<string>} the presentation name
 	 */
 	async writeFile(props?: WriteFileProps | string): Promise<string> {
-		// eslint-disable-next-line @typescript-eslint/no-require-imports
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')

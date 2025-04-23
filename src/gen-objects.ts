@@ -259,7 +259,6 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
 			const val = options.layout[key]
 			if (isNaN(Number(val)) || val < 0 || val > 1) {
 				console.warn('Warning: chart.layout.' + key + ' can only be 0-1')
-				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 				delete options.layout[key] // remove invalid value so that default will be used
 			}
 		})
