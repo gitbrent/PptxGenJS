@@ -9,23 +9,45 @@
 			</h2>
 			<div id="html2PptxColl01" class="accordion-collapse collapse show" aria-labelledby="html2PptxHead01" data-bs-parent="#accorHtml2Pptx">
 				<div class="accordion-body">
-					<h5>About</h5>
+					<img class="img-fluid mb-3" src="images/html2pptx.png" alt="html2pptx">
+					<h5>📌 About</h5>
 					<ul>
-						<li>Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code
-								class="language-javascript p-1">pptx.tableToSlides('tableId');</code></li>
-						<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint/" target="_blank">HTML to PowerPoint documentation</a> for
-							full details and examples</li>
+						<li>
+							Automatically converts an HTML &lt;table&gt; element into one or more PowerPoint slides (with auto-pagination)
+						</li>
+						<li>
+							<a href="https://gitbrent.github.io/PptxGenJS/html2pptx/" target="_blank">View the feature page</a> for detailed documentation and examples
+						</li>
 					</ul>
-					<h5>Usage</h5>
+					<h5>⚙️ Usage</h5>
 					<ul>
-						<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
-						<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
+						<li>
+							Supports common cell-level styles including background colors, borders, fonts, and padding
+						</li>
+						<li>
+							Slide margins can be configured via method options or by assigning a custom Master Slide
+						</li>
 					</ul>
-					<h5>Tips</h5>
+					<h5>⚠️ Limitations</h5>
+					<ul>
+						<li>
+							Only cell-level CSS is supported (e.g., no full-document styles or word-level formatting)
+						</li>
+						<li>
+							Nested tables are not supported by PowerPoint and will be flattened-only their text content will be included
+						</li>
+					</ul>
+					<h5>💡 Tips</h5>
 					<ul class="mb-0">
-						<li>If you need to modify your table before creating the Presentation, use jQuery to clone() it and do the modifications on that table</li>
-						<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
-						<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
+						<li>
+							It is often necessary to modify the table before passing it to <code>tableToSlides()</code>
+						</li>
+						<li>
+							This can be accomplished using JavaScript to clone table, hide it, update its <code>id</code>, then edit as needed
+						</li>
+						<li>
+							Example: <code class="language-javascript p-1">const clonedTable = document.getElementById('tableId').cloneNode(true);</code>
+						</li>
 					</ul>
 				</div>
 			</div>
