@@ -59,7 +59,6 @@ export function doAppStart() {
 	// STEP 3: Build UI elements
 	{
 		buildDataTable();
-		const pptx = new PptxGenJS();
 		const selSlideMaster = document.getElementById("selSlideMaster");
 		["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => {
 			const option = document.createElement("option");
@@ -221,9 +220,15 @@ export function padDataTable() {
 	});
 }
 
-export function table2slidesDemoForTab(inTabId, inOpts) {
+export function table2slidesDemoForTab(inTabId, inOpts = {}) {
 	const pptx = new PptxGenJS();
-	pptx.tableToSlides(inTabId, inOpts || null);
+	// Demo master slide as demo is in dark mode
+	pptx.defineSlideMaster({ title: 'DEMO_MASTER', background: { color: 'f3f3f3' } });
+	// Ensure `slideMaster` is always set
+	const defaultOpts = { masterSlideName: 'DEMO_MASTER' };
+	const mergedOpts = { ...defaultOpts, ...inOpts };
+	// Pass the merged options
+	pptx.tableToSlides(inTabId, mergedOpts);
 	pptx.writeFile({ fileName: `${inTabId}_${getTimestamp()}` });
 }
 
