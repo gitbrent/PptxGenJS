@@ -1,18 +1,24 @@
 {
-  "compilerOptions": {
-	"strictNullChecks": false, // true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./node_modules",
-    "declaration": true,
-    "declarationDir": "./out/defs",
-    "lib": ["dom", "es2015", "es2017.object"],
-    "module": "es6",
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "outDir": "./out",
-    "sourceMap": true,
-    "target": "es5"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"declaration": true,
+		"declarationDir": "./out/defs",
+		"lib": [
+			"dom",
+			"es2020"
+		],
+		"module": "es2020",
+		"moduleResolution": "node",
+		"noImplicitAny": false,
+		"outDir": "./out",
+		"sourceMap": true,
+		"strict": true,
+		"strictNullChecks": false, // NOTE: very necessary!
+		"target": "es2016"
+	},
+	"display": "Recommended",
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"include": [
+		"src/**/*"
+	]
 }
