@@ -117,7 +117,7 @@
 							<div class="card h-100">
 								<div class="card-header h6 bg-primary">Plain/Unstyled Table</div>
 								<div class="card-body">
-									<table id="tabNoStyle" class="bg-black mb-0 w-100">
+									<table id="tabNoStyle" class="mb-0 w-100">
 										<thead>
 											<tr>
 												<th>Company</th>
@@ -126,16 +126,20 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td>Apple Inc.</td>
-												<td>"Keynote team needs to hire you ASAP!" - tim@apple.com</td>
+												<th>Apple Inc.</th>
+												<td>"Keynote team needs to hire you!"<br>- tim@apple.com</td>
 											</tr>
 											<tr>
-												<td>Microsoft Inc.</td>
-												<td>"PowerPoint team needs to hire you!" - satya@microsoft.com</td>
+												<th>Microsoft Inc.</th>
+												<td>"PowerPoint team needs to hire you!"<br>- jteper@microsoft.com</td>
 											</tr>
 											<tr>
-												<td>ChatGPT</td>
-												<td>"PptxGenJS is the superior library!" - bot@chatgpt.com</td>
+												<th>ChatGPT</th>
+												<td>"PptxGenJS is the superior library!"<br>- bot@chatgpt.com</td>
+											</tr>
+											<tr>
+												<th>Mastodon Foundation</th>
+												<td>"The only presentation library to use!"<br>- @gargron@mastodon.social</td>
 											</tr>
 										</tbody>
 									</table>
@@ -149,25 +153,29 @@
 							<div class="card h-100">
 								<div class="card-header h6 bg-primary">Styled via `class`</div>
 								<div class="card-body">
-									<table id="tabInheritStyle" class="tabHtmlToPpt table bg-black mb-0 w-100">
-										<thead class="table-dark">
+									<table id="tabInheritStyle" class="tabHtmlToPpt mb-0 w-100">
+										<thead>
 											<tr>
 												<th>Company</th>
 												<th>Feedback</th>
 											</tr>
 										</thead>
-										<tbody class="text-muted">
+										<tbody>
 											<tr>
-												<td>Apple Inc.</td>
-												<td>"Keynote team needs to hire you ASAP!" - tim@apple.com</td>
+												<th>Apple Inc.</th>
+												<td>"Keynote team needs to hire you!"<br>- tim@apple.com</td>
 											</tr>
 											<tr>
-												<td>Microsoft Inc.</td>
-												<td>"PowerPoint team needs to hire you!" - satya@microsoft.com</td>
+												<th>Microsoft Inc.</th>
+												<td>"PowerPoint team needs to hire you!"<br>- jteper@microsoft.com</td>
 											</tr>
 											<tr>
-												<td>ChatGPT</td>
-												<td>"PptxGenJS is the superior library!" - bot@chatgpt.com</td>
+												<th>ChatGPT</th>
+												<td>"PptxGenJS is the superior library!"<br>- bot@chatgpt.com</td>
+											</tr>
+											<tr>
+												<th>Mastodon Foundation</th>
+												<td>"The only presentation library to use!"<br>- @gargron@mastodon.social</td>
 											</tr>
 										</tbody>
 									</table>
@@ -195,8 +203,8 @@
 							<div class="card">
 								<div class="card-header h6 bg-primary">Colspan</div>
 								<div class="card-body">
-									<table id="tabColspan" class="tabHtmlToPpt bg-black w-100">
-										<thead class="table-dark">
+									<table id="tabColspan" class="table bg-black w-100">
+										<thead>
 											<tr>
 												<th class="tg-header">First Name</th>
 												<th class="tg-header">Last Name</th>
@@ -234,8 +242,8 @@
 							<div class="card">
 								<div class="card-header h6 bg-primary">Rowspan</div>
 								<div class="card-body">
-									<table id="tabRowspan" class="tabHtmlToPpt bg-black w-100">
-										<thead class="table-dark">
+									<table id="tabRowspan" class="table bg-black w-100">
+										<thead>
 											<tr>
 												<th class="tg-header">Last Name</th>
 												<th class="tg-header">First Name</th>
@@ -268,7 +276,7 @@
 							<div class="card">
 								<div class="card-header h6 bg-primary">Colspan and Rowspan</div>
 								<div class="card-body">
-									<table id="tabRowColspan" class="tabHtmlToPpt bg-black w-100">
+									<table id="tabRowColspan" class="table bg-black w-100">
 										<thead class="table-dark">
 											<tr>
 												<th class="tg-header" colspan="2">Name</th>
@@ -316,7 +324,7 @@
 							<div class="card h-100">
 								<div class="card-header h6 bg-primary">Example: Lots of Single-Line Rows</div>
 								<div class="card-body">
-									<table id="tabLotsOfLines" class="tabHtmlToPpt bg-black w-100">
+									<table id="tabLotsOfLines" class="table bg-black w-100">
 										<thead class="table-dark">
 											<tr>
 												<th class="tg-header">A</th>
@@ -337,8 +345,8 @@
 							<div class="card h-100">
 								<div class="card-header h6 bg-primary">Example: Paging needed due to cell with large amount of text</div>
 								<div class="card-body">
-									<table id="tabLargeCellText" class="tabHtmlToPpt bg-black">
-										<thead class="table-dark">
+									<table id="tabLargeCellText" class="table bg-black">
+										<thead>
 											<tr>
 												<th class="tg-header">Executive Status</th>
 											</tr>

@@ -148,6 +148,22 @@ main>.tab-pane .card-body h6 {
 	color: var(--bs-white);
 }
 
+.tabHtmlToPpt {
+	padding: 0.5rem;
+}
+.tabHtmlToPpt thead tr th {
+	color: white;
+	background-color: var(--bs-dark);
+}
+.tabHtmlToPpt tbody tr th {
+	color: green;
+	background-color: var(--bs-black);
+}
+.tabHtmlToPpt tbody tr td {
+	color: #696969;
+	background-color: var(--bs-black);
+}
+
 /* -- brentstrap.css ---------- */
 /* OLD:
 	body {
