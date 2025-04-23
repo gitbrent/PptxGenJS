@@ -57,32 +57,34 @@ export function doAppStart() {
 	}
 
 	// STEP 3: Build UI elements
-	buildDataTable();
-	const pptx = new PptxGenJS();
-	const selSlideMaster = document.getElementById("selSlideMaster");
-	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => {
-		const option = document.createElement("option");
-		option.value = name;
-		option.textContent = name;
-		selSlideMaster.appendChild(option);
-	});
+	{
+		buildDataTable();
+		const pptx = new PptxGenJS();
+		const selSlideMaster = document.getElementById("selSlideMaster");
+		["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => {
+			const option = document.createElement("option");
+			option.value = name;
+			option.textContent = name;
+			selSlideMaster.appendChild(option);
+		});
+	}
 
 	// STEP 4: Populate code areas
 	{
 		document.getElementById("demo-basic").textContent =
-			"// STEP 1: Create a new Presentation\n" +
+			"// STEP 1: Create a Presentation\n" +
 			"const pptx = new PptxGenJS();\n" +
 			"\n" +
-			"// STEP 2: Add a new Slide to the Presentation\n" +
+			"// STEP 2: Add a Slide to the Presentation\n" +
 			"const slide = pptx.addSlide();\n" +
 			"\n" +
-			"// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n" +
+			"// STEP 3: Add objects to the Slide (charts, tables, shapes, images, etc.)\n" +
 			"slide.addText(\n" +
 			"  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n" +
-			"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n" +
+			"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'e6e6e6' } }\n" +
 			");\n" +
 			"\n" +
-			"// STEP 4: Save/Export\n" +
+			"// STEP 4: Save/Export the Presentation\n" +
 			"pptx.writeFile({ fileName: 'basic-demo.pptx' });\n";
 
 		document.getElementById("demo-sandbox").innerHTML =
