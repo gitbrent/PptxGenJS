@@ -11,8 +11,11 @@ import { PresSlide, SlideLayout, ISlideRelMedia } from './core-interfaces'
  * @return {Promise} promise
  */
 export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Promise<string>> {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
 	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
 	const https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null // NodeJS
+	// NOTE: ^^^ causes [Issue #1325](https://github.com/gitbrent/PptxGenJS/issues/1325) // FIXME:
 	const imageProms: Array<Promise<string>> = []
 
 	// A: Capture all audio/image/video candidates for encoding (filtering online/pre-encoded)
@@ -57,7 +60,7 @@ export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Pr
 								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 								resolve('done')
 							})
-							res.on('error', (_ex) => {
+							res.on('error', () => {
 								rel.data = IMG_BROKEN
 								candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 								reject(new Error(`ERROR! Unable to load image (https.get): ${rel.path}`))
@@ -86,7 +89,7 @@ export function encodeSlideMediaRels (layout: PresSlide | SlideLayout): Array<Pr
 							}
 							reader.readAsDataURL(xhr.response)
 						}
-						xhr.onerror = ex => {
+						xhr.onerror = () => {
 							rel.data = IMG_BROKEN
 							candidateRels.filter(dupe => dupe.isDuplicate && dupe.path === rel.path).forEach(dupe => (dupe.data = rel.data))
 							reject(new Error(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`))
@@ -145,11 +148,11 @@ async function createSvgPngPreview (rel: ISlideRelMedia): Promise<string> {
 				rel.data = canvas.toDataURL(rel.type)
 				resolve('done')
 			} catch (ex) {
-				image.onerror(ex)
+				image.onerror(ex.toString())
 			}
 			canvas = null
 		}
-		image.onerror = ex => {
+		image.onerror =() => {
 			rel.data = IMG_BROKEN
 			reject(new Error(`ERROR! Unable to load image (image.onerror): ${rel.path}`))
 		}
@@ -163,6 +166,7 @@ async function createSvgPngPreview (rel: ISlideRelMedia): Promise<string> {
  * FIXME: TODO: currently unused
  * TODO: Should return a Promise
  */
+/*
 function getSizeFromImage (inImgUrl: string): { width: number, height: number } {
 	const sizeOf = typeof require !== 'undefined' ? require('sizeof') : null // NodeJS
 
@@ -195,3 +199,4 @@ function getSizeFromImage (inImgUrl: string): { width: number, height: number } 
 		image.src = inImgUrl
 	}
 }
+*/
