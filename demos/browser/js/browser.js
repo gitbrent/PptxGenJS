@@ -12,7 +12,7 @@ const modalBusy = new bootstrap.Modal(document.getElementById('modalBusy'));
 function closeModal() {
 	// FIXED: Do this or modal wont close in bs-5.4
 	//modalBusy.hide();
-	setTimeout(() => modalBusy.hide(), 250);
+	setTimeout(() => modalBusy.hide(), 500);
 }
 
 export function doAppStart() {
