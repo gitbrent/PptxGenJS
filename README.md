@@ -51,9 +51,12 @@ Design custom slides, charts, images, tables, and templates programmatically - n
 
 ## 🌐 Live Demos
 
-Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
+Try PptxGenJS right in your browser - no setup required.
 
-- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demos/)
+- [Basic Slide Demo](https://gitbrent.github.io/PptxGenJS/demos/) - Build a basic presentation in seconds
+- [Full Feature Showcase](https://gitbrent.github.io/PptxGenJS/demo/browser/index.html) - Explore every available feature: chart, shape, export option, slide masters, and more
+
+> 💡 Perfect for testing compatibility or learning by example — all demos run 100% in the browser.
 
 ## 📦 Installation
 
