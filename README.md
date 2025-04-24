@@ -2,10 +2,10 @@
 
 ![PptxGenJS Sample Slides](https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.png)
 
+![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)
+![NPM Downloads](https://img.shields.io/npm/dm/pptxgenjs?style=flat-square)
 ![GitHub Repo stars](https://img.shields.io/github/stars/gitbrent/pptxgenjs?style=flat-square)
-[![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
-[![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)
-[![typescript defs](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
+![TypeScript defs](https://img.shields.io/npm/types/pptxgenjs?style=flat-square)
 ![GitHub License](https://img.shields.io/github/license/gitbrent/pptxgenjs?style=flat-square)
 
 ## 🚀 Features
