@@ -44,9 +44,9 @@ Visit the demos page to create a simple presentation to see how easy it is to us
 
 - [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demos/)
 
-# 📦 Installation
+## 📦 Installation
 
-## Npm
+### Npm
 
 [PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
 
@@ -54,13 +54,13 @@ Visit the demos page to create a simple presentation to see how easy it is to us
 npm install pptxgenjs --save
 ```
 
-## Yarn
+### Yarn
 
 ```bash
 yarn add pptxgenjs
 ```
 
-## CDN
+### CDN
 
 [jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
@@ -75,7 +75,7 @@ Bundle or min files:
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
 ```
 
-## Download
+### Download
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
@@ -90,7 +90,7 @@ Bundle or min files:
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
 ```
 
-## Additional Builds
+### Additional Builds
 
 To ensure optimal compatibility across bundlers, both ESM and CJS builds are provided. Use the default import in modern Vite or Webpack setups and it will auto-resolve the right version.
 Note: As of version 3.13.0, the package.json file dropped the `module` and `main` fields in favor of the preferred `exports` field.
@@ -98,13 +98,13 @@ Note: As of version 3.13.0, the package.json file dropped the `module` and `main
 - CommonJS: `dist/pptxgen.cjs.js`
 - ES Module: `dist/pptxgen.es.js`
 
-# 📖 Documentation
+3# 📖 Documentation
 
-## Quick Start Guide
+### Quick Start Guide
 
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
-### Angular/React, ES6, TypeScript
+#### Angular/React, ES6, TypeScript
 
 ```typescript
 import pptxgen from "pptxgenjs";
@@ -124,7 +124,7 @@ slide.addText(textboxText, textboxOpts);
 pres.writeFile();
 ```
 
-### Script/Web Browser
+#### Script/Web Browser
 
 ```javascript
 // 1. Create a new Presentation
@@ -144,7 +144,7 @@ pres.writeFile();
 
 That's really all there is to it!
 
-## Library API
+### Library API
 
 Full documentation and code examples are available
 
@@ -164,7 +164,7 @@ Full documentation and code examples are available
 - [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
 - [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
 
-## HTML-to-PowerPoint Feature
+### HTML-to-PowerPoint Feature
 
 Easily convert HTML tables to PowerPoint presentations in a single call.
 
@@ -178,18 +178,18 @@ Learn more:
 
 - [HTML-to-PowerPoint Docs/Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
 
-# 🔗 Library Ports
+## 🔗 Library Ports
 
 React: [react-pptx](https://github.com/wyozi/react-pptx) - thanks to [Joonas](https://github.com/wyozi)!
 
-# 🛠️ Issues / Suggestions
+## 🛠️ Issues / Suggestions
 
 Please file issues or suggestions on the [issues page on github](https://github.com/gitbrent/PptxGenJS/issues/new), or even better, [submit a pull request](https://github.com/gitbrent/PptxGenJS/pulls). Feedback is always welcome!
 
 When reporting issues, please include a code snippet or a link demonstrating the problem.
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/) that is already configured and uses the latest PptxGenJS code.
 
-# ❓ Need Help?
+## ❓ Need Help?
 
 Sometimes implementing a new library can be a difficult task and the slightest mistake will keep something from working. We've all been there!
 
@@ -200,7 +200,7 @@ are demos for both client browsers, node and react that contain working examples
 - [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50). If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `PptxGenJS`.
 - Ask your AI pair programmer! All major LLMs have ingested the pptxgenjs library and have the ability to answer functionality questions and provide code.
 
-# 🙏 Contributors
+## 🙏 Contributors
 
 Thank you to everyone for the contributions and suggestions! ❤️
 
@@ -216,13 +216,13 @@ Special Thanks:
 
 PowerPoint shape definitions and some XML code via [Officegen Project](https://github.com/Ziv-Barber/officegen)
 
-# 🌟 Support the Open Source Community
+## 🌟 Support the Open Source Community
 
 If you find this library useful, consider contributing to open-source projects, or sharing your knowledge on the open social web. Together, we can build free tools and resources that empower everyone.
 
 [@gitbrent@fosstodon.org](https://fosstodon.org/@gitbrent)
 
-# 📜 License
+## 📜 License
 
 Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/)
 
