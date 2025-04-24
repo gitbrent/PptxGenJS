@@ -5,8 +5,8 @@
 ![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)
 ![NPM Downloads](https://img.shields.io/npm/dm/pptxgenjs?style=flat-square)
 ![GitHub Repo stars](https://img.shields.io/github/stars/gitbrent/pptxgenjs?style=flat-square)
-![TypeScript defs](https://img.shields.io/npm/types/pptxgenjs?style=flat-square)
 ![GitHub License](https://img.shields.io/github/license/gitbrent/pptxgenjs?style=flat-square)
+![TypeScript defs](https://img.shields.io/npm/types/pptxgenjs?style=flat-square)
 
 ## 🚀 Features
 
@@ -22,31 +22,32 @@ Design custom slides, charts, images, tables, and templates programmatically - n
 
 ### Works Everywhere
 
-- Every modern desktop and mobile browser is supported
-- Integrates with Node, Angular, React, and Electron
-- Compatible with PowerPoint, Keynote, and more
+- Supports every major modern browser - desktop and mobile
+- Seamlessly integrates with **Node.js**, **React**, **Angular**, **Vite**, and **Electron**
+- Compatible with **PowerPoint**, **Keynote**, **LibreOffice**, and other OOXML apps
 
-### Full Featured
+### Full-Featured
 
-- All major object types are available (charts, shapes, tables, etc.)
-- Master Slides for academic/corporate branding
-- SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts
+- Create all major slide objects: **text, tables, shapes, images, charts**, and more
+- Define custom **Slide Masters** for consistent academic or corporate branding
+- Supports **SVGs**, **animated GIFs**, **YouTube embeds**, **RTL text**, and **Asian fonts**
 
-### Simple and Powerful
+### Simple & Powerful
 
-- The absolute easiest PowerPoint library to use
-- Learn as you code will full typescript definitions included
-- Tons of demo code comes included (over 75 slides of features)
+- Ridiculously easy to use - get started with a single function
+- Full **TypeScript definitions** for autocomplete and inline documentation
+- Includes **75+ demo slides** covering every feature and usage pattern
 
 ### Export Your Way
 
-- Exports files direct to client browsers with proper MIME-type
-- Other export formats available: base64, blob, stream, etc.
-- Presentation compression options and more
+- Instantly download `.pptx` files from the browser with proper MIME handling
+- Export as **base64**, **Blob**, **Buffer**, or **Node stream**
+- Supports compression and advanced output options for production use
 
-### HTML to PowerPoint
+### HTML to PowerPoint Magic
 
-- Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
+- Convert any HTML `<table>` to one or more slides with a single line of code
+  → [Explore the HTML-to-PPTX feature](#html-to-powerpoint-feature)
 
 ## 🌐 Live Demos
 
