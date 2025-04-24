@@ -1,14 +1,23 @@
 # PptxGenJS
 
-## Create JavaScript PowerPoint Presentations
-
 ![PptxGenJS Sample Slides](https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.png)
 
-[![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs) [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs) [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs) [![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
+[![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs)
+[![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)
+[![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
+[![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
 
 ## 🚀 Features
 
-This library creates Open Office XML (OOXML) Presentations which are compatible with Microsoft PowerPoint, Apple Keynote, LibreOffice, and other applications.
+**PptxGenJS lets you generate professional PowerPoint presentations in JavaScript - directly from Node, React, Vite, Electron, or even the browser.**
+The library outputs standards-compliant Open Office XML (OOXML) files compatible with:
+
+- ✅ Microsoft PowerPoint
+- ✅ Apple Keynote
+- ✅ LibreOffice Impress
+- ✅ Google Slides (via import)
+
+Design custom slides, charts, images, tables, and templates programmatically - no PowerPoint install or license required.
 
 ### Works Everywhere
 
@@ -90,15 +99,28 @@ Bundle or min files:
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
 ```
 
-### Additional Builds
+## 🚀 Universal Compatibility
 
-To ensure optimal compatibility across bundlers, both ESM and CJS builds are provided. Use the default import in modern Vite or Webpack setups and it will auto-resolve the right version.
-Note: As of version 3.13.0, the package.json file dropped the `module` and `main` fields in favor of the preferred `exports` field.
+PptxGenJS works seamlessly in **modern web and Node environments**, thanks to dual ESM and CJS builds and zero runtime dependencies. Whether you're building a CLI tool, an Electron app, or a web-based presentation builder, the library adapts automatically to your stack.
 
-- CommonJS: `dist/pptxgen.cjs.js`
-- ES Module: `dist/pptxgen.es.js`
+### Supported Platforms
 
-3# 📖 Documentation
+- **Node.js** – generate presentations in backend scripts, APIs, or CLI tools
+- **React / Angular / Vite / Webpack** – just import and go, no config required
+- **Electron** – build native apps with full filesystem access and PowerPoint output
+- **Browser (Vanilla JS)** – embed in web apps with direct download support
+- **Serverless / Edge Functions** – use in AWS Lambda, Vercel, Cloudflare Workers, etc.
+
+> 💡 _Vite, Webpack, and modern bundlers automatically select the right build via the `exports` field in `package.json`._
+
+### Builds Provided
+
+- **CommonJS**: [`dist/pptxgen.cjs.js`](./dist/pptxgen.cjs.js)
+- **ES Module**: [`dist/pptxgen.es.js`](./dist/pptxgen.es.js)
+
+_The library dropped `main` and `module` fields in favor of modern `exports` support as of version **3.13.0**._
+
+## 📖 Documentation
 
 ### Quick Start Guide
 
