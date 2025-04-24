@@ -1,21 +1,14 @@
-<h1 align="center">PptxGenJS</h1>
-<h5 align="center">
-  Create JavaScript PowerPoint Presentations
-</h5>
-<p align="center">
-  <a href="https://github.com/gitbrent/PptxGenJS/">
-    <img alt="PptxGenJS Sample Slides" title="PptxGenJS Sample Slides" src="https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.png"/>
-  </a>
-</p>
-<br/>
+# PptxGenJS
+
+## Create JavaScript PowerPoint Presentations
+
+![PptxGenJS Sample Slides](https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.png)
 
 [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs) [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs) [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs) [![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
 
-# 🎉 Introduction
-
-This library creates Open Office XML (OOXML) Presentations which are compatible with Microsoft PowerPoint, Apple Keynote, and other applications.
-
 # 🚀 Features
+
+This library creates Open Office XML (OOXML) Presentations which are compatible with Microsoft PowerPoint, Apple Keynote, LibreOffice, and other applications.
 
 ## Works Everywhere
 
