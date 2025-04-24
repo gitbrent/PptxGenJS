@@ -23,4 +23,4 @@ loadSection('tab-charts', './html/tab-charts.html');
 loadSection('tab-images', './html/tab-images.html');
 loadSection('tab-shapes', './html/tab-shapes.html');
 loadSection('tab-tables', './html/tab-tables.html');
-loadSection('tab-templates', './html/tab-templates.html');
+loadSection('tab-masters', './html/tab-masters.html');
