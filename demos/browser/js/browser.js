@@ -105,7 +105,7 @@ export function doAppStart() {
 			"pptx.writeFile({ fileName: 'pptxgenjs-sandbox.pptx' });\n";
 
 		document.getElementById("demo-master").innerHTML =
-			"// STEP 1: Define a master slide and give it a unique title name\n" +
+			"// STEP 1: Define a master slide starting with a unique title\n" +
 			"pptx.defineSlideMaster({\n" +
 			"  title : 'COMPANY_BRANDING',\n" +
 			"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
@@ -125,7 +125,7 @@ export function doAppStart() {
 			"  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n" +
 			"});\n" +
 			"\n" +
-			"// STEP 2: Add a new Slide using the defined master\n" +
+			"// STEP 2: Apply the slide master to a Slide by passing `masterName` property\n" +
 			'let slide = pptx.addSlide({ masterName: "COMPANY_BRANDING" });\n';
 	}
 
