@@ -6,39 +6,39 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs) [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs) [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs) [![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
 
-# 🚀 Features
+## 🚀 Features
 
 This library creates Open Office XML (OOXML) Presentations which are compatible with Microsoft PowerPoint, Apple Keynote, LibreOffice, and other applications.
 
-## Works Everywhere
+### Works Everywhere
 
 - Every modern desktop and mobile browser is supported
 - Integrates with Node, Angular, React, and Electron
 - Compatible with PowerPoint, Keynote, and more
 
-## Full Featured
+### Full Featured
 
 - All major object types are available (charts, shapes, tables, etc.)
 - Master Slides for academic/corporate branding
 - SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts
 
-## Simple and Powerful
+### Simple and Powerful
 
 - The absolute easiest PowerPoint library to use
 - Learn as you code will full typescript definitions included
 - Tons of demo code comes included (over 75 slides of features)
 
-## Export Your Way
+### Export Your Way
 
 - Exports files direct to client browsers with proper MIME-type
 - Other export formats available: base64, blob, stream, etc.
 - Presentation compression options and more
 
-## HTML to PowerPoint
+### HTML to PowerPoint
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
-# 🌐 Live Demos
+## 🌐 Live Demos
 
 Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
