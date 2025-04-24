@@ -88,13 +88,13 @@ gulp.task('es', () => {
 gulp.task('reactTestCode', () => {
 	return gulp
 		.src(['./dist/pptxgen.es.js'])
-		.pipe(gulp.dest('./demos/react-demo/node_modules/pptxgenjs/dist'))
+		.pipe(gulp.dest('./demos/vite-demo/node_modules/pptxgenjs/dist'))
 })
 
 gulp.task('reactTestDefs', () => {
 	return gulp
 		.src(['./types/index.d.ts'])
-		.pipe(gulp.dest('./demos/react-demo/node_modules/pptxgenjs/types'))
+		.pipe(gulp.dest('./demos/vite-demo/node_modules/pptxgenjs/types'))
 })
 
 gulp.task('nodeTest', () => {
