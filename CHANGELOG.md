@@ -15,10 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added new vite-demo under "demos" to test using the library as a module in modern apps (replaces react-demo) ([gitbrent](https://github.com/gitbrent))
 - Added `textDirection` property for text and table cells to allow vertical rotation of text ([gitbrent](https://github.com/gitbrent))
 
 ### Changed
 
+- Replaced `main`, `module` fields with preferred `exports` in package.json for modern module resolution ([gitbrent](https://github.com/gitbrent))
 - Bump jszip to ^3.10.1 [\#1255](https://github.com/gitbrent/PptxGenJS/pull/1255) ([NateRadebaugh](https://github.com/NateRadebaugh))
 
 ## [3.12.0](https://github.com/gitbrent/PptxGenJS/releases/tag/v3.12.0) - 2023-03-19
