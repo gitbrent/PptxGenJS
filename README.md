@@ -11,36 +11,6 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs) [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs) [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs) [![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
 
-# Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [🎉 Introduction](#-introduction)
-- [🚀 Features](#-features)
-	- [Works Everywhere](#works-everywhere)
-	- [Full Featured](#full-featured)
-	- [Simple and Powerful](#simple-and-powerful)
-	- [Export Your Way](#export-your-way)
-	- [HTML to PowerPoint](#html-to-powerpoint)
-- [🌐 Live Demos](#-live-demos)
-- [📦 Installation](#-installation)
-	- [Npm](#npm)
-	- [Yarn](#yarn)
-	- [CDN](#cdn)
-	- [Download](#download)
-	- [Additional Builds](#additional-builds)
-- [📖 Documentation](#-documentation)
-	- [Quick Start Guide](#quick-start-guide)
-		- [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
-		- [Script/Web Browser](#scriptweb-browser)
-	- [Library API](#library-api)
-	- [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
-- [🔗 Library Ports](#-library-ports)
-- [🛠️ Issues / Suggestions](#️-issues--suggestions)
-- [❓ Need Help?](#-need-help)
-- [🙏 Contributors](#-contributors)
-- [🌟 Support the Open Source Community](#-support-the-open-source-community)
-- [📜 License](#-license)
-
 # 🎉 Introduction
 
 This library creates Open Office XML (OOXML) Presentations which are compatible with Microsoft PowerPoint, Apple Keynote, and other applications.
@@ -128,6 +98,9 @@ Bundle or min files:
 ```
 
 ## Additional Builds
+
+To ensure optimal compatibility across bundlers, both ESM and CJS builds are provided. Use the default import in modern Vite or Webpack setups and it will auto-resolve the right version.
+Note: As of version 3.13.0, the package.json file dropped the `module` and `main` fields in favor of the preferred `exports` field.
 
 - CommonJS: `dist/pptxgen.cjs.js`
 - ES Module: `dist/pptxgen.es.js`
