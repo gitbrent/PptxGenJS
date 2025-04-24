@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.1 @ 2025-04-23T02:39:11.863Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2025-04-24T01:11:21.636Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6731,7 +6731,7 @@ function makeXmlViewProps() {
  *  SOFTWARE.
  */
 // https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aopen+milestone%3A3.13.0
-const VERSION = '3.13.0-beta.1-20250422-2135';
+const VERSION = '3.13.0-beta.1-20250423-2002';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];

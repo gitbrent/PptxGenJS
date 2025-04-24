@@ -36,12 +36,12 @@
  * PowerPoint units are in `DXA` (except for font sizing)
  * - 1 inch is 1440 DXA
  * - 1 inch is 72 points
- * - 1 DXA is 1/20th's of a point
+ * -  1 DXA is 1/20th's of a point
  * - 20 DXA is 1 point
  *
  * Another form of measurement using is an `EMU`
  * - 914400 EMUs is 1 inch
- * 12700 EMUs is 1 point
+ * -  12700 EMUs is 1 point
  *
  * @see https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
  */
@@ -99,7 +99,7 @@ import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
 // https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aopen+milestone%3A3.13.0
-const VERSION = '3.13.0-beta.1-20250422-2135'
+const VERSION = '3.13.0-beta.1-20250423-2002'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
