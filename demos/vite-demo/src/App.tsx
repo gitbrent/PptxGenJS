@@ -1,9 +1,12 @@
-import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
+// NOTE: previous {create-react-app} is webpack-based and will use package.json `module: "dist/pptxgen.es.js"` value
+// NOTE: this Vite+React demo is using `main: "dist/pptxgen.cjs.js"` value, so we hard-code below to TEST
+/* // @ts-expect-error (manually import the es module for TESTING!) */
+//import pptxgen from "pptxgenjs/dist/pptxgen.cjs.js";
+import pptxgen from "pptxgenjs";
 import { testMainMethods, testTableMethod } from "./tstest/Test";
 import { demoCode } from "./enums";
 import logo from "./assets/logo.png";
-import './scss/styles.scss'
-
+import './scss/styles.scss';
 
 function App() {
 	function runDemo() {
@@ -105,7 +108,7 @@ function App() {
 				<div className="card-body">
 					<h5 className="text-info">Demo Code (.tsx)</h5>
 					<pre className="bg-black mt-3">
-						<code className="language-javascript">{demoCode}</code>
+						<code className="language-javascript" style={{ fontSize: "0.75rem" }}>{demoCode}</code>
 					</pre>
 					<table id="html2ppt" className="table table-dark d-none">
 						<thead className="table-dark">

@@ -4,7 +4,7 @@ let pptx = new pptxgen();
 let slide = pptx.addSlide();
 
 slide.addText(
-  "React Demo!",
+  "demo using pptxgenjs library as a module",
   { x:1, y:0.5, w:'80%', h:1, fontSize:36, align:'center', fill:{ color:'D3E3F3' }, color:'008899' }
 );
 

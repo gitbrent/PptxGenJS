@@ -6,6 +6,7 @@ import pptxgen from "pptxgenjs";
 
 export function testMainMethods() {
 	const pptx = new pptxgen();
+	console.log(`pptx.version: ${pptx.version}`);
 
 	// PPTX Method 1:
 	//pptx.layout = "LAYOUT_WIDE";
