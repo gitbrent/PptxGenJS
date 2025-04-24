@@ -46,8 +46,7 @@ Design custom slides, charts, images, tables, and templates programmatically - n
 
 ### HTML to PowerPoint Magic
 
-- Convert any HTML `<table>` to one or more slides with a single line of code
-  → [Explore the HTML-to-PPTX feature](#html-to-powerpoint-feature)
+- Convert any HTML `<table>` to one or more slides with a single line of code → [Explore the HTML-to-PPTX feature](#html-to-powerpoint-magic)
 
 ## 🌐 Live Demos
 
@@ -66,6 +65,9 @@ Choose your preferred method to install **PptxGenJS**:
 
 ```bash
 npm install pptxgenjs
+```
+
+```bash
 yarn add pptxgenjs
 ```
 
@@ -81,7 +83,7 @@ Use the bundled or minified version via [jsDelivr](https://www.jsdelivr.com/pack
 
 📁 Advanced: Separate Files, Direct Download
 
-[Download Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
+Download from GitHub: [Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
 ```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>
@@ -175,9 +177,9 @@ Full documentation and code examples are available
 - [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
 - [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
 
-### HTML-to-PowerPoint Feature
+## 🧙‍♂️ HTML-to-PowerPoint Magic
 
-Easily convert HTML tables to PowerPoint presentations in a single call.
+Convert any HTML `<table>` into fully formatted PowerPoint slides - automatically and effortlessly.
 
 ```javascript
 let pptx = new PptxGenJS();
@@ -185,9 +187,13 @@ pptx.tableToSlides("tableElementId");
 pptx.writeFile({ fileName: "html2pptx-demo.pptx" });
 ```
 
-Learn more:
+Perfect for transforming:
 
-- [HTML-to-PowerPoint Docs/Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
+- Dynamic dashboards and data reports
+- Exportable grids in web apps
+- Tabular content from CMS or BI tools
+
+[View Full Docs & Live Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
 
 ## 🔗 Library Ports
 
