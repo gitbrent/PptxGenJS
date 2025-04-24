@@ -23,8 +23,7 @@
     "start": "gulp",
     "ship": "gulp ship",
     "defs": "gulp reactTestDefs",
-    "watch": "rollup -cw",
-    "doctoc": "./node_modules/doctoc/doctoc.js README.md"
+    "watch": "rollup -cw"
   },
   "browser": {
     "express": false,
@@ -47,7 +46,6 @@
     "@stylistic/eslint-plugin": "^4.2.0",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
-    "doctoc": "^2.2.1",
     "eslint": "^9.25.1",
     "express": "^5.1.0",
     "gulp": "^5.0.0",
