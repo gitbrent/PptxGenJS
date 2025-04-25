@@ -606,6 +606,7 @@ export default class PptxGenJS implements IPresentationProps {
 
 		// STEP 2: Normalise the user arguments
 		if (typeof props === 'string') {
+			// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 			console.warn('[WARNING] writeFile(string) is deprecated - pass { fileName } instead.')
 			props = { fileName: props }
 		}
@@ -628,36 +629,6 @@ export default class PptxGenJS implements IPresentationProps {
 		await this.writeFileToBrowser(fileName, data as Blob)
 		return fileName
 	}
-	/*
-	async writeFile_OLD(props?: WriteFileProps | string): Promise<string> {
-		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
-		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
-		const propsExpName = typeof props === 'object' && props?.fileName ? props.fileName : typeof props === 'string' ? props : ''
-		const propsCompress = typeof props === 'object' && props?.compression ? props.compression : false
-		const fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx'
-
-		return await this.exportPresentation({
-			compression: propsCompress,
-			outputType: fs ? 'nodebuffer' : null,
-		}).then(async content => {
-			if (fs) {
-				// Node: Output
-				return await new Promise<string>((resolve, reject) => {
-					fs.writeFile(fileName, content, err => {
-						if (err) {
-							reject(err)
-						} else {
-							resolve(fileName)
-						}
-					})
-				})
-			} else {
-				// Browser: Output blob as app/ms-pptx
-				return await this.writeFileToBrowser(fileName, content as Blob)
-			}
-		})
-	}*/
 
 	// PRESENTATION METHODS
 
