@@ -79,7 +79,7 @@ Use the bundled or minified version via [jsDelivr](https://www.jsdelivr.com/pack
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js"></script>
 ```
 
-> 💡 Includes theh sole dependency (JSZip) in one file.
+> Includes the sole dependency (JSZip) in one file.
 
 📁 Advanced: Separate Files, Direct Download
 
@@ -103,7 +103,6 @@ PptxGenJS works seamlessly in **modern web and Node environments**, thanks to du
 - **Serverless / Edge Functions** – use in AWS Lambda, Vercel, Cloudflare Workers, etc.
 
 > _Vite, Webpack, and modern bundlers automatically select the right build via the `exports` field in `package.json`._
-> _Note: The library dropped `main` and `module` fields in favor of modern `exports` support as of version **3.13.0**._
 
 ### Builds Provided
 
@@ -206,7 +205,7 @@ Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/) that is alre
 Sometimes implementing a new library can be a difficult task and the slightest mistake will keep something from working. We've all been there!
 
 If you are having issues getting a presentation to generate, check out the code in the `demos` directory. There
-are demos for both client browsers, node and react that contain working examples of every available library feature.
+are demos for browser, node and, react that contain working examples of every available library feature.
 
 - Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
 - [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50). If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `pptxgenjs`.
