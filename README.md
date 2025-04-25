@@ -34,7 +34,7 @@ Design custom slides, charts, images, tables, and templates programmatically - n
 
 ### Simple & Powerful
 
-- Ridiculously easy to use - get started with a single function
+- Ridiculously easy to use - create a presentation in 4 lines of code
 - Full **TypeScript definitions** for autocomplete and inline documentation
 - Includes **75+ demo slides** covering every feature and usage pattern
 
@@ -53,9 +53,9 @@ Design custom slides, charts, images, tables, and templates programmatically - n
 Try PptxGenJS right in your browser - no setup required.
 
 - [Basic Slide Demo](https://gitbrent.github.io/PptxGenJS/demos/) - Build a basic presentation in seconds
-- [Full Feature Showcase](https://gitbrent.github.io/PptxGenJS/demo/browser/index.html) - Explore every available feature: chart, shape, export option, slide masters, and more
+- [Full Feature Showcase](https://gitbrent.github.io/PptxGenJS/demo/browser/index.html) - Explore every available feature
 
-> 💡 Perfect for testing compatibility or learning by example — all demos run 100% in the browser.
+> Perfect for testing compatibility or learning by example - all demos run 100% in the browser.
 
 ## 📦 Installation
 
