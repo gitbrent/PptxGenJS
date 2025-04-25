@@ -99,7 +99,7 @@ import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
 // https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aopen+milestone%3A3.13.0
-const VERSION = '3.13.0-beta.1-20250423-2002'
+const VERSION = '3.13.0-beta.2-20250424-2010'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -595,11 +595,41 @@ export default class PptxGenJS implements IPresentationProps {
 	}
 
 	/**
-	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
+	 * Export the current Presentation.
+	 * Write the generated presentation to disk (Node) or trigger a download (browser).
 	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
 	async writeFile(props?: WriteFileProps | string): Promise<string> {
+		// STEP 1: Figure out where we are running
+		const isNode = typeof process !== 'undefined' && !!process.versions?.node && process.release?.name === 'node'
+
+		// STEP 2: Normalise the user arguments
+		if (typeof props === 'string') {
+			console.warn('[WARNING] writeFile(string) is deprecated - pass { fileName } instead.')
+			props = { fileName: props }
+		}
+		const { fileName: rawName = 'Presentation.pptx', compression = false } = props as WriteFileProps
+		const fileName = rawName.toLowerCase().endsWith('.pptx') ? rawName : `${rawName}.pptx`
+
+		// STEP 3: Get the binary/Blob from exportPresentation()
+		const outputType = isNode ? ('nodebuffer' as const) : null
+		const data = await this.exportPresentation({ compression, outputType })
+
+		// STEP 4: Write the file out
+		if (isNode) {
+			// Dynamically import to avoid bundling fs in the browser build
+			const { writeFile } = await import('fs/promises')
+			await writeFile(fileName, data as Buffer)
+			return fileName
+		}
+
+		// Browser branch - push a download
+		await this.writeFileToBrowser(fileName, data as Blob)
+		return fileName
+	}
+	/*
+	async writeFile_OLD(props?: WriteFileProps | string): Promise<string> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
@@ -627,7 +657,7 @@ export default class PptxGenJS implements IPresentationProps {
 				return await this.writeFileToBrowser(fileName, content as Blob)
 			}
 		})
-	}
+	}*/
 
 	// PRESENTATION METHODS
 
