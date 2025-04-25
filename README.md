@@ -102,14 +102,14 @@ PptxGenJS works seamlessly in **modern web and Node environments**, thanks to du
 - **Browser (Vanilla JS)** – embed in web apps with direct download support
 - **Serverless / Edge Functions** – use in AWS Lambda, Vercel, Cloudflare Workers, etc.
 
-> 💡 _Vite, Webpack, and modern bundlers automatically select the right build via the `exports` field in `package.json`._
+> _Vite, Webpack, and modern bundlers automatically select the right build via the `exports` field in `package.json`._
 
 ### Builds Provided
 
 - **CommonJS**: [`dist/pptxgen.cjs.js`](./dist/pptxgen.cjs.js)
 - **ES Module**: [`dist/pptxgen.es.js`](./dist/pptxgen.es.js)
 
-_The library dropped `main` and `module` fields in favor of modern `exports` support as of version **3.13.0**._
+> _The library dropped `main` and `module` fields in favor of modern `exports` support as of version **3.13.0**._
 
 ## 📖 Documentation
 
@@ -177,7 +177,7 @@ Full documentation and code examples are available
 - [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
 - [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
 
-## 🧙‍♂️ HTML-to-PowerPoint Magic
+## 🌟 HTML-to-PowerPoint Magic
 
 Convert any HTML `<table>` into fully formatted PowerPoint slides - automatically and effortlessly.
 
