@@ -4,7 +4,7 @@
  */
 
 // LIBRARY
-export const TESTMODE = typeof window !== "undefined" && window.location && window.location.href.toLowerCase().indexOf("http://localhost:8000/") > -1;
+export const TESTMODE = typeof window !== "undefined" && window.location && window.location.href.toLowerCase().indexOf("http://localhost") > -1;
 export const COMPRESS = true; // TEST: `compression` write prop
 
 // CONST
