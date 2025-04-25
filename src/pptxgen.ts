@@ -619,7 +619,7 @@ export default class PptxGenJS implements IPresentationProps {
 		// STEP 4: Write the file out
 		if (isNode) {
 			// Dynamically import to avoid bundling fs in the browser build
-			const { writeFile } = await import('fs/promises')
+			const { writeFile } = await import('node:fs/promises')
 			await writeFile(fileName, data as Buffer)
 			return fileName
 		}
