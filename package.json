@@ -9,9 +9,9 @@
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
   "exports": {
+    "types": "./types/index.d.ts",
     "import": "./dist/pptxgen.es.js",
-    "require": "./dist/pptxgen.cjs.js",
-    "types": "./types/index.d.ts"
+    "require": "./dist/pptxgen.cjs.js"
   },
   "files": [
     "dist",

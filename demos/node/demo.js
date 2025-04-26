@@ -62,6 +62,16 @@ if (process.argv.length > 2) {
 	slide.addText("Node\nReady", {
 		x: 7.2, y: 2.0, w: 2.5, h: 2.3, fontSize: 28, color: "FFFFFF", align: "center", valign: "middle", fontFace: "Courier New"
 	});
+	// Image Test: URL
+	slide.addImage({
+		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg",
+		x: 0.25, y: 0.25, w: 2.0, h: 1.5
+	});
+	// Image Test: Local
+	slide.addImage({
+		path: "../common/images/cc_logo.jpg",
+		x: 7.75, y: 0.25, w: 2.0, h: 1.5
+	});
 
 	// EXAMPLE 1: Saves output file to the local directory where this process is running
 	pptx.writeFile({ fileName: exportName })

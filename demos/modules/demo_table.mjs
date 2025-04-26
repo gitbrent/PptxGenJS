@@ -8,15 +8,16 @@
  */
 
 import {
-	TABLE_NAMES_F,
-	DEMO_TITLE_OPTS,
-	DEMO_TITLE_TEXT,
-	DEMO_TITLE_TEXTBK,
 	BASE_OPTS_SUBTITLE,
 	BASE_TABLE_OPTS,
 	BASE_TEXT_OPTS_L,
 	BASE_TEXT_OPTS_R,
+	DEMO_TITLE_OPTS,
+	DEMO_TITLE_TEXT,
+	DEMO_TITLE_TEXTBK,
 	LOREM_IPSUM,
+	TABLE_NAMES_F,
+	TESTMODE
 } from "./enums.mjs";
 import { TABLE_AUTO_PAGE_TEST } from "./enums_tables.mjs";
 
@@ -34,7 +35,7 @@ export function genSlides_Table(pptx) {
 	genSlide08(pptx);
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
-	if (window.location.href.indexOf("localhost") > -1) {
+	if (TESTMODE) {
 		pptx.addSection({ title: "Tables: QA" });
 		genSlide10(pptx);
 	}

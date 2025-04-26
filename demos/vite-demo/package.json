@@ -1,11 +1,11 @@
 {
   "name": "vite-demo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "vite --force",
+    "build": "tsc -b && vite build --force",
     "lint": "eslint .",
     "preview": "vite preview"
   },
