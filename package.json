@@ -11,9 +11,7 @@
   "exports": {
     "types": "./types/index.d.ts",
     "import": "./dist/pptxgen.es.js",
-    "require": "./dist/pptxgen.cjs.js",
-    "browser": "./dist/pptxgen.bundle.js",
-    "default": "./dist/pptxgen.es.js"
+    "require": "./dist/pptxgen.cjs.js"
   },
   "files": [
     "dist",
