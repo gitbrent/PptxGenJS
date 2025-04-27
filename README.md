@@ -11,8 +11,16 @@
 
 [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs) [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs) [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs) [![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
 
+# 📣 Major New Release Coming Soon 📣
+
+> (April 26, 2025)
+
+- [4.0.0-beta](https://www.npmjs.com/package/pptxgenjs/v/4.0.0-beta.0)
+- [Changes](https://github.com/gitbrent/PptxGenJS/milestone/40)
+
 # Table of Contents
 
+- [📣 Major New Release Coming Soon 📣](#-major-new-release-coming-soon-)
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
