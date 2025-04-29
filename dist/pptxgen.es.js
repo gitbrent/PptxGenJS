@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.0-beta.0 @ 2025-04-27T01:45:12.538Z */
+/* PptxGenJS 4.0.0-beta.1 @ 2025-04-29T01:29:01.213Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -6760,7 +6760,7 @@ function makeXmlViewProps() {
  *  SOFTWARE.
  */
 // https://github.com/gitbrent/PptxGenJS/milestone/40
-const VERSION = '4.0.0-beta.0-20250426-2040';
+const VERSION = '4.0.0-beta.1-20250428-2028';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];
