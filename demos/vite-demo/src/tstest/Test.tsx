@@ -396,7 +396,8 @@ function testMethod_Media(pptx: pptxgen) {
 		type: "video",
 		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi",
 	});
-	slide.addMedia({ x: 9.4, y: 4.0, w: 4.5, h: 2.5, type: "online", link: "https://www.youtube.com/embed/g36-noRtKR4" });
+	// TESTING: this causes content warning on open, so dont leave in for release
+	//slide.addMedia({ x: 9.4, y: 4.0, w: 4.5, h: 2.5, type: "online", link: "https://www.youtube.com/embed/g36-noRtKR4" });
 }
 function testMethod_Shape(pptx: pptxgen) {
 	const slide = pptx.addSlide();
