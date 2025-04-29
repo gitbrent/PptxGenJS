@@ -99,7 +99,7 @@ import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
 // https://github.com/gitbrent/PptxGenJS/milestone/40
-const VERSION = '4.0.0-beta.0-20250426-2040'
+const VERSION = '4.0.0-beta.1-20250428-2028'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters

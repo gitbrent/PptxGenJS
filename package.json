@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "4.0.0-beta.0",
+  "version": "4.0.0-beta.1",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -13,6 +13,8 @@
     "import": "./dist/pptxgen.es.js",
     "require": "./dist/pptxgen.cjs.js"
   },
+  "main": "dist/pptxgen.cjs.js",
+  "module": "dist/pptxgen.es.js",
   "files": [
     "dist",
     "types"
@@ -30,6 +32,9 @@
     "fs": false,
     "https": false,
     "image-size": false,
+    "node:fs": false,
+    "node:fs/promises": false,
+    "node:https": false,
     "os": false,
     "path": false
   },
