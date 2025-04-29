@@ -227,10 +227,46 @@ const BTC_LBLS = [
 	"May-2022",
 ];
 
+// FEDIVERSE MAU
+const dataPoints = [
+	{ date: "2019-01", users: 659873 },
+	{ date: "2019-11", users: 743112 },
+	{ date: "2020-03", users: 1523817 },
+	{ date: "2020-07", users: 1789023 },
+	{ date: "2020-11", users: 1987450 },
+	{ date: "2021-05", users: 2543912 },
+	{ date: "2021-11", users: 3128756 },
+	{ date: "2022-05", users: 4178263 },
+	{ date: "2022-11", users: 4983427 },
+	{ date: "2023-02", users: 6874312 },
+	{ date: "2023-05", users: 8990458 },
+	{ date: "2023-08", users: 11247839 },
+	{ date: "2023-11", users: 12987324 },
+	{ date: "2024-02", users: 14058732 },
+	{ date: "2024-06", users: 13576218 },
+	{ date: "2024-09", users: 10987413 },
+	{ date: "2024-12", users: 13158749 },
+	{ date: "2025-03", users: 14538124 }
+];
+
+// Transform the data into Chart format
+const chartData = [
+	{
+		name: "Total Users by Month",
+		labels: dataPoints.map(item => item.date),
+		values: dataPoints.map(item => item.users)
+	}
+];
+
 // WIP: https://www.globalpropertyguide.com/home-price-trends
 
 // EXPORTS
 export const CHART_DATA = {
+	Fedi_MAU: {
+		sourceUrl: "https://fediverse.observer/",
+		chartTitle: "Fediverse Statistics",
+		chartData: chartData
+	},
 	EvSales_Vol: {
 		sourceUrl: "https://www.iea.org/data-and-statistics/charts/global-sales-and-sales-market-share-of-electric-cars-2010-2021",
 		chartTitle: "Electric Vehicle Sales and Market Share",
