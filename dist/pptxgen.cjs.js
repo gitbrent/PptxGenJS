@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.0 @ 2023-05-17T03:15:58.384Z */
+/* PptxGenJS 3.13.0-beta.2 @ 2025-04-30T11:28:20.516Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -44,8 +44,8 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -80,6 +80,11 @@ function __spreadArray(to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 }
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 /**
  * PptxGenJS Enums
@@ -3146,7 +3151,11 @@ function createExcelWorksheet(chartObject, zip) {
                                     });
                                 }
                                 else {
-                                    strTableXml_1 += "<table xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" id=\"1\" name=\"Table1\" displayName=\"Table1\" ref=\"A1:".concat(getExcelColName(data.length + data[0].labels.length)).concat(data[0].labels[0].length + 1, "'\" totalsRowShown=\"0\">");
+                                    strTableXml_1 +=
+                                        '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
+                                            getExcelColName(data.length + data[0].labels.length) +
+                                            (data[0].labels[0].length + 1) +
+                                            '" totalsRowShown="0">';
                                     strTableXml_1 += "<tableColumns count=\"".concat(data.length + data[0].labels.length, "\">");
                                     data[0].labels.forEach(function (_labelsGroup, idx) {
                                         strTableXml_1 += "<tableColumn id=\"".concat(idx + 1, "\" name=\"Column").concat(idx + 1, "\"/>");
