@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "3.13.0-beta.1",
+  "version": "3.13.0-beta.2",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -64,7 +64,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gitbrent/PptxGenJS.git"
+    "url": "git+https://github.com/Juliussssssss/PptxGenJS"
   },
   "keywords": [
     "html-to-powerpoint",
