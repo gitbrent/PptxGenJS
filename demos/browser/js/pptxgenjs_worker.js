@@ -26,18 +26,23 @@ self.onmessage = async function(event) {
 			let pptx = new PptxGenJS();
 			let slide = pptx.addSlide();
 			slide.addText(
-				'Hello from Web Worker!',
+				'👷 Hello from Web Worker!',
 				{ x: 1, y: 1, w: 8, h: 1, fontSize: 24, fill: { color: 'FFFF00' } }
 			);
 			slide.addText(
 				`Generated at: ${new Date().toLocaleString()}`,
-				{ x: 1, y: 2, w: 8, h: 0.5, fontSize: 14 }
+				{ x: 1, y: 2, w: 4, h: 0.5, fontSize: 14 }
+			);
+			slide.addText(
+				`Library version: ${pptx.version}`,
+				{ x: 5, y: 2, w: 4, h: 0.5, fontSize: 14 }
 			);
 			// Test with an image from a URL as Issue #1354 called this out)
 			slide.addImage({
-				path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg",
-				x: 0.25, y: 3.9, w: 2.0, h: 1.5
+				path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/krita_square.jpg",
+				x: 1.0, y: 3.1, w: 2.0, h: 2.0
 			});
+			slide.addText("<-- test image via `path` URL", { x: 3.1, y: 4.7, w: 4, h: 0.5, fontSize: 14, color: '0000FF' });
 
 			// Generate the presentation as a Blob or ArrayBuffer to send back
 			// Blob is often easiest for saving/downloading in the main thread
