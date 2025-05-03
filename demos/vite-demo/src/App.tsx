@@ -102,7 +102,7 @@ function App() {
 				<div className="card-header">
 					<h1 className="display-4">Module Demo</h1>
 					<div className="lead text-primary-emphasis">
-						Sample Vite+React+TS application demonstrating the PptxGenJS library as a module.
+						Sample React+TypeScript+Vite application demonstrating the PptxGenJS library as a module.
 					</div>
 				</div>
 				<div className="card-body">

@@ -1,7 +1,7 @@
 /**
  * Test TypeScript Defs file
  */
-import { IMGBASE64, STARLABS_LOGO_SM } from "../enums";
+import { SVG_MASTODON_LOGO_BASE64, STARLABS_LOGO_SM } from "../enums";
 import pptxgen from "pptxgenjs";
 
 export function testMainMethods() {
@@ -37,7 +37,7 @@ export function testMainMethods() {
 		slideNumber: { x: 0.6, y: 7.0, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: pptx.AlignH.center },
 		objects: [
 			{ rect: { x: 0.0, y: "90%", w: "100%", h: 0.75, fill: { color: "003b75" } } },
-			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } },
+			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: SVG_MASTODON_LOGO_BASE64 } },
 			{
 				text: {
 					text: "S.T.A.R. Laboratories - Confidential",
@@ -76,16 +76,27 @@ function basicDemoSlide(pptx: pptxgen) {
 	const slide = pptx.addSlide({ sectionTitle: "TypeScript", masterName: "MASTER_SLIDE" });
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
 
+	slide.addText(`PpptxGenJS version: ${pptx.version}`, {
+		x: 0,
+		y: 5.3,
+		w: "100%",
+		h: 0.33,
+		fontSize: 10,
+		align: "center",
+		fill: { color: "E1E1E1" }, //{ color: pptx.SchemeColor.background2 },
+		color: "A1A1A1", // pptx.SchemeColor.accent3,
+	});
+
 	const opts: pptxgen.TextPropsOptions = {
 		x: 0,
 		y: 1,
 		w: "100%",
-		h: 1.5,
+		h: 2.0,
 		fill: { color: pptx.SchemeColor.background1 },
 		align: "center",
-		fontSize: 36,
+		fontSize: 48,
 	};
-	slide.addText("React Demo!", opts);
+	slide.addText("React+TypeScript Demo!", opts);
 }
 
 function testMethod_Chart(pptx: pptxgen) {
@@ -373,24 +384,27 @@ function testMethod_Media(pptx: pptxgen) {
 	const slide = pptx.addSlide();
 
 	// 7: Image
-	slide.addImage({ path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg", x: 1, y: 1, w: 3, h: 1 });
-	slide.addImage({ data: IMGBASE64, x: 1, y: 1, w: 3, h: 1 });
+	slide.addImage({
+		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/fediverse_tree.jpg",
+		x: 0.5, y: 0.5, w: 4.0, h: 4.0
+	});
+	slide.addImage({ data: SVG_MASTODON_LOGO_BASE64, x: 9.5, y: 4, w: 3, h: 3 });
 
 	slide.addImage({
-		data: IMGBASE64,
+		data: SVG_MASTODON_LOGO_BASE64,
 		sizing: {
 			type: "contain",
-			w: "90%",
-			h: "75%",
-			x: "5%",
-			y: "20%",
+			w: "25%",
+			h: "25%",
 		},
+		x: 5.0,
+		y: 1.5,
 	});
 
 	// 8. Media
 	slide.addMedia({
-		x: 5.5,
-		y: 4.0,
+		x: 9.5,
+		y: 0.6,
 		w: 3.0,
 		h: 2.25,
 		type: "video",
