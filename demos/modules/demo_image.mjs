@@ -14,8 +14,8 @@
  * - Image source: either `data` or `path` is required
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS, BKGD_LTGRAY, COLOR_BLUE, CODE_STYLE, TITLE_STYLE } from "./enums.mjs";
-import { FEDIVERSE_TREE, HYPERLINK_SVG, LOGO_STARLABS, SVG_MASTODON_LOGO_BASE64, UNITE_PNG } from "./media.mjs";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS, BKGD_LTGRAY, BKGD_LRGRAY, COLOR_BLUE, CODE_STYLE, TITLE_STYLE } from "./enums.mjs";
+import { FEDIVERSE_TREE, HYPERLINK_SVG, KRITA_SPLASHSCREEN, SVG_MASTODON_LOGO_BASE64, UNITE_PNG } from "./media.mjs";
 
 export function genSlides_Image(pptx) {
 	pptx.addSection({ title: "Images" });
@@ -172,7 +172,7 @@ function genSlide01(pptx) {
 			valign: "top",
 			align: "center",
 		});
-		slide.addImage({ path: IMAGE_PATHS.pixelfed_logo_svg.path, x: 9.65, y: 3.81, w: 2.0, h: 2.0 }); // TEST: `path`
+		slide.addImage({ path: IMAGE_PATHS.pixelfed_logo_svg.path, x: 9.25, y: 3.43, w: 2.33, h: 2.33 }); // TEST: `path`
 		slide.addImage({ data: SVG_MASTODON_LOGO_BASE64, x: 10.61, y: 4.77, w: 2.0, h: 2.0, transparency: 50 }); // TEST: `data`
 	}
 
@@ -248,27 +248,28 @@ function genSlide03(pptx) {
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: COLOR_BLUE };
 
 	// TOP: 1
-	slide.addText("Sizing: Orig `w:6, h:2.7`", { x: 0.5, y: 0.6, w: 3.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ data: LOGO_STARLABS, x: 0.5, y: 1.1, w: 6.0, h: 2.69 });
+	slide.addText("Sizing: Orig `w:5, h:2.8`", { x: 0.5, y: 0.6, w: 3.0, h: 0.3, color: COLOR_BLUE });
+	slide.addImage({ data: KRITA_SPLASHSCREEN, x: 0.6, y: 1.1, w: 5.0, h: 2.84 });
 
 	// TOP: 2
 	slide.addText("Sizing: `contain, w:3`", { x: 0.6, y: 4.25, w: 3.0, h: 0.3, color: COLOR_BLUE });
-	slide.addShape(pptx.shapes.RECTANGLE, { x: 0.6, y: 4.65, w: 3, h: 2, fill: { color: "F1F1F1" } });
-	slide.addImage({ data: LOGO_STARLABS, x: 0.6, y: 4.65, w: 5.0, h: 1.5, sizing: { type: "contain", w: 3, h: 2 } });
+	slide.addShape(pptx.shapes.RECTANGLE, { x: 0.6, y: 4.65, w: 3, h: 2, fill: { color: BKGD_LRGRAY } });
+	slide.addImage({ data: KRITA_SPLASHSCREEN, x: 0.6, y: 4.65, w: 5.0, h: 1.5, sizing: { type: "contain", w: 3, h: 2 } });
 
 	// TOP: 3
 	slide.addText("Sizing: `cover, w:3, h:2`", { x: 5.3, y: 4.25, w: 3.0, h: 0.3, color: COLOR_BLUE });
-	slide.addShape(pptx.shapes.RECTANGLE, { x: 5.3, y: 4.65, w: 3, h: 2, fill: { color: "F1F1F1" } });
-	slide.addImage({ data: LOGO_STARLABS, x: 5.3, y: 4.65, w: 3.0, h: 1.5, sizing: { type: "cover", w: 3, h: 2 } });
+	slide.addShape(pptx.shapes.RECTANGLE, { x: 5.3, y: 4.65, w: 3, h: 2, fill: { color: BKGD_LRGRAY } });
+	slide.addImage({ data: KRITA_SPLASHSCREEN, x: 5.3, y: 4.65, w: 3.0, h: 1.5, sizing: { type: "cover", w: 3, h: 2 } });
 
 	// TOP: 4
 	slide.addText("Sizing: `crop, w:3, h:2`", { x: 10.0, y: 4.25, w: 3.0, h: 0.3, color: COLOR_BLUE });
-	slide.addShape(pptx.shapes.RECTANGLE, { x: 10, y: 4.65, w: 3, h: 1.5, fill: { color: "F1F1F1" } });
-	slide.addImage({ data: LOGO_STARLABS, x: 10.0, y: 4.65, w: 5.0, h: 1.5, sizing: { type: "crop", w: 3, h: 1.5, x: 0.5, y: 0.5 } });
+	slide.addShape(pptx.shapes.RECTANGLE, { x: 10, y: 4.65, w: 3, h: 1.5, fill: { color: BKGD_LRGRAY } });
+	slide.addImage({ data: KRITA_SPLASHSCREEN, x: 10.0, y: 4.65, w: 5.0, h: 1.5, sizing: { type: "crop", w: 3, h: 1.5, x: 0.5, y: 0.5 } });
 
 	// TOP-RIGHT:
 	slide.addText("Rounding: `rounding:true`", { x: 10.0, y: 0.6, w: 3.0, h: 0.3, color: COLOR_BLUE });
-	slide.addImage({ path: IMAGE_PATHS.ccLogo.path, x: 9.9, y: 1.1, w: 2.5, h: 2.5, rounding: true });
+	slide.addShape(pptx.shapes.RECTANGLE, { x: 10, y: 1.03, w: 3.0, h: 3.0, fill: { color: BKGD_LRGRAY } });
+	slide.addImage({ path: IMAGE_PATHS.kritaSquare.path, x: 10.25, y: 1.28, w: 2.5, h: 2.5, rounding: true });
 }
 
 /**
