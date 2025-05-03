@@ -15,5 +15,6 @@ export default defineConfig({
 				//api: 'modern',
 			},
 		}
-	}
+	},
+	base: '/PptxGenJS/'
 })
