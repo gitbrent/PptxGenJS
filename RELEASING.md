@@ -22,11 +22,11 @@
 
 ## ⚠️ Run Tests Before Release
 
-### Run Standard Test Suite
+### ⚠️ Run Standard Test Suite
 
 See [TESTING.md](./TESTING.md) for complete test instructions.
 
-### Capture Testing Results
+### ⚠️ Capture Testing Results
 
 | Dist File         | Test       | Tested Via             | Result |
 | ----------------- | ---------- | ---------------------- | ------ |
