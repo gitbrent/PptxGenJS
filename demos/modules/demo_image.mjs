@@ -15,7 +15,7 @@
  */
 
 import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS, BKGD_LTGRAY, COLOR_BLUE, CODE_STYLE, TITLE_STYLE } from "./enums.mjs";
-import { HYPERLINK_SVG, LOGO_STARLABS, SVG_BASE64, UNITE_PNG } from "./media.mjs";
+import { FEDIVERSE_TREE, HYPERLINK_SVG, LOGO_STARLABS, SVG_MASTODON_LOGO_BASE64, UNITE_PNG } from "./media.mjs";
 
 export function genSlides_Image(pptx) {
 	pptx.addSection({ title: "Images" });
@@ -138,7 +138,8 @@ function genSlide01(pptx) {
 			valign: "top",
 			align: "center",
 		});
-		slide.addImage({ path: IMAGE_PATHS.ccCopyRemix.path, x: 0.77, y: 3.8, w: 2.97, h: 2.9 });
+		//slide.addImage({ path: IMAGE_PATHS.fediverse_tree.path, x: 0.72, y: 3.81, w: 3.06, h: 3.06 });
+		slide.addImage({ data: FEDIVERSE_TREE, x: 0.72, y: 3.81, w: 3.06, h: 3.06 });
 
 		// BOTTOM-CENTER:
 		// peace image via: https://www.vecteezy.com/vector-art/242684-peace-vector-design
@@ -171,8 +172,8 @@ function genSlide01(pptx) {
 			valign: "top",
 			align: "center",
 		});
-		slide.addImage({ path: IMAGE_PATHS.wikimedia_svg.path, x: 9.65, y: 3.81, w: 2.0, h: 2.0 }); // TEST: `path`
-		slide.addImage({ data: SVG_BASE64, x: 10.61, y: 4.77, w: 2.0, h: 2.0, transparency: 50 }); // TEST: `data`
+		slide.addImage({ path: IMAGE_PATHS.pixelfed_logo_svg.path, x: 9.65, y: 3.81, w: 2.0, h: 2.0 }); // TEST: `path`
+		slide.addImage({ data: SVG_MASTODON_LOGO_BASE64, x: 10.61, y: 4.77, w: 2.0, h: 2.0, transparency: 50 }); // TEST: `data`
 	}
 
 	// TEST: Ensure framework corrects for missing all header

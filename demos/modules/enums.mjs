@@ -48,6 +48,7 @@ export const DEMO_TITLE_OPTS = { fontSize: 13, color: "9F9F9F" };
 export const IMAGE_PATHS = {
 	fediverse_tree: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/fediverse_tree.jpg" },
 	fediverse_actpub: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/fediverse_actpub.png" },
+	pixelfed_logo_svg: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/pixelfed_icon.svg" },
 	peace4: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/peace4.png" },
 	starlabsBkgd: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_bkgd.jpg" },
 	starlabsLogo: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_logo.png" },
