@@ -20,7 +20,7 @@ Config Notes
 
 ---
 
-## 🔍 Browser Tests
+## 🌐 Browser Tests
 
 **Purpose:** Validate browser compatibility using the standalone bundle as script.
 
@@ -46,7 +46,7 @@ node browser_server.mjs
 
 ---
 
-## 🧰 Node.js Tests
+## 📦 Node.js Tests
 
 **Purpose:** Validate functionality of CommonJS module in pure Node environments.
 
@@ -104,7 +104,7 @@ From your network:
 
 ---
 
-## 🏗 Build for gh-pages (Manual)
+## 🚀 Build for gh-pages (Manual)
 
 After confirming the above:
 
@@ -119,7 +119,7 @@ npm run build
 
 ---
 
-## ✅ Test Completion Checklist
+## 🏁 Test Completion Checklist
 
 | Dist File         | Test       | Tested Via             | Result |
 | ----------------- | ---------- | ---------------------- | ------ |
