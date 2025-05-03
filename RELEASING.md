@@ -20,7 +20,7 @@
 6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
 7. Open `dist/*.js` and check headers
 
-## ⚠️ Run Tests Before Release
+## 🧪 Run Tests Before Release
 
 ### ⚠️ Run Standard Test Suite
 
