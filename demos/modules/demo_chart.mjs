@@ -1803,14 +1803,14 @@ function genSlide19(pptx) {
 			{
 				showValAxisTitle: true,
 				valAxisTitle: "Cars Produced (m)",
-				valAxisMaxVal: 10,
+				valAxisMaxVal: 20,
 				valAxisTitleColor: "1982c4",
 				valAxisLabelColor: "1982c4",
 			},
 			{
 				showValAxisTitle: true,
 				valAxisTitle: "Global Market Share (%)",
-				valAxisMaxVal: 10,
+				valAxisMaxVal: 20,
 				valAxisTitleColor: "F38940",
 				valAxisLabelColor: "F38940",
 				valGridLine: { style: "none" },
