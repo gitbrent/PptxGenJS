@@ -112,7 +112,7 @@ After confirming the above:
 npm run build
 ```
 
-1. Copy the entire `build` folder from `demos/vite-demo/` to a safe location.
+1. Copy the entire `dist` folder from `demos/vite-demo/` to a safe location.
 2. Use this copy when updating the `gh-pages` branch after the release.
 
 > ⚠️ DO NOT use the "deploy" script displayed onscreen by Vite. Manual copying ensures full control over final content.
