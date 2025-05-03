@@ -3,7 +3,7 @@
 > This guide documents how to perform a PptxGenJS release.
 > Maintainers should follow this checklist before pushing to npm or GitHub.
 
-## Beta Releases
+## 📋 Beta Releases
 
 1. Update `package.json` version (ex: `4.1.0-beta.0`)
 2. Update `src/pptxgen.ts` version
@@ -20,7 +20,7 @@
 6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
 7. Open `dist/*.js` and check headers
 
-## Run Tests Before Release
+## ⚠️ Run Tests Before Release
 
 ### Run Standard Test Suite
 
@@ -38,30 +38,30 @@ See [TESTING.md](./TESTING.md) for complete test instructions.
 | pptxgen.bundle.js | Script     | Browser demo (desktop) | ✅?🟡    |
 | pptxgen.bundle.js | Script     | Browser demo (iOS)     | ✅?🟡    |
 
-## Release New Version
+## 🚌 Release New Version
 
-### Pre-Release Checklist
+### 🟡 Pre-Release Checklist
 
 1. Update: `demos/browser/index.html` head to use "RELEASE (CDN)"
 2. Check: Is `version` updated in package.json?
 3. Check: Is `version` updated in src/pptxgen.ts?
 4. Check: Is `types/index.d.ts` version in header updated?
 
-### Release: GitHub
+### 🟢 Release: GitHub
 
 1. Checkin all changes via GitHub Desktop
 2. Copy CHANGELOG entry and draft new release: [Releases](https://github.com/gitbrent/PptxGenJS/releases)
 3. Use "Version x.x.x" as title and "vX.X.X" as tag
 4. Go back to Releases page, double-check title/tag, release when ready
 
-### Release: NPM
+### 🟢 Release: NPM
 
 ```bash
 cd ~/GitHub/PptxGenJS
 npm publish
 ```
 
-## Post-Release Tasks
+## 🏁 Post-Release Tasks
 
 1. Test CDN links on README.md
 2. Load **gh-pages** branch
