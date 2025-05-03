@@ -33,10 +33,10 @@ See [TESTING.md](./TESTING.md) for complete test instructions.
 | pptxgen.es.js     | Webpack 4  | SPFx (v1.16.1) project | ✅?🟡    |
 | pptxgen.es.js     | Webpack 5  | SPFx (v1.19.1) project | ✅?🟡    |
 | pptxgen.es.js     | Rollup 4   | Vite (v6) demo         | ✅?🟡    |
-| pptxgen.es.js     | Webworkers | worker_test demo       | ✅?🟡    |
 | pptxgen.cjs.js    | Node/CJS   | Node demo              | ✅?🟡    |
 | pptxgen.bundle.js | Script     | Browser demo (desktop) | ✅?🟡    |
 | pptxgen.bundle.js | Script     | Browser demo (iOS)     | ✅?🟡    |
+| pptxgen.bundle.js | Web Worker | worker_test demo       | ✅?🟡    |
 
 ## 🚌 Release New Version
 
