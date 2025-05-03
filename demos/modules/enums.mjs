@@ -22,7 +22,7 @@ export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_W
 export const BKGD_LTGRAY = "F1F1F1";
 export const BKGD_LRGRAY = "E6E6E6";
 export const COLOR_BLUE = "0088CC";
-export const CODE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 6, fontSize: 10, color: '696969' };
+export const CODE_STYLE = { fill: { color: BKGD_LRGRAY }, margin: 6, fontSize: 10, color: '696969' };
 export const TITLE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 4, fontSize: 18, fontFace: "Segoe UI", color: COLOR_BLUE, valign: "top", align: "center" };
 
 // OPTIONS

@@ -285,13 +285,13 @@ function genSlide04(pptx) {
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: COLOR_BLUE };
 
 	// EXAMPLES
-	slide.addText("`rotate:45`", { ...{ x: 0.5, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
+	slide.addText("`rotate:45` ", { ...{ x: 0.50, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
 	slide.addText("`rotate:180`", { ...{ x: 4.66, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
 	slide.addText("`rotate:315`", { ...{ x: 8.82, y: 0.6, h: 0.4, w: 4.0 }, ...TITLE_STYLE });
 
-	slide.addImage({ path: IMAGE_PATHS.nycSubway.path, x: 0.78, y: 2.46, w: 4.3, h: 3, rotate: 45 });
-	slide.addImage({ path: IMAGE_PATHS.nycSubway.path, x: 4.52, y: 2.25, w: 4.3, h: 3, rotate: 180 });
-	slide.addImage({ path: IMAGE_PATHS.nycSubway.path, x: 8.25, y: 2.84, w: 4.3, h: 3, rotate: 315 });
+	slide.addImage({ path: IMAGE_PATHS.nycSubway.path, x: 0.78, y: 2.46, w: 4.5, h: 3, rotate: 45 });
+	slide.addImage({ path: IMAGE_PATHS.nycSubway.path, x: 4.42, y: 2.25, w: 4.5, h: 3, rotate: 180 });
+	slide.addImage({ path: IMAGE_PATHS.nycSubway.path, x: 8.25, y: 2.84, w: 4.5, h: 3, rotate: 315 });
 }
 
 /**
@@ -313,7 +313,7 @@ function genSlide05(pptx) {
 	slide.addText(
 		[{ text: JSON.stringify(shadow1, '', 2) }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 1.0, h: 1.0, w: 6 }, ...CODE_STYLE }
 	);
-	slide.addImage({ ...{ path: IMAGE_PATHS.nycSubway.path, x: 7.0, y: 0.6, h: 1.4, w: 2.31 }, ...shadow1 });
+	slide.addImage({ ...{ path: IMAGE_PATHS.nycSubway.path, x: 7.0, y: 0.6, h: 1.4, w: 2.11 }, ...shadow1 });
 
 	// type:inner
 	const shadow2 = { shadow: { type: 'inner', opacity: 0.5, blur: 20, color: '000000', offset: 20, angle: 320 } };
@@ -321,7 +321,7 @@ function genSlide05(pptx) {
 	slide.addText(
 		[{ text: JSON.stringify(shadow2, '', 2) }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 2.85, h: 1.7, w: 6 }, ...CODE_STYLE }
 	);
-	slide.addImage({ ...{ path: IMAGE_PATHS.nycSubway.path, x: 7.0, y: 2.45, h: 2.1, w: 3.47 }, ...shadow2 });
+	slide.addImage({ ...{ path: IMAGE_PATHS.nycSubway.path, x: 7.0, y: 2.45, h: 2.1, w: 3.13 }, ...shadow2 });
 
 	// type:outer
 	const shadow3 = { shadow: { type: 'outer', opacity: 0.35, blur: 20, color: '000000', offset: 20, angle: 320 } };
@@ -329,5 +329,5 @@ function genSlide05(pptx) {
 	slide.addText(
 		[{ text: JSON.stringify(shadow3, '', 2) }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 5.4, h: 1.7, w: 6 }, ...CODE_STYLE }
 	);
-	slide.addImage({ ...{ path: IMAGE_PATHS.nycSubway.path, x: 7.0, y: 5.0, h: 2.1, w: 3.47 }, ...shadow3 });
+	slide.addImage({ ...{ path: IMAGE_PATHS.nycSubway.path, x: 7.0, y: 5.0, h: 2.1, w: 3.13 }, ...shadow3 });
 }
