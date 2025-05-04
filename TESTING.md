@@ -40,7 +40,7 @@ node browser_server.mjs
 
 ### Web Worker API
 
-1. Open the [Webworker Demop Page](localhost:8000/browser/worker_test.html).
+1. Open the [Web Worker Demo Page](localhost:8000/browser/worker_test.html).
 2. Note: Use Chrome (Safari *will not work*)
 3. Run the test; verify result & library version
 
