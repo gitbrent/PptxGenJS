@@ -2,7 +2,7 @@
 
 ## Regular Node Demo
 
-### Usage
+### Regular Usage
 
 Generate a simple presentation.
 
@@ -16,7 +16,7 @@ Generate a presentation with all demo objects (like the browser demo).
 node demo.js All
 ```
 
-Generate a presentation with selected demo objects (e.g.: 'Table', 'Text', etc.).  
+Generate a presentation with selected demo objects (e.g.: 'Table', 'Text', etc.).
 (See `../common/demos.js` for all tests)
 
 ```bash
@@ -27,7 +27,7 @@ node demo.js Text
 
 The `demo_stream.js` file requires the `express` package to demonstrate streaming.
 
-### Usage
+### Stream Usage
 
 ```bash
 node demo_stream.js

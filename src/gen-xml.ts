@@ -229,7 +229,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 						const colspan = cell.options?.colspan
 						const rowspan = cell.options?.rowspan
 						if (colspan && colspan > 1) {
-							const vMergeCells = new Array(colspan - 1).fill(undefined).map(_ => {
+							const vMergeCells = new Array(colspan - 1).fill(undefined).map(() => {
 								return { _type: SLIDE_OBJECT_TYPES.tablecell, options: { rowspan }, _hmerge: true } as const
 							})
 							cells.splice(cIdx + 1, 0, ...vMergeCells)
@@ -282,7 +282,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 						}
 						let cellSpanAttrStr = Object.keys(cellSpanAttrs)
 							.map(k => [k, cellSpanAttrs[k]])
-							.filter(([_k, v]) => !!v)
+							.filter(([, v]) => !!v)
 							.map(([k, v]) => `${String(k)}="${String(v)}"`)
 							.join(' ')
 						if (cellSpanAttrStr) cellSpanAttrStr = ' ' + cellSpanAttrStr
@@ -1289,7 +1289,7 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			// FILTER RULE: Hyperlinks should not inherit `color` from main options (let PPT default to local color, eg: blue on MacOS)
-			Object.entries(opts).filter(([key, val]) => !(textObj.options.hyperlink && key === 'color')).forEach(([key, val]) => {
+			Object.entries(opts).filter(([key]) => !(textObj.options.hyperlink && key === 'color')).forEach(([key, val]) => {
 				// if (textObj.options.hyperlink && key === 'color') null
 				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
 				if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
@@ -1328,6 +1328,18 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 		// D: End paragraph
 		strSlideXml += '</a:p>'
 	})
+
+	// IMPORTANT: An empty txBody will cause "needs repair" error! Add <p> content if missing.
+	// [FIXED in v3.13.0]: This fixes issue with table auto-paging where some cells w/b empty on subsequent pages.
+	/*
+		<a:txBody>
+			<a:bodyPr/>
+			<a:lstStyle/>
+		</a:txBody>
+	*/
+	if (strSlideXml.indexOf('<a:p>') === -1) {
+		strSlideXml += '<a:p><a:endParaRPr/></a:p>'
+	}
 
 	// STEP 7: Close the textBody
 	strSlideXml += slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'

@@ -9,12 +9,14 @@
 
 import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, FOOTER_TEXT_OPTS, IMAGE_PATHS, TESTMODE } from "./enums.mjs";
 import {
-	COLORS_ACCENT,
 	CHART_DATA,
+	COLORS_ACCENT,
 	COLORS_CHART,
 	COLORS_RYGU,
 	COLORS_SPECTRUM,
 	COLORS_VIVID,
+	COLOR_GRN,
+	COLOR_YLW,
 	LETTERS,
 	MONS,
 	arrDataLineStat,
@@ -922,7 +924,7 @@ function genSlide08(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable([[{ text: "Chart Examples: Line Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
-	slide.addText(`(${CHART_DATA.LongTermIntRates.sourceUrl})`, FOOTER_TEXT_OPTS);
+	slide.addText(`(${CHART_DATA.Fedi_MAU.sourceUrl})`, FOOTER_TEXT_OPTS);
 
 	// FULL SLIDE:
 	const OPTS_CHART = {
@@ -930,19 +932,30 @@ function genSlide08(pptx) {
 		y: 0.6,
 		w: "95%",
 		h: "85%",
-		plotArea: { fill: { color: "F2F9FC" } },
+		plotArea: { fill: { color: "e3e3e3" } },
 		//
 		showLegend: true,
 		legendPos: "r",
 		//
+		catAxisLabelRotate: 90,
+		valAxisLabelFormatCode: "#,##0",
+		//
+		lineSize: 4,
+		//lineDataSymbolLineColor: "7ab800",
+		//chartColors: COLORS_RYGU,
+		chartColors: [COLOR_GRN],
+		lineDataSymbolSize: 10,
+		lineDataSymbolLineColor: "4472C4",
+		lineDataSymbolLineSize: 3,
+		//lineDataSymbol: "none",
+		//
 		showTitle: true,
-		lineDataSymbol: "none",
-		title: CHART_DATA.LongTermIntRates.chartTitle,
+		title: CHART_DATA.Fedi_MAU.chartTitle,
 		titleColor: "0088CC",
 		titleFontFace: "Arial",
 		titleFontSize: 18,
 	};
-	slide.addChart(pptx.charts.LINE, CHART_DATA.LongTermIntRates.chartData, OPTS_CHART);
+	slide.addChart(pptx.charts.LINE, CHART_DATA.Fedi_MAU.chartData, OPTS_CHART);
 }
 
 // SLIDE 9: Line Chart: Line Smoothing, Line Size, Symbol Size
@@ -1738,7 +1751,7 @@ function genSlide18(pptx) {
 			labels: [
 				["Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4", "Q1", "Q2", "Q3", "Q4"],
 				["Apple", "", "", "", "Banana", "", "", "", "Apple", "", "", "", "Banana", "", "", ""],
-				["2014", "", "", "", "", "", "", "", "2015", "", "", "", "", "", "", ""],
+				["2024", "", "", "", "", "", "", "", "2025", "", "", "", "", "", "", ""],
 			],
 			values: [734, 465, 656, 176, 434, 165, 613, 359, 279, 660, 307, 270, 539, 142, 554, 405],
 		},
@@ -1790,14 +1803,14 @@ function genSlide19(pptx) {
 			{
 				showValAxisTitle: true,
 				valAxisTitle: "Cars Produced (m)",
-				valAxisMaxVal: 10,
+				valAxisMaxVal: 20,
 				valAxisTitleColor: "1982c4",
 				valAxisLabelColor: "1982c4",
 			},
 			{
 				showValAxisTitle: true,
 				valAxisTitle: "Global Market Share (%)",
-				valAxisMaxVal: 10,
+				valAxisMaxVal: 20,
 				valAxisTitleColor: "F38940",
 				valAxisLabelColor: "F38940",
 				valGridLine: { style: "none" },

@@ -2,18 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Notes
+## [4.0.0](https://github.com/gitbrent/PptxGenJS/releases/tag/v4.0.0) - 2025-05-04
 
-## [3.13.0](https://github.com/gitbrent/PptxGenJS/releases/tag/v3.13.0) - 2023-0?-0?
+### Fixed
+
+- defineSlideMaster() issues when reusing config object [\#406](https://github.com/gitbrent/PptxGenJS/issues/406) ([ronnyroeller](https://github.com/ronnyroeller))
+- Fixed "needs repair" issue with table auto-paging [\#1380](https://github.com/gitbrent/PptxGenJS/issues/1380) ([gitbrent](https://github.com/gitbrent))
+
+### Added
 
 - Added `textDirection` property for text and table cells to allow vertical rotation of text ([gitbrent](https://github.com/gitbrent))
 
 ### Changed
 
 - Bump jszip to ^3.10.1 [\#1255](https://github.com/gitbrent/PptxGenJS/pull/1255) ([NateRadebaugh](https://github.com/NateRadebaugh))
+- Added `exports` field to package.json to enable modern module resolution ([gitbrent](https://github.com/gitbrent))
+- Brand new logic for detecting Node.js ([gitbrent](https://github.com/gitbrent)) this fixes: Vite issues [\#1325](https://github.com/gitbrent/PptxGenJS/issues/1325) and Web Worker issues [\#1354](https://github.com/gitbrent/PptxGenJS/issues/1354)
+
+### Deps, Demos, Tools, and Docs
+
+- Added new vite-demo under "demos" to test using the library as a module in modern apps (replaces react-demo) ([gitbrent](https://github.com/gitbrent))
+- Major updates to dev dependencies (typescript, rollup, eslint, gulp) ([gitbrent](https://github.com/gitbrent))
+- Brand new eslint.config.js ([gitbrent](https://github.com/gitbrent))
+- Updated rollup.config.mjs ([gitbrent](https://github.com/gitbrent))
+- Brand new Vite demo replaces broken CRA react-demo ([gitbrent](https://github.com/gitbrent))
+- Brand new WebWorker demo ([gitbrent](https://github.com/gitbrent))
+- Major update to README ([gitbrent](https://github.com/gitbrent))
+- New TESTING.md document created, renamed RELEASES.md to RELEASING.md ([gitbrent](https://github.com/gitbrent))
+- Major update to browser demo page ([gitbrent](https://github.com/gitbrent))
+- Major update to GitHub pages doc site ([gitbrent](https://github.com/gitbrent))
+- Updated Data2Slides tool to modern bootstrap ([gitbrent](https://github.com/gitbrent))
+
+### Removed
+
+- Removed `react-demo` under demos ([gitbrent](https://github.com/gitbrent))
 
 ## [3.12.0](https://github.com/gitbrent/PptxGenJS/releases/tag/v3.12.0) - 2023-03-19
 

@@ -1,8 +1,80 @@
-@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap);
-
-pre {
-	font-size: 0.8rem !important;
+nav.navbar .form-inline i.bi {
+	font-size: 24px;
 }
+
+main>.tab-pane {
+	background-color: var(--bs-black);
+	padding: 1.5rem;
+	/* p-4 */
+}
+
+main>.tab-pane .card-header {
+	background: var(--bs-primary-bg-subtle) !important;
+	color: var(--bs-primary-text-emphasis) !important;
+	padding: 1rem !important;
+}
+
+main>.tab-pane>section {
+	background: var(--bs-body-bg);
+}
+
+main>.tab-pane .card-body h6 {
+	color: var(--bs-cyan);
+}
+
+.tab-pane .card-body .list-group-item {
+	background-color: var(--bs-black);
+}
+
+.accordion-collapse {
+	background: black;
+}
+
+.accordion-collapse>.accordion-body {
+	padding: 1.5rem;
+	/* p-4 */
+}
+
+.lg-bm h6 {
+	color: var(--bs-cyan);
+}
+
+.lg-bm ul.list-group {
+	margin-bottom: 0.5rem;
+}
+
+/* Embed the SVG as a background image */
+.info-icon {
+	width: 16px;
+	height: 16px;
+	background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23ffffff%22%20class%3D%22bi%20bi-info-circle%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2015A7%207%200%201%201%208%201a7%207%200%200%201%200%2014m0%201A8%208%200%201%200%208%200a8%208%200%200%200%200%2016%22/%3E%3Cpath%20d%3D%22m8.93%206.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738%203.468c-.194.897.105%201.319.808%201.319.545%200%201.178-.252%201.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275%200-.375-.193-.304-.533zM9%204.5a1%201%200%201%201-2%200%201%201%200%200%201%202%200%22/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-size: 16px 16px;
+}
+
+.icon24Mastodon {
+	display: inline-block;
+	vertical-align: middle;
+	width: 24px;
+	height: 24px;
+	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23FFFFFF' class='bi bi-mastodon' viewBox='0 0 16 16'><path d='M11.19 12.195c2.016-.24 3.77-1.475 3.99-2.603.348-1.778.32-4.339.32-4.339 0-3.47-2.286-4.488-2.286-4.488C12.062.238 10.083.017 8.027 0h-.05C5.92.017 3.942.238 2.79.765c0 0-2.285 1.017-2.285 4.488l-.002.662c-.004.64-.007 1.35.011 2.091.083 3.394.626 6.74 3.78 7.57 1.454.383 2.703.463 3.709.408 1.823-.1 2.847-.647 2.847-.647l-.06-1.317s-1.303.41-2.767.36c-1.45-.05-2.98-.156-3.215-1.928a4 4 0 0 1-.033-.496s1.424.346 3.228.428c1.103.05 2.137-.064 3.188-.189zm1.613-2.47H11.13v-4.08c0-.859-.364-1.295-1.091-1.295-.804 0-1.207.517-1.207 1.541v2.233H7.168V5.89c0-1.024-.403-1.541-1.207-1.541-.727 0-1.091.436-1.091 1.296v4.079H3.197V5.522q0-1.288.66-2.046c.456-.505 1.052-.764 1.793-.764.856 0 1.504.328 1.933.983L8 4.39l.417-.695c.429-.655 1.077-.983 1.934-.983.74 0 1.336.259 1.791.764q.662.757.661 2.046z'/></svg>");
+	background-repeat: no-repeat;
+	background-size: 24px 24px;
+}
+
+.icon24GitHub {
+	display: inline-block;
+	vertical-align: middle;
+	width: 24px;
+	height: 24px;
+	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23FFFFFF' class='bi bi-github' viewBox='0 0 16 16'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8'/></svg>");
+	background-repeat: no-repeat;
+	background-size: 24px 24px;
+}
+
+/*
+<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23FFFFFF' class='bi bi-github' viewBox='0 0 16 16'><path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8'/></svg>
+*/
 
 #demo-sandbox:focus {
 	/* Chrome draws a super-annoying outline around *each line* in the <code> tag, so NOPE! */
@@ -22,13 +94,22 @@ pre {
 .text-sm {
 	font-size: 0.8rem;
 }
+
 .card-body-text-sm .card .card-body {
 	font-size: 0.8rem;
 }
+
 .cursor-help {
 	cursor: help;
 }
 
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+	background-color: var(--bs-black);
+	border-bottom-color: var(--bs-black);
+}
+
+/*
 .bde-arrow-cont {
 	cursor: pointer;
 	-webkit-user-select: none;
@@ -60,11 +141,27 @@ pre {
 	transform: rotate(135deg);
 	margin-bottom: 3px;
 }
-
+*/
 /* -- HTML2PPTX ---------- */
 #tabAutoPaging thead tr th:first-child {
 	background-color: var(--bs-cyan);
 	color: var(--bs-white);
+}
+
+.tabHtmlToPpt {
+	padding: 0.5rem;
+}
+.tabHtmlToPpt thead tr th {
+	color: white;
+	background-color: var(--bs-dark);
+}
+.tabHtmlToPpt tbody tr th {
+	color: green;
+	background-color: var(--bs-black);
+}
+.tabHtmlToPpt tbody tr td {
+	color: #696969;
+	background-color: var(--bs-black);
 }
 
 /* -- brentstrap.css ---------- */
@@ -83,6 +180,7 @@ pre {
 		}
 	}
 */
+/*
 @media (prefers-color-scheme: dark) {
 	.h1,
 	.h2,
@@ -159,7 +257,7 @@ pre {
 	.tab-pane {
 		background-color: var(--bs-white);
 	}
-	/* 20210829: cyborg comes first in stylehseet order, but the way its written (diff from yeti?), it overrides these colors to white, which sucks */
+	// 20210829: cyborg comes first in stylehseet order, but the way its written (diff from yeti?), it overrides these colors to white, which sucks
 	.nav-pills .nav-link,
 	.nav-tabs .nav-link {
 		color: var(--bs-primary) !important;
@@ -192,3 +290,4 @@ pre {
 		background: var(--bs-gray-100);
 	}
 }
+*/
