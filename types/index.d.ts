@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.13.0
+// Type definitions for pptxgenjs 4.0.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -517,10 +517,10 @@ declare namespace PptxGenJS {
 		LINE_CALLOUT_3_ACCENT_BAR = 'accentCallout3',
 		LINE_CALLOUT_3_BORDER_AND_ACCENT_BAR = 'accentBorderCallout3',
 		LINE_CALLOUT_3_NO_BORDER = 'callout3',
-		LINE_CALLOUT_4 = 'borderCallout3',
-		LINE_CALLOUT_4_ACCENT_BAR = 'accentCallout3',
-		LINE_CALLOUT_4_BORDER_AND_ACCENT_BAR = 'accentBorderCallout3',
-		LINE_CALLOUT_4_NO_BORDER = 'callout3',
+		LINE_CALLOUT_4 = 'borderCallout4',
+		LINE_CALLOUT_4_ACCENT_BAR = 'accentCallout4',
+		LINE_CALLOUT_4_BORDER_AND_ACCENT_BAR = 'accentBorderCallout4',
+		LINE_CALLOUT_4_NO_BORDER = 'callout4',
 		LINE = 'line',
 		LINE_INVERSE = 'lineInv',
 		MATH_DIVIDE = 'mathDivide',
