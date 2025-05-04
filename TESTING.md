@@ -44,25 +44,38 @@ node browser_server.mjs
 2. Note: Use Chrome (Safari *will not work*)
 3. Run the test; verify result & library version
 
+### Microsoft 365 Check
+
+1. Upload the full demo output from above to M365/Office/OneDrive.
+2. Use web viewer to validate file
+
 ---
 
 ## 📦 Node.js Tests
 
 **Purpose:** Validate functionality of CommonJS module in pure Node environments.
 
-1. Update version in: `demos/node/package.json`
-2. Run the following test commands:
+### CLI Tests
+
+Run the following test commands:
 
 ```bash
 cd demos/node
 npm install
 npm run demo
 npm run demo-all
-npm run demo-text
-npm run demo-stream
 ```
 
 1. Confirm console output and exported PPTX files are correct.
+
+### Stream Test
+
+```bash
+npm run demo-stream
+```
+
+1. Confirm stream download PPTX file is correct.
+2. Open the [Stream URL](http://192.168.254.x:3000/) on iPhone & test.
 
 ---
 
