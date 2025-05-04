@@ -99,15 +99,14 @@ Start the app:
 ```bash
 cd demos/vite-demo
 npm install
-npm run build
 npm run dev
 ```
 
 From your network:
 
-- iMac: [http://localhost:3000](http://localhost:3000)
-- iPhone: `http://192.168.254.x:3000`
-- Android: `http://192.168.254.x:3000`
+- MacBook..: [Demo](http://localhost:8080/PptxGenJS/)
+- iPhone...: [Demo](http://192.168.254.x:8080/PptxGenJS/)
+- Android..: [Demo](http://192.168.254.x:8080/PptxGenJS/)
 
 1. Run test slides, export PowerPoint files.
 2. Open files on each device to verify:

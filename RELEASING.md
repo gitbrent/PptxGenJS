@@ -20,6 +20,7 @@
 6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
 7. Open `dist/*.js` and check headers
 8. Update version in: `demos/node/package.json`
+9. Update pptxgenjs dep version in: `demos/vite-demo/package.json`
 
 ## 🧪 Run Tests Before Release
 
