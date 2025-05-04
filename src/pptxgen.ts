@@ -311,6 +311,15 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._shapes
 	}
 
+	private _firstSlideNum = 1
+	public get firstSlideNum (): number {
+		return this._firstSlideNum
+	}
+
+	public set firstSlideNum (val: number) {
+		this._firstSlideNum = val
+	}
+
 	constructor () {
 		const layout4x3: PresLayout = { name: 'screen4x3', width: 9144000, height: 6858000 }
 		const layout16x9: PresLayout = { name: 'screen16x9', width: 9144000, height: 5143500 }
