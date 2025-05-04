@@ -876,7 +876,34 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
 				if (chartType !== CHART_TYPE.RADAR) {
 					strXml += '<c:dLbls>'
-					strXml += `<c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+					if (obj.dataLabels) {
+						obj.dataLabels.forEach((value, i) => {
+							strXml += '  <c:dLbl>'
+							strXml += `    <c:idx val="${i}"/>`
+							strXml += '    <c:tx>'
+							strXml += '      <c:rich>'
+							strXml += '        <a:bodyPr/>'
+							strXml += '        <a:lstStyle/>'
+							strXml += '        <a:p>'
+							strXml += '          <a:r>'
+							strXml += `            <a:rPr lang="en-US" sz="${opts.fontSize * 100}"/>`
+							strXml += `            <a:t>${encodeXmlEntities(value)}</a:t>`
+							strXml += '          </a:r>'
+							strXml += '        </a:p>'
+							strXml += '      </c:rich>'
+							strXml += '    </c:tx>'
+							strXml += '    <c:dLblPos val="ctr"/>'
+							strXml += '    <c:showLegendKey val="0"/>'
+							strXml += '    <c:showVal val="1"/>'
+							strXml += '    <c:showCatName val="0"/>'
+							strXml += '    <c:showSerName val="0"/>'
+							strXml += '    <c:showPercent val="0"/>'
+							strXml += '    <c:showBubbleSize val="0"/>'
+							strXml += '  </c:dLbl>'
+						})
+					} else {
+						strXml += `<c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+					}
 					if (opts.dataLabelBkgrdColors) strXml += `<c:spPr><a:solidFill>${createColorElement(seriesColor)}</a:solidFill></c:spPr>`
 					strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>'
 					strXml += `<a:defRPr b="${opts.dataLabelFontBold ? 1 : 0}" i="${opts.dataLabelFontItalic ? 1 : 0}" strike="noStrike" sz="${Math.round(
@@ -1542,7 +1569,22 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 			optsChartData.labels[0].forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
 				strXml += ` <c:idx val="${idx}"/>`
-				strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+				if (optsChartData?.dataLabels?.at(idx)) {
+					strXml += '    <c:tx>'
+					strXml += '      <c:rich>'
+					strXml += '        <a:bodyPr/>'
+					strXml += '        <a:lstStyle/>'
+					strXml += '        <a:p>'
+					strXml += '          <a:r>'
+					strXml += '            <a:rPr lang="en-US"/>'
+					strXml += `            <a:t>${encodeXmlEntities(optsChartData.dataLabels?.at(idx))}</a:t>`
+					strXml += '          </a:r>'
+					strXml += '        </a:p>'
+					strXml += '      </c:rich>'
+					strXml += '    </c:tx>'
+				} else {
+					strXml += `  <c:numFmt formatCode="${encodeXmlEntities(opts.dataLabelFormatCode) || 'General'}" sourceLinked="0"/>`
+				}
 				strXml += '  <c:spPr/><c:txPr>'
 				strXml += '   <a:bodyPr/><a:lstStyle/>'
 				strXml += '   <a:p><a:pPr>'
