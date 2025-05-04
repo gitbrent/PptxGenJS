@@ -155,26 +155,6 @@ pres.writeFile();
 
 That's really all there is to it!
 
-### Library API
-
-Full documentation and code examples are available
-
-- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create/)
-- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options/)
-- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide/)
-- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options/)
-- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving/)
-- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters/)
-- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts/)
-- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images/)
-- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media/)
-- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes/)
-- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables/)
-- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text/)
-- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes/)
-- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes/)
-- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration/)
-
 ## 💥 HTML-to-PowerPoint Magic
 
 Convert any HTML `<table>` into fully formatted PowerPoint slides - automatically and effortlessly.
@@ -192,6 +172,10 @@ Perfect for transforming:
 - Tabular content from CMS or BI tools
 
 [View Full Docs & Live Demo](https://gitbrent.github.io/PptxGenJS/html2pptx/)
+
+## 📚 Full Documentation
+
+Complete API reference, tutorials, and integration guides are available on the official docs site: [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 ## 🛠️ Issues / Suggestions
 
