@@ -52,9 +52,10 @@ See [TESTING.md](./TESTING.md) for complete test instructions.
 ### 🟢 Release: GitHub
 
 1. Checkin all changes via GitHub Desktop
-2. Copy CHANGELOG entry and draft new release: [Releases](https://github.com/gitbrent/PptxGenJS/releases)
-3. Use "Version x.x.x" as title and "vX.X.X" as tag
-4. Go back to Releases page, double-check title/tag, release when ready
+2. Merge working branch into `main`
+3. Copy CHANGELOG entry and draft new release: [Releases](https://github.com/gitbrent/PptxGenJS/releases)
+4. Use "Version x.x.x" as title and "vX.X.X" as tag
+5. Go back to Releases page, double-check title/tag, release when ready
 
 ### 🟢 Release: NPM
 
