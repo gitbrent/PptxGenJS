@@ -134,6 +134,17 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				'</Relationships>\n'
 			)
 		}
+		//calculate length of values + error rates
+		//hardcoded method: loop over all data and check if errorrate exists, then increase the "errorratecount"
+		let ec = 0;
+		data.forEach((obj) => {
+			if (obj.errorrate) {
+				if (obj.errorrate.length > 0) {
+					ec++;
+				}
+			}
+		});
+		let fulllength = data.length + ec;
 
 		// sharedStrings.xml
 		{
@@ -171,6 +182,11 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 			} else {
 				data.forEach(objData => {
 					strSharedStrings += `<si><t>${encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values'))}</t></si>`
+				})
+				data.forEach(objData => { //errorrates
+					if (objData.errorrate) {
+						strSharedStrings += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + "_errorrate" + '</t></si>'
+					}
 				})
 			}
 
@@ -224,6 +240,11 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				})
 				data.forEach((obj, idx) => {
 					strTableXml += `<tableColumn id="${idx + data[0].labels.length + 1}" name="${encodeXmlEntities(obj.name)}"/>`
+				})
+				data.forEach((obj, idx) => { //then do the same for every errorrate
+					if (obj.errorrate) {
+						strTableXml += `<tableColumn id="${idx + data[0].labels.length + 1}" name="${encodeXmlEntities(obj.name)}_errorrate" />`
+					}
 				})
 			}
 			strTableXml += '</tableColumns>'
@@ -363,6 +384,23 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 					for (let idx = 0; idx < data.length; idx++) {
 						strSheetXml += `<c r="${getExcelColName(idx + 1 + data[0].labels.length)}1" t="s"><v>${idx + 1}</v></c>` // NOTE: use `t="s"` for label cols!
 					}
+
+					let errorcount = 0;
+					for (let i = 0; i < data.length; i++) {
+						let idx = data.length + errorcount;
+						if (!data[i].errorrate) {
+							continue;
+						}
+						if(data[i].errorrate.length < 1){
+							continue;
+						}
+						let idy = data.length + errorcount;
+						strSheetXml += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'
+						strSheetXml += '<v>' + (data[i].errorrate[idx] || '') + '</v>'
+						strSheetXml += '</c>'
+						errorcount++;
+					}
+					
 					strSheetXml += '</row>'
 
 					// B: Add data row(s) for each category
@@ -388,6 +426,23 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 					for (let idx = data[0].labels.length - 1; idx < data.length + data[0].labels.length - 1; idx++) {
 						strSheetXml += `<c r="${getExcelColName(idx + data[0].labels.length)}1" t="s"><v>${idx}</v></c>` // NOTE: use `t="s"` for label cols!
 					}
+
+					let errorcount = 0;
+					for (let i = 0; i < data.length; i++) {
+						let idx = data.length + errorcount;
+						if (!data[i].errorrate) {
+							continue;
+						}
+						if(data[i].errorrate.length < 1){
+							continue;
+						}
+						let idy = data.length + errorcount;
+						strSheetXml += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'
+						strSheetXml += '<v>' + (data[i].errorrate[idx] || '') + '</v>'
+						strSheetXml += '</c>'
+						errorcount++;
+					}
+					
 					strSheetXml += '</row>'
 
 					// FIXME: 20220524 (v3.11.0)
@@ -482,8 +537,19 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						for (let idy = 0; idy < TOT_SER; idy++) {
 							strSheetXml += `<c r="${getExcelColName(TOT_LVL + idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || 0}</v></c>`
 						}
+						
+						// D: add errorrates for each col if available
+						for (let i = 0; i < data.length; i++) {
+							if (!data[i].errorrate) {
+								continue;
+							}
+							let idy = data.length + i;
+							strSheetXml += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'
+							strSheetXml += '<v>' + (data[i].errorrate[idx] || '') + '</v>'
+							strSheetXml += '</c>'
+						}
 
-						// D: Done
+						// E: Done
 						strSheetXml += '</row>'
 					}
 					// console.log(strSheetXml) // WIP: CHECK:
@@ -536,7 +602,40 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 				reject(strErr)
 			})
 	})
+
+	/**
+	 * Takes a index value and
+	 * returns the corresponding "Excel letter"
+	 * i.e. 0 -> A
+	 * 26 -> AA
+	 * 65 -> BN
+	 * 676 -> AAA
+	 * 1406 -> BCC
+	 * and so on
+	 * @param index 
+	 */
+	function getColumnLetter(index) {
+		let currentIndex = index;
+		let returnStr = "";
+		let a = false;
+		for (let i = Math.floor(logBase(index, 26)); i > 0; i--) {
+			let highestExpIndex = (Math.floor(currentIndex / 26 ** i));
+			if (!a) {
+				highestExpIndex -= 1;
+			}
+			returnStr += (String.fromCharCode(65 + (highestExpIndex)));
+			currentIndex -= (highestExpIndex + (!a ? 1 : 0)) * (26 ** i);
+			a = true;
+		}
+		returnStr += (String.fromCharCode(65 + currentIndex));
+		return returnStr;
+	}
+
+	function logBase(x, base) {
+		return Math.log(x) / Math.log(base);
+	}
 }
+
 
 /**
  * Main entry point method for create charts
@@ -810,7 +909,14 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				   values: [55, 43, 70, 58]
 				 }
 				]
-            */
+			*/
+			let colorIndex = -1 // Maintain the color index by region
+			//errorrates are optional, thus we can have something like this:
+			//col1, col2, col3, col_err1, col_err3
+			//we loop over regular cols, in order to calculate the current columns error col
+			//we count the number of errorcols we used and do data.length + errorrateCount
+			let errorrateCount = 0;
+            
 			/* EX2:
 				data: [
 				 {
@@ -983,6 +1089,26 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '    </c:numCache>'
 					strXml += '  </c:numRef>'
 					strXml += '</c:val>'
+				}
+
+				// 3.5: "Errorrates/Errorbars"
+				{
+					if (obj.errorrate) {
+						let erridx = data.length + errorrateCount;
+						strXml += '  <c:errBars>';
+						strXml += '<c:errDir val="y"/>';
+						strXml += '<c:errBarType val="both"/>'
+						strXml += '<c:errValType val="cust"/>';
+						strXml += '<c:noEndCap val="0"/>';
+						strXml += '		<c:plus>'
+						strXml += errXml(erridx, obj);
+						strXml += '		</c:plus>'
+						strXml += '		<c:minus>'
+						strXml += errXml(erridx, obj);
+						strXml += '		</c:minus>'
+						strXml += '  </c:errBars>'
+						errorrateCount++;
+					}
 				}
 
 				// Option: `smooth`
@@ -2027,6 +2153,22 @@ function createGridLineElement (glOpts: OptsChartGridLine): string {
 
 	return strXml
 }
+
+function errXml(idx, obj) {
+	let resStr = '';
+	resStr += '    <c:numRef>'
+	resStr += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
+	resStr += '      <c:numCache>'
+	resStr += '        <c:formatCode>General</c:formatCode>'
+	resStr += '	       <c:ptCount val="' + obj.labels.length + '"/>'
+	obj.errorrate.forEach((value, idx) => {
+		resStr += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>'
+	})
+	resStr += '      </c:numCache>'
+	resStr += '    </c:numRef>'
+	return resStr;
+}
+
 
 function createLineCap (lineCap: ChartLineCap): string {
 	if (!lineCap || lineCap === 'flat') {
