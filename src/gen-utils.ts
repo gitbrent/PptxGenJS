@@ -2,7 +2,7 @@
  * PptxGenJS: Utility Methods
  */
 
-import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
+import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS, DEF_TEXT_SHADOW } from './core-enums'
 import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps } from './core-interfaces'
 
 /**
@@ -157,6 +157,26 @@ export function createColorElement (colorStr: string | SCHEME_COLORS, innerEleme
 	const colorAttr = 'val="' + (REGEX_HEX_COLOR.test(colorVal) ? colorVal.toUpperCase() : colorVal) + '"'
 
 	return innerElements ? `<a:${tagName} ${colorAttr}>${innerElements}</a:${tagName}>` : `<a:${tagName} ${colorAttr}/>`
+}
+
+export function createTextShadow (options: ShadowProps): string {
+	let strXml = ''
+
+	const nOptions = {
+		...options,
+		type: 'outer',
+		offset: valToPts(options.offset || 4),
+		angle: Math.round((options.angle || 270) * 60000),
+		opacity: Math.round((options.opacity || 0.75) * 100000),
+		color: options.color || DEF_TEXT_SHADOW.color
+	}
+
+	strXml += ` <a:outerShdw ${nOptions.type === 'outer' ? 'sx="100000" sy="100000" kx="0" ky="0" algn="bl" rotWithShape="0"' : ''} blurRad="${nOptions.blur}" dist="${nOptions.offset}" dir="${nOptions.angle}">`
+	strXml += ` <a:srgbClr val="${nOptions.color}">`
+	strXml += ` <a:alpha val="${nOptions.opacity}"/></a:srgbClr>`
+	strXml += ' </a:outerShdw>'
+
+	return strXml
 }
 
 /**
