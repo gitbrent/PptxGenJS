@@ -1,4 +1,4 @@
-/* PptxGenJS 3.13.0-beta.0 @ 2023-05-17T03:15:58.384Z */
+/* PptxGenJS 3.13.0-beta.1 @ 2023-06-20T18:18:11.147Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3669,7 +3669,6 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
     // ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
     var colorIndex = -1; // Maintain the color index by region
     var idxColLtr = 1;
-    var optsChartData = null;
     var strXml = '';
     switch (chartType) {
         case CHART_TYPE.AREA:
@@ -3727,6 +3726,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
              */
             data.forEach(function (obj) {
                 var _a;
+                var series = __assign(__assign({}, opts), obj);
                 colorIndex++;
                 strXml += '<c:ser>';
                 strXml += "  <c:idx val=\"".concat(obj._dataIndex, "\"/><c:order val=\"").concat(obj._dataIndex, "\"/>");
@@ -3738,81 +3738,78 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:tx>';
                 // Fill and Border
                 // TODO: CURRENT: Pull#727
-                // TODO: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
-                var seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null;
+                var seriesColor = series.color ? series.color : series.chartColors ? series.chartColors[0] : null;
                 strXml += '  <c:spPr>';
                 if (seriesColor === 'transparent') {
                     strXml += '<a:noFill/>';
                 }
-                else if (opts.chartColorsOpacity) {
-                    strXml += '<a:solidFill>' + createColorElement(seriesColor, "<a:alpha val=\"".concat(Math.round(opts.chartColorsOpacity * 1000), "\"/>")) + '</a:solidFill>';
+                else if (series.chartColorsOpacity) {
+                    strXml += '<a:solidFill>' + createColorElement(seriesColor, "<a:alpha val=\"".concat(Math.round(series.chartColorsOpacity * 1000), "\"/>")) + '</a:solidFill>';
                 }
                 else {
                     strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
                 }
                 if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
-                    if (opts.lineSize === 0) {
+                    if (series.lineSize === 0) {
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += "<a:ln w=\"".concat(valToPts(opts.lineSize), "\" cap=\"").concat(createLineCap(opts.lineCap), "\"><a:solidFill>").concat(createColorElement(seriesColor), "</a:solidFill>");
-                        strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
+                        strXml += "<a:ln w=\"".concat(valToPts(series.lineSize), "\" cap=\"").concat(createLineCap(series.lineCap), "\"><a:solidFill>").concat(createColorElement(seriesColor), "</a:solidFill>");
+                        strXml += '<a:prstDash val="' + (series.lineDash || 'solid') + '"/><a:round/></a:ln>';
                     }
                 }
-                else if (opts.dataBorder) {
-                    strXml += "<a:ln w=\"".concat(valToPts(opts.dataBorder.pt), "\" cap=\"").concat(createLineCap(opts.lineCap), "\"><a:solidFill>").concat(createColorElement(opts.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
+                else if (series.dataBorder) {
+                    strXml += "<a:ln w=\"".concat(valToPts(series.dataBorder.pt), "\" cap=\"").concat(createLineCap(series.lineCap), "\"><a:solidFill>").concat(createColorElement(series.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
                 }
-                strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+                strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW);
                 strXml += '  </c:spPr>';
                 strXml += '  <c:invertIfNegative val="0"/>';
                 // Data Labels per series
                 // NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!
                 if (chartType !== CHART_TYPE.RADAR) {
                     strXml += '<c:dLbls>';
-                    strXml += "<c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
-                    if (opts.dataLabelBkgrdColors)
+                    strXml += "<c:numFmt formatCode=\"".concat(encodeXmlEntities(series.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                    if (series.dataLabelBkgrdColors)
                         strXml += "<c:spPr><a:solidFill>".concat(createColorElement(seriesColor), "</a:solidFill></c:spPr>");
                     strXml += '<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>';
-                    strXml += "<a:defRPr b=\"".concat(opts.dataLabelFontBold ? 1 : 0, "\" i=\"").concat(opts.dataLabelFontItalic ? 1 : 0, "\" strike=\"noStrike\" sz=\"").concat(Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" u=\"none\">");
-                    strXml += "<a:solidFill>".concat(createColorElement(opts.dataLabelColor || DEF_FONT_COLOR), "</a:solidFill>");
-                    strXml += "<a:latin typeface=\"".concat(opts.dataLabelFontFace || 'Arial', "\"/>");
+                    strXml += "<a:defRPr b=\"".concat(series.dataLabelFontBold ? 1 : 0, "\" i=\"").concat(series.dataLabelFontItalic ? 1 : 0, "\" strike=\"noStrike\" sz=\"").concat(Math.round((series.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" u=\"none\">");
+                    strXml += "<a:solidFill>".concat(createColorElement(series.dataLabelColor || DEF_FONT_COLOR), "</a:solidFill>");
+                    strXml += "<a:latin typeface=\"".concat(series.dataLabelFontFace || 'Arial', "\"/>");
                     strXml += '</a:defRPr></a:pPr></a:p></c:txPr>';
-                    if (opts.dataLabelPosition)
-                        strXml += "<c:dLblPos val=\"".concat(opts.dataLabelPosition, "\"/>");
+                    if (series.dataLabelPosition)
+                        strXml += "<c:dLblPos val=\"".concat(series.dataLabelPosition, "\"/>");
                     strXml += '<c:showLegendKey val="0"/>';
-                    strXml += "<c:showVal val=\"".concat(opts.showValue ? '1' : '0', "\"/>");
-                    strXml += "<c:showCatName val=\"0\"/><c:showSerName val=\"".concat(opts.showSerName ? '1' : '0', "\"/><c:showPercent val=\"0\"/><c:showBubbleSize val=\"0\"/>");
-                    strXml += "<c:showLeaderLines val=\"".concat(opts.showLeaderLines ? '1' : '0', "\"/>");
+                    strXml += "<c:showVal val=\"".concat(series.showValue ? '1' : '0', "\"/>");
+                    strXml += "<c:showCatName val=\"0\"/><c:showSerName val=\"".concat(series.showSerName ? '1' : '0', "\"/><c:showPercent val=\"0\"/><c:showBubbleSize val=\"0\"/>");
+                    strXml += "<c:showLeaderLines val=\"".concat(series.showLeaderLines ? '1' : '0', "\"/>");
                     strXml += '</c:dLbls>';
                 }
                 // 'c:marker' tag: `lineDataSymbol`
                 if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
                     strXml += '<c:marker>';
-                    strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
-                    if (opts.lineDataSymbolSize)
-                        strXml += "<c:size val=\"".concat(opts.lineDataSymbolSize, "\"/>"); // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+                    strXml += '  <c:symbol val="' + series.lineDataSymbol + '"/>';
+                    if (series.lineDataSymbolSize)
+                        strXml += "<c:size val=\"".concat(series.lineDataSymbolSize, "\"/>"); // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
                     strXml += '  <c:spPr>';
-                    strXml += "    <a:solidFill>".concat(createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]), "</a:solidFill>");
-                    strXml += "    <a:ln w=\"".concat(opts.lineDataSymbolLineSize, "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.lineDataSymbolLineColor || seriesColor), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
+                    strXml += "    <a:solidFill>".concat(createColorElement(series.chartColors[obj._dataIndex + 1 > series.chartColors.length ? Math.floor(Math.random() * series.chartColors.length) : obj._dataIndex]), "</a:solidFill>");
+                    strXml += "    <a:ln w=\"".concat(series.lineDataSymbolLineSize, "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(series.lineDataSymbolLineColor || seriesColor), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
                     strXml += '    <a:effectLst/>';
                     strXml += '  </c:spPr>';
                     strXml += '</c:marker>';
                 }
-                // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                // Color chart bars various colors when >1 color
+                // Color chart bars.
                 // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
                 if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
-                    data.length === 1 &&
-                    ((opts.chartColors && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) || ((_a = opts.invertedColors) === null || _a === void 0 ? void 0 : _a.length))) {
+                    ((series.chartColors && series.chartColors !== BARCHART_COLORS && series.chartColors.length > 1) || ((_a = series.invertedColors) === null || _a === void 0 ? void 0 : _a.length))) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
-                        var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
+                        var arrColors = value < 0 ? series.invertedColors || series.chartColors || BARCHART_COLORS : series.chartColors || [];
                         strXml += '  <c:dPt>';
                         strXml += "    <c:idx val=\"".concat(index, "\"/>");
                         strXml += '      <c:invertIfNegative val="0"/>';
                         strXml += '    <c:bubble3D val="0"/>';
                         strXml += '    <c:spPr>';
-                        if (opts.lineSize === 0) {
+                        if (series.lineSize === 0) {
                             strXml += '<a:ln><a:noFill/></a:ln>';
                         }
                         else if (chartType === CHART_TYPE.BAR) {
@@ -3827,7 +3824,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                             strXml += '  </a:solidFill>';
                             strXml += '</a:ln>';
                         }
-                        strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+                        strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW);
                         strXml += '    </c:spPr>';
                         strXml += '  </c:dPt>';
                     });
@@ -3835,12 +3832,12 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // 2: "Categories"
                 {
                     strXml += '<c:cat>';
-                    if (opts.catLabelFormatCode) {
+                    if (series.catLabelFormatCode) {
                         // Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
                         strXml += '  <c:numRef>';
                         strXml += "    <c:f>Sheet1!$A$2:$A$".concat(obj.labels[0].length + 1, "</c:f>");
                         strXml += '    <c:numCache>';
-                        strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>';
+                        strXml += '      <c:formatCode>' + (series.catLabelFormatCode || 'General') + '</c:formatCode>';
                         strXml += "      <c:ptCount val=\"".concat(obj.labels[0].length, "\"/>");
                         obj.labels[0].forEach(function (label, idx) { return (strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(encodeXmlEntities(label), "</c:v></c:pt>")); });
                         strXml += '    </c:numCache>';
@@ -3867,7 +3864,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  <c:numRef>';
                     strXml += "<c:f>Sheet1!$".concat(getExcelColName(obj._dataIndex + obj.labels.length + 1), "$2:$").concat(getExcelColName(obj._dataIndex + obj.labels.length + 1), "$").concat(obj.labels[0].length + 1, "</c:f>");
                     strXml += '    <c:numCache>';
-                    strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>';
+                    strXml += '      <c:formatCode>' + (series.valLabelFormatCode || series.dataTableFormatCode || 'General') + '</c:formatCode>';
                     strXml += "      <c:ptCount val=\"".concat(obj.labels[0].length, "\"/>");
                     obj.values.forEach(function (value, idx) { return (strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>")); });
                     strXml += '    </c:numCache>';
@@ -3876,7 +3873,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Option: `smooth`
                 if (chartType === CHART_TYPE.LINE)
-                    strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>';
+                    strXml += '<c:smooth val="' + (series.lineSmooth ? '1' : '0') + '"/>';
                 // 4: Close "SERIES"
                 strXml += '</c:ser>';
             });
@@ -4337,7 +4334,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPE.DOUGHNUT:
         case CHART_TYPE.PIE:
             // Use the same let name so code blocks from barChart are interchangeable
-            optsChartData = data[0];
+            // 1: Start Chart
+            strXml += '<c:' + chartType + 'Chart>';
+            strXml += '  <c:varyColors val="1"/>';
+            // optsChartData = data[0]
             /* EX:
                 data: [
                  {
@@ -4347,118 +4347,125 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                  }
                 ]
             */
-            // 1: Start Chart
-            strXml += '<c:' + chartType + 'Chart>';
-            strXml += '  <c:varyColors val="1"/>';
-            strXml += '<c:ser>';
-            strXml += '  <c:idx val="0"/>';
-            strXml += '  <c:order val="0"/>';
-            strXml += '  <c:tx>';
-            strXml += '    <c:strRef>';
-            strXml += '      <c:f>Sheet1!$B$1</c:f>';
-            strXml += '      <c:strCache>';
-            strXml += '        <c:ptCount val="1"/>';
-            strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(optsChartData.name) + '</c:v></c:pt>';
-            strXml += '      </c:strCache>';
-            strXml += '    </c:strRef>';
-            strXml += '  </c:tx>';
-            strXml += '  <c:spPr>';
-            strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
-            strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-            if (opts.dataNoEffects) {
-                strXml += '<a:effectLst/>';
-            }
-            else {
-                strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
-            }
-            strXml += '  </c:spPr>';
-            // strXml += '<c:explosion val="0"/>'
-            // 2: "Data Point" block for every data row
-            optsChartData.labels[0].forEach(function (_label, idx) {
-                strXml += '<c:dPt>';
-                strXml += " <c:idx val=\"".concat(idx, "\"/>");
-                strXml += ' <c:bubble3D val="0"/>';
-                strXml += ' <c:spPr>';
-                strXml += "<a:solidFill>".concat(createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]), "</a:solidFill>");
-                if (opts.dataBorder) {
-                    strXml += "<a:ln w=\"".concat(valToPts(opts.dataBorder.pt), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(opts.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
+            data.forEach(function (obj) {
+                var series = __assign(__assign({}, opts), obj);
+                strXml += '<c:ser>';
+                strXml += "  <c:idx val=\"".concat(obj._dataIndex, "\"/><c:order val=\"").concat(obj._dataIndex, "\"/>");
+                strXml += '  <c:tx>';
+                strXml += '    <c:strRef>';
+                strXml += '      <c:f>Sheet1!$' + getExcelColName(obj._dataIndex + series.labels.length + 1) + '$1</c:f>';
+                strXml += '      <c:strCache>';
+                strXml += '        <c:ptCount val="1"/>';
+                strXml += '        <c:pt idx="0"><c:v>' + encodeXmlEntities(series.name) + '</c:v></c:pt>';
+                strXml += '      </c:strCache>';
+                strXml += '    </c:strRef>';
+                strXml += '  </c:tx>';
+                strXml += '  <c:spPr>';
+                strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
+                strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+                if (series.dataNoEffects) {
+                    strXml += '<a:effectLst/>';
                 }
-                strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+                else {
+                    strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW);
+                }
                 strXml += '  </c:spPr>';
-                strXml += '</c:dPt>';
-            });
-            // 3: "Data Label" block for every data Label
-            strXml += '<c:dLbls>';
-            optsChartData.labels[0].forEach(function (_label, idx) {
-                strXml += '<c:dLbl>';
-                strXml += " <c:idx val=\"".concat(idx, "\"/>");
-                strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
-                strXml += '  <c:spPr/><c:txPr>';
-                strXml += '   <a:bodyPr/><a:lstStyle/>';
-                strXml += '   <a:p><a:pPr>';
-                strXml += "   <a:defRPr sz=\"".concat(Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(opts.dataLabelFontBold ? 1 : 0, "\" i=\"").concat(opts.dataLabelFontItalic ? 1 : 0, "\" u=\"none\" strike=\"noStrike\">");
-                strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
-                strXml += "    <a:latin typeface=\"".concat(opts.dataLabelFontFace || 'Arial', "\"/>");
-                strXml += '   </a:defRPr>';
-                strXml += '      </a:pPr></a:p>';
+                // strXml += '<c:explosion val="0"/>'
+                // 2: "Data Point" block for every data row
+                series.labels[0].forEach(function (_label, idx) {
+                    var nextColor = series.chartColors[idx % series.chartColors.length];
+                    strXml += '<c:dPt>';
+                    strXml += " <c:idx val=\"".concat(idx, "\"/>");
+                    strXml += ' <c:bubble3D val="0"/>';
+                    strXml += ' <c:spPr>';
+                    strXml += "<a:solidFill>".concat(createColorElement(nextColor), "</a:solidFill>");
+                    if (series.dataBorder) {
+                        strXml += "<a:ln w=\"".concat(valToPts(series.dataBorder.pt), "\" cap=\"flat\"><a:solidFill>").concat(createColorElement(series.dataBorder.color), "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>");
+                    }
+                    strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW);
+                    strXml += '  </c:spPr>';
+                    strXml += '</c:dPt>';
+                });
+                // 3: "Data Label" block for every data Label
+                strXml += '<c:dLbls>';
+                series.labels[0].forEach(function (_label, idx) {
+                    var showPercent;
+                    if (Array.isArray(series.showPercent)) {
+                        showPercent = idx in series.showPercent;
+                    }
+                    else {
+                        showPercent = series.showPercent;
+                    }
+                    strXml += '<c:dLbl>';
+                    strXml += " <c:idx val=\"".concat(idx, "\"/>");
+                    strXml += "  <c:numFmt formatCode=\"".concat(encodeXmlEntities(series.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                    strXml += '  <c:spPr/><c:txPr>';
+                    strXml += '   <a:bodyPr/><a:lstStyle/>';
+                    strXml += '   <a:p><a:pPr>';
+                    strXml += "   <a:defRPr sz=\"".concat(Math.round((series.dataLabelFontSize || DEF_FONT_SIZE) * 100), "\" b=\"").concat(series.dataLabelFontBold ? 1 : 0, "\" i=\"").concat(series.dataLabelFontItalic ? 1 : 0, "\" u=\"none\" strike=\"noStrike\">");
+                    strXml += '    <a:solidFill>' + createColorElement(series.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
+                    strXml += "    <a:latin typeface=\"".concat(series.dataLabelFontFace || 'Arial', "\"/>");
+                    strXml += '   </a:defRPr>';
+                    strXml += '      </a:pPr></a:p>';
+                    strXml += '    </c:txPr>';
+                    if (chartType === CHART_TYPE.PIE && series.dataLabelPosition)
+                        strXml += "<c:dLblPos val=\"".concat(series.dataLabelPosition, "\"/>");
+                    strXml += '    <c:showLegendKey val="0"/>';
+                    strXml += '    <c:showVal val="' + (series.showValue ? '1' : '0') + '"/>';
+                    strXml += '    <c:showCatName val="' + (series.showLabel ? '1' : '0') + '"/>';
+                    strXml += '    <c:showSerName val="' + (series.showSerName ? '1' : '0') + '"/>';
+                    strXml += '    <c:showPercent val="' + (showPercent ? '1' : '0') + '"/>';
+                    strXml += '    <c:showBubbleSize val="0"/>';
+                    strXml += '  </c:dLbl>';
+                });
+                strXml += " <c:numFmt formatCode=\"".concat(encodeXmlEntities(series.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
+                strXml += '    <c:txPr>';
+                strXml += '      <a:bodyPr/>';
+                strXml += '      <a:lstStyle/>';
+                strXml += '      <a:p>';
+                strXml += '        <a:pPr>';
+                strXml += "          <a:defRPr sz=\"1800\" b=\"".concat(series.dataLabelFontBold ? '1' : '0', "\" i=\"").concat(series.dataLabelFontItalic ? '1' : '0', "\" u=\"none\" strike=\"noStrike\">");
+                strXml += '            <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>';
+                strXml += '          </a:defRPr>';
+                strXml += '        </a:pPr>';
+                strXml += '      </a:p>';
                 strXml += '    </c:txPr>';
-                if (chartType === CHART_TYPE.PIE && opts.dataLabelPosition)
-                    strXml += "<c:dLblPos val=\"".concat(opts.dataLabelPosition, "\"/>");
+                strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : '';
                 strXml += '    <c:showLegendKey val="0"/>';
-                strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
-                strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>';
-                strXml += '    <c:showSerName val="' + (opts.showSerName ? '1' : '0') + '"/>';
-                strXml += '    <c:showPercent val="' + (opts.showPercent ? '1' : '0') + '"/>';
+                strXml += '    <c:showVal val="0"/>';
+                strXml += '    <c:showCatName val="1"/>';
+                strXml += '    <c:showSerName val="0"/>';
+                strXml += '    <c:showPercent val="1"/>';
                 strXml += '    <c:showBubbleSize val="0"/>';
-                strXml += '  </c:dLbl>';
+                strXml += " <c:showLeaderLines val=\"".concat(series.showLeaderLines ? '1' : '0', "\"/>");
+                strXml += '</c:dLbls>';
+                // 2: "Categories"
+                strXml += '<c:cat>';
+                strXml += '  <c:strRef>';
+                strXml += "    <c:f>Sheet1!$A$2:$A$".concat(series.labels[0].length + 1, "</c:f>");
+                strXml += '    <c:strCache>';
+                strXml += "         <c:ptCount val=\"".concat(series.labels[0].length, "\"/>");
+                series.labels[0].forEach(function (label, idx) {
+                    strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(encodeXmlEntities(label), "</c:v></c:pt>");
+                });
+                strXml += '    </c:strCache>';
+                strXml += '  </c:strRef>';
+                strXml += '</c:cat>';
+                // 3: Create vals
+                strXml += '  <c:val>';
+                strXml += '    <c:numRef>';
+                strXml += "      <c:f>Sheet1!$B$2:$B$".concat(series.labels[0].length + 1, "</c:f>");
+                strXml += '      <c:numCache>';
+                strXml += "           <c:ptCount val=\"".concat(series.labels[0].length, "\"/>");
+                series.values.forEach(function (value, idx) {
+                    strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>");
+                });
+                strXml += '      </c:numCache>';
+                strXml += '    </c:numRef>';
+                strXml += '  </c:val>';
+                // 4: Close "SERIES"
+                strXml += '  </c:ser>';
             });
-            strXml += " <c:numFmt formatCode=\"".concat(encodeXmlEntities(opts.dataLabelFormatCode) || 'General', "\" sourceLinked=\"0\"/>");
-            strXml += '    <c:txPr>';
-            strXml += '      <a:bodyPr/>';
-            strXml += '      <a:lstStyle/>';
-            strXml += '      <a:p>';
-            strXml += '        <a:pPr>';
-            strXml += "          <a:defRPr sz=\"1800\" b=\"".concat(opts.dataLabelFontBold ? '1' : '0', "\" i=\"").concat(opts.dataLabelFontItalic ? '1' : '0', "\" u=\"none\" strike=\"noStrike\">");
-            strXml += '            <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>';
-            strXml += '          </a:defRPr>';
-            strXml += '        </a:pPr>';
-            strXml += '      </a:p>';
-            strXml += '    </c:txPr>';
-            strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : '';
-            strXml += '    <c:showLegendKey val="0"/>';
-            strXml += '    <c:showVal val="0"/>';
-            strXml += '    <c:showCatName val="1"/>';
-            strXml += '    <c:showSerName val="0"/>';
-            strXml += '    <c:showPercent val="1"/>';
-            strXml += '    <c:showBubbleSize val="0"/>';
-            strXml += " <c:showLeaderLines val=\"".concat(opts.showLeaderLines ? '1' : '0', "\"/>");
-            strXml += '</c:dLbls>';
-            // 2: "Categories"
-            strXml += '<c:cat>';
-            strXml += '  <c:strRef>';
-            strXml += "    <c:f>Sheet1!$A$2:$A$".concat(optsChartData.labels[0].length + 1, "</c:f>");
-            strXml += '    <c:strCache>';
-            strXml += "         <c:ptCount val=\"".concat(optsChartData.labels[0].length, "\"/>");
-            optsChartData.labels[0].forEach(function (label, idx) {
-                strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(encodeXmlEntities(label), "</c:v></c:pt>");
-            });
-            strXml += '    </c:strCache>';
-            strXml += '  </c:strRef>';
-            strXml += '</c:cat>';
-            // 3: Create vals
-            strXml += '  <c:val>';
-            strXml += '    <c:numRef>';
-            strXml += "      <c:f>Sheet1!$B$2:$B$".concat(optsChartData.labels[0].length + 1, "</c:f>");
-            strXml += '      <c:numCache>';
-            strXml += "           <c:ptCount val=\"".concat(optsChartData.labels[0].length, "\"/>");
-            optsChartData.values.forEach(function (value, idx) {
-                strXml += "<c:pt idx=\"".concat(idx, "\"><c:v>").concat(value || value === 0 ? value : '', "</c:v></c:pt>");
-            });
-            strXml += '      </c:numCache>';
-            strXml += '    </c:numRef>';
-            strXml += '  </c:val>';
-            // 4: Close "SERIES"
-            strXml += '  </c:ser>';
             strXml += "  <c:firstSliceAng val=\"".concat(opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0, "\"/>");
             if (chartType === CHART_TYPE.DOUGHNUT)
                 strXml += "<c:holeSize val=\"".concat(typeof opts.holeSize === 'number' ? opts.holeSize : '50', "\"/>");
