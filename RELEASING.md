@@ -19,6 +19,7 @@
 5. Build library: npm scripts > `ship`
 6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
 7. Open `dist/*.js` and check headers
+8. Update version in: `demos/node/package.json`
 
 ## 🧪 Run Tests Before Release
 
