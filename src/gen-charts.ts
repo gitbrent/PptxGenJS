@@ -899,7 +899,14 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>'
 					if (opts.lineDataSymbolSize) strXml += `<c:size val="${opts.lineDataSymbolSize}"/>` // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
 					strXml += '  <c:spPr>'
-					strXml += `    <a:solidFill>${createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex])}</a:solidFill>`
+
+					const markerColor = opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex]
+					if (markerColor === 'transparent') {
+						strXml += '    <a:noFill/>';
+					} else {
+						strXml += "    <a:solidFill>".concat(createColorElement(markerColor), "</a:solidFill>");
+					}
+
 					strXml += `    <a:ln w="${opts.lineDataSymbolLineSize}" cap="flat"><a:solidFill>${createColorElement(opts.lineDataSymbolLineColor || seriesColor)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
