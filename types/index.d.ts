@@ -1113,6 +1113,11 @@ declare namespace PptxGenJS {
 			 */
 			characterCode?: string
 			/**
+			 * Bullet color (hex format)
+			 * @example 'FF0000' // red
+			 */
+			color?: string
+			/**
 			 * Indentation (space between bullet and text) (points)
 			 * @since v3.3.0
 			 * @default 27 // DEF_BULLET_MARGIN
