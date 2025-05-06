@@ -85,7 +85,7 @@ export default class Slide {
 	private _bkgd: string | BackgroundProps
 	public set bkgd(value: string | BackgroundProps) {
 		this._bkgd = value
-		if (!this._background || !this._background.color) {
+		if (!this._background?.color) {
 			if (!this._background) this._background = {}
 			if (typeof value === 'string') this._background.color = value
 		}
@@ -153,7 +153,7 @@ export default class Slide {
 		return this._slideNumberProps
 	}
 
-	public get newAutoPagedSlides(): PresSlide[] {
+	public get newAutoPagedSlides (): PresSlide[] {
 		return this._newAutoPagedSlides
 	}
 
