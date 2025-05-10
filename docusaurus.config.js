@@ -84,10 +84,10 @@ export default {
 			},
 			items: [
 				{
-					to: "docs/quick-start",
-					label: "Get Started",
+					to: "docs/introduction",
+					label: "Docs",
 					position: "left",
-					"aria-label": "get started",
+					"aria-label": "documentation",
 				},
 				/*{
 					to: "docs/installation",
@@ -97,13 +97,13 @@ export default {
 				},*/
 				{
 					to: "demos",
-					label: "Demos",
+					label: "Demo Showcase",
 					position: "left",
 					"aria-label": "demos",
 				},
 				{
 					to: "html2pptx",
-					label: "HTML-to-PPTX",
+					label: "HTML-to-PPTX Feature",
 					position: "left",
 					"aria-label": "html-to-pptx",
 				},
