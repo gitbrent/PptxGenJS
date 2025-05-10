@@ -15,8 +15,8 @@
 }
 
 .navbar {
-	padding-left: .75rem;
-	padding-right: .75rem;
+	padding-left: .75rem !important;
+	padding-right: .75rem !important;
 }
 
 /* --- LIGHT MODE ---------------------------------------- */
