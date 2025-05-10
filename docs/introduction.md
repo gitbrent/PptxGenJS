@@ -109,8 +109,8 @@ PptxGenJS works seamlessly in **modern web and Node environments**, thanks to du
 
 ### Builds Provided
 
-- **CommonJS**: [`dist/pptxgen.cjs.js`](./dist/pptxgen.cjs.js)
-- **ES Module**: [`dist/pptxgen.es.js`](./dist/pptxgen.es.js)
+- **CommonJS**: [`dist/pptxgen.cjs.js`](https://github.com/gitbrent/PptxGenJS/dist/pptxgen.cjs.js)
+- **ES Module**: [`dist/pptxgen.es.js`](https://github.com/gitbrent/PptxGenJS/dist/pptxgen.es.js)
 
 ## 📖 Documentation
 
