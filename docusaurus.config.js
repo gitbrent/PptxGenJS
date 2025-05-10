@@ -62,7 +62,7 @@ export default {
 		},
 		stylesheets: [
 			{
-				href: 'css/custom.css',
+				href: 'css/custom.css'
 			},
 		],
 		announcementBar: {

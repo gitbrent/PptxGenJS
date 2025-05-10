@@ -3031,6 +3031,11 @@ boolbase@^1.0.0:
   resolved "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
+bootstrap@^5.3.6:
+  version "5.3.6"
+  resolved "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.6.tgz"
+  integrity sha512-jX0GAcRzvdwISuvArXn3m7KZscWWFAf1MKBcnzaN02qWMb3jpMoUX4/qgeiGzqyIb4ojulRzs89UCUmGcFSzTA==
+
 boxen@^6.2.1:
   version "6.2.1"
   resolved "https://registry.npmjs.org/boxen/-/boxen-6.2.1.tgz"
