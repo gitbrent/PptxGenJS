@@ -9,34 +9,39 @@ export default () => {
 					<div className="col-auto">
 						<div className="my-5">
 							<h1 className="display-1 mb-3">PptxGenJS</h1>
-							<h3 className="fw-light mb-4">Create PowerPoint presentations with JavaScript</h3>
-							<h6 className="fw-light mb-3">The most popular powerpoint+js library on npm with 3,000 stars on GitHub</h6>
-							<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
-								<div className="col-12 col-md-4">
+							<h3 className="mb-4">
+								Build PowerPoint presentations with JavaScript!<br />
+								Works with Node, React, web browsers, and more.
+							</h3>
+							<h6 className="mb-4">
+								The most popular powerpoint+js library on npm with 3,000 stars on GitHub
+							</h6>
+							<div className="row row-cols row-cols-4-md mt-4">
+								<div className="col">
 									<button
 										type="button"
 										aria-label="Get Started"
-										className="w-100 fw-bold btn py-3 btn-success"
+										className="w-100 fw-bold btn btn-lg py-3 btn-success"
 										onClick={() => (window.location.href = "/PptxGenJS/docs/quick-start/")}
 									>
 										Get Started
 									</button>
 								</div>
-								<div className="col-12 col-md-4">
+								<div className="col">
 									<button
 										type="button"
 										aria-label="View Demos"
-										className="w-100 fw-bold btn py-3 btn-outline-info"
+										className="w-100 fw-bold btn btn-lg py-3 btn-primary"
 										onClick={() => (window.location.href = "/PptxGenJS/demos/")}
 									>
 										Demos
 									</button>
 								</div>
-								<div className="col-12 col-md-4">
+								<div className="col">
 									<button
 										type="button"
-										aria-label="Learn about HTML to PowerPoint"
-										className="w-100 fw-bold btn py-3 btn-outline-primary"
+										aria-label="Table-to-Slides Feature"
+										className="w-100 fw-bold btn btn-lg py-3 btn-primary"
 										onClick={() => (window.location.href = "/PptxGenJS/html2pptx/")}
 									>
 										HTML to PPTX
@@ -52,52 +57,52 @@ export default () => {
 
 	const Body = () => {
 		return (
-			<main className="useTheme py-5">
-				<div className="row g-5 mb-0">
-					<div className="col-12 col-md-6">
-						<div className="card h-100 border-0">
-							<div className="card-body border-top border-primary border-4 p-4">
-								<h4 className="text-primary mb-4">Works Everywhere</h4>
+			<main className="useTheme pb-4">
+				<div className="row row-cols-2 row-cols-md-2 g-4 mb-0">
+					<div className="col">
+						<div className="card h-100">
+							<div className="card-body border-top border-primary border-5">
+								<h4 className="text-primary">Works Everywhere</h4>
 								<ul className="mb-0">
-									<li>Every modern desktop and mobile browser is supported</li>
-									<li>Integrates with Node, Angular, React, and Electron</li>
-									<li>Compatible with Microsoft PowerPoint, Apple Keynote, and many others</li>
+									<li>Supports every major modern browser - desktop and mobile</li>
+									<li>Seamlessly integrates with Node.js, React, Angular, Vite, and Electron</li>
+									<li>Compatible with PowerPoint, Keynote, LibreOffice, and other apps</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<div className="col-12 col-md-6">
-						<div className="card h-100 border-0">
-							<div className="card-body border-top border-2 border-primary p-4 border-0">
-								<h4 className="text-primary mb-4">Full Featured</h4>
+					<div className="col">
+						<div className="card h-100">
+							<div className="card-body border-top border-primary border-5">
+								<h4 className="text-primary">Full Featured</h4>
 								<ul className="mb-0">
-									<li>All major objects are available (charts, shapes, tables, etc.)</li>
-									<li>Master Slide support for academic/corporate branding</li>
-									<li>Animated gifs, SVG images, YouTube videos, RTL text, and Asian fonts</li>
+									<li>Create all major slide objects: text, tables, shapes, images, charts, and more</li>
+									<li>Define custom Slide Masters for consistent academic or corporate branding</li>
+									<li>Supports SVGs, animated GIFs, YouTube embeds, RTL text, and Asian fonts</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<div className="col-12 col-md-6">
-						<div className="card h-100 border-0">
-							<div className="card-body border-top border-2 border-primary p-4 border-0">
-								<h4 className="text-primary mb-4">Simple And Powerful</h4>
+					<div className="col">
+						<div className="card h-100">
+							<div className="card-body border-top border-primary border-5">
+								<h4 className="text-primary">Simple &amp; Powerful</h4>
 								<ul className="mb-0">
-									<li>The absolute easiest PowerPoint library to use</li>
-									<li>Learn as you code using the built-in typescript definitions</li>
-									<li>Tons of sample code comes included (75+ slides of demos)</li>
+									<li>Ridiculously easy to use - create a presentation in 4 lines of code</li>
+									<li>Full TypeScript definitions for autocomplete and inline documentation</li>
+									<li>Includes 75+ demo slides covering every feature and usage pattern</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<div className="col-12 col-md-6">
-						<div className="card h-100 border-0">
-							<div className="card-body border-top border-2 border-primary p-4 border-0">
-								<h4 className="text-primary mb-4">Export Your Way</h4>
+					<div className="col">
+						<div className="card h-100">
+							<div className="card-body border-top border-primary border-5">
+								<h4 className="text-primary">Export Your Way</h4>
 								<ul className="mb-0">
-									<li>Exports files direct to client browsers with proper MIME-type</li>
-									<li>Other export formats available: base64, blob, stream, etc.</li>
-									<li>Presentation compression options and more</li>
+									<li>Instantly download .pptx files from the browser with proper MIME handling</li>
+									<li>Export as base64, Blob, Buffer, or Node stream</li>
+									<li>Supports compression and advanced output options for production use</li>
 								</ul>
 							</div>
 						</div>
@@ -110,7 +115,7 @@ export default () => {
 	return (
 		<Layout title="Home">
 			<div id="home">
-				<div className="container">
+				<div className="container mb-5">
 					<Header />
 					<Body />
 				</div>
