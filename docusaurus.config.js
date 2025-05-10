@@ -216,4 +216,5 @@ export default {
 			},
 		},
 	},
+	plugins: ["pptxgenjs-plugin"]
 };
