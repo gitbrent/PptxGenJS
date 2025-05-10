@@ -14,6 +14,11 @@
 	--ifm-color-primary-lightest: var(--bs-primary-bg-subtle);
 }
 
+.navbar {
+	padding-left: .75rem;
+	padding-right: .75rem;
+}
+
 /* --- LIGHT MODE ---------------------------------------- */
 html[data-theme="light"] {
 	--ifm-background-color: var(--bs-light);
