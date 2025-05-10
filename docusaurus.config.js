@@ -73,14 +73,14 @@ export default {
 			theme: lightTheme,
 			darkTheme: darkTheme,
 		},
-		image: "img/app-gears.svg",
+		image: "img/favicon.png",
 		navbar: {
 			style: "dark",
 			title: "PptxGenJS",
 			logo: {
 				alt: "PptGenJS Logo",
-				src: "img/app-gears.svg",
-				srcDark: "img/app-gears.svg",
+				src: "img/favicon.png",
+				srcDark: "img/favicon.png",
 			},
 			items: [
 				{
