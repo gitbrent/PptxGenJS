@@ -3,7 +3,7 @@ id: introduction
 title: Introduction
 ---
 
-![PptxGenJS Sample Slides](https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.png)
+![PptxGenJS Sample Slides](/img/readme_banner.png)
 
 ![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)
 ![NPM Downloads](https://img.shields.io/npm/dm/pptxgenjs?style=flat-square)

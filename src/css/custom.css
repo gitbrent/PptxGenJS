@@ -25,14 +25,26 @@ html[data-theme="light"] {
 	--ifm-font-color-base: var(--bs-body-color);
 	background-color: var(--bs-light);
 	color: var(--bs-body-color);
+
 }
 
-html[data-theme="light"] body {
+html[data-theme="light"] body #home {
 	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5), #cccccc 75%, #eeeeee);
 }
 
 html[data-theme="light"] header#indexHeader h1 {
 	color: var(--bs-primary);
+}
+
+html[data-theme="light"] .navbar--dark {
+	/* Set the navbar background color to the primary color in light mode */
+	--ifm-navbar-background-color: var(--bs-primary);
+}
+
+html[data-theme="light"] .navbar__brand,
+html[data-theme="light"] .navbar__link--active,
+html[data-theme="light"] .navbar__link:hover {
+	color: var(--bs-white);
 }
 
 /*
@@ -73,7 +85,7 @@ html[data-theme="dark"] {
 	--bs-text-primary-emphasis: #89b4fa;
 }
 
-html[data-theme="dark"] #home {
+html[data-theme="dark"] body #home {
 	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5), #010101 75%, #363636);
 }
 
