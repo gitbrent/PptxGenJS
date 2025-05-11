@@ -1,0 +1,192 @@
+/* https://github.com/lonekorean/gist-syntax-themes */
+/*@import url('https://cdn.rawgit.com/lonekorean/gist-syntax-themes/d49b91b3/stylesheets/idle-fingers.css');*/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+body .gist .highlight {
+	background: #323232;
+}
+
+body .gist .blob-num,
+body .gist .blob-code-inner,
+body .gist .pl-s2,
+body .gist .pl-stj,
+body .gist .pl-vo,
+body .gist .pl-id,
+body .gist .pl-ii {
+	color: #fff;
+}
+
+body .gist .pl-enti,
+body .gist .pl-mb,
+body .gist .pl-pdb {
+	font-weight: 700;
+}
+
+body .gist .pl-c,
+body .gist .pl-c span,
+body .gist .pl-pdc {
+	color: #bc9458;
+	font-style: italic;
+}
+
+body .gist .pl-c1,
+body .gist .pl-pdc1,
+body .gist .pl-scp {
+	color: #6c99bb;
+}
+
+body .gist .pl-ent,
+body .gist .pl-eoa,
+body .gist .pl-eoai,
+body .gist .pl-eoai .pl-pde,
+body .gist .pl-ko,
+body .gist .pl-kolp,
+body .gist .pl-mc,
+body .gist .pl-mr,
+body .gist .pl-ms,
+body .gist .pl-s3,
+body .gist .pl-sok {
+	color: #ffe5bb;
+}
+
+body .gist .pl-mdh,
+body .gist .pl-mdi,
+body .gist .pl-mdr {
+	font-weight: 400;
+}
+
+body .gist .pl-mi,
+body .gist .pl-pdi {
+	color: #ffe5bb;
+	font-style: italic;
+}
+
+body .gist .pl-sra,
+body .gist .pl-src,
+body .gist .pl-sre {
+	color: #cc3;
+}
+
+body .gist .pl-mdht,
+body .gist .pl-mi1 {
+	color: #a5c261;
+	background: rgba(0, 64, 0, .5);
+}
+
+body .gist .pl-md,
+body .gist .pl-mdhf {
+	color: #b83426;
+	background: rgba(64, 0, 0, .5);
+}
+
+body .gist .pl-ib,
+body .gist .pl-id,
+body .gist .pl-ii,
+body .gist .pl-iu {
+	background: #b83426;
+}
+
+body .gist .pl-ms1 {
+	background: #ffc66d;
+}
+
+body .gist .highlight-text-html-basic .pl-ent,
+body .gist .pl-cce,
+body .gist .pl-cn,
+body .gist .pl-coc,
+body .gist .pl-enc,
+body .gist .pl-ens,
+body .gist .pl-k,
+body .gist .pl-kos,
+body .gist .pl-kou,
+body .gist .pl-mh .pl-pdh,
+body .gist .pl-mp,
+body .gist .pl-mp .pl-s3,
+body .gist .pl-mp1 .pl-sf,
+body .gist .pl-mq,
+body .gist .pl-mri,
+body .gist .pl-pde,
+body .gist .pl-pse,
+body .gist .pl-pse .pl-s2,
+body .gist .pl-s,
+body .gist .pl-st,
+body .gist .pl-stp,
+body .gist .pl-sv,
+body .gist .pl-v,
+body .gist .pl-va,
+body .gist .pl-vi,
+body .gist .pl-vpf,
+body .gist .pl-vpu,
+body .gist .pl-mdr {
+	color: #cc7833;
+}
+
+body .gist .pl-cos,
+body .gist .pl-ml,
+body .gist .pl-pds,
+body .gist .pl-s1,
+body .gist .pl-sol,
+body .gist .pl-mb,
+body .gist .pl-pdb {
+	color: #a5c261;
+}
+
+body .gist .pl-e,
+body .gist .pl-en,
+body .gist .pl-entl,
+body .gist .pl-mo,
+body .gist .pl-sc,
+body .gist .pl-sf,
+body .gist .pl-smi,
+body .gist .pl-smp,
+body .gist .pl-mdh,
+body .gist .pl-mdi {
+	color: #ffc66d;
+}
+
+body .gist .pl-ef,
+body .gist .pl-enf,
+body .gist .pl-enm,
+body .gist .pl-entc,
+body .gist .pl-entm,
+body .gist .pl-eoac,
+body .gist .pl-eoac .pl-pde,
+body .gist .pl-eoi,
+body .gist .pl-mai .pl-sf,
+body .gist .pl-mm,
+body .gist .pl-pdv,
+body .gist .pl-smc,
+body .gist .pl-som,
+body .gist .pl-sr,
+body .gist .pl-enti {
+	color: #b83426;
+}
+
+/* === */
+
+body {
+	font: 16px 'Open Sans', sans-serif;
+}
+
+body .gist .gist-file {
+	border-color: #555 #555 #444
+}
+
+body .gist .gist-data,
+.js-task-list-container {
+	border-color: #555;
+	background: #373737 !important;
+}
+
+body .gist .gist-meta {
+	color: #ffffff;
+	background: #373737;
+}
+
+body .gist .gist-meta a {
+	color: #ffffff;
+}
+
+body .gist .gist-data .pl-s .pl-s1 {
+	color: #a5c261;
+}

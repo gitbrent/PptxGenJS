@@ -62,7 +62,7 @@ export default () => {
 					<div className="col">
 						<div className="card h-100">
 							<div className="card-body border-top border-primary border-5">
-								<h4 className="text-primary">Works Everywhere</h4>
+								<h4>Works Everywhere</h4>
 								<ul className="mb-0">
 									<li>Supports every major modern browser - desktop and mobile</li>
 									<li>Seamlessly integrates with Node.js, React, Angular, Vite, and Electron</li>
@@ -74,7 +74,7 @@ export default () => {
 					<div className="col">
 						<div className="card h-100">
 							<div className="card-body border-top border-primary border-5">
-								<h4 className="text-primary">Full Featured</h4>
+								<h4>Full Featured</h4>
 								<ul className="mb-0">
 									<li>Create all major slide objects: text, tables, shapes, images, charts, and more</li>
 									<li>Define custom Slide Masters for consistent academic or corporate branding</li>
@@ -86,7 +86,7 @@ export default () => {
 					<div className="col">
 						<div className="card h-100">
 							<div className="card-body border-top border-primary border-5">
-								<h4 className="text-primary">Simple &amp; Powerful</h4>
+								<h4>Simple &amp; Powerful</h4>
 								<ul className="mb-0">
 									<li>Ridiculously easy to use - create a presentation in 4 lines of code</li>
 									<li>Full TypeScript definitions for autocomplete and inline documentation</li>
@@ -98,7 +98,7 @@ export default () => {
 					<div className="col">
 						<div className="card h-100">
 							<div className="card-body border-top border-primary border-5">
-								<h4 className="text-primary">Export Your Way</h4>
+								<h4>Export Your Way</h4>
 								<ul className="mb-0">
 									<li>Instantly download .pptx files from the browser with proper MIME handling</li>
 									<li>Export as base64, Blob, Buffer, or Node stream</li>

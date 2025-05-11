@@ -25,14 +25,13 @@ html[data-theme="light"] {
 	--ifm-font-color-base: var(--bs-body-color);
 	background-color: var(--bs-light);
 	color: var(--bs-body-color);
-
 }
 
 html[data-theme="light"] body #home {
 	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5), #cccccc 75%, #eeeeee);
 }
 
-html[data-theme="light"] header#indexHeader h1 {
+html[data-theme="light"] header#indexHeader h3 {
 	color: var(--bs-primary);
 }
 
@@ -55,7 +54,7 @@ html[data-theme="light"] header#indexHeader h6 {
 */
 html[data-theme="light"] .useTheme .card-body,
 html[data-theme="light"] .bgTheme {
-	background-color: var(--bs-white);
+	background-color: var(--bs-secondary-bg);
 }
 
 html[data-theme="light"] .useTheme .card-body ul {
@@ -112,7 +111,7 @@ html[data-theme="dark"] .useTheme .card-footer {
 }
 
 html[data-theme="dark"] .bgTheme {
-	background-color: var(--bs-gray-800);
+	background-color: var(--bs-black);
 }
 
 /* ----- Bootstrap Adjustments ----- */

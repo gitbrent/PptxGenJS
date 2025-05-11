@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@theme/Layout";
 import pptxgen from "pptxgenjs";
 import Gist from "react-gist";
+//import '../css/gist-embed-dark-theme.css'
 
 export default () => {
 	const gistRef = React.useRef(null);
@@ -58,7 +59,6 @@ export default () => {
 	};
 
 	const BothDemos = () => {
-		// NOTE: 20210407: cant use `row-cols-12` yet as docusaurus core bootstrap is ruining `rows` style, use "col-12" etc on cols to supercede for now
 		return (
 			<section>
 				<div className="row g-5 mb-5">
@@ -78,10 +78,10 @@ export default () => {
 						<div className="bgTheme h-100 p-4">
 							<h3>React App Demo</h3>
 							<p>
-								There is a functional react application (based on CRA) available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo">demos/react</a>{" "}
-								folder. The latest build can be run as a demo below.
+								There is a functional React application (using the Vite framemwork) available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/vite-demo">demos/vite</a>{" "}
+								folder. The latest build of the demo app is updated after each release and can be run as an online demo below.
 							</p>
-							<button type="button" className="btn btn-primary" onClick={() => window.open("/PptxGenJS/demo/react/index.html", "_blank")}>
+							<button type="button" className="btn btn-primary" onClick={() => window.open("/PptxGenJS/demo/vite/index.html", "_blank")}>
 								React App Demo
 							</button>
 						</div>
@@ -108,7 +108,7 @@ export default () => {
 	return (
 		<Layout title="Demos">
 			<div className="container my-4">
-				<h1 className="mb-4">Demos</h1>
+				<h1 className="mb-4">Demo Showcase</h1>
 				<LiveDemo />
 				<BothDemos />
 				<BigImage />
