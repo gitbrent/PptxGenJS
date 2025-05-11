@@ -19,6 +19,7 @@ gulp.task("deploy-sponsor", () => gulp.src("./build/sponsor**/**").pipe(gulp.des
 
 // IMG & SITEMAP
 gulp.task("deploy-img", () => gulp.src("./build/img/*.*").pipe(gulp.dest("./img/")));
+gulp.task("deploy-img-png", () => gulp.src("./build/img/*.png").pipe(gulp.dest("./img/")));
 gulp.task("deploy-sitemap", () => gulp.src("./build/sitemap.xml").pipe(gulp.dest("./")));
 
 // Build/Deploy
@@ -34,6 +35,7 @@ gulp.task(
 		"deploy-privacy",
 		"deploy-sponsor",
 		"deploy-img",
+		"deploy-img-png",
 		"deploy-sitemap"
 	),
 	() => {
