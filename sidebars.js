@@ -14,7 +14,7 @@ export default {
 			label: 'Get Started',
 			collapsible: true,
 			collapsed: false,
-			items: ['quick-start', 'installation', 'integration'],
+			items: ['quick-start', 'installation', 'compatibility', 'integration'],
 		},
 		{
 			type: 'category',
