@@ -72,7 +72,7 @@ export const dataChartBar8Series = [
 ];
 
 // LABELS
-const EVSALES_LBLS = ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021"];
+const EVSALES_LBLS = ["2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
 const INTRATES_LBLS = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"];
 const CEOPAY_LBLS = [
 	"1965",
@@ -227,33 +227,70 @@ const BTC_LBLS = [
 	"May-2022",
 ];
 
+// FEDIVERSE MAU
+const dataPoints = [
+	{ date: "2019-01", users: 659873 },
+	{ date: "2019-11", users: 743112 },
+	{ date: "2020-03", users: 1523817 },
+	{ date: "2020-07", users: 1789023 },
+	{ date: "2020-11", users: 1987450 },
+	{ date: "2021-05", users: 2543912 },
+	{ date: "2021-11", users: 3128756 },
+	{ date: "2022-05", users: 4178263 },
+	{ date: "2022-11", users: 4983427 },
+	{ date: "2023-02", users: 6874312 },
+	{ date: "2023-05", users: 8990458 },
+	{ date: "2023-08", users: 11247839 },
+	{ date: "2023-11", users: 12987324 },
+	{ date: "2024-02", users: 14058732 },
+	{ date: "2024-06", users: 13576218 },
+	{ date: "2024-09", users: 10987413 },
+	{ date: "2024-12", users: 13158749 },
+	{ date: "2025-03", users: 14538124 }
+];
+
+// Transform the data into Chart format
+const chartData = [
+	{
+		name: "Total Users by Month",
+		labels: dataPoints.map(item => item.date),
+		values: dataPoints.map(item => item.users)
+	}
+];
+
 // WIP: https://www.globalpropertyguide.com/home-price-trends
 
 // EXPORTS
 export const CHART_DATA = {
+	Fedi_MAU: {
+		sourceUrl: "https://fediverse.observer/",
+		chartTitle: "Fediverse Statistics",
+		chartData: chartData
+	},
 	EvSales_Vol: {
-		sourceUrl: "https://www.iea.org/data-and-statistics/charts/global-sales-and-sales-market-share-of-electric-cars-2010-2021",
-		chartTitle: "Electric Vehicle Sales and Market Share",
+		sourceUrl: "https://www.iea.org/data-and-statistics/charts/electric-car-sales-2012-2024",
+		//sourceUrl: "https://www.iea.org/data-and-statistics/charts/global-sales-and-sales-market-share-of-electric-cars-2010-2021",
+		chartTitle: "Electric Vehicle Sales",
 		chartData: [
 			{
-				name: "United States",
+				name: "China",
 				labels: EVSALES_LBLS,
-				values: [0, 0.02, 0.05, 0.1, 0.12, 0.12, 0.16, 0.2, 0.36, 0.33, 0.3, 0.67],
+				values: [0.0, 0.0, 0.1, 0.2, 0.3, 0.6, 1.1, 1.1, 1.1, 3.3, 6.0, 8.1, 10.1],
 			},
 			{
 				name: "Europe",
 				labels: EVSALES_LBLS,
-				values: [0, 0.01, 0.03, 0.07, 0.1, 0.2, 0.22, 0.31, 0.4, 0.59, 1.4, 2.29],
+				values: [0.0, 0.1, 0.1, 0.2, 0.2, 0.3, 0.4, 0.6, 1.4, 2.3, 2.7, 3.2, 3.4],
 			},
 			{
-				name: "China",
+				name: "United States",
 				labels: EVSALES_LBLS,
-				values: [0, 0.01, 0.01, 0.02, 0.07, 0.22, 0.37, 0.65, 1.17, 1.1, 1.2, 3.35],
+				values: [0.1, 0.1, 0.1, 0.1, 0.2, 0.2, 0.4, 0.3, 0.3, 0.6, 1.0, 1.4, 1.7],
 			},
 			{
-				name: "Others",
+				name: "Rest of the world",
 				labels: EVSALES_LBLS,
-				values: [0, 0.02, 0.03, 0.04, 0.04, 0.04, 0.05, 0.11, 0.19, 0.16, 0.17, 0.29],
+				values: [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.2, 0.2, 0.2, 0.3, 0.6, 1.0, 1.4],
 			},
 		],
 	},
@@ -264,7 +301,7 @@ export const CHART_DATA = {
 			{
 				name: "Global Market Share (%)",
 				labels: EVSALES_LBLS,
-				values: [0.01, 0.07, 0.17, 0.27, 0.41, 0.67, 0.89, 1.36, 2.3, 2.49, 4.11, 8.57],
+				values: [0.17, 0.27, 0.41, 0.67, 0.89, 1.36, 2.3, 2.49, 4.11, 8.57, 12, 15, 19],
 			},
 		],
 	},

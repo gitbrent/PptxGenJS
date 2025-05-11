@@ -43,7 +43,9 @@ export function genSlides_Media(pptx) {
 
 	genSlide01(pptx);
 	genSlide02(pptx);
-	if (typeof window !== "undefined" && $ && $("#chkYoutube").prop("checked")) genSlide03(pptx);
+	if (typeof window !== "undefined" && document.querySelector("#chkYoutube")?.checked) {
+		genSlide03(pptx);
+	}
 	//if (window && window.location.href.indexOf("localhost:8000") > -1) genSlide03(pptx);
 }
 

@@ -8,16 +8,18 @@
  */
 
 import {
-	TABLE_NAMES_F,
-	DEMO_TITLE_OPTS,
-	DEMO_TITLE_TEXT,
-	DEMO_TITLE_TEXTBK,
 	BASE_OPTS_SUBTITLE,
 	BASE_TABLE_OPTS,
 	BASE_TEXT_OPTS_L,
 	BASE_TEXT_OPTS_R,
+	DEMO_TITLE_OPTS,
+	DEMO_TITLE_TEXT,
+	DEMO_TITLE_TEXTBK,
 	LOREM_IPSUM,
+	TABLE_NAMES_F,
+	TESTMODE
 } from "./enums.mjs";
+import { TABLE_AUTO_PAGE_TEST } from "./enums_tables.mjs";
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
@@ -27,18 +29,16 @@ export function genSlides_Table(pptx) {
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
-
 	pptx.addSection({ title: "Tables: Auto-Paging" });
 	genSlide07(pptx);
-
 	pptx.addSection({ title: "Tables: Auto-Paging Complex" });
 	genSlide08(pptx);
-
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
-
-	pptx.addSection({ title: "Tables: QA" });
-	genSlide10(pptx);
+	if (TESTMODE) {
+		pptx.addSection({ title: "Tables: QA" });
+		genSlide10(pptx);
+	}
 }
 
 /**
@@ -430,10 +430,10 @@ function genSlide05(pptx) {
 	);
 	slide.addText(
 		"[\n" +
-			"  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right',  breakLine:true } },\n" +
-			"  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n" +
-			"  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left'    } }\n" +
-			"]",
+		"  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right',  breakLine:true } },\n" +
+		"  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n" +
+		"  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left'    } }\n" +
+		"]",
 		{ x: 1, y: 1.1, w: 11, h: 1.25, margin: 0.1, fontFace: "Courier", fontSize: 13, fill: { color: "F1F1F1" }, color: "333333" }
 	);
 
@@ -931,7 +931,7 @@ function genSlide10(pptx) {
 			autoPage: true,
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
-			verbose: true,
+			//verbose: true,
 		});
 	}
 
@@ -976,7 +976,7 @@ function genSlide10(pptx) {
 			autoPage: true,
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
-			verbose: true,
+			//verbose: true,
 		});
 	}
 
@@ -1023,7 +1023,46 @@ function genSlide10(pptx) {
 			autoPage: true,
 			autoPageRepeatHeader: true,
 			autoPageLineWeight: -0.4,
-			verbose: true,
+			//verbose: true,
+		});
+	}
+
+	// SLIDE 4: status report style
+	{
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+
+		let projRows = [
+			[
+				{ text: "id", options: { bold: true, fill: "1F3864", color: "ffffff" } },
+				{ text: "Content", options: { bold: true, fill: "ffaacc", color: "ffffff" } },
+			],
+			[
+				{ text: "1" },
+				{ text: TABLE_AUTO_PAGE_TEST.replace(/\n/g, '') },
+			],
+			[
+				{ text: "2" },
+				{ text: TABLE_AUTO_PAGE_TEST },
+			]
+		];
+
+		slide.addTable(projRows, {
+			x: 0.4,
+			y: 2.0,
+			colW: [0.5, 8.0],
+			border: { pt: 0.2, color: "818181" },
+			align: "left",
+			valign: "middle",
+			fontFace: "Arial",
+			fontSize: 10,
+			margin: 0.05,
+			autoPage: true,
+			autoPageCharWeight: -0.5,
+			autoPageLineWeight: 1,
+			autoPageSlideStartY: 0.7,
+			autoPageRepeatHeader: true,
+			autoPageHeaderRows: 1,
+			//verbose: true,
 		});
 	}
 }

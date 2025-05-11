@@ -4,7 +4,7 @@
  */
 
 // LIBRARY
-export const TESTMODE = typeof window !== "undefined" && window.location && window.location.href.toLowerCase().indexOf("http://localhost:8000/") > -1;
+export const TESTMODE = typeof window !== "undefined" && window.location && window.location.href.toLowerCase().indexOf("http://localhost") > -1;
 export const COMPRESS = true; // TEST: `compression` write prop
 
 // CONST
@@ -20,8 +20,9 @@ export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_W
 
 // STYLES
 export const BKGD_LTGRAY = "F1F1F1";
+export const BKGD_LRGRAY = "E6E6E6";
 export const COLOR_BLUE = "0088CC";
-export const CODE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 6, fontSize: 10, color: '696969' };
+export const CODE_STYLE = { fill: { color: BKGD_LRGRAY }, margin: 6, fontSize: 10, color: '696969' };
 export const TITLE_STYLE = { fill: { color: BKGD_LTGRAY }, margin: 4, fontSize: 18, fontFace: "Segoe UI", color: COLOR_BLUE, valign: "top", align: "center" };
 
 // OPTIONS
@@ -46,6 +47,10 @@ export const DEMO_TITLE_OPTS = { fontSize: 13, color: "9F9F9F" };
 
 // PATHS
 export const IMAGE_PATHS = {
+	fediverse_tree: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/fediverse_tree.jpg" },
+	fediverse_actpub: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/fediverse_actpub.png" },
+	pixelfed_logo_svg: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/pixelfed_icon.svg" },
+	kritaSquare: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/krita_square.jpg" },
 	peace4: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/peace4.png" },
 	starlabsBkgd: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_bkgd.jpg" },
 	starlabsLogo: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_logo.png" },
@@ -63,6 +68,7 @@ export const IMAGE_PATHS = {
 	sydneyBridge: {
 		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg",
 	},
+	nycSubway: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/nyc-subway.png" },
 	tokyoSubway: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg" },
 	sample_aif: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.aif" },
 	sample_avi: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi" },
