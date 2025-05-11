@@ -4,9 +4,16 @@
  */
 import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.mjs";
 import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.mjs";
-import { BKGD_STARLABS, CHECKMARK_GRN, LOGO_STARLABS, STARLABS_LOGO_SM, SVG_INFO_CIRCLE } from "../../modules/media.mjs";
+import { BKGD_STARLABS, CHECKMARK_GRN, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.mjs";
 
 // ==================================================================================================================
+const modalBusy = new bootstrap.Modal(document.getElementById('modalBusy'));
+
+function closeModal() {
+	// FIXED: Do this or modal wont close in bs-5.4
+	//modalBusy.hide();
+	setTimeout(() => modalBusy.hide(), 500);
+}
 
 export function doAppStart() {
 	// REALITY-CHECK: Ensure user has a modern browser
@@ -20,112 +27,122 @@ export function doAppStart() {
 
 	// STEP 1: Set UI to dev mode (if you're running locally, congrats you're a dev!)
 	if (window.location.href.indexOf("http://localhost:8000/") > -1) {
-		document.getElementById("basicPres").classList.add("d-none");
-		document.getElementById("codeSandbox").classList.remove("d-none");
+		//document.getElementById("basicPres").classList.add("d-none");
+		//document.getElementById("codeSandbox").classList.remove("d-none");
 	}
 
 	// STEP 2: Introduction tab: Library Info
 	{
 		if (typeof Promise !== "function") {
-			$("header").after(
-				'<div class="alert alert-danger mb-4"><h5>IE11 IS NO LONGER SUPPORTED!</h5>Promise is undefined! (IE11 requires promise.min.js)</div>'
-			);
+			const headerElement = document.querySelector("header");
+			const alertDiv = document.createElement("div");
+			alertDiv.className = "alert alert-danger mb-4";
+			alertDiv.innerHTML = `<h5>IE11 IS NO LONGER SUPPORTED!</h5>Promise is undefined! (IE11 requires promise.min.js)`;
+			headerElement.insertAdjacentElement("afterend", alertDiv);
 		} else {
-			let pptx = new PptxGenJS();
-
-			$("#infoLbl_PptxVers").prepend(`<span class="cursor-help me-1" title="${pptx.version}">${SVG_INFO_CIRCLE}</span>`);
-			$("#infoBox_PptxVers").val(pptx.version);
+			const pptx = new PptxGenJS();
 			//
-			$("#infoLbl_ChartType").prepend(
-				`<span class="cursor-help me-1" title="${Object.keys(pptx.ChartType).join("; ")}">${SVG_INFO_CIRCLE}</span>`
-			);
-			$("#infoBox_ChartType").val(Object.keys(pptx.ChartType).length);
+			document.getElementById('infoLbl_PptxVers').title = pptx.version;
+			document.getElementById("infoBox_PptxVers").value = pptx.version;
 			//
-			$("#infoLbl_ShapeType").prepend(
-				`<span class="cursor-help me-1" title="${Object.keys(pptx.ShapeType).join("; ")}">${SVG_INFO_CIRCLE}</span>`
-			);
-			$("#infoBox_ShapeType").val(Object.keys(pptx.ShapeType).length);
+			document.getElementById('infoLbl_ChartType').title = Object.keys(pptx.ChartType).join("\n");
+			document.getElementById("infoBox_ChartType").value = Object.keys(pptx.ChartType).length;
 			//
-			$("#infoLbl_SchemeColor").prepend(
-				`<span class="cursor-help me-1" title="${Object.keys(pptx.SchemeColor).join("; ")}">${SVG_INFO_CIRCLE}</span>`
-			);
-			$("#infoBox_SchemeColor").val(Object.keys(pptx.SchemeColor).length);
+			document.getElementById('infoLbl_ShapeType').title = Object.keys(pptx.ShapeType).join(" • ");
+			document.getElementById("infoBox_ShapeType").value = Object.keys(pptx.ShapeType).length;
+			//
+			document.getElementById('infoLbl_SchemeColor').title = Object.keys(pptx.SchemeColor).join("\n");
+			document.getElementById("infoBox_SchemeColor").value = Object.keys(pptx.SchemeColor).length;
 		}
 	}
 
 	// STEP 3: Build UI elements
-	buildDataTable();
-	let pptx = new PptxGenJS();
-	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => $("#selSlideMaster").append(`<option value="${name}">${name}</option>`));
+	{
+		buildDataTable();
+		const selSlideMaster = document.getElementById("selSlideMaster");
+		["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach((name) => {
+			const option = document.createElement("option");
+			option.value = name;
+			option.textContent = name;
+			selSlideMaster.appendChild(option);
+		});
+	}
 
 	// STEP 4: Populate code areas
 	{
-		$("#demo-basic").text(
-			"// STEP 1: Create a new Presentation\n" +
-				"let pptx = new PptxGenJS();\n" +
-				"\n" +
-				"// STEP 2: Add a new Slide to the Presentation\n" +
-				"let slide = pptx.addSlide();\n" +
-				"\n" +
-				"// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n" +
-				"slide.addText(\n" +
-				"  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n" +
-				"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n" +
-				");\n" +
-				"\n" +
-				"// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n" +
-				"pptx.writeFile({ fileName: 'PptxGenJs-Basic-Slide-Demo' });\n"
-		);
+		document.getElementById("demo-basic").textContent =
+			"// STEP 1: Create a Presentation\n" +
+			"const pptx = new PptxGenJS();\n" +
+			"\n" +
+			"// STEP 2: Add a Slide to the Presentation\n" +
+			"const slide = pptx.addSlide();\n" +
+			"\n" +
+			"// STEP 3: Add objects to the Slide (charts, tables, shapes, images, etc.)\n" +
+			"slide.addText(\n" +
+			"  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n" +
+			"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'e6e6e6' } }\n" +
+			");\n" +
+			"\n" +
+			"// STEP 4: Save/Export the Presentation\n" +
+			"pptx.writeFile({ fileName: 'basic-demo.pptx' });\n";
 
-		$("#demo-sandbox").html(
-			"let pptx = new PptxGenJS();\n" +
-				"let slide = pptx.addSlide();\n" +
-				//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
-				//+ "pptx.layout = 'A3';\n"
-				"\n" +
-				"slide.addText(\n" +
-				"  [\n" +
-				"    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1, breakLine:true } },\n" +
-				"    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
-				"    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
-				"    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n" +
-				"  ],\n" +
-				"  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n" +
-				");\n" +
-				"\n" +
-				"pptx.writeFile({ fileName: 'PptxGenJS-Sandbox.pptx' });\n"
-		);
+		document.getElementById("demo-sandbox").innerHTML =
+			"const pptx = new PptxGenJS();\n" +
+			"const slide = pptx.addSlide();\n" +
+			//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
+			//+ "pptx.layout = 'A3';\n"
+			"\n" +
+			"slide.addText(\n" +
+			"  [\n" +
+			"    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1, breakLine:true } },\n" +
+			"    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
+			"    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
+			"    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n" +
+			"  ],\n" +
+			"  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n" +
+			");\n" +
+			"\n" +
+			"pptx.writeFile({ fileName: 'pptxgenjs-sandbox.pptx' });\n";
 
-		$("#demo-master").html(
+		document.getElementById("demo-master").innerHTML =
+			"// STEP 1: Define a master slide starting with a unique title\n" +
 			"pptx.defineSlideMaster({\n" +
-				"  title : 'MASTER_SLIDE',\n" +
-				"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
-				"  background: { color: 'FFFFFF' },\n" +
-				"  objects: [\n" +
-				"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },\n" +
-				"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
-				"    { text:  {\n" +
-				"        text: 'S.T.A.R. Laboratories - Confidential',\n" +
-				"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n" +
-				"    }}\n" +
-				//+ "    }},\n"
-				//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
-				//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
-				"  ],\n" +
-				"  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n" +
-				"});\n"
-		);
+			"  title : 'COMPANY_BRANDING',\n" +
+			"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
+			"  background: { color: 'FFFFFF' },\n" +
+			"  objects: [\n" +
+			"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },\n" +
+			"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
+			"    { text:  {\n" +
+			"        text: 'S.T.A.R. Laboratories - Confidential',\n" +
+			//"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n" +
+			"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF' }\n" +
+			"    }}\n" +
+			//+ "    }},\n"
+			//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
+			//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
+			"  ],\n" +
+			"  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n" +
+			"});\n" +
+			"\n" +
+			"// STEP 2: Apply the slide master to a Slide by passing `masterName` property\n" +
+			'let slide = pptx.addSlide({ masterName: "COMPANY_BRANDING" });\n';
 	}
 
 	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
+	document.querySelectorAll("#tabLargeCellText tbody td").forEach((td) => {
+		td.textContent = LOREM_IPSUM.substring(0, 3000);
+	});
+	const tbody = document.querySelector("#tabLotsOfLines tbody");
 	for (let idx = 0; idx < 36; idx++) {
-		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
+		const row = document.createElement("tr");
+		row.innerHTML = `<td>Row-${idx}</td><td>Col-B</td><td>Col-C</td>`;
+		tbody.appendChild(row);
 	}
 
 	// LAST: Re-highlight code
-	$(".tab-content code.language-javascript").each(function (idx, ele) {
-		Prism.highlightElement($(ele)[0]);
+	document.querySelectorAll(".tab-content code.language-javascript").forEach((ele) => {
+		Prism.highlightElement(ele);
 	});
 
 	// LAST: Nav across sessions
@@ -134,89 +151,112 @@ export function doAppStart() {
 
 export function runAllDemos() {
 	if (console.time) console.time("runAllDemos");
-	$("#modalBusy").modal("show");
+	modalBusy.show();
 
 	runEveryTest()
-		.catch(function (err) {
-			console.error(err.toString());
-			$("#modalBusy").modal("hide");
+		.catch(function(err) {
+			console.error(err);
+			closeModal();
 		})
-		.then(function () {
+		.then(function() {
 			if (console.timeEnd) console.timeEnd("runAllDemos");
-			$("#modalBusy").modal("hide");
+			closeModal();
 		});
 }
 
 export function execGenSlidesFunc(type) {
 	if (console.time) console.time("execGenSlidesFunc: " + type);
-	$("#modalBusy").modal("show");
+	modalBusy.show();
 
 	execGenSlidesFuncs(type)
-		.catch(function (err) {
-			$("#modalBusy").modal("hide");
+		.catch((err) => {
 			console.error(err);
+			closeModal();
 		})
-		.then(function () {
-			$("#modalBusy").modal("hide");
+		.then(() => {
 			if (console.timeEnd) console.timeEnd("execGenSlidesFunc: " + type);
+			closeModal();
 		});
 }
 
 export function buildDataTable() {
 	// STEP 1:
-	$("#tabAutoPaging tbody").empty();
+	document.querySelector("#tabAutoPaging tbody").innerHTML = "";
 
 	// STEP 2:
-	for (let idx = 0; idx < $("#numTab2SlideRows").val(); idx++) {
-		let strHtml =
-			"<tr>" +
-			'<td style="text-align:center">' +
-			(idx + 1) +
-			"</td>" +
-			"<td>" +
-			TABLE_NAMES_L[Math.floor(Math.random() * 10)] +
-			"</td>" +
-			"<td>" +
-			TABLE_NAMES_F[Math.floor(Math.random() * 10)] +
-			"</td>" +
-			"<td>Text:<br>" +
-			LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
-			"</td>" +
-			"</tr>";
-		$("#tabAutoPaging tbody").append(strHtml);
+	const tbody = document.querySelector("#tabAutoPaging tbody");
+	const numRows = document.querySelector("#numTab2SlideRows").value;
+	for (let idx = 0; idx < numRows; idx++) {
+		const row = document.createElement("tr");
+		row.innerHTML = `
+		<td style="text-align:center">${idx + 1}</td>
+		<td>${TABLE_NAMES_L[Math.floor(Math.random() * 10)]}</td>
+		<td>${TABLE_NAMES_F[Math.floor(Math.random() * 10)]}</td>
+		<td>Text:<br>${LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130)}</td>
+	  `;
+		tbody.appendChild(row);
 	}
 
 	// STEP 3: Add some style to table for testing
 	// TEST Padding
-	$("#tabAutoPaging thead th").css("padding", "10px 5px");
+	document.querySelectorAll("#tabAutoPaging thead th").forEach((th) => {
+		th.style.padding = "10px 5px";
+	});
 	// TEST font-size/auto-paging
-	$("#tabAutoPaging tbody tr:first-child td:last-child").css("font-size", "12px");
-	$("#tabAutoPaging tbody tr:last-child td:last-child").css("font-size", "16px");
+	const firstRowLastCell = document.querySelector("#tabAutoPaging tbody tr:first-child td:last-child");
+	if (firstRowLastCell) {
+		firstRowLastCell.style.fontSize = "12px";
+	}
+	const lastRowLastCell = document.querySelector("#tabAutoPaging tbody tr:last-child td:last-child");
+	if (lastRowLastCell) {
+		lastRowLastCell.style.fontSize = "16px";
+	}
 }
 
-export function table2slidesDemoForTab(inTabId, inOpts) {
-	let pptx = new PptxGenJS();
-	pptx.tableToSlides(inTabId, inOpts || null);
+export function padDataTable() {
+	const paddingValue = document.getElementById('numTab2Padding').value + 'px';
+	document.querySelectorAll('#tabAutoPaging th, #tabAutoPaging td').forEach((element) => {
+		element.style.padding = paddingValue;
+	});
+}
+
+export function table2slidesDemoForTab(inTabId, inOpts = {}) {
+	const pptx = new PptxGenJS();
+	// Demo master slide as demo is in dark mode
+	pptx.defineSlideMaster({ title: 'DEMO_MASTER', background: { color: 'e6e6e6' } });
+	// Ensure `slideMaster` is always set
+	const defaultOpts = { masterSlideName: 'DEMO_MASTER' };
+	const mergedOpts = { ...defaultOpts, ...inOpts };
+	// Pass the merged options
+	pptx.tableToSlides(inTabId, mergedOpts);
 	pptx.writeFile({ fileName: `${inTabId}_${getTimestamp()}` });
 }
 
 export function table2slides1() {
 	// FIRST: Instantiate new PptxGenJS instance
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 
 	// STEP 1: Add Master Slide defs / Set slide size/layout
 	addMasterDefs(pptx);
 	pptx.layout = "LAYOUT_WIDE";
 
 	// STEP 2: Set generated Slide options
-	let objOpts = {
+	const objOpts = {
 		autoPageCharWeight: -0.2,
 		autoPageLineWeight: 0,
 		verbose: false,
 	};
-	if ($("#repeatHeadRow").val() == "Y") objOpts.autoPageRepeatHeader = true;
-	if ($("#slideStartY").val()) objOpts.autoPageSlideStartY = Number($("#slideStartY").val());
-	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
+	if (document.querySelector("#repeatHeadRow").value === "Y") {
+		objOpts.autoPageRepeatHeader = true;
+	}
+	const slideStartY = document.querySelector("#slideStartY").value;
+	if (slideStartY) {
+		objOpts.autoPageSlideStartY = Number(slideStartY);
+	}
+	const selSlideMaster = document.querySelector("#selSlideMaster").value;
+	if (selSlideMaster) {
+		objOpts.masterSlideName = selSlideMaster;
+	}
 
 	// STEP 3: Pass table to tableToSlides function to produce 1-N slides
 	pptx.tableToSlides("tabAutoPaging", objOpts);
@@ -227,18 +267,28 @@ export function table2slides1() {
 
 export function table2slides2(addImage) {
 	// FIRST: Instantiate new PptxGenJS instance
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 
 	// STEP 1: Add Master Slide defs / Set slide size/layout
 	pptx.layout = "LAYOUT_WIDE";
 	addMasterDefs(pptx);
 
 	// STEP 2: Set generated Slide options
-	let objOpts = {};
+	const objOpts = {};
 	//objOpts.verbose = true;
-	if ($("#repeatHeadRow").val() == "Y") objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
-	if ($("#slideStartY").val()) objOpts.newSlideStartY = Number($("#slideStartY").val()); // TEST: DEPRECATED: `newSlideStartY`
-	if ($("#selSlideMaster").val()) objOpts.masterSlideName = $("#selSlideMaster").val();
+	if (document.querySelector("#repeatHeadRow").value === "Y") {
+		// TEST: DEPRECATED: addHeaderToEach
+		objOpts.addHeaderToEach = true;
+	}
+	const slideStartY = document.querySelector("#slideStartY").value;
+	if (slideStartY) {
+		// TEST: DEPRECATED: `newSlideStartY`
+		objOpts.newSlideStartY = Number(slideStartY);
+	}
+	const selSlideMaster = document.querySelector("#selSlideMaster").value;
+	if (selSlideMaster) {
+		objOpts.masterSlideName = selSlideMaster;
+	}
 
 	// STEP 3: Add a custom shape (text in this case) to each Slide
 	// EXAMPLE: Add any dynamic content to each generated Slide
@@ -268,11 +318,55 @@ export function table2slides2(addImage) {
 
 // ==================================================================================================================
 
+export function doRunBasicDemo() {
+	try {
+		clearAlert();
+		new Function(document.getElementById('demo-basic').textContent)();
+	}
+	catch (err) {
+		showAlert(err.message);
+		console.error(err);
+	}
+}
+
+export function doRunSandboxDemo() {
+	try {
+		clearAlert();
+		new Function(document.getElementById('demo-sandbox').textContent)();
+	}
+	catch (err) {
+		showAlert(err.message);
+		console.error(err);
+
+	}
+}
+
+// Utility function to clear any previous alert
+function clearAlert() {
+	const alertContainer = document.getElementById('alert-container');
+	if (alertContainer) {
+		alertContainer.innerHTML = '';
+	}
+}
+
+// Utility function to show a new alert
+function showAlert(message) {
+	let alertContainer = document.getElementById('alert-container');
+	alertContainer.innerHTML = `
+        <div class="alert alert-danger mt-3" role="alert">
+            <h5>Error</h5>
+			<code>${message}</code>
+        </div>
+    `;
+}
+
+// ==================================================================================================================
+
 function doNavRestore() {
 	const triggerTabList = [].slice.call(document.querySelectorAll("#myTab button"));
-	triggerTabList.forEach(function (triggerEl) {
-		var tabTrigger = new bootstrap.Tab(triggerEl);
-		triggerEl.addEventListener("click", function (event) {
+	triggerTabList.forEach(function(triggerEl) {
+		const tabTrigger = new bootstrap.Tab(triggerEl);
+		triggerEl.addEventListener("click", function(event) {
 			event.preventDefault();
 			tabTrigger.show();
 		});
@@ -285,11 +379,11 @@ function doNavRestore() {
 }
 
 function getTimestamp() {
-	let dateNow = new Date();
-	let dateMM = dateNow.getMonth() + 1;
-	let dateDD = dateNow.getDate();
-	let h = dateNow.getHours();
-	let m = dateNow.getMinutes();
+	const dateNow = new Date();
+	const dateMM = dateNow.getMonth() + 1;
+	const dateDD = dateNow.getDate();
+	const h = dateNow.getHours();
+	const m = dateNow.getMinutes();
 	return (
 		dateNow.getFullYear() +
 		"" +
@@ -358,9 +452,9 @@ function addMasterDefs(pptx) {
 // ==================================================================================================================
 
 function doTestSimple() {
-	let pptx = new PptxGenJS();
-	let slide = pptx.addSlide();
-	let optsTitle = { color: "9F9F9F", marginPt: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0] };
+	const pptx = new PptxGenJS();
+	const slide = pptx.addSlide();
+	const optsTitle = { color: "9F9F9F", marginPt: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0] };
 
 	pptx.layout({ name: "A3", width: 16.5, height: 11.7 });
 	slide.slideNumber({ x: 0.5, y: "90%" });
@@ -421,9 +515,9 @@ function doTestSimple() {
 
 /* The "Text" demo on the PptxGenJS homepage - codified here so we can quickly reproduce the screencaps, etc. as needed */
 function doHomepageDemo_Text() {
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
-	let slide = pptx.addSlide();
+	const slide = pptx.addSlide();
 
 	slide.addText("BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好", {
 		x: 0.0,
@@ -474,7 +568,7 @@ function doHomepageDemo_Text() {
 	slide.addText("Star bullet! ", { x: 8.0, y: 5.6, w: "40%", h: 0.38, color: "CC0000", bullet: { code: "2605" } });
 	slide.addText("Check bullet!", { x: 8.0, y: 5.9, w: "40%", h: 0.38, color: "00CD00", bullet: { code: "2713" } });
 
-	let shadowOpts = { type: "outer", color: "696969", blur: 3, offset: 10, angle: 45, opacity: 0.8 };
+	const shadowOpts = { type: "outer", color: "696969", blur: 3, offset: 10, angle: 45, opacity: 0.8 };
 	slide.addText("Text Shadow:", { x: 0.5, y: 6.0, w: "40%", h: 0.38, color: "0088CC" });
 	slide.addText("Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)", {
 		x: 0.5,
@@ -490,7 +584,7 @@ function doHomepageDemo_Text() {
 }
 
 function testTTS() {
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
 	/*
 	let slide = pptx.addSlide();
@@ -511,22 +605,22 @@ function testTTS() {
 }
 
 function testTTSMulti() {
-	let ttsTitleText = { fontSize: 14, color: "0088CC", bold: true };
-	let ttsMultiOpts = { fontSize: 13, color: "9F9F9F", verbose: true };
-	let arrRows = [];
-	let arrText = [];
+	const ttsTitleText = { fontSize: 14, color: "0088CC", bold: true };
+	const ttsMultiOpts = { fontSize: 13, color: "9F9F9F", verbose: true };
+	const arrRows = [];
+	const arrText = [];
 	//
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
 
 	for (let idx = 0; idx < TABLE_NAMES_F.length; idx++) {
-		let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
+		const strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
 		arrRows.push([idx, TABLE_NAMES_F[idx], strText]);
 		arrText.push([strText]);
 	}
 
 	// autoPageLineWeight option demos
-	let slide = pptx.addSlide();
+	const slide = pptx.addSlide();
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: ttsTitleText },
@@ -558,7 +652,7 @@ function testTTSMulti() {
 }
 
 function table2slidesBullets() {
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 	pptx.tableToSlides("tableWithBullets");
 	pptx.writeFile({ fileName: `tabBullets_${getTimestamp()}` });
 }
@@ -566,8 +660,8 @@ function table2slidesBullets() {
 /* DESC: Test for backward compatibility with Slide Masters defined in `pptxgen.masters.js` */
 function testOnly_LegacyMasterSlides() {
 	// TEST-ONLY: DO NOT USE/COPY ME!!
-	let pptx = new PptxGenJS();
+	const pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
-	let slide = pptx.addSlide(pptx.masters.TITLE_SLIDE);
+	const slide = pptx.addSlide(pptx.masters.TITLE_SLIDE);
 	pptx.writeFile({ fileName: `Demo-LegacyMasterSlides_${getTimestamp()}` });
 }
