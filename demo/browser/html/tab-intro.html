@@ -1,0 +1,88 @@
+<div class="tab-pane active" id="tab-introduction" role="tabpanel" aria-labelledby="nav-introduction">
+	<section id="libraryInfo" class="border px-4 py-3 mb-4">
+		<div class="row g-4">
+			<div class="col">
+				<h5 class="text-info">Library Version</h5>
+				<div class="input-group">
+					<span class="input-group-text"><span class="cursor-help" id="infoLbl_PptxVers" title=""><img class="text-white" src="images/info-circle.svg"
+								alt="info"></span></span>
+					<input id="infoBox_PptxVers" type="text" class="form-control" disabled placeholder="Version" aria-label="Version">
+				</div>
+				<div class="form-text"><code>pptx.version</code></div>
+			</div>
+			<div class="col">
+				<h5 class="text-info">Scheme Colors</h5>
+				<div class="input-group">
+					<span class="input-group-text"><span id="infoLbl_SchemeColor" title="" class="cursor-help"></label><img class="text-white" src="images/info-circle.svg"
+								alt="info"></span></span>
+					<input id="infoBox_SchemeColor" type="text" class="form-control" disabled placeholder="Schemes" aria-label="Version">
+				</div>
+				<div class="form-text"><code>Object.keys(pptx.SchemeColor)</code></div>
+			</div>
+			<div class="col">
+				<h5 class="text-info">Chart Types</h5>
+				<div class="input-group">
+					<span class="input-group-text"><span id="infoLbl_ChartType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg"
+								alt="info"></span></span>
+					<input id="infoBox_ChartType" type="text" class="form-control" disabled placeholder="Charts" aria-label="Version">
+				</div>
+				<div class="form-text"><code>Object.keys(pptx.ChartType)</code></div>
+			</div>
+			<div class="col">
+				<h5 class="text-info">Shape Types</h5>
+				<div class="input-group">
+					<span class="input-group-text"><span id="infoLbl_ShapeType" title="" class="cursor-help"><img class="text-white" src="images/info-circle.svg"
+								alt="info"></span></span>
+					<input id="infoBox_ShapeType" type="text" class="form-control" disabled placeholder="Shapes" aria-label="Version">
+				</div>
+				<div class="form-text"><code>Object.keys(pptx.ShapeType)</code></div>
+			</div>
+		</div>
+	</section>
+	<div class="accordion" id="accordCodeSandbox">
+		<div class="accordion-item" data-desc="acdCode01">
+			<h2 id="acdCodeHead01" class="accordion-header">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#acdCodeBody01" aria-expanded="true" aria-controls="acdCodeBody01">
+					Basic Presentation
+				</button>
+			</h2>
+			<div id="acdCodeBody01" class="accordion-collapse collapse show" aria-labelledby="acdCodeHead01" data-bs-parent="#accordCodeSandbox">
+				<div class="accordion-body bg-dark">
+					<section id="basicPresentation">
+						<div class="bg-primary-subtle text-white mb-3 border-start border-info border-4 px-4 py-3 mb-4">
+							<h4 class="text-info">Live Demo</h4>
+							<div class="text-white">Click below to create a basic presentation.</div>
+						</div>
+						<pre class="bg-black mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
+						<div class="text-center">
+							<button id="btnRunBasicDemo" type="button" class="btn btn-success px-5" onclick="">Run Basic Demo</button>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-item" data-desc="acdCode02">
+			<h2 id="acdCodeHead02" class="accordion-header">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acdCodeBody02" aria-expanded="false"
+					aria-controls="acdCodeBody02">
+					Code Sandbox
+				</button>
+			</h2>
+			<div id="acdCodeBody02" class="accordion-collapse collapse" aria-labelledby="acdCodeHead02" data-bs-parent="#accordCodeSandbox">
+				<div class="accordion-body bg-dark">
+					<section id="codeSandbox">
+						<div class="bg-primary-subtle text-white mb-3 border-start border-info border-4 px-4 py-3 mb-4">
+							<h4 class="text-info">Editable Code</h4>
+							<div class="text-white">Use the area below to easily try out various library features.</div>
+						</div>
+						<pre class="bg-black mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
+						<div class="text-center">
+							<button id="btnRunSandboxDemo" type="button" class="btn btn-success px-5" onclick="">Execute Sandbox Code</button>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="alert-container"></div>
+</div>

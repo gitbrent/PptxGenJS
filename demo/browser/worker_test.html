@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="https://github.com/gitbrent">
+	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
+	<meta name="version" content="4.0.0">
+	<title>PptxGenJS | Web Worker API Demo</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container my-5">
+		<h1 class="display-1">PptxGenJS | Web Worker API Demo</h1>
+		<div class="alert alert-primary border-0 border-info border-start border-4 my-4">
+			<h5>About</h5>
+			<ul class="mb-0">
+				<li>Test generating a PowerPoint presentation using pptxgenjs in a Worker.</li>
+				<li>The generated pptx will download automatically.</li>
+				<li>(NOTE: This will not run in Safari locally!)</li>
+			</ul>
+		</div>
+		<button id="generatePptWorker" class="btn btn-lg btn-primary">Generate PowerPoint (using Worker)</button>
+		<div class="bg-black p-4 mt-4">
+			<h6 class="text-info">MESSAGES</h6>
+			<div id="workerStatus">Loading...</div>
+		</div>
+	</div>
+	<script src="./js/FileSaver.min.js"></script>
+	<script src="./js/worker_test_main.js"></script>
+</body>
+</html>
