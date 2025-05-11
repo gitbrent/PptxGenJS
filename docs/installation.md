@@ -3,57 +3,35 @@ id: installation
 title: Installation
 ---
 
-## Modern Applications
+Choose your preferred method to install **PptxGenJS**:
 
-### Install with [NPM](https://www.npmjs.com/package/pptxgenjs)
+### Quick Install (Node-based)
 
 ```bash
-npm install pptxgenjs --save
+npm install pptxgenjs
 ```
-
-### Install with Yarn
 
 ```bash
 yarn add pptxgenjs
 ```
 
-### Additional Builds
+### CDN (Browser Usage)
 
-- CommonJS: `dist/pptxgen.cjs.js`
-- ES Module: `dist/pptxgen.es.js`
-
-## Browser-Based Applications
-
-### Using CDN
-
-[jsDelivr Home](https://www.jsdelivr.com/package/npm/pptxgenjs)
-
-Bundle
+Use the bundled or minified version via [jsDelivr](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs):
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js"></script>
 ```
 
-Min files
+> Includes the sole dependency (JSZip) in one file.
 
-```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs/dist/pptxgen.min.js"></script>
-```
-
-### Download
-
-[GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
-
-Bundle
-
-```html
-<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
-```
-
-Min files
+📁 Advanced: Separate Files, Direct Download
 
 ```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
 ```
+
+## Source Code and Examples
+
+Download from GitHub: [Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
