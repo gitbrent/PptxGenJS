@@ -16,5 +16,5 @@ export default defineConfig({
 			},
 		}
 	},
-	base: '/PptxGenJS/'
+	base: '/PptxGenJS/demos/vite/'
 })
