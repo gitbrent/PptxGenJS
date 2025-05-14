@@ -781,7 +781,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 		case CHART_TYPE.RADAR:
 			// 1: Start Chart
 			strXml += `<c:${chartType}Chart>`
-			if (chartType === CHART_TYPE.AREA && opts.barGrouping === 'stacked') {
+			if ((chartType === CHART_TYPE.AREA || chartType === CHART_TYPE.LINE) && opts.barGrouping === 'stacked') {
 				strXml += '<c:grouping val="' + opts.barGrouping + '"/>'
 			}
 
