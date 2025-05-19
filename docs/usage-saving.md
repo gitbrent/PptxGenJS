@@ -6,12 +6,14 @@ title: Saving Presentations
 Several methods are available when generating a presentation.
 
 - All methods return a Promise
-- Working examples are available under [/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
+- Working examples are available under [/PptxGenJS/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
 
-## Write File
+## Saving as a File (writeFile)
 
-Export the presentation as a regular flat file. Browser-based apps will prompt the user to download the file and push a
-PowerPoint Presentation MIME-type pptx file. Node.js apps will use `fs` to save the file to the local file system.
+Save the presentation as a PowerPoint .pptx file.
+
+- In browser-based apps, this triggers a download using the correct pptx MIME-type.
+- In Node.js, it saves to disk via the native fs module.
 
 ### Write File Props (`WriteFileProps`)
 
@@ -33,21 +35,30 @@ pptx.writeFile({ fileName: 'Browser-PowerPoint-Demo.pptx' });
     });
 ```
 
-## Write
+## Generating Other Formats (write)
 
-Export the presentation into other data formats for cloud storage.
+Generate the presentation in various formats (e.g., base64, arraybuffer) — useful for uploading to cloud storage or handling in-memory.
 
 ### Write Props (`WriteProps`)
 
 | Option        | Type    | Default | Description                                                                 |
 | :------------ | :------ | :------ | :-------------------------------------------------------------------------- |
-| `compression` | boolean | false   | apply zip compression (exports take longer but saves signifcant space)      |
+| `compression` | boolean | false   | apply zip compression (exports take longer but save significant space)      |
 | `outputType`  | string  | blob    | 'arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array' |
+
+### Write Output Types
+
+| `outputType` | Description                                  |
+| :----------- | :------------------------------------------- |
+| blob         | Default for browsers                         |
+| arraybuffer  | Often used with WebAssembly or binary tools  |
+| base64       | Useful for uploads to APIs like Google Drive |
+| nodebuffer   | Use in Node.js with fs.writeFile()           |
 
 ### Write Example
 
 ```javascript
-pptx.write("base64")
+pptx.write({ outputType: "base64" })
     .then((data) => {
         console.log("write as base64: Here are 0-100 chars of `data`:\n");
         console.log(data.substring(0, 100));
@@ -57,21 +68,21 @@ pptx.write("base64")
     });
 ```
 
-## Stream
+## Streaming in Node.js (stream)
 
-Export the presentation into a binary stream format for cloud storage, etc.
+Returns the presentation as a binary string, suitable for streaming in HTTP responses or writing directly to disk in Node.js environments.
 
 ### Stream Example
 
 ```javascript
-// Ex using: `const app = express();``
+// SRC: https://github.com/gitbrent/PptxGenJS/blob/master/demos/node/demo_stream.js
+// HOW: using: `const app = express();``
 pptx.stream()
     .then((data) => {
         app.get("/", (req, res) => {
             res.writeHead(200, { "Content-disposition": "attachment;filename=" + fileName, "Content-Length": data.length });
             res.end(new Buffer(data, "binary"));
         });
-
         app.listen(3000, () => {
             console.log("PptxGenJS Node Stream Demo app listening on port 3000!");
             console.log("Visit: http://localhost:3000/");
@@ -85,9 +96,9 @@ pptx.stream()
 
 ## Saving Multiple Presentations
 
-### Client Browser
+### In the Browser
 
-- In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
+> Each new presentation should use a fresh new PptxGenJS() instance to avoid reusing slides or metadata.
 
 ```javascript
 let pptx = null;
@@ -95,15 +106,15 @@ let pptx = null;
 // Presentation 1:
 pptx = new PptxGenJS();
 pptx.addSlide().addText("Presentation 1", { x: 1, y: 1 });
-pptx.writeFile({ fileName: "PptxGenJS-Presentation-1" });
+pptx.writeFile({ fileName: "PptxGenJS-Browser-1" });
 
 // Presentation 2:
 pptx = new PptxGenJS();
 pptx.addSlide().addText("Presentation 2", { x: 1, y: 1 });
-pptx.writeFile({ fileName: "PptxGenJS-Presentation-2" });
+pptx.writeFile({ fileName: "PptxGenJS-Browser-2" });
 ```
 
-### Node.js
+### In Node.js
 
 - See `demos/node/demo.js` for a working demo with multiple presentations, promises, etc.
 - See `demos/node/demo_stream.js` for a working demo using streaming

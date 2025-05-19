@@ -7,23 +7,39 @@ title: Presentation Options
 
 ### Metadata Properties
 
-There are several optional PowerPoint metadata properties that can be set.
+These optional metadata properties correspond to built-in PowerPoint document properties (visible under File > Info). They help describe the presentation’s content and ownership.
+
+| Name       | Description                  |
+| :--------- | :--------------------------- |
+| `title`    | title shown in PowerPoint UI |
+| `author`   | presentation author          |
+| `subject`  | presentation subject         |
+| `company`  | company name                 |
+| `revision` | revision number (as string)  |
+
+## Library Version
+
+> 💡 You can also check the current PptxGenJS library version using the read-only `version` property
+
+```javascript
+console.log(pptx.version); // e.g. "4.0.0"
+```
 
 ### Metadata Properties Examples
 
 PptxGenJS uses ES6-style getters/setters.
 
 ```javascript
+pptx.title = 'My Awesome Presentation';
 pptx.author = 'Brent Ely';
-pptx.company = 'S.T.A.R. Laboratories';
-pptx.revision = '15';
 pptx.subject = 'Annual Report';
-pptx.title = 'PptxGenJS Sample Presentation';
+pptx.company = 'Computer Science Chair';
+pptx.revision = '15';
 ```
 
 ## Slide Layouts (Sizes)
 
-Layout Option applies to all the Slides in the current Presentation.
+Layout option applies to all slides in the current Presentation.
 
 ### Slide Layout Syntax
 
@@ -42,10 +58,10 @@ pptx.layout = 'LAYOUT_NAME';
 
 ### Custom Slide Layouts
 
-Custom, user-defined layouts are supported
+You can create custom layouts of any size!
 
-* Use the `defineLayout()` method to create a custom layout of any size
-* Create as many layouts as needed, ex: create an 'A3' and 'A4' and set layouts as desired
+* Use the `defineLayout()` method to create any size custom layout
+* Multiple layouts are supported. E.g.: create an 'A3' and 'A4', then use as desired
 
 ### Custom Slide Layout Example
 
@@ -54,20 +70,26 @@ Custom, user-defined layouts are supported
 pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 
 // Set presentation to use new layout
-pptx.layout = 'A3'
+pptx.layout = 'A3';
+```
+
+> 🔍 Need to inspect the current layout size?
+
+```javascript
+console.log(pptx.presLayout); // { width: 10, height: 5.625 }
 ```
 
 ## Text Direction
 
 ### Text Direction Options
 
-Right-to-Left (RTL) text is supported. Simply set the RTL mode at the Presentation-level.
+Right-to-Left (RTL) text is supported. Simply set the RTL mode presentation property.
 
 ### Text Direction Examples
 
 ```javascript
-// Set right-to-left text mode
-pptx.rtlMode = true;
+pptx.rtlMode = true; // set RTL text mode to true
+pptx.theme = { lang: "he" }; // set RTL language to use (default is 'EN-US')
 ```
 
 Notes:

@@ -1,6 +1,6 @@
 ---
 id: usage-slide-options
-title: Slide Properties
+title: Slide Properties and Methods
 ---
 
 ## Slide Properties
@@ -8,12 +8,14 @@ title: Slide Properties
 | Option               | Type                                                                 | Default  | Description                      | Possible Values                                                                                                                                                    |
 | :------------------- | :------------------------------------------------------------------- | :------- | :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `background`         | `BackgroundProps`                                                    | `FFFFFF` | background color/images          | add background color or image [`DataOrPathProps`](./types.md#datapath-props-dataorpathprops) and/or [`ShapeFillProps`](./types.md#shape-fill-props-shapefillprops) |
-| `color`              | string                                                               | `000000` | default text color               | hex color or [scheme color](./shapes-and-schemes.md).                                                                                                                |
+| `color`              | string                                                               | `000000` | default text color               | hex color or [scheme color](./shapes-and-schemes.md).                                                                                                              |
 | `hidden`             | boolean                                                              | `false`  | whether slide is hidden          | Ex: `slide.hidden = true`                                                                                                                                          |
-| `newAutoPagedSlides` | PresSlide[]                                                          |          | all slides created by autopaging | Useful for placeholder work on auto=pages slides (see [#1133](https://github.com/gitbrent/PptxGenJS/pull/1133))                                                    |
-| `slideNumber`        | [`SlideNumberProps`](./types.md#slide-number-props-slidenumberprops) |          | slide number props               | (see exmaples below)                                                                                                                                               |
+| `newAutoPagedSlides` | PresSlide[]                                                          |          | all slides created by autopaging | Contains slides automatically created when content (e.g. a table) overflows the current slide using autoPage:true                                                  |
+| `slideNumber`        | [`SlideNumberProps`](./types.md#slide-number-props-slidenumberprops) |          | slide number props               | (see examples below)                                                                                                                                               |
 
-### Background/Foreground Examples
+## Full Examples
+
+### Example: Background/Foreground
 
 ```javascript
 // EX: Use several methods to set a background
@@ -28,7 +30,7 @@ slide.background = { path: "https://some.url/image.jpg" }; // image: url
 slide.color = "696969";
 ```
 
-### Slide Number Examples
+### Example: Slide Number
 
 ```javascript
 // EX: Add a Slide Number at a given location

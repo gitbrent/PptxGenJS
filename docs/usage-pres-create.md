@@ -2,19 +2,19 @@
 id: usage-pres-create
 title: Creating a Presentation
 ---
-A "Presentation" is a single `.pptx` file.
+A "presentation" is a single `.pptx` file.
 
 (See [Saving Multiple Presentations](/PptxGenJS/docs/usage-saving#saving-multiple-presentations) for information
-on creating more than a one PPTX file at-a-time).
+on creating more than a one presentation at-a-time).
 
-## Modern Node-Based Applications
+## Angular/React, ES6, TypeScript, NodeJS
 
 ```typescript
 import pptxgen from "pptxgenjs";
 let pres = new pptxgen();
 ```
 
-## Client Web Browser
+## Script/Web Browser
 
 ```javascript
 let pres = new PptxGenJS();
