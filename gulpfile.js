@@ -6,7 +6,7 @@
 let gulp = require("gulp");
 
 // DOCS
-gulp.task("deploy-assets", () => gulp.src("./build/assets/*/*").pipe(gulp.dest("./assets")));
+gulp.task("deploy-assets", () => gulp.src("./build/assets/*/*", {encoding: false}).pipe(gulp.dest("./assets")));
 gulp.task("deploy-docs", () => gulp.src("./build/docs/**").pipe(gulp.dest("./docs/")));
 
 // PAGES
