@@ -1,3 +1,7 @@
 {
-	"git.ignoreLimitWarning": true
+	"git.ignoreLimitWarning": true,
+	"markdown.validate.ignoredLinks": [
+		"/PptxGenJS/docs/usage-slide-options",
+		"/PptxGenJS/docs/masters"
+	]
 }
