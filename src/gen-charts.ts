@@ -725,6 +725,19 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 				strXml += '  </a:p>'
 				strXml += '</c:txPr>'
 			}
+			if (Array.isArray(rel.opts._type)) {
+				rel.opts._type.forEach(type => {
+					const showLegend = type.options.showLegend
+					if (!showLegend) {
+						type.data.forEach(obj => {
+							strXml += '    <c:legendEntry>'
+							strXml += `        <c:idx val="${obj._dataIndex}"/>`
+							strXml += '        <c:delete val="1"/>'
+							strXml += '    </c:legendEntry>'
+						})
+					}
+				})
+			}
 			strXml += '</c:legend>'
 		}
 	}
