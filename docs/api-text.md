@@ -168,7 +168,7 @@ slide.addText(
     [
         {
             text: "Slide #2",
-            options: { hyperlink: { slide: "2", tooltip: "Go to Summary Slide" } },
+            options: { hyperlink: { slide: 2, tooltip: "Go to Summary Slide" } },
         },
     ],
     { x: 1.0, y: 2.5, w: 5, h: 1 }
