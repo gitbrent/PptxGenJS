@@ -14,7 +14,7 @@ export default () => {
 								Works with Node, React, web browsers, and more.
 							</h3>
 							<h6 className="mb-4">
-								The most popular powerpoint+js library on npm with 3,000 stars on GitHub
+								The most popular powerpoint+js library on npm with 3,500 stars on GitHub
 							</h6>
 							<div className="row row-cols row-cols-4-md mt-4">
 								<div className="col">
