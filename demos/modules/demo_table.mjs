@@ -540,7 +540,7 @@ function genSlide07(pptx) {
 	let arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: "center", bold: true, colspan: 3, colW: 4 } }]];
 	{
 		arrRows.push([
-			{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
+			{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle", hyperlink: { slide: 1 } } },
 			{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 			{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		]);
