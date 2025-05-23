@@ -482,7 +482,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tableProps:
 			// 6: advance column/cell index (or circle back to first one to continue adding lines)
 			currCellIdx = currCellIdx < rowCellLines.length - 1 ? currCellIdx + 1 : 0
 
-			// 7: done?
+			// 7: WIP: done?
 			const brent = rowCellLines.map(cell => cell._lines.length).reduce((prev, next) => prev + next)
 			if (brent === 0) isDone = true
 		}
