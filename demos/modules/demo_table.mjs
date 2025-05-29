@@ -36,8 +36,13 @@ export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
 	if (TESTMODE) {
-		pptx.addSection({ title: "Tables: QA" });
+		pptx.addSection({ title: "Tables: QA 01" });
+		pptx.addSection({ title: "Tables: QA 02" });
+		pptx.addSection({ title: "Tables: QA 03" });
+		pptx.addSection({ title: "Tables: QA 04" });
 		genSlide10(pptx);
+		pptx.addSection({ title: "Tables: QA 05" });
+		genSlide11(pptx);
 	}
 }
 
@@ -540,7 +545,7 @@ function genSlide07(pptx) {
 	let arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: "center", bold: true, colspan: 3, colW: 4 } }]];
 	{
 		arrRows.push([
-			{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle", hyperlink: { slide: 1 } } },
+			{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 			{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 			{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		]);
@@ -892,7 +897,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 1:
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 01" });
 
 		let projRows = [
 			[
@@ -937,7 +942,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 2:
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 02" });
 
 		let projRows2 = [
 			[
@@ -982,7 +987,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 3:
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 03" });
 
 		let projRows = [
 			[
@@ -1029,7 +1034,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 4: status report style
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 04" });
 
 		let projRows = [
 			[
@@ -1065,4 +1070,36 @@ function genSlide10(pptx) {
 			//verbose: true,
 		});
 	}
+}
+
+/**
+ * SLIDE 11[...]: Test paging with hyperlinks
+ * @param {PptxGenJS} pptx
+ * @since 4.0.1
+ */
+function genSlide11(pptx) {
+	let slide = null;
+
+	slide = pptx.addSlide({ sectionTitle: "Tables: QA 05" });
+	slide.addText([{ text: "Table Examples: Auto-Paging with Hyperlinks", options: DEMO_TITLE_TEXTBK }], {
+		x: 0.23,
+		y: 0.13,
+		w: 8,
+		h: 0.4,
+	});
+
+	const baseTabRows = [
+		[
+			{ text: "white", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
+			{ text: "yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
+			{ text: "hyperlink", options: { fill: { color: "AACCFF" }, hyperlink: { slide: 1 } } },
+		]
+	];
+
+	const arrTabRows = [];
+	for (let i = 0; i < 36; i++) {
+		arrTabRows.push(...baseTabRows);
+	};
+
+	slide.addTable(arrTabRows, { x: 0.5, y: 1.0, w:10, autoPage: true });
 }
