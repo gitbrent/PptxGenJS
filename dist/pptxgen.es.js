@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.0 @ 2025-05-04T15:19:14.634Z */
+/* PptxGenJS 4.0.1-beta.0 @ 2025-05-29T03:10:57.448Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -1315,7 +1315,7 @@ function getSlidesForTableRows(tableRows = [], tableProps = {}, presLayout, mast
                 emuTabCurrH += emuLineMaxH;
             // 6: advance column/cell index (or circle back to first one to continue adding lines)
             currCellIdx = currCellIdx < rowCellLines.length - 1 ? currCellIdx + 1 : 0;
-            // 7: done?
+            // 7: WIP: done?
             const brent = rowCellLines.map(cell => cell._lines.length).reduce((prev, next) => prev + next);
             if (brent === 0)
                 isDone = true;
@@ -2486,7 +2486,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                 // Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
                 createHyperlinkRels(newSlide, slide.rows);
                 // Add rows to new slide
-                newSlide.addTable(slide.rows, Object.assign({}, opt));
+                newSlide.addTable(slide.rows, JSON.parse(JSON.stringify(opt || {})));
                 // Add reference to the new slide so it can be returned, but don't add the first one because the user already has a reference to that one.
                 if (idx > 0)
                     newAutoPagedSlides.push(newSlide);
@@ -2682,7 +2682,7 @@ function addBackgroundDefinition(props, target) {
  * @param {PresSlide} target - slide object that any hyperlinks will be be added to
  * @param {number | string | TextProps | TextProps[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels(target, text) {
+function createHyperlinkRels(target, text, options) {
     let textObjs = [];
     // Only text objects can have hyperlinks, bail when text param is plain text
     if (typeof text === 'string' || typeof text === 'number')
@@ -2692,20 +2692,30 @@ function createHyperlinkRels(target, text) {
         textObjs = text;
     else if (typeof text === 'object')
         textObjs = [text];
-    textObjs.forEach((text) => {
-        // `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
+    textObjs.forEach((text, idx) => {
+        // IMPORTANT: `options` are lost due to recursion/copy!
+        if (options && options[idx])
+            text.options = options[idx];
+        // NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
         if (Array.isArray(text)) {
-            createHyperlinkRels(target, text);
+            const cellOpts = [];
+            text.forEach((tablecell) => {
+                if (tablecell.options && !tablecell.text.options) {
+                    cellOpts.push(tablecell.options);
+                }
+            });
+            createHyperlinkRels(target, text, cellOpts);
         }
         else if (Array.isArray(text.text)) {
-            // this handles TableCells with hyperlinks
-            createHyperlinkRels(target, text.text);
+            createHyperlinkRels(target, text.text, options && options[idx] ? [options[idx]] : undefined);
         }
         else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
-            if (typeof text.options.hyperlink !== 'object')
+            if (typeof text.options.hyperlink !== 'object') {
                 console.log('ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:\'https://github.com\'}` ');
-            else if (!text.options.hyperlink.url && !text.options.hyperlink.slide)
+            }
+            else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) {
                 console.log('ERROR: \'hyperlink requires either: `url` or `slide`\'');
+            }
             else {
                 const relId = getNewRelId(target);
                 target._rels.push({
@@ -2715,6 +2725,17 @@ function createHyperlinkRels(target, text) {
                     Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
                 });
                 text.options.hyperlink._rId = relId;
+            }
+        }
+        else if (text && typeof text === 'object' && text.options && text.options.hyperlink && text.options.hyperlink._rId) {
+            // NOTE: auto-paging will create new slides, but skip above as _rId exists, BUT this is a new slide, so add rels!
+            if (target._rels.filter(rel => rel.rId === text.options.hyperlink._rId).length === 0) {
+                target._rels.push({
+                    type: SLIDE_OBJECT_TYPES.hyperlink,
+                    data: text.options.hyperlink.slide ? 'slide' : 'dummy',
+                    rId: text.options.hyperlink._rId,
+                    Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
+                });
             }
         }
     });
@@ -6759,7 +6780,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-const VERSION = '4.0.0';
+const VERSION = '4.0.1-beta.0';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];
@@ -7174,7 +7195,8 @@ class PptxGenJS {
             // STEP 4: Write the file out
             if (isNode) {
                 // Dynamically import to avoid bundling fs in the browser build
-                const { writeFile } = yield import('node:fs/promises');
+                const { promises: fs } = yield import('node:fs');
+                const { writeFile } = fs;
                 yield writeFile(fileName, data);
                 return fileName;
             }
