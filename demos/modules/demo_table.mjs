@@ -1090,9 +1090,9 @@ function genSlide11(pptx) {
 
 	const baseTabRows = [
 		[
-			{ text: "white", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
-			{ text: "yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
-			{ text: "hyperlink", options: { fill: { color: "AACCFF" }, hyperlink: { slide: 1 } } },
+			{ text: "white color", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
+			{ text: "yellow color", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
+			{ text: "hyperlink here", options: { fill: { color: "AACCFF" }, hyperlink: { slide: 1 } } },
 		]
 	];
 
