@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1-beta.1 @ 2025-05-30T01:48:36.016Z */
+/* PptxGenJS 4.0.1-beta.1 @ 2025-05-30T14:03:47.731Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2699,7 +2699,7 @@ function createHyperlinkRels(target, text, options) {
         textObjs = [text];
     textObjs.forEach((text, idx) => {
         // IMPORTANT: `options` are lost due to recursion/copy!
-        if (options && options[idx])
+        if (options && options[idx] && options[idx].hyperlink)
             text.options = Object.assign(Object.assign({}, text.options), options[idx]);
         // NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
         if (Array.isArray(text)) {
@@ -6785,7 +6785,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-const VERSION = '4.0.1-beta.1';
+const VERSION = '4.0.1-beta.2';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];
