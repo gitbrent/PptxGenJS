@@ -822,8 +822,10 @@ export function addTableDefinition(
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
 	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
-	// NOTE: dont add default color to autoPage tables - it causes any textObj's with hyperlinks to have subsequent words to be black
-	if (!opt.color && !opt.autoPage) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
+	// NOTE: dont add default color on tables with hyperlinks! (it causes any textObj's with hyperlinks to have subsequent words to be black)
+	if (JSON.stringify({ arrRows: arrRows }).indexOf('hyperlink') === -1) {
+		if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
+	}
 	if (typeof opt.border === 'string') {
 		console.warn('addTable `border` option must be an object. Ex: `{border: {type:\'none\'}}`')
 		opt.border = null
