@@ -822,7 +822,8 @@ export function addTableDefinition(
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
 	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
-	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
+	// NOTE: dont add default color to autoPage tables - it causes any textObj's with hyperlinks to have subsequent words to be black
+	if (!opt.color && !opt.autoPage) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
 	if (typeof opt.border === 'string') {
 		console.warn('addTable `border` option must be an object. Ex: `{border: {type:\'none\'}}`')
 		opt.border = null
@@ -969,7 +970,7 @@ export function addTableDefinition(
 				createHyperlinkRels(newSlide, slide.rows)
 
 				// Add rows to new slide
-				newSlide.addTable(slide.rows, JSON.parse(JSON.stringify(opt || {})))
+				newSlide.addTable(slide.rows, Object.assign({}, opt))
 
 				// Add reference to the new slide so it can be returned, but don't add the first one because the user already has a reference to that one.
 				if (idx > 0) newAutoPagedSlides.push(newSlide)
@@ -1185,7 +1186,7 @@ function createHyperlinkRels(
 
 	textObjs.forEach((text: TextProps, idx: number) => {
 		// IMPORTANT: `options` are lost due to recursion/copy!
-		if (options && options[idx]) text.options = options[idx]
+		if (options && options[idx]) text.options = { ...text.options, ...options[idx] }
 
 		// NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
 		if (Array.isArray(text)) {
