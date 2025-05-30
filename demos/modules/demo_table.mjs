@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.12.0
- * BLD.: 20230207
+ * VER.: 4.0.1
+ * BLD.: 20250530
  */
 
 import {
@@ -1090,7 +1090,7 @@ function genSlide11(pptx) {
 
 	const baseTabRows = [
 		[
-			{ text: "white color", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
+			{ text: "white color", options: { fill: { color: "6699CC" }, align: "left", color: "FFFFFF" } },
 			{ text: "yellow color", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
 			{ text: "hyperlink here", options: { fill: { color: "AACCFF" }, hyperlink: { slide: 1 } } },
 		]

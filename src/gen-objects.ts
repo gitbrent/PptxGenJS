@@ -1188,7 +1188,7 @@ function createHyperlinkRels(
 
 	textObjs.forEach((text: TextProps, idx: number) => {
 		// IMPORTANT: `options` are lost due to recursion/copy!
-		if (options && options[idx]) text.options = { ...text.options, ...options[idx] }
+		if (options && options[idx] && options[idx].hyperlink) text.options = { ...text.options, ...options[idx] }
 
 		// NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
 		if (Array.isArray(text)) {
