@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1-beta.0 @ 2025-05-29T03:10:57.448Z */
+/* PptxGenJS 4.0.1-beta.1 @ 2025-05-30T01:48:36.018Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -2333,8 +2333,11 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN;
     if (typeof opt.margin === 'number')
         opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)];
-    if (!opt.color)
-        opt.color = opt.color || DEF_FONT_COLOR; // Set default color if needed (table option > inherit from Slide > default to black)
+    // NOTE: dont add default color on tables with hyperlinks! (it causes any textObj's with hyperlinks to have subsequent words to be black)
+    if (JSON.stringify({ arrRows: arrRows }).indexOf('hyperlink') === -1) {
+        if (!opt.color)
+            opt.color = opt.color || DEF_FONT_COLOR; // Set default color if needed (table option > inherit from Slide > default to black)
+    }
     if (typeof opt.border === 'string') {
         console.warn('addTable `border` option must be an object. Ex: `{border: {type:\'none\'}}`');
         opt.border = null;
@@ -2486,7 +2489,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                 // Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
                 createHyperlinkRels(newSlide, slide.rows);
                 // Add rows to new slide
-                newSlide.addTable(slide.rows, JSON.parse(JSON.stringify(opt || {})));
+                newSlide.addTable(slide.rows, Object.assign({}, opt));
                 // Add reference to the new slide so it can be returned, but don't add the first one because the user already has a reference to that one.
                 if (idx > 0)
                     newAutoPagedSlides.push(newSlide);
@@ -2695,7 +2698,7 @@ function createHyperlinkRels(target, text, options) {
     textObjs.forEach((text, idx) => {
         // IMPORTANT: `options` are lost due to recursion/copy!
         if (options && options[idx])
-            text.options = options[idx];
+            text.options = Object.assign(Object.assign({}, text.options), options[idx]);
         // NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
         if (Array.isArray(text)) {
             const cellOpts = [];
@@ -6780,7 +6783,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-const VERSION = '4.0.1-beta.0';
+const VERSION = '4.0.1-beta.1';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];
