@@ -251,7 +251,9 @@ function genSlide02(pptx) {
 		valAxisMaxVal: 5000,
 		valAxisLabelColor: COLORS_ACCENT[0],
 		//
-		dataBorder: { pt: 1, color: "F1F1F1" },
+		//dataBorder: { pt: 1, color: "F1F1F1" },
+		//dataBorder: { pt: 1, color: pptx.colors.BACKGROUND2 },
+		dataBorder: { pt: 1, color: pptx.colors.ACCENT1 },
 		dataLabelColor: "FFFFFF",
 		dataLabelFontFace: "Arial",
 		dataLabelFontSize: 10,

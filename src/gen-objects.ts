@@ -17,6 +17,7 @@ import {
 	IMG_PLAYBTN,
 	MASTER_OBJECTS,
 	PIECHART_COLORS,
+	SCHEME_COLOR_NAMES,
 	SHAPE_NAME,
 	SHAPE_TYPE,
 	SLIDE_OBJECT_TYPES,
@@ -329,7 +330,13 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
-	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6)) { options.dataBorder.color = 'F9F9F9' }
+	if (options.dataBorder && options.dataBorder.color) {
+		const isHexColor = typeof options.dataBorder.color === 'string' && options.dataBorder.color.length === 6 && /^[0-9A-Fa-f]{6}$/.test(options.dataBorder.color)
+		const isSchemeColor = Object.values(SCHEME_COLOR_NAMES).includes(options.dataBorder.color as SCHEME_COLOR_NAMES)
+		if (!isHexColor && !isSchemeColor) {
+			options.dataBorder.color = 'F9F9F9' // Fallback if neither hex nor scheme color
+		}
+	}
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
 	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)) { options.dataLabelFormatCode = options.showPercent ? '0%' : 'General' }

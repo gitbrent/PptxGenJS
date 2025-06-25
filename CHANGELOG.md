@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Border is a string instead of a number in demo_tables.mjs [\#1389](https://github.com/gitbrent/PptxGenJS/issues/1389) ([hesi726](https://github.com/hesi726))
+- Fixed support for Scheme Colors as `dataBorder` [\#1389](https://github.com/gitbrent/PptxGenJS/issues/1389) ([hesi726](https://github.com/hesi726))
 - Hyperlinks cause "needs repair" when using table auto-paging [\#1392](https://github.com/gitbrent/PptxGenJS/issues/1392) ([gitbrent](https://github.com/gitbrent))
 
 ### Changed
