@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1-beta.2 @ 2025-05-30T14:06:24.426Z */
+/* PptxGenJS 4.0.1-beta.2 @ 2025-06-25T22:28:07.027Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -1866,8 +1866,12 @@ function addChartDefinition(target, type, data, opt) {
     options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
     if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
         options.dataBorder.pt = 0.75;
-    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6)) {
-        options.dataBorder.color = 'F9F9F9';
+    if (options.dataBorder && options.dataBorder.color) {
+        const isHexColor = typeof options.dataBorder.color === 'string' && options.dataBorder.color.length === 6 && /^[0-9A-Fa-f]{6}$/.test(options.dataBorder.color);
+        const isSchemeColor = Object.values(SCHEME_COLOR_NAMES).includes(options.dataBorder.color);
+        if (!isHexColor && !isSchemeColor) {
+            options.dataBorder.color = 'F9F9F9'; // Fallback if neither hex nor scheme color
+        }
     }
     //
     if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER)
@@ -6783,7 +6787,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-const VERSION = '4.0.1-beta.2';
+const VERSION = '4.0.1';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];
