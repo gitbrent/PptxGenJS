@@ -6,7 +6,7 @@ This document outlines how to manually test PptxGenJS across supported platforms
 
 Config Notes
 
-> ⚠️ Disable any VPN on the machine being used to serve from, or clients using IP address cant connect.
+> ⚠️ Disable VPN on the machine being used to serve from, otherwise, clients using the local IP address cannot connect.
 
 ## 🧪 Test Suites Overview
 
