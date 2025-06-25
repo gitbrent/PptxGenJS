@@ -15,12 +15,11 @@
 1. Update `package.json` version
 2. Update `src/pptxgen.ts` version (eg: `const VERSION = '4.0.1'`)
 3. Update `CHANGELOG.md` with new date
-4. Update `README.md` with new CDN links
-5. Build library: npm scripts > `ship`
-6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
-7. Open `dist/*.js` and check headers
-8. Update version in: `demos/node/package.json`
-9. Update pptxgenjs dep version in: `demos/vite-demo/package.json`
+4. Build library: npm scripts > `ship`
+5. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
+6. Open `dist/*.js` and check headers
+7. Update version in: `demos/node/package.json`
+8. Update pptxgenjs dep version in: `demos/vite-demo/package.json`
 
 ## 🧪 Run Tests Before Release
 

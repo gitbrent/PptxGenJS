@@ -66,7 +66,6 @@ Run the following test commands:
 
 ```bash
 cd demos/node
-npm install
 npm run demo
 npm run demo-all
 ```
@@ -103,7 +102,7 @@ Start the app:
 
 ```bash
 cd demos/vite-demo
-npm install
+npm install (?)
 npm run dev
 ```
 

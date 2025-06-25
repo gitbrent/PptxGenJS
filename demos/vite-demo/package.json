@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@popperjs/core": "^2.11.8",
 		"bootstrap": "^5.3.5",
-		"pptxgenjs": "^4.0.0",
+		"pptxgenjs": "^4.0.1",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
