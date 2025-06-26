@@ -124,6 +124,49 @@ export function createMasterSlides(pptx) {
 		],
 	});
 
+	// MASTER_WITH_BULLETS
+	pptx.defineSlideMaster({
+		title: "MASTER_WITH_BULLETS",
+		background: { color: "E1E1E1", transparency: 50 },
+		margin: [0.5, 0.25, 1.0, 0.25],
+		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10, bold: true },
+		objects: [
+			{
+				rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } },
+			},
+			{
+				text: {
+					options: { x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
+					text: "S.T.A.R. Laboratories - Confidential",
+				},
+			},
+			{
+				placeholder: {
+					options: {
+						name: "header",
+						type: "title",
+						x: 0.6,
+						y: 0.2,
+						w: 12,
+						h: 1.0,
+						margin: 0,
+						align: "center",
+						valign: "middle",
+						color: "404040",
+						//fontSize: 18,
+					},
+					text: "", // USAGE: Leave blank to have powerpoint substitute default placeholder text (ex: "Click to add title")
+				},
+			},
+			{
+				placeholder: {
+					options: { name: "bullets", type: "body", x: 0.6, y: 1.5, w: 12, h: 5.25, fontSize: 14, fontFace: "arial", bullet: { type: "bullet", characterCode: "25CF" } },
+					text: "Bullet 1\nBullet 2\nBullet 3\nBullet 4\nBullet 5",
+				},
+			},
+		],
+	});
+
 	// THANKS_SLIDE (THANKS_PLACEHOLDER)
 	pptx.defineSlideMaster({
 		title: "THANKS_SLIDE",

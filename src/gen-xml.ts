@@ -887,13 +887,11 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 		if (typeof textObj.options.bullet === 'object') {
 			if (textObj?.options?.bullet?.indent) bulletMarL = valToPts(textObj.options.bullet.indent)
 
-			if (textObj.options.bullet.type) {
-				if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
-					paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
-					}" indent="-${bulletMarL}"`
-					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style || 'arabicPeriod'}" startAt="${textObj.options.bullet.numberStartAt || textObj.options.bullet.startAt || '1'
-					}"/>`
-				}
+			if (textObj.options.bullet.type && textObj.options.bullet.type.toString().toLowerCase() === 'number') {
+				paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+				}" indent="-${bulletMarL}"`
+				strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style || 'arabicPeriod'}" startAt="${textObj.options.bullet.numberStartAt || textObj.options.bullet.startAt || '1'
+				}"/>`
 			} else if (textObj.options.bullet.characterCode) {
 				let bulletCode = `&#x${textObj.options.bullet.characterCode};`
 
@@ -1073,7 +1071,7 @@ function genXmlTextRun (textObj: TextProps): string {
 function genXmlBodyProperties (slideObject: ISlideObject | TableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
-	if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options._bodyProp) {
+	if (slideObject && (slideObject._type === SLIDE_OBJECT_TYPES.text || slideObject._type === SLIDE_OBJECT_TYPES.placeholder) && slideObject.options._bodyProp) {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
