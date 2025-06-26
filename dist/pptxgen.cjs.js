@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.0 @ 2025-05-04T15:19:14.632Z */
+/* PptxGenJS 4.0.1 @ 2025-06-25T23:35:35.096Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1317,7 +1317,7 @@ function getSlidesForTableRows(tableRows = [], tableProps = {}, presLayout, mast
                 emuTabCurrH += emuLineMaxH;
             // 6: advance column/cell index (or circle back to first one to continue adding lines)
             currCellIdx = currCellIdx < rowCellLines.length - 1 ? currCellIdx + 1 : 0;
-            // 7: done?
+            // 7: WIP: done?
             const brent = rowCellLines.map(cell => cell._lines.length).reduce((prev, next) => prev + next);
             if (brent === 0)
                 isDone = true;
@@ -1868,8 +1868,12 @@ function addChartDefinition(target, type, data, opt) {
     options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
     if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
         options.dataBorder.pt = 0.75;
-    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6)) {
-        options.dataBorder.color = 'F9F9F9';
+    if (options.dataBorder && options.dataBorder.color) {
+        const isHexColor = typeof options.dataBorder.color === 'string' && options.dataBorder.color.length === 6 && /^[0-9A-Fa-f]{6}$/.test(options.dataBorder.color);
+        const isSchemeColor = Object.values(SCHEME_COLOR_NAMES).includes(options.dataBorder.color);
+        if (!isHexColor && !isSchemeColor) {
+            options.dataBorder.color = 'F9F9F9'; // Fallback if neither hex nor scheme color
+        }
     }
     //
     if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER)
@@ -2335,8 +2339,11 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN;
     if (typeof opt.margin === 'number')
         opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)];
-    if (!opt.color)
-        opt.color = opt.color || DEF_FONT_COLOR; // Set default color if needed (table option > inherit from Slide > default to black)
+    // NOTE: dont add default color on tables with hyperlinks! (it causes any textObj's with hyperlinks to have subsequent words to be black)
+    if (JSON.stringify({ arrRows: arrRows }).indexOf('hyperlink') === -1) {
+        if (!opt.color)
+            opt.color = opt.color || DEF_FONT_COLOR; // Set default color if needed (table option > inherit from Slide > default to black)
+    }
     if (typeof opt.border === 'string') {
         console.warn('addTable `border` option must be an object. Ex: `{border: {type:\'none\'}}`');
         opt.border = null;
@@ -2684,7 +2691,7 @@ function addBackgroundDefinition(props, target) {
  * @param {PresSlide} target - slide object that any hyperlinks will be be added to
  * @param {number | string | TextProps | TextProps[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels(target, text) {
+function createHyperlinkRels(target, text, options) {
     let textObjs = [];
     // Only text objects can have hyperlinks, bail when text param is plain text
     if (typeof text === 'string' || typeof text === 'number')
@@ -2694,20 +2701,30 @@ function createHyperlinkRels(target, text) {
         textObjs = text;
     else if (typeof text === 'object')
         textObjs = [text];
-    textObjs.forEach((text) => {
-        // `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
+    textObjs.forEach((text, idx) => {
+        // IMPORTANT: `options` are lost due to recursion/copy!
+        if (options && options[idx] && options[idx].hyperlink)
+            text.options = Object.assign(Object.assign({}, text.options), options[idx]);
+        // NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
         if (Array.isArray(text)) {
-            createHyperlinkRels(target, text);
+            const cellOpts = [];
+            text.forEach((tablecell) => {
+                if (tablecell.options && !tablecell.text.options) {
+                    cellOpts.push(tablecell.options);
+                }
+            });
+            createHyperlinkRels(target, text, cellOpts);
         }
         else if (Array.isArray(text.text)) {
-            // this handles TableCells with hyperlinks
-            createHyperlinkRels(target, text.text);
+            createHyperlinkRels(target, text.text, options && options[idx] ? [options[idx]] : undefined);
         }
         else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
-            if (typeof text.options.hyperlink !== 'object')
+            if (typeof text.options.hyperlink !== 'object') {
                 console.log('ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:\'https://github.com\'}` ');
-            else if (!text.options.hyperlink.url && !text.options.hyperlink.slide)
+            }
+            else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) {
                 console.log('ERROR: \'hyperlink requires either: `url` or `slide`\'');
+            }
             else {
                 const relId = getNewRelId(target);
                 target._rels.push({
@@ -2717,6 +2734,17 @@ function createHyperlinkRels(target, text) {
                     Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
                 });
                 text.options.hyperlink._rId = relId;
+            }
+        }
+        else if (text && typeof text === 'object' && text.options && text.options.hyperlink && text.options.hyperlink._rId) {
+            // NOTE: auto-paging will create new slides, but skip above as _rId exists, BUT this is a new slide, so add rels!
+            if (target._rels.filter(rel => rel.rId === text.options.hyperlink._rId).length === 0) {
+                target._rels.push({
+                    type: SLIDE_OBJECT_TYPES.hyperlink,
+                    data: text.options.hyperlink.slide ? 'slide' : 'dummy',
+                    rId: text.options.hyperlink._rId,
+                    Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
+                });
             }
         }
     });
@@ -6761,7 +6789,7 @@ function makeXmlViewProps() {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-const VERSION = '4.0.0';
+const VERSION = '4.0.1';
 class PptxGenJS {
     set layout(value) {
         const newLayout = this.LAYOUTS[value];
@@ -7176,7 +7204,8 @@ class PptxGenJS {
             // STEP 4: Write the file out
             if (isNode) {
                 // Dynamically import to avoid bundling fs in the browser build
-                const { writeFile } = yield import('node:fs/promises');
+                const { promises: fs } = yield import('node:fs');
+                const { writeFile } = fs;
                 yield writeFile(fileName, data);
                 return fileName;
             }

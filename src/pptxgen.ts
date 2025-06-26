@@ -98,7 +98,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '4.0.0'
+const VERSION = '4.0.1'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -619,7 +619,8 @@ export default class PptxGenJS implements IPresentationProps {
 		// STEP 4: Write the file out
 		if (isNode) {
 			// Dynamically import to avoid bundling fs in the browser build
-			const { writeFile } = await import('node:fs/promises')
+			const { promises: fs } = await import('node:fs')
+			const { writeFile } = fs
 			await writeFile(fileName, data as Buffer)
 			return fileName
 		}

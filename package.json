@@ -1,6 +1,6 @@
 {
 	"name": "pptxgenjs",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"author": {
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
@@ -33,7 +33,6 @@
 		"https": false,
 		"image-size": false,
 		"node:fs": false,
-		"node:fs/promises": false,
 		"node:https": false,
 		"os": false,
 		"path": false
@@ -41,7 +40,7 @@
 	"dependencies": {
 		"@types/node": "^22.8.1",
 		"https": "^1.0.0",
-		"image-size": "^1.1.1",
+		"image-size": "^1.2.1",
 		"jszip": "^3.10.1"
 	},
 	"devDependencies": {

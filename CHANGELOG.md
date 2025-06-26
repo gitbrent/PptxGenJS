@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.1](https://github.com/gitbrent/PptxGenJS/releases/tag/v4.0.1) - 2025-06-25
+
+### Fixed
+
+- Border is a string instead of a number in demo_tables.mjs [\#1389](https://github.com/gitbrent/PptxGenJS/issues/1389) ([hesi726](https://github.com/hesi726))
+- Fixed support for Scheme Colors as `dataBorder` [\#1389](https://github.com/gitbrent/PptxGenJS/issues/1389) ([hesi726](https://github.com/hesi726))
+- Hyperlinks cause "needs repair" when using table auto-paging [\#1392](https://github.com/gitbrent/PptxGenJS/issues/1392) ([gitbrent](https://github.com/gitbrent))
+
+### Changed
+
+- Removed "node:fs/promises" from `package.json` browser field ([gitbrent](https://github.com/gitbrent))
+- Updated image-size to v1.2.1 [\#1387](https://github.com/gitbrent/PptxGenJS/pull/1387) ([znew711](https://github.com/znew711))
+
 ## [4.0.0](https://github.com/gitbrent/PptxGenJS/releases/tag/v4.0.0) - 2025-05-04
 
 ### Fixed

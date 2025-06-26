@@ -3,8 +3,8 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.12.0
- * BLD.: 20230207
+ * VER.: 4.0.1
+ * BLD.: 20250530
  */
 
 import {
@@ -36,8 +36,13 @@ export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables: Auto-Paging Calc" });
 	genSlide09(pptx);
 	if (TESTMODE) {
-		pptx.addSection({ title: "Tables: QA" });
+		pptx.addSection({ title: "Tables: QA 01" });
+		pptx.addSection({ title: "Tables: QA 02" });
+		pptx.addSection({ title: "Tables: QA 03" });
+		pptx.addSection({ title: "Tables: QA 04" });
 		genSlide10(pptx);
+		pptx.addSection({ title: "Tables: QA 05" });
+		genSlide11(pptx);
 	}
 }
 
@@ -80,7 +85,7 @@ function genSlide01(pptx) {
 		fill: { color: "F7F7F7" },
 		fontSize: 14,
 		color: "363636",
-		border: { pt: "1", color: "BBCCDD" },
+		border: { pt: 1, color: "BBCCDD" },
 	});
 	// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
@@ -90,9 +95,9 @@ function genSlide01(pptx) {
 
 	let arrTabRows2 = [
 		[
-			{ text: "White", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
-			{ text: "Yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
-			{ text: "Pink", options: { fill: { color: "AACCFF" }, color: "E140FE" } },
+			{ text: "white", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
+			{ text: "yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
+			{ text: "hyperlink", options: { fill: { color: "AACCFF" }, hyperlink: { slide: 2 } } },
 		],
 		[
 			{ text: "12pt", options: { fill: { color: "FF0000" }, fontSize: 12 } },
@@ -115,7 +120,7 @@ function genSlide01(pptx) {
 		fontSize: 16,
 		valign: "center",
 		align: "center",
-		border: { pt: "1", color: "FFFFFF" },
+		border: { pt: 5, color: "FFFFFF" },
 	});
 
 	// DEMO: Row/Col Width/Heights
@@ -136,7 +141,7 @@ function genSlide01(pptx) {
 		fontSize: 14,
 		valign: "center",
 		align: "center",
-		border: { pt: "1", color: "BBCCDD" },
+		border: { pt: 2, color: "BBCCDD" },
 	});
 }
 
@@ -192,7 +197,7 @@ function genSlide02(pptx) {
 		align: "center",
 		valign: "middle",
 		fill: { color: "F9F9F9" },
-		border: { pt: "1", color: "c7c7c7" },
+		border: { pt: 1, color: "c7c7c7" },
 	};
 	let arrTabRows2 = [
 		[
@@ -216,7 +221,7 @@ function genSlide02(pptx) {
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
-		border: { pt: "2", color: pptx.colors.TEXT2 },
+		border: { pt: 2, color: pptx.colors.TEXT2 },
 		fill: { color: "F1F1F1" },
 	};
 	let arrTabRows3 = [
@@ -240,7 +245,7 @@ function genSlide02(pptx) {
 		align: "center",
 		valign: "middle",
 		fontSize: 16,
-		border: { pt: "1", color: pptx.colors.TEXT2 },
+		border: { pt: 1, color: pptx.colors.TEXT2 },
 		fill: { color: "f2f9fc" },
 	};
 	let arrTabRows4 = [
@@ -315,7 +320,7 @@ function genSlide03(pptx) {
 		["C5", "D5", "E5", "F5", { text: "G5 -> H5", options: { colspan: 2, fill: { color: "9999FF" } } }, "J5", "K5", "L5"],
 	];
 
-	let taboptions5 = { x: 0.6, y: 1.3, w: "90%", h: 5.5, margin: 0, fontSize: 14, align: "center", valign: "middle", border: { pt: "1" } };
+	let taboptions5 = { x: 0.6, y: 1.3, w: "90%", h: 5.5, margin: 0, fontSize: 14, align: "center", valign: "middle", border: { pt: 1 } };
 
 	slide.addTable(arrTabRows5, taboptions5);
 }
@@ -450,7 +455,7 @@ function genSlide05(pptx) {
 	// Table cell: Use the exact same code from addText to do the same word-level formatting within a cell
 	slide.addText("Table:", { x: 1, y: 5, w: 3, h: 2, fontSize: 18, fontFace: "Arial", color: "0088CC" });
 
-	let opts2 = { x: 2.5, y: 5, h: 2, align: "center", valign: "middle", colW: [1.5, 1.5, 6.5], border: { pt: "1" }, fill: { color: "F1F1F1" } };
+	let opts2 = { x: 2.5, y: 5, h: 2, align: "center", valign: "middle", colW: [1.5, 1.5, 6.5], border: { pt: 1 }, fill: { color: "F1F1F1" } };
 	let arrTabRows = [
 		[
 			{ text: "Cell 1A", options: { fontFace: "Arial" } },
@@ -493,7 +498,7 @@ function genSlide06(pptx) {
 				{ text: arrCell4, options: { valign: "bottom" } },
 			],
 		],
-		{ x: 0.6, y: 1.25, w: 12, h: 3, fontSize: 24, border: { pt: "1" }, fill: { color: "F1F1F1" } }
+		{ x: 0.6, y: 1.25, w: 12, h: 3, fontSize: 24, border: { pt: 1 }, fill: { color: "F1F1F1" } }
 	);
 
 	// EX 2:
@@ -522,7 +527,7 @@ function genSlide06(pptx) {
 				},
 			],
 		],
-		{ x: 0.6, y: 4.75, h: 2, fontSize: 24, colW: [8, 2, 2], valign: "middle", border: { pt: "1" }, fill: { color: "F1F1F1" } }
+		{ x: 0.6, y: 4.75, h: 2, fontSize: 24, colW: [8, 2, 2], valign: "middle", border: { pt: 1 }, fill: { color: "F1F1F1" } }
 	);
 }
 
@@ -892,7 +897,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 1:
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 01" });
 
 		let projRows = [
 			[
@@ -937,7 +942,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 2:
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 02" });
 
 		let projRows2 = [
 			[
@@ -982,7 +987,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 3:
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 03" });
 
 		let projRows = [
 			[
@@ -1029,7 +1034,7 @@ function genSlide10(pptx) {
 
 	// SLIDE 4: status report style
 	{
-		slide = pptx.addSlide({ sectionTitle: "Tables: QA" });
+		slide = pptx.addSlide({ sectionTitle: "Tables: QA 04" });
 
 		let projRows = [
 			[
@@ -1065,4 +1070,36 @@ function genSlide10(pptx) {
 			//verbose: true,
 		});
 	}
+}
+
+/**
+ * SLIDE 11[...]: Test paging with hyperlinks
+ * @param {PptxGenJS} pptx
+ * @since 4.0.1
+ */
+function genSlide11(pptx) {
+	let slide = null;
+
+	slide = pptx.addSlide({ sectionTitle: "Tables: QA 05" });
+	slide.addText([{ text: "Table Examples: Auto-Paging with Hyperlinks", options: DEMO_TITLE_TEXTBK }], {
+		x: 0.23,
+		y: 0.13,
+		w: 8,
+		h: 0.4,
+	});
+
+	const baseTabRows = [
+		[
+			{ text: "white color", options: { fill: { color: "6699CC" }, align: "left", color: "FFFFFF" } },
+			{ text: "yellow color", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
+			{ text: "hyperlink here", options: { fill: { color: "AACCFF" }, hyperlink: { slide: 1 } } },
+		]
+	];
+
+	const arrTabRows = [];
+	for (let i = 0; i < 36; i++) {
+		arrTabRows.push(...baseTabRows);
+	};
+
+	slide.addTable(arrTabRows, { x: 0.5, y: 1.0, w:10, autoPage: true });
 }

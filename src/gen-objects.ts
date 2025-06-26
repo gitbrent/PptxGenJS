@@ -17,6 +17,7 @@ import {
 	IMG_PLAYBTN,
 	MASTER_OBJECTS,
 	PIECHART_COLORS,
+	SCHEME_COLOR_NAMES,
 	SHAPE_NAME,
 	SHAPE_TYPE,
 	SLIDE_OBJECT_TYPES,
@@ -57,7 +58,7 @@ let _chartCounter = 0
  * @param {SlideMasterProps} props - slide definition
  * @param {PresSlide|SlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideMaster (props: SlideMasterProps, target: SlideLayout): void {
+export function createSlideMaster(props: SlideMasterProps, target: SlideLayout): void {
 	// STEP 1: Add background if either the slide or layout has background props
 	// if (props.background || target.background) addBackgroundDefinition(props.background, target)
 	if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
@@ -127,8 +128,8 @@ export function createSlideMaster (props: SlideMasterProps, target: SlideLayout)
  *    ]
  * }
  */
-export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChartMulti[], data: IOptsChartData[], opt: IChartOptsLib): object {
-	function correctGridLineOptions (glOpts: OptsChartGridLine): void {
+export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartMulti[], data: IOptsChartData[], opt: IChartOptsLib): object {
+	function correctGridLineOptions(glOpts: OptsChartGridLine): void {
 		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
 			console.warn('Warning: chart.gridLine.size must be greater than 0.')
@@ -329,7 +330,13 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
-	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6)) { options.dataBorder.color = 'F9F9F9' }
+	if (options.dataBorder && options.dataBorder.color) {
+		const isHexColor = typeof options.dataBorder.color === 'string' && options.dataBorder.color.length === 6 && /^[0-9A-Fa-f]{6}$/.test(options.dataBorder.color)
+		const isSchemeColor = Object.values(SCHEME_COLOR_NAMES).includes(options.dataBorder.color as SCHEME_COLOR_NAMES)
+		if (!isHexColor && !isSchemeColor) {
+			options.dataBorder.color = 'F9F9F9' // Fallback if neither hex nor scheme color
+		}
+	}
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
 	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)) { options.dataLabelFormatCode = options.showPercent ? '0%' : 'General' }
@@ -375,7 +382,7 @@ export function addChartDefinition (target: PresSlide, type: CHART_NAME | IChart
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
-export function addImageDefinition (target: PresSlide, opt: ImageProps): void {
+export function addImageDefinition(target: PresSlide, opt: ImageProps): void {
 	const newObject: ISlideObject = {
 		_type: null,
 		text: null,
@@ -522,7 +529,7 @@ export function addImageDefinition (target: PresSlide, opt: ImageProps): void {
  * @param {PresSlide} `target` - slide object that the media will be added to
  * @param {MediaProps} `opt` - media options
  */
-export function addMediaDefinition (target: PresSlide, opt: MediaProps): void {
+export function addMediaDefinition(target: PresSlide, opt: MediaProps): void {
 	const intPosX = opt.x || 0
 	const intPosY = opt.y || 0
 	const intSizeX = opt.w || 2
@@ -646,7 +653,7 @@ export function addMediaDefinition (target: PresSlide, opt: MediaProps): void {
  * @param {string} `notes`
  * @since 2.3.0
  */
-export function addNotesDefinition (target: PresSlide, notes: string): void {
+export function addNotesDefinition(target: PresSlide, notes: string): void {
 	target._slideObjects.push({
 		_type: SLIDE_OBJECT_TYPES.notes,
 		text: [{ text: notes }],
@@ -659,7 +666,7 @@ export function addNotesDefinition (target: PresSlide, notes: string): void {
  * @param {SHAPE_NAME} shapeName shape name
  * @param {ShapeProps} opts shape options
  */
-export function addShapeDefinition (target: PresSlide, shapeName: SHAPE_NAME, opts: ShapeProps): void {
+export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opts: ShapeProps): void {
 	const options = typeof opts === 'object' ? opts : {}
 	options.line = options.line || { type: 'none' }
 	const newObject: ISlideObject = {
@@ -721,7 +728,7 @@ export function addShapeDefinition (target: PresSlide, shapeName: SHAPE_NAME, op
  * @param {Function} addSlide - method
  * @param {Function} getSlide - method
  */
-export function addTableDefinition (
+export function addTableDefinition(
 	target: PresSlide,
 	tableRows: TableRow[],
 	options: TableProps,
@@ -822,7 +829,10 @@ export function addTableDefinition (
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
 	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_IN
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
-	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
+	// NOTE: dont add default color on tables with hyperlinks! (it causes any textObj's with hyperlinks to have subsequent words to be black)
+	if (JSON.stringify({ arrRows: arrRows }).indexOf('hyperlink') === -1) {
+		if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
+	}
 	if (typeof opt.border === 'string') {
 		console.warn('addTable `border` option must be an object. Ex: `{border: {type:\'none\'}}`')
 		opt.border = null
@@ -987,7 +997,7 @@ export function addTableDefinition (
  * @param {boolean} isPlaceholder whether this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition (target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean): void {
+export function addTextDefinition(target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean): void {
 	const newObject: ISlideObject = {
 		_type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		shape: (opts?.shape) || SHAPE_TYPE.RECTANGLE,
@@ -995,7 +1005,7 @@ export function addTextDefinition (target: PresSlide, text: TextProps[], opts: T
 		options: opts || {},
 	}
 
-	function cleanOpts (itemOpts: ObjectOptions): TextPropsOptions {
+	function cleanOpts(itemOpts: ObjectOptions): TextPropsOptions {
 		// STEP 1: Set some options
 		{
 			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
@@ -1108,7 +1118,7 @@ export function addTextDefinition (target: PresSlide, text: TextProps[], opts: T
  * Adds placeholder objects to slide
  * @param {PresSlide} slide - slide object containing layouts
  */
-export function addPlaceholdersToSlideLayouts (slide: PresSlide): void {
+export function addPlaceholdersToSlideLayouts(slide: PresSlide): void {
 	// Add all placeholders on this Slide that dont already exist
 	(slide._slideLayout._slideObjects || []).forEach(slideLayoutObj => {
 		if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
@@ -1129,7 +1139,7 @@ export function addPlaceholdersToSlideLayouts (slide: PresSlide): void {
  * @param {BackgroundProps} props - color string or an object with image definition
  * @param {PresSlide} target - slide object that the background is set to
  */
-export function addBackgroundDefinition (props: BackgroundProps, target: SlideLayout): void {
+export function addBackgroundDefinition(props: BackgroundProps, target: SlideLayout): void {
 	// A: @deprecated
 	if (target.bkgd) {
 		if (!target.background) target.background = {}
@@ -1170,7 +1180,11 @@ export function addBackgroundDefinition (props: BackgroundProps, target: SlideLa
  * @param {PresSlide} target - slide object that any hyperlinks will be be added to
  * @param {number | string | TextProps | TextProps[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels (target: PresSlide, text: number | string | ISlideObject | TextProps | TextProps[] | TableCell[][]): void {
+function createHyperlinkRels(
+	target: PresSlide,
+	text: number | string | ISlideObject | TextProps | TextProps[] | TableCell[][],
+	options?: TextPropsOptions[],
+): void {
 	let textObjs = []
 
 	// Only text objects can have hyperlinks, bail when text param is plain text
@@ -1179,16 +1193,28 @@ function createHyperlinkRels (target: PresSlide, text: number | string | ISlideO
 	else if (Array.isArray(text)) textObjs = text
 	else if (typeof text === 'object') textObjs = [text]
 
-	textObjs.forEach((text: TextProps) => {
-		// `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
+	textObjs.forEach((text: TextProps, idx: number) => {
+		// IMPORTANT: `options` are lost due to recursion/copy!
+		if (options && options[idx] && options[idx].hyperlink) text.options = { ...text.options, ...options[idx] }
+
+		// NOTE: `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
 		if (Array.isArray(text)) {
-			createHyperlinkRels(target, text)
+			const cellOpts = []
+			text.forEach((tablecell) => {
+				if (tablecell.options && !tablecell.text.options) {
+					cellOpts.push(tablecell.options)
+				}
+			})
+			createHyperlinkRels(target, text, cellOpts)
 		} else if (Array.isArray(text.text)) {
-			// this handles TableCells with hyperlinks
-			createHyperlinkRels(target, text.text)
+			createHyperlinkRels(target, text.text, options && options[idx] ? [options[idx]] : undefined)
 		} else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
-			if (typeof text.options.hyperlink !== 'object') console.log('ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:\'https://github.com\'}` ')
-			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log('ERROR: \'hyperlink requires either: `url` or `slide`\'')
+			if (typeof text.options.hyperlink !== 'object') {
+				console.log('ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:\'https://github.com\'}` ')
+			}
+			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) {
+				console.log('ERROR: \'hyperlink requires either: `url` or `slide`\'')
+			}
 			else {
 				const relId = getNewRelId(target)
 
@@ -1200,6 +1226,17 @@ function createHyperlinkRels (target: PresSlide, text: number | string | ISlideO
 				})
 
 				text.options.hyperlink._rId = relId
+			}
+		}
+		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && text.options.hyperlink._rId) {
+			// NOTE: auto-paging will create new slides, but skip above as _rId exists, BUT this is a new slide, so add rels!
+			if (target._rels.filter(rel => rel.rId === text.options.hyperlink._rId).length === 0) {
+				target._rels.push({
+					type: SLIDE_OBJECT_TYPES.hyperlink,
+					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
+					rId: text.options.hyperlink._rId,
+					Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
+				})
 			}
 		}
 	})

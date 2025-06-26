@@ -6,7 +6,12 @@ This document outlines how to manually test PptxGenJS across supported platforms
 
 Config Notes
 
-> ⚠️ Disable any VPN on the machine being used to serve from, or clients using IP address cant connect."
+> ⚠️ Disable VPN on the server machine, otherwise, clients using the local IP address cannot connect.
+
+Testing Steps
+
+1. Run `npm run ship`
+2. Execute tests from each section below
 
 ## 🧪 Test Suites Overview
 
@@ -61,7 +66,6 @@ Run the following test commands:
 
 ```bash
 cd demos/node
-npm install
 npm run demo
 npm run demo-all
 ```
@@ -98,7 +102,7 @@ Start the app:
 
 ```bash
 cd demos/vite-demo
-npm install
+npm install (?)
 npm run dev
 ```
 

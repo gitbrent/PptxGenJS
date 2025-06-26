@@ -97,18 +97,26 @@ gulp.task('reactTestDefs', () => {
 		.pipe(gulp.dest('./demos/vite-demo/node_modules/pptxgenjs/types'))
 })
 
-gulp.task('nodeTest', () => {
+gulp.task('nodeTestCjs', () => {
 	return gulp
 		.src(['./dist/pptxgen.cjs.js'])
 		.pipe(gulp.dest('./demos/node/node_modules/pptxgenjs/dist'))
 })
 
+gulp.task('nodeTestEs', () => {
+	return gulp
+		.src(['./dist/pptxgen.es.js'])
+		.pipe(gulp.dest('./demos/node/node_modules/pptxgenjs/dist'))
+})
+
 // Build/Deploy (ad-hoc, no watch)
-gulp.task('ship', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTestCode', 'reactTestDefs', 'nodeTest'), () => {
+gulp.task( 'ship',
+	gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTestCode', 'reactTestDefs', 'nodeTestCjs', 'nodeTestEs'), () => {
 	console.log('... ./dist/*.js files created!')
 })
 // Build/Deploy
-gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTestCode', 'reactTestDefs', 'nodeTest'), () => {
+gulp.task('default',
+	gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTestCode', 'reactTestDefs', 'nodeTestCjs', 'nodeTestEs'), () => {
 	console.log('... ./dist/*.js files created!')
 })
 
