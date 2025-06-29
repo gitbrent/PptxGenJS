@@ -39,6 +39,13 @@ export default {
 		},
 		{
 			type: 'category',
+			label: 'Troubleshooting',
+			collapsible: true,
+			collapsed: true,
+			items: ['needs-repair-errors'],
+		},
+		{
+			type: 'category',
 			label: 'Misc',
 			collapsible: true,
 			collapsed: true,

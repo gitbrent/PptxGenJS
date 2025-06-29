@@ -1,6 +1,6 @@
 {
 	"name": "pptxgenjs-gh-pages",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"private": true,
 	"scripts": {
 		"docusaurus": "docusaurus",
