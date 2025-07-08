@@ -831,6 +831,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				 }
 				]
              */
+
 			data.forEach(obj => {
 				colorIndex++
 				strXml += '<c:ser>'
@@ -900,7 +901,13 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					if (opts.lineDataSymbolSize) strXml += `<c:size val="${opts.lineDataSymbolSize}"/>` // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
 					strXml += '  <c:spPr>'
 					strXml += `    <a:solidFill>${createColorElement(opts.chartColors[obj._dataIndex + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : obj._dataIndex])}</a:solidFill>`
-					strXml += `    <a:ln w="${opts.lineDataSymbolLineSize}" cap="flat"><a:solidFill>${createColorElement(opts.lineDataSymbolLineColor || seriesColor)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+					strXml += `    <a:ln w="${opts.lineDataSymbolLineSize}" cap="flat">`
+					strXml += '      <a:solidFill>'
+					strXml += `        ${createColorElement(opts.lineDataSymbolLineColor || seriesColor)}`
+					strXml += '      </a:solidFill>'
+					strXml += '      <a:prstDash val="solid"/>'
+					strXml += '      <a:round/>'
+					strXml += '    </a:ln>'
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
 					strXml += '</c:marker>'
@@ -988,7 +995,66 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// Option: `smooth`
 				if (chartType === CHART_TYPE.LINE) strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>'
 
-				// 4: Close "SERIES"
+				/* EX:
+				data: [
+				 {
+				   name: 'Project Status',
+				   labels: ['Red', 'On Hold', 'Green', 'Unknown'],
+				   values: [10, 20, 38, 2]
+				   styles: [
+					{border: {pt: 2, color: '#ff0000'}}
+					{}
+					{border: {pt: 2, color: '#00ff00'}}
+					{}
+				   ]
+				 }
+				]
+            	*/
+				// 4: data point "Styles"
+				if (obj.styles) {
+					obj.styles.forEach((style: any, idx) => {
+						if (style !== undefined && style !== null) {
+							const borderStyle = 'border' in style ? style.border : {}
+							if (chartType === CHART_TYPE.BAR) {
+								strXml += '<c:dPt>'
+								strXml += `    <c:idx idx="${idx}"/>`
+								strXml += '    <c:spPr>'
+								strXml += '        <a:solidFill>'
+								strXml += `            ${createColorElement(seriesColor)}`
+								strXml += '        </a:solidFill>'
+								strXml += `        <a:ln w="${valToPts(borderStyle && 'pt' in borderStyle ? borderStyle.pt : 1)}" cap="flat">`
+								strXml += '            <a:solidFill>'
+								strXml += `                ${createColorElement(borderStyle && 'color' in borderStyle ? borderStyle.color : seriesColor)}`
+								strXml += '            </a:solidFill>'
+								strXml += '        </a:ln>'
+								strXml += '    </c:spPr>'
+								strXml += '</c:dPt>'
+							} else if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.AREA) {
+								strXml += '<c:dPt>'
+								strXml += `    <c:idx idx="${idx}"/>`
+								strXml += '    <c:marker>'
+								strXml += '        <c:spPr>'
+								strXml += '            <a:solidFill>'
+								strXml += `                ${createColorElement(seriesColor)}`
+								strXml += '            </a:solidFill>'
+								strXml += `            <a:ln w="${valToPts(borderStyle && 'pt' in borderStyle ? borderStyle.pt : 1)}" cap="flat">`
+								strXml += '                <a:solidFill>'
+								strXml += `                    ${createColorElement(borderStyle && 'color' in borderStyle ? borderStyle.color : seriesColor)}`
+								strXml += '                </a:solidFill>'
+								strXml += '                <a:prstDash val="solid"/>'
+								strXml += '                <a:round/>'
+								strXml += '            </a:ln>'
+								strXml += '            <a:effectLst/>'
+								strXml += '        </c:spPr>'
+								strXml += '    </c:marker>'
+								strXml += '    <c:bubble3D val="0"/>'
+								strXml += '</c:dPt>'
+							}
+						}
+					})
+				}
+
+				// 5: Close "SERIES"
 				strXml += '</c:ser>'
 			})
 
@@ -1288,6 +1354,35 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// Option: `smooth`
 				strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>'
 
+				if (obj.styles) {
+					obj.styles.forEach((style: any, idx) => {
+						if (style !== undefined && style !== null) {
+							const color = opts.chartColors[colorIndex % opts.chartColors.length]
+							const borderStyle = 'border' in style ? style.border : {}
+
+							strXml += '<c:dPt>'
+							strXml += `    <c:idx idx="${idx}"/>`
+							strXml += '    <c:marker>'
+							strXml += '        <c:spPr>'
+							strXml += '            <a:solidFill>'
+							strXml += `                ${createColorElement(color)}`
+							strXml += '            </a:solidFill>'
+							strXml += `            <a:ln w="${valToPts('pt' in borderStyle ? borderStyle.pt : 2)}" cap="flat">`
+							strXml += '                <a:solidFill>'
+							strXml += `                    ${createColorElement('color' in borderStyle ? borderStyle.color : color)}`
+							strXml += '                </a:solidFill>'
+							strXml += '                <a:prstDash val="solid"/>'
+							strXml += '                <a:round/>'
+							strXml += '            </a:ln>'
+							strXml += '            <a:effectLst/>'
+							strXml += '        </c:spPr>'
+							strXml += '    </c:marker>'
+							strXml += '    <c:bubble3D val="0"/>'
+							strXml += '</c:dPt>'
+						}
+					})
+				}
+
 				// 4: Close "SERIES"
 				strXml += '</c:ser>'
 			})
@@ -1481,7 +1576,6 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 		case CHART_TYPE.PIE:
 			// Use the same let name so code blocks from barChart are interchangeable
 			optsChartData = data[0]
-
 			/* EX:
 				data: [
 				 {
@@ -1520,16 +1614,25 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 
 			// 2: "Data Point" block for every data row
 			optsChartData.labels[0].forEach((_label, idx) => {
+				const color = opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]
+
+				const style = optsChartData?.styles?.[idx] ?? {}
+
+				const borderStyle = 'border' in style
+					? style.border as {pt, color}
+					: opts.dataBorder ? opts.dataBorder : {}
+
+				const explosion = 'pt' in borderStyle ? borderStyle.pt : 0
+
 				strXml += '<c:dPt>'
 				strXml += ` <c:idx val="${idx}"/>`
+				strXml += ` <c:explosion val="${explosion}"/>`
 				strXml += ' <c:bubble3D val="0"/>'
 				strXml += ' <c:spPr>'
-				strXml += `<a:solidFill>${createColorElement(
-					opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]
-				)}</a:solidFill>`
-				if (opts.dataBorder) {
-					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(
-						opts.dataBorder.color
+				strXml += `<a:solidFill>${createColorElement(color)}</a:solidFill>`
+				if (borderStyle) {
+					strXml += `<a:ln w="${valToPts(borderStyle.pt)}" cap="flat"><a:solidFill>${createColorElement(
+						borderStyle.color
 					)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 				}
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
