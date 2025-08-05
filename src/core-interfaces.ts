@@ -66,7 +66,7 @@ export interface DataOrPathProps {
 	 */
 	data?: string
 }
-export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
+export interface BackgroundProps extends DataOrPathProps, SolidShapeFillProps {
 	/**
 	 * Color (hex format)
 	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
@@ -89,6 +89,7 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type PresetPatternValues = 'cross' | 'dkDnDiag' | 'dkHorz' | 'dkUpDiag' | 'dkVert' | 'dashDnDiag' | 'dashHorz' | 'dashUpDiag' | 'dashVert' | 'diagBrick' | 'diagCross' | 'divot' | 'dotGrid' | 'dotDmnd' | 'dnDiag' | 'horz' | 'horzBrick' | 'lgCheck' | 'lgConfetti' | 'lgGrid' | 'ltDnDiag' | 'ltHorz' | 'ltUpDiag' | 'ltVert' | 'narHorz' | 'narVert' | 'openDmnd' | 'pct10' | 'pct20' | 'pct25' | 'pct30' | 'pct40' | 'pct5' | 'pct50' | 'pct60' | 'pct70' | 'pct75' | 'pct80' | 'pct90' | 'plaid' | 'shingle' | 'smCheck' | 'smConfetti' | 'smGrid' | 'solidDmnd' | 'sphere' | 'trellis' | 'upDiag' | 'vert' | 'wave' | 'weave' | 'wdDnDiag' | 'wdUpDiag' | 'zigZag'
 
 // used by charts, shape, text
 export interface BorderProps {
@@ -172,7 +173,67 @@ export interface ShadowProps {
 	rotateWithShape?: boolean
 }
 // used by: shape, table, text
-export interface ShapeFillProps {
+export interface GradientStop {
+	/**
+	 * Position (percent)
+	 * - range: 0-100
+	 */
+	position: number
+	/**
+	 * Gradient stop color
+	 * - `HexColor` or `ThemeColor`
+	 * @example 'FF0000' // hex color (red)
+	 * @example pptx.SchemeColor.text1 // Theme color (Text1)
+	 */
+	color: Color
+	/**
+	 * Transparency (percent)
+	 * - range: 0-100
+	 * @default 0
+	 */
+	transparency?: number
+}
+interface BaseGradientShapeFillProps {
+	/**
+	 * Gradient stops
+	 * - Only used with linearGradient and pathGradient types
+	 */
+	stops: GradientStop[]
+	/**
+	 * Rotate with shape
+	 * @default true
+	 */
+	rotWithShape?: boolean
+	/**
+	 * Tile rectangle
+	 */
+	tileRect?: { t?: number, r?: number, b?: number, l?: number }
+	/**
+	 * Gradient flip direction
+	 * - Only used when tileRect is specified
+	 * @default 'none'
+	 */
+	flip?: 'none' | 'x' | 'xy' | 'y'
+}
+export interface LinearGradientShapeFillProps extends BaseGradientShapeFillProps {
+	/**
+	 * Linear gradient angle (degrees)
+	 * - range: 0-359
+	 * @default 0
+	 */
+	angle?: number
+	/**
+	 * Scaled
+	 * - `true` will scale the gradient with the object
+	 * @default false
+	 */
+	scaled?: boolean
+	/**
+	 * Fill type
+	 */
+	type: 'linearGradient'
+}
+export interface SolidShapeFillProps {
 	/**
 	 * Fill color
 	 * - `HexColor` or `ThemeColor`
@@ -199,7 +260,33 @@ export interface ShapeFillProps {
 	 */
 	alpha?: number
 }
-export interface ShapeLineProps extends ShapeFillProps {
+
+export interface PatternShapeFillProps {
+	/**
+	 * Foreground color
+	 * - `HexColor`
+	 * @example 'FF0000' // hex color (red)
+	 */
+	color?: HexColor
+	/**
+	 * Background color
+	 * - `HexColor`
+	 * @example 'FF0000' // hex color (red)
+	 */
+	bgColor?: HexColor
+	/**
+	 * Fill type
+	 */
+	type: 'patternFill'
+
+	/**
+	 * Preset Pattern
+	 * @default 'cross'
+	 */
+	prst?: PresetPatternValues
+}
+
+export interface ShapeLineProps extends SolidShapeFillProps {
 	/**
 	 * Line width (pt)
 	 * @default 1
@@ -636,7 +723,7 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
 	 * @example { color:pptx.SchemeColor.accent1 } // Theme color Accent1
 	 */
-	fill?: ShapeFillProps
+	fill?: LinearGradientShapeFillProps | SolidShapeFillProps
 	/**
 	 * Flip shape horizontally?
 	 * @default false
@@ -833,7 +920,7 @@ export interface TableCellProps extends TextBaseProps {
 	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
 	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
-	fill?: ShapeFillProps
+	fill?: LinearGradientShapeFillProps | SolidShapeFillProps
 	hyperlink?: HyperlinkProps
 	/**
 	 * Cell margin (inches)
@@ -911,7 +998,7 @@ export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProp
 	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
 	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
-	fill?: ShapeFillProps
+	fill?: LinearGradientShapeFillProps | SolidShapeFillProps
 	/**
 	 * Cell margin (inches)
 	 * - affects all table cells, is superceded by cell options
@@ -1018,7 +1105,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @example { color:'0088CC', transparency:50 } // hex color, 50% transparent
 	 * @example { color:pptx.SchemeColor.accent1 } // theme color Accent1
 	 */
-	fill?: ShapeFillProps
+	fill?: LinearGradientShapeFillProps | SolidShapeFillProps
 	/**
 	 * Flip shape horizontally?
 	 * @default false
@@ -1222,7 +1309,7 @@ export interface IChartPropsFillLine {
 	 * @example fill: {color: pptx.SchemeColor.background2} // Theme color value
 	 * @example fill: {transparency: 50} // 50% transparency
 	 */
-	fill?: ShapeFillProps
+	fill?: LinearGradientShapeFillProps | SolidShapeFillProps
 }
 export interface IChartAreaProps extends IChartPropsFillLine {
 	/**

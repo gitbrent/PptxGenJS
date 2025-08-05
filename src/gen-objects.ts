@@ -41,6 +41,7 @@ import {
 	ShapeProps,
 	SlideLayout,
 	SlideMasterProps,
+	SolidShapeFillProps,
 	TableCell,
 	TableProps,
 	TableRow,
@@ -316,7 +317,14 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	if (options.plotArea.border && (!options.plotArea.border.color || typeof options.plotArea.border.color !== 'string')) { options.plotArea.border.color = DEF_CHART_BORDER.color }
 	if (options.border) options.plotArea.border = options.border // @deprecated [[remove in v4.0]]
 	options.plotArea.fill = options.plotArea.fill || { color: null, transparency: null }
-	if (options.fill) options.plotArea.fill.color = options.fill // @deprecated [[remove in v4.0]]
+	if (options.fill) {
+		const fill: SolidShapeFillProps = {
+			type: 'solid',
+			color: options.fill, // @deprecated [[remove in v4.0]]
+			transparency: null,
+		}
+		options.plotArea.fill = fill
+	}
 	//
 	options.chartArea = options.chartArea || {}
 	options.chartArea.border = options.chartArea.border && typeof options.chartArea.border === 'object' ? options.chartArea.border : null

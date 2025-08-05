@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps } from './core-interfaces'
+import { PresLayout, TextGlowProps, PresSlide, SolidShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, LinearGradientShapeFillProps, PatternShapeFillProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -182,32 +182,98 @@ export function createGlowElement (options: TextGlowProps, defaults: TextGlowPro
 
 /**
  * Create color selection
- * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
+ * @param {Color | ShapeFillProps | ShapeLineProps | PatternShapeFillProps} props fill props
  * @returns XML string
  */
-export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineProps): string {
-	let fillType = 'solid'
-	let colorVal = ''
-	let internalElements = ''
+export function genXmlColorSelection (props: Color | SolidShapeFillProps | ShapeLineProps | LinearGradientShapeFillProps | PatternShapeFillProps): string {
+	if (!props) {
+		return ''
+	}
+
 	let outText = ''
 
-	if (props) {
-		if (typeof props === 'string') colorVal = props
-		else {
-			if (props.type) fillType = props.type
-			if (props.color) colorVal = props.color
-			if (props.alpha) internalElements += `<a:alpha val="${Math.round((100 - props.alpha) * 1000)}"/>` // DEPRECATED: @deprecated v3.3.0
-			if (props.transparency) internalElements += `<a:alpha val="${Math.round((100 - props.transparency) * 1000)}"/>`
+	let safeProps: SolidShapeFillProps | ShapeLineProps | LinearGradientShapeFillProps | PatternShapeFillProps = {}
+	if (typeof props === 'string') {
+		safeProps.type = 'solid'
+		safeProps.color = props
+	} else {
+		safeProps = props
+		safeProps.type = props.type ?? 'solid'
+	}
+
+	switch (safeProps.type) {
+		case 'solid': {
+			const transparency = safeProps.transparency ?? safeProps.alpha
+			const internalElements = transparency
+				? `<a:alpha val="${Math.round((100 - transparency) * 1000)}"/>`
+				: undefined
+			outText += `<a:solidFill>${createColorElement(safeProps.color ?? '', internalElements)}</a:solidFill>`
+			break
 		}
 
-		switch (fillType) {
-			case 'solid':
-				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
-				break
-			default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
-				outText += ''
-				break
+		case 'linearGradient': {
+			const stops = safeProps.stops ?? []
+			const rotWithShape = safeProps.rotWithShape ?? true
+			const flip = safeProps.flip ?? 'none'
+
+			outText += `<a:gradFill rotWithShape="${rotWithShape ? 1 : 0}" flip="${flip}">`
+
+			if (stops.length > 0) {
+				outText += '<a:gsLst>'
+
+				outText += stops.map(
+					({ position, color: stopColor, transparency }) => {
+						const stopInternalElements = transparency
+							? `<a:alpha val="${Math.round((100 - transparency) * 1000)}"/>`
+							: ''
+
+						return `<a:gs pos="${position * 1000}">${createColorElement(stopColor, stopInternalElements)}</a:gs>`
+					}
+				).join('')
+
+				outText += '</a:gsLst>'
+			}
+
+			if (safeProps.angle) {
+				const ang = convertRotationDegrees(safeProps.angle)
+				const scaled = safeProps.scaled ?? false
+				outText += `<a:lin ang="${ang}" scaled="${scaled ? 1 : 0}"/>`
+			}
+
+			if (
+				safeProps.tileRect &&
+				(
+					safeProps.tileRect.t ||
+					safeProps.tileRect.r ||
+					safeProps.tileRect.b ||
+					safeProps.tileRect.l
+				)
+			) {
+				const tAttr = safeProps.tileRect.t ? `t="${safeProps.tileRect.t * 1000}"` : ''
+				const rAttr = safeProps.tileRect.r ? `r="${safeProps.tileRect.r * 1000}"` : ''
+				const bAttr = safeProps.tileRect.b ? `b="${safeProps.tileRect.b * 1000}"` : ''
+				const lAttr = safeProps.tileRect.l ? `l="${safeProps.tileRect.l * 1000}"` : ''
+
+				outText += `<a:tileRect ${tAttr} ${rAttr} ${bAttr} ${lAttr}/>`
+			}
+
+			outText += '</a:gradFill>'
+			break
 		}
+		case 'patternFill': {
+			outText += `<a:pattFill prst="${safeProps.prst}">
+				<a:bgClr>
+					<a:srgbClr val="${safeProps.bgColor}"/>
+				</a:bgClr>
+				<a:fgClr>
+					<a:srgbClr val="${safeProps.color}"/>
+				</a:fgClr>
+			</a:pattFill>`
+			break
+		}
+		default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
+			outText += ''
+			break
 	}
 
 	return outText
