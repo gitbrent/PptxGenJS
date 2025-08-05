@@ -51,6 +51,24 @@ declare class PptxGenJS {
 	 */
 	rtlMode: boolean
 
+	/**
+	 * master slide layout object
+	 * @type {PptxGenJS.PresSlide}
+	 */
+	masterSlide: PptxGenJS.PresSlide
+
+	/**
+	 * this Presentation's Slide objects
+	 * @type {PptxGenJS.PresSlide[]}
+	 */
+	slides: PptxGenJS.PresSlide[]
+
+	/**
+	 * this Presentation's sections
+	 * @type {PptxGenJS.SectionProps[]}
+	 */
+	sections: PptxGenJS.SectionProps[]
+
 	// Presentation Metadata
 	/**
 	 * Author name
