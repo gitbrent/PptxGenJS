@@ -1328,6 +1328,11 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 		// D: End paragraph
 		strSlideXml += '</a:p>'
 	})
+	
+	// PowerPoint shows repair message if txBody misses p #1048
+	if (!arrLines.length) {
+		strSlideXml += '<a:p><a:endParaRPr /></a:p>'
+	}
 
 	// IMPORTANT: An empty txBody will cause "needs repair" error! Add <p> content if missing.
 	// [FIXED in v3.13.0]: This fixes issue with table auto-paging where some cells w/b empty on subsequent pages.
