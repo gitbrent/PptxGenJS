@@ -1,3 +1,4 @@
+/* PptxGenJS 4.0.1 @ 2025-08-18T08:07:28.247Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -3661,7 +3662,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 ]
              */
             data.forEach(obj => {
-                var _a;
+                var _a, _b;
                 colorIndex++;
                 strXml += '<c:ser>';
                 strXml += `  <c:idx val="${obj._dataIndex}"/><c:order val="${obj._dataIndex}"/>`;
@@ -3722,6 +3723,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // 'c:marker' tag: `lineDataSymbol`
                 if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
+                    // Use default marker styling (will be overridden by per-point styling if provided)
                     strXml += '<c:marker>';
                     strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
                     if (opts.lineDataSymbolSize)
@@ -3804,10 +3806,46 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '    <c:numCache>';
                     strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>';
                     strXml += `      <c:ptCount val="${obj.labels[0].length}"/>`;
-                    obj.values.forEach((value, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${value || value === 0 ? value : ''}</c:v></c:pt>`));
+                    obj.values.forEach((value, idx) => {
+                        // Handle both number values and data point objects
+                        const numericValue = typeof value === 'number' ? value : value.y;
+                        strXml += `<c:pt idx="${idx}"><c:v>${numericValue || numericValue === 0 ? numericValue : ''}</c:v></c:pt>`;
+                    });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
                     strXml += '</c:val>';
+                }
+                // Per-point styling for line charts (must be after <c:val> but before </c:ser>)
+                if (chartType === CHART_TYPE.LINE && ((_b = obj.perPointStyling) === null || _b === void 0 ? void 0 : _b.length)) {
+                    obj.perPointStyling.forEach((styling, index) => {
+                        if (!styling)
+                            return;
+                        strXml += '  <c:dPt>';
+                        strXml += `    <c:idx val="${index}"/>`;
+                        // marker (symbol + size + styling inside)
+                        if (styling.markerType || styling.markerSize || styling.markerColor || styling.markerOutlineColor) {
+                            strXml += '    <c:marker>';
+                            if (styling.markerType)
+                                strXml += `      <c:symbol val="${styling.markerType}"/>`;
+                            if (styling.markerSize)
+                                strXml += `      <c:size val="${styling.markerSize}"/>`;
+                            if (styling.markerColor || styling.markerOutlineColor) {
+                                strXml += '      <c:spPr>'; // now inside marker
+                                if (styling.markerColor) {
+                                    strXml += genXmlColorSelection(styling.markerColor);
+                                }
+                                if (styling.markerOutlineColor) {
+                                    const lineWidth = valToPts(styling.markerOutlineWidth || 0.75);
+                                    strXml += `        <a:ln w="${lineWidth}">`;
+                                    strXml += genXmlColorSelection(styling.markerOutlineColor);
+                                    strXml += '        </a:ln>';
+                                }
+                                strXml += '      </c:spPr>';
+                            }
+                            strXml += '    </c:marker>';
+                        }
+                        strXml += '  </c:dPt>';
+                    });
                 }
                 // Option: `smooth`
                 if (chartType === CHART_TYPE.LINE)
