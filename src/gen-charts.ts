@@ -913,6 +913,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 
 				// 'c:marker' tag: `lineDataSymbol`
 				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
+					// Use default marker styling (will be overridden by per-point styling if provided)
 					strXml += '<c:marker>'
 					strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>'
 					if (opts.lineDataSymbolSize) strXml += `<c:size val="${opts.lineDataSymbolSize}"/>` // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
@@ -923,6 +924,8 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '  </c:spPr>'
 					strXml += '</c:marker>'
 				}
+
+
 
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
 				// Color chart bars various colors when >1 color
@@ -997,10 +1000,49 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
 					strXml += `      <c:ptCount val="${obj.labels[0].length}"/>`
-					obj.values.forEach((value, idx) => (strXml += `<c:pt idx="${idx}"><c:v>${value || value === 0 ? value : ''}</c:v></c:pt>`))
+					obj.values.forEach((value, idx) => {
+						// Handle both number values and data point objects
+						const numericValue = typeof value === 'number' ? value : value.y
+						strXml += `<c:pt idx="${idx}"><c:v>${numericValue || numericValue === 0 ? numericValue : ''}</c:v></c:pt>`
+					})
 					strXml += '    </c:numCache>'
 					strXml += '  </c:numRef>'
 					strXml += '</c:val>'
+				}
+
+				// Per-point styling for line charts (must be after <c:val> but before </c:ser>)
+				if (chartType === CHART_TYPE.LINE && obj.perPointStyling?.length) {
+					obj.perPointStyling.forEach((styling, index) => {
+						if (!styling) return
+					
+						strXml += '  <c:dPt>'
+						strXml += `    <c:idx val="${index}"/>`
+					
+						// marker (symbol + size + styling inside)
+						if (styling.markerType || styling.markerSize || styling.markerColor || styling.markerOutlineColor) {
+							strXml += '    <c:marker>'
+							if (styling.markerType) strXml += `      <c:symbol val="${styling.markerType}"/>`
+							if (styling.markerSize) strXml += `      <c:size val="${styling.markerSize}"/>`
+					
+							if (styling.markerColor || styling.markerOutlineColor) {
+								strXml += '      <c:spPr>' // now inside marker
+								if (styling.markerColor) {
+									strXml += genXmlColorSelection(styling.markerColor)
+								}
+								if (styling.markerOutlineColor) {
+									const lineWidth = valToPts(styling.markerOutlineWidth || 0.75)
+									strXml += `        <a:ln w="${lineWidth}">`
+									strXml += genXmlColorSelection(styling.markerOutlineColor)
+									strXml += '        </a:ln>'
+								}
+								strXml += '      </c:spPr>'
+							}
+					
+							strXml += '    </c:marker>'
+						}
+					
+						strXml += '  </c:dPt>'
+					})
 				}
 
 				// Option: `smooth`

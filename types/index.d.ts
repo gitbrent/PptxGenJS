@@ -1951,6 +1951,46 @@ declare namespace PptxGenJS {
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 	export type ChartLineCap = 'flat' | 'round' | 'square'
 
+	/**
+	 * Interface for individual data point with marker styling
+	 */
+	export interface IChartDataPoint {
+		/**
+		 * The numeric value for the data point
+		 */
+		y: number
+		/**
+		 * Marker type for this specific data point
+		 * @default circle
+		 */
+		markerType?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+		/**
+		 * Marker size for this specific data point
+		 * @default 6
+		 */
+		markerSize?: number
+		/**
+		 * Marker fill color for this specific data point (hex color)
+		 * @example 'FF0000'
+		 */
+		markerColor?: string
+		/**
+		 * Marker outline/border color for this specific data point (hex color)
+		 * @example '000000'
+		 */
+		markerOutlineColor?: string
+		/**
+		 * Marker outline/border width for this specific data point (points)
+		 * @default 0.75
+		 */
+		markerOutlineWidth?: number
+		/**
+		 * Line color for this specific data point (hex color)
+		 * @example '000000'
+		 */
+		lineColor?: string
+	}
+
 	export interface OptsChartData {
 		//_dataIndex?: number
 
@@ -1971,11 +2011,17 @@ declare namespace PptxGenJS {
 		 * @example [5, 1, 5, 1]
 		 */
 		sizes?: number[]
-		/**
-		 * category values
-		 * @example [2000, 2010, 2020]
-		 */
-		values?: number[]
+			/**
+	 * category values - can be numbers or objects with per-point styling for line charts
+	 * @example [2000, 2010, 2020] // simple numeric values
+	 * @example [{ y: 55, markerType: "circle", markerSize: 10, markerColor: "FF0000", lineColor: "000000" }] // with per-point styling
+	 */
+	values?: number[] | IChartDataPoint[]
+	/**
+	 * per-point styling for line charts (separate from values to avoid conflicts)
+	 * @example [{ markerType: "circle", markerSize: 8, markerColor: "FF0000", markerOutlineColor: "000000" }]
+	 */
+	perPointStyling?: IChartDataPoint[]
 		/**
 		 * Override `chartColors`
 		 */
