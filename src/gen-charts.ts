@@ -1018,6 +1018,21 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 						strXml += '  <c:dPt>'
 						strXml += `    <c:idx val="${index}"/>`
 					
+						// Add line styling if lineWidth or lineColor is specified
+						if (styling.lineWidth !== undefined || styling.lineColor) {
+							strXml += '    <c:spPr>'
+							strXml += `      <a:ln w="${valToPts(styling.lineWidth || opts.lineSize || 2)}" cap="flat">`
+							strXml += '        <a:solidFill>'
+							strXml += styling.lineColor ? 
+								genXmlColorSelection(styling.lineColor) : 
+								createColorElement(opts.chartColors[obj._dataIndex])
+							strXml += '        </a:solidFill>'
+							strXml += '        <a:prstDash val="solid"/>'
+							strXml += '        <a:round/>'
+							strXml += '      </a:ln>'
+							strXml += '    </c:spPr>'
+						}
+					
 						// marker (symbol + size + styling inside)
 						if (styling.markerType || styling.markerSize || styling.markerColor || styling.markerOutlineColor) {
 							strXml += '    <c:marker>'

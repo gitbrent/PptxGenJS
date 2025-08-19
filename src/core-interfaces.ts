@@ -1187,6 +1187,13 @@ export interface IChartDataPoint {
 	 * @example '000000'
 	 */
 	lineColor?: string
+	/**
+	 * Line width for this specific data point (points)
+	 * - Controls the thickness of the line segment from this point to the next
+	 * @example 3 // 3-point thick line
+	 * @default undefined (uses global lineSize)
+	 */
+	lineWidth?: number
 }
 
 export interface OptsChartData {
