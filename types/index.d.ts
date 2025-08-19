@@ -1763,6 +1763,8 @@ declare namespace PptxGenJS {
 		 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 		 */
 		newSlideStartY?: number
+
+		placeholder?: string
 	}
 	export interface TableCell {
 		text?: string | TableCell[]
