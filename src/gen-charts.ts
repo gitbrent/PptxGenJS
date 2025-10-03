@@ -29,7 +29,7 @@ import JSZip from 'jszip'
  * @param {JSZip} zip - file that the resulting XLSX should be added to
  * @return {Promise} promise of generating the XLSX file
  */
-export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JSZip): Promise<string> {
+export async function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): Promise<string> {
 	const data = chartObject.data
 
 	return await new Promise((resolve, reject) => {
@@ -328,7 +328,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 					// Add Y-Axis 1->N
 					for (let idy = 1; idy < data.length; idy++) {
 						strSheetXml += `<c r="${getExcelColName(idy + 1)}${idx + 2}"><v>${data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : ''
-						}</v></c>`
+							}</v></c>`
 					}
 					strSheetXml += '</row>'
 				})
@@ -464,11 +464,11 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 						const revLabelGroups = data[0].labels.slice().reverse()
 						revLabelGroups.forEach((labelsGroup, idy) => {
 							/**
-						     * const LABELS_REVERSED = [
-						     *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
-						     *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
-						     * ];
-						     */
+							 * const LABELS_REVERSED = [
+							 *   ["Mech",     "",     "", "Elec",     "",     "", "Hydr",     "",     ""],
+							 *   ["Gear", "Berg", "Motr", "Swch", "Plug", "Cord", "Pump", "Leak", "Seal"],
+							 * ];
+							 */
 							const colLabel = labelsGroup[idx]
 							if (colLabel) {
 								const totGrpLbls = idy === 0 ? 1 : revLabelGroups[idy - 1].filter(label => label && label !== '').length // get unique label so we can add to get proper shared-string #
@@ -493,14 +493,14 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
 			strSheetXml += '</sheetData>'
 
 			/* FIXME: support multi-level
-            if (IS_MULTI_CAT_AXES) {
+			if (IS_MULTI_CAT_AXES) {
 				strSheetXml += '<mergeCells count="3">'
 				strSheetXml += ' <mergeCell ref="A2:A4"/>'
 				strSheetXml += ' <mergeCell ref="A10:A12"/>'
 				strSheetXml += ' <mergeCell ref="A5:A9"/>'
 				strSheetXml += '</mergeCells>'
-            }
-            */
+			}
+			*/
 
 			strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>'
 			// Link the `table1.xml` file to define an actual Table in Excel
@@ -544,7 +544,7 @@ export async function createExcelWorksheet (chartObject: ISlideRelChart, zip: JS
  * @param {ISlideRelChart} rel - chart object
  * @return {string} XML
  */
-export function makeXmlCharts (rel: ISlideRelChart): string {
+export function makeXmlCharts(rel: ISlideRelChart): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 	let usesSecondaryValAxis = false
 
@@ -552,7 +552,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 	{
 		// CHARTSPACE: BEGIN vvv
 		strXml +=
-            '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+			'<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
 		strXml += '<c:date1904 val="0"/>' // ppt defaults to 1904 dates, excel to 1900
 		strXml += `<c:roundedCorners val="${rel.opts.chartArea.roundedCorners ? '1' : '0'}"/>`
 		strXml += '<c:chart>'
@@ -579,8 +579,8 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
 		/** Add 3D view tag
-         * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
-         */
+		 * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
+		 */
 		if (rel.opts._type === CHART_TYPE.BAR3D) {
 			strXml += `<c:view3D><c:rotX val="${rel.opts.v3DRotX}"/><c:rotY val="${rel.opts.v3DRotY}"/><c:rAngAx val="${!rel.opts.v3DRAngAx ? 0 : 1}"/><c:perspective val="${rel.opts.v3DPerspective}"/></c:view3D>`
 		}
@@ -765,7 +765,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
  * @example '<c:lineChart>'
  * @return {string} XML chart
  */
-function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
+function makeChartType(chartType: CHART_NAME, data: IOptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let colorIndex = -1 // Maintain the color index by region
@@ -809,7 +809,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				   values: [55, 43, 70, 58]
 				 }
 				]
-            */
+			*/
 			/* EX2:
 				data: [
 				 {
@@ -829,7 +829,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				   values: [55, 43, 70, 58, 78, 63]
 				 }
 				]
-             */
+			 */
 			data.forEach(obj => {
 				const series = { ...opts, ...obj }
 				colorIndex++
@@ -846,29 +846,36 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 				// TODO: CURRENT: Pull#727
 				const seriesColor = series.color ? series.color : series.chartColors ? series.chartColors[0] : null;
 
-				strXml += '  <c:spPr>'
-				if (seriesColor === 'transparent') {
-					strXml += '<a:noFill/>'
-				} else if (series.chartColorsOpacity) {
-					strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(series.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>'
+				// Decide whether to use custom spPr or default
+				if (series.customSpPrXml) {
+					// If user provided custom spPr XML string, inject it verbatim
+					strXml += series.customSpPrXml;
 				} else {
-					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
-				}
+					// Default Fill and Border logic
+					strXml += '  <c:spPr>';
+					const seriesColor = series.color ? series.color : series.chartColors ? series.chartColors[0] : null;
 
-				if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
-					if (series.lineSize === 0) {
-						strXml += '<a:ln><a:noFill/></a:ln>'
+					if (seriesColor === 'transparent') {
+						strXml += '<a:noFill/>';
+					} else if (series.chartColorsOpacity) {
+						strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(series.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>';
 					} else {
-						strXml += `<a:ln w="${valToPts(series.lineSize)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`
-						strXml += '<a:prstDash val="' + (series.lineDash || 'solid') + '"/><a:round/></a:ln>'
+						strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
 					}
-				} else if (series.dataBorder) {
-					strXml += `<a:ln w="${valToPts(series.dataBorder.pt)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(series.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
+
+					if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
+						if (series.lineSize === 0) {
+							strXml += '<a:ln><a:noFill/></a:ln>';
+						} else {
+							strXml += `<a:ln w="${valToPts(series.lineSize)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`;
+							strXml += '<a:prstDash val="' + (series.lineDash || 'solid') + '"/><a:round/></a:ln>';
+						}
+					} else if (series.dataBorder) {
+						strXml += `<a:ln w="${valToPts(series.dataBorder.pt)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(series.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`;
+					}
+
+					strXml += '</c:spPr>';
 				}
-
-				strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW)
-
-				strXml += '  </c:spPr>'
 				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Data Labels per series
@@ -1042,7 +1049,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					{ name:'Y-Value 1', values:[13, 20, 21, 25] },
 					{ name:'Y-Value 2', values:[ 1,  2,  5,  9] }
 				];
-            */
+			*/
 
 			// 1: Start Chart
 			strXml += '<c:' + chartType + 'Chart>'
@@ -1330,7 +1337,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					{ name:'Y-Values 1', values:[13, 20, 21, 25], sizes:[10, 5, 20, 15] },
 					{ name:'Y-Values 2', values:[ 1,  2,  5,  9], sizes:[ 5, 3,  9,  3] }
 				];
-            */
+			*/
 
 			// 1: Start Chart
 			strXml += '<c:bubbleChart>'
@@ -1550,7 +1557,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
 					strXml += '   <a:bodyPr/><a:lstStyle/>'
 					strXml += '   <a:p><a:pPr>'
 					strXml += `   <a:defRPr sz="${Math.round((series.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${series.dataLabelFontBold ? 1 : 0}" i="${series.dataLabelFontItalic ? 1 : 0
-					}" u="none" strike="noStrike">`
+						}" u="none" strike="noStrike">`
 					strXml += '    <a:solidFill>' + createColorElement(series.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 					strXml += `    <a:latin typeface="${series.dataLabelFontFace || 'Arial'}"/>`
 					strXml += '   </a:defRPr>'
@@ -1638,7 +1645,7 @@ function makeChartType (chartType: CHART_NAME, data: IOptsChartData[], opts: ICh
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeCatAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): string {
+function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): string {
 	let strXml = ''
 
 	// Build cat axis tag
@@ -1750,7 +1757,7 @@ function makeCatAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
+function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
 	if (valAxisId === AXIS_ID_VALUE_SECONDARY) axisPos = 'r' // default behavior for PPT is showing 2nd val axis on right (primary axis on left)
 	const crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY
@@ -1818,9 +1825,9 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
 		strXml += ' <c:crosses val="' + crosses + '"/>'
 	}
 	strXml +=
-        ' <c:crossBetween val="' +
-        (opts._type === CHART_TYPE.SCATTER || (!!(Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0)) ? 'midCat' : 'between') +
-        '"/>'
+		' <c:crossBetween val="' +
+		(opts._type === CHART_TYPE.SCATTER || (!!(Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0)) ? 'midCat' : 'between') +
+		'"/>'
 	if (opts.valAxisMajorUnit) strXml += ` <c:majorUnit val="${opts.valAxisMajorUnit}"/>`
 	if (opts.valAxisDisplayUnit) { strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/>${opts.valAxisDisplayUnitLabel ? '<c:dispUnitsLbl/>' : ''}</c:dispUnits>` }
 
@@ -1836,7 +1843,7 @@ function makeValAxis (opts: IChartOptsLib, valAxisId: string): string {
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): string {
+function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): string {
 	let strXml = ''
 
 	// Build ser axis tag
@@ -1911,7 +1918,7 @@ function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
  * @param {IChartPropsTitle} opts - options
  * @return {string} XML `<c:title>`
  */
-function genXmlTitle (opts: IChartPropsTitle, chartX?: number, chartY?: number): string {
+function genXmlTitle(opts: IChartPropsTitle, chartX?: number, chartY?: number): string {
 	const align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : '<a:pPr>'
 	const rotate = opts.titleRotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.titleRotate)}"/>` : '<a:bodyPr/>' // don't specify rotation to get default (ex. vertical for cat axis)
 	const sizeAttr = opts.fontSize ? `sz="${Math.round(opts.fontSize * 100)}"` : '' // only set the font size if specified.  Powerpoint will handle the default size
@@ -1965,7 +1972,7 @@ function genXmlTitle (opts: IChartPropsTitle, chartX?: number, chartY?: number):
  * @example 1 returns 'A'
  * @example 27 returns 'AA'
  */
-function getExcelColName (colIndex: number): string {
+function getExcelColName(colIndex: number): string {
 	let colStr = ''
 	const colIdx = colIndex - 1 // Subtract 1 so `LETTERS[columnIndex]` returns "A" etc
 
@@ -1988,7 +1995,7 @@ function getExcelColName (colIndex: number): string {
  * @example { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
  * @return {string} XML
  */
-function createShadowElement (options: ShadowProps, defaults: object): string {
+function createShadowElement(options: ShadowProps, defaults: object): string {
 	if (!options) {
 		return '<a:effectLst/>'
 	} else if (typeof options !== 'object') {
@@ -2020,7 +2027,7 @@ function createShadowElement (options: ShadowProps, defaults: object): string {
  * @param {OptsChartGridLine} glOpts {size, color, style}
  * @return {string} XML
  */
-function createGridLineElement (glOpts: OptsChartGridLine): string {
+function createGridLineElement(glOpts: OptsChartGridLine): string {
 	let strXml = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
 	strXml += `  <a:ln w="${valToPts(glOpts.size || DEF_CHART_GRIDLINE.size)}" cap="${createLineCap(glOpts.cap || DEF_CHART_GRIDLINE.cap)}">`
@@ -2033,7 +2040,7 @@ function createGridLineElement (glOpts: OptsChartGridLine): string {
 	return strXml
 }
 
-function createLineCap (lineCap: ChartLineCap): string {
+function createLineCap(lineCap: ChartLineCap): string {
 	if (!lineCap || lineCap === 'flat') {
 		return 'flat'
 	} else if (lineCap === 'square') {

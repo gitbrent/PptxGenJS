@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-09-12T15:28:51.098Z */
+/* PptxGenJS 4.0.1 @ 2025-10-03T16:19:06.284Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3663,30 +3663,38 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Fill and Border
                 // TODO: CURRENT: Pull#727
                 const seriesColor = series.color ? series.color : series.chartColors ? series.chartColors[0] : null;
-                strXml += '  <c:spPr>';
-                if (seriesColor === 'transparent') {
-                    strXml += '<a:noFill/>';
-                }
-                else if (series.chartColorsOpacity) {
-                    strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(series.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>';
+                // Decide whether to use custom spPr or default
+                if (series.customSpPrXml) {
+                    // If user provided custom spPr XML string, inject it verbatim
+                    strXml += series.customSpPrXml;
                 }
                 else {
-                    strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
-                }
-                if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
-                    if (series.lineSize === 0) {
-                        strXml += '<a:ln><a:noFill/></a:ln>';
+                    // Default Fill and Border logic
+                    strXml += '  <c:spPr>';
+                    const seriesColor = series.color ? series.color : series.chartColors ? series.chartColors[0] : null;
+                    if (seriesColor === 'transparent') {
+                        strXml += '<a:noFill/>';
+                    }
+                    else if (series.chartColorsOpacity) {
+                        strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(series.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>';
                     }
                     else {
-                        strXml += `<a:ln w="${valToPts(series.lineSize)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`;
-                        strXml += '<a:prstDash val="' + (series.lineDash || 'solid') + '"/><a:round/></a:ln>';
+                        strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
                     }
+                    if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
+                        if (series.lineSize === 0) {
+                            strXml += '<a:ln><a:noFill/></a:ln>';
+                        }
+                        else {
+                            strXml += `<a:ln w="${valToPts(series.lineSize)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(seriesColor)}</a:solidFill>`;
+                            strXml += '<a:prstDash val="' + (series.lineDash || 'solid') + '"/><a:round/></a:ln>';
+                        }
+                    }
+                    else if (series.dataBorder) {
+                        strXml += `<a:ln w="${valToPts(series.dataBorder.pt)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(series.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`;
+                    }
+                    strXml += '</c:spPr>';
                 }
-                else if (series.dataBorder) {
-                    strXml += `<a:ln w="${valToPts(series.dataBorder.pt)}" cap="${createLineCap(series.lineCap)}"><a:solidFill>${createColorElement(series.dataBorder.color)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`;
-                }
-                strXml += createShadowElement(series.shadow, DEF_SHAPE_SHADOW);
-                strXml += '  </c:spPr>';
                 strXml += '  <c:invertIfNegative val="0"/>';
                 // Data Labels per series
                 // NOTE: [20190117] Adding these to RADAR chart causes unrecoverable corruption!

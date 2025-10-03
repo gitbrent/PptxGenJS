@@ -1322,6 +1322,8 @@ export interface IChartPropsBase {
 	 * @deprecated v3.11.0 - use `plotArea.fill`
 	 */
 	fill?: HexColor
+
+	customSpPrXml?: string
 }
 export interface IChartPropsAxisCat {
 	/**
