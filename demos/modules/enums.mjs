@@ -8,7 +8,7 @@ export const TESTMODE = typeof window !== "undefined" && window.location && wind
 export const COMPRESS = true; // TEST: `compression` write prop
 
 // CONST
-export const CUST_NAME = "S.T.A.R. Laboratories";
+export const CUST_NAME = "S.T.A.R. Laboratories & co";
 export const USER_NAME = "Barry Allen";
 export const ARRSTRBITES = [130];
 export const CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 chars/line
