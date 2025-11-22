@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-11-22T16:53:57.332Z */
+/* PptxGenJS 4.0.1 @ 2025-11-22T17:34:34.239Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6084,34 +6084,48 @@ function genAnimationEffectXml(animation, shapeId, nodeId) {
         xml += '</p:set>';
     }
     else if (animType === 'teeter') {
-        // Teeter: multiple sequential rotations
+        // Teeter: multiple sequential rotations scaled to duration
+        // Original timing: 1000ms total (100 + 900)
+        // Steps: 100ms, then 200ms each at delays 200, 400, 600, 800
+        const scaleFactor = duration / 1000; // Scale based on original 1000ms
+        const dur1 = Math.round(100 * scaleFactor);
+        const dur2 = Math.round(200 * scaleFactor);
+        const delay2 = Math.round(200 * scaleFactor);
+        const delay3 = Math.round(400 * scaleFactor);
+        const delay4 = Math.round(600 * scaleFactor);
+        const delay5 = Math.round(800 * scaleFactor);
+        // First rotation: +120000 (2 degrees)
         xml += '<p:animRot by="120000">';
-        xml += `<p:cBhvr><p:cTn id="${nodeId + 3}" dur="${duration}" fill="hold">`;
+        xml += `<p:cBhvr><p:cTn id="${nodeId + 3}" dur="${dur1}" fill="hold">`;
         xml += '<p:stCondLst><p:cond delay="0"/></p:stCondLst></p:cTn>';
         xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`;
         xml += '<p:attrNameLst><p:attrName>r</p:attrName></p:attrNameLst></p:cBhvr>';
         xml += '</p:animRot>';
+        // Second rotation: -240000 (4 degrees opposite)
         xml += '<p:animRot by="-240000">';
-        xml += `<p:cBhvr><p:cTn id="${nodeId + 4}" dur="${duration}" fill="hold">`;
-        xml += '<p:stCondLst><p:cond delay="200"/></p:stCondLst></p:cTn>';
+        xml += `<p:cBhvr><p:cTn id="${nodeId + 4}" dur="${dur2}" fill="hold">`;
+        xml += `<p:stCondLst><p:cond delay="${delay2}"/></p:stCondLst></p:cTn>`;
         xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`;
         xml += '<p:attrNameLst><p:attrName>r</p:attrName></p:attrNameLst></p:cBhvr>';
         xml += '</p:animRot>';
+        // Third rotation: +240000
         xml += '<p:animRot by="240000">';
-        xml += `<p:cBhvr><p:cTn id="${nodeId + 5}" dur="${duration}" fill="hold">`;
-        xml += '<p:stCondLst><p:cond delay="400"/></p:stCondLst></p:cTn>';
+        xml += `<p:cBhvr><p:cTn id="${nodeId + 5}" dur="${dur2}" fill="hold">`;
+        xml += `<p:stCondLst><p:cond delay="${delay3}"/></p:stCondLst></p:cTn>`;
         xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`;
         xml += '<p:attrNameLst><p:attrName>r</p:attrName></p:attrNameLst></p:cBhvr>';
         xml += '</p:animRot>';
+        // Fourth rotation: -240000
         xml += '<p:animRot by="-240000">';
-        xml += `<p:cBhvr><p:cTn id="${nodeId + 6}" dur="${duration}" fill="hold">`;
-        xml += '<p:stCondLst><p:cond delay="600"/></p:stCondLst></p:cTn>';
+        xml += `<p:cBhvr><p:cTn id="${nodeId + 6}" dur="${dur2}" fill="hold">`;
+        xml += `<p:stCondLst><p:cond delay="${delay4}"/></p:stCondLst></p:cTn>`;
         xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`;
         xml += '<p:attrNameLst><p:attrName>r</p:attrName></p:attrNameLst></p:cBhvr>';
         xml += '</p:animRot>';
+        // Fifth rotation: +120000
         xml += '<p:animRot by="120000">';
-        xml += `<p:cBhvr><p:cTn id="${nodeId + 7}" dur="${duration}" fill="hold">`;
-        xml += '<p:stCondLst><p:cond delay="800"/></p:stCondLst></p:cTn>';
+        xml += `<p:cBhvr><p:cTn id="${nodeId + 7}" dur="${dur2}" fill="hold">`;
+        xml += `<p:stCondLst><p:cond delay="${delay5}"/></p:stCondLst></p:cTn>`;
         xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`;
         xml += '<p:attrNameLst><p:attrName>r</p:attrName></p:attrNameLst></p:cBhvr>';
         xml += '</p:animRot>';
