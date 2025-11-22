@@ -2575,6 +2575,10 @@ declare namespace PptxGenJS {
 		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
 		 */
 		altText?: string
+		/**
+		 * Animation property
+		 */
+		animation?:string | AnimationConfig
 	}
 	export interface ISlideRelChart extends OptsChartData {
 		type: CHART_NAME | IChartMulti[]
