@@ -1622,7 +1622,6 @@ function collectSlideAnimations(slide: PresSlide): SlideObjectAnimation[] {
 export function makeXmlSlide(slide: PresSlide): string {
 	// Collect animations from all slide objects
 	const animations = collectSlideAnimations(slide)
-	
 	// Generate timing XML if there are animations
 	const timingXml = animations.length > 0 ? createTimingXml(animations) : ''
 	

@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-11-22T13:40:29.652Z */
+/* PptxGenJS 4.0.1 @ 2025-11-22T14:32:12.950Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1994,6 +1994,7 @@ function addImageDefinition(target, opt) {
         transparency: opt.transparency || 0,
         objectName,
         shadow: correctShadowOptions(opt.shadow),
+        animation: opt.animation || null,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
