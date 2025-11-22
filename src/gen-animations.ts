@@ -784,6 +784,39 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		xml += '</p:cBhvr>'
 		xml += '</p:animEffect>'
 	}
+	else if (animType === 'randombars'){
+		// Visibility set
+		xml += '<p:set>'
+		xml += '<p:cBhvr>'
+		xml += `<p:cTn id="${nodeId + 3}" dur="1" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst></p:cTn>`
+		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
+		xml += '<p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst>'
+		xml += '</p:cBhvr>'
+		xml += '<p:to><p:strVal val="visible"/></p:to>'
+		xml += '</p:set>'
+		
+		// Direction mapping for randombar animations
+		// Based on the XML: presetID="14" (randombar animation)
+		const directions = {
+			horizontal: 'randombar(horizontal)',  // presetSubtype="10"
+			vertical: 'randombar(vertical)'       // presetSubtype="5"
+		}
+		const randomBarAnim = animation as RandomBarsAnimationConfig
+		const direction = randomBarAnim.direction || 'horizontal'
+		const filterValue = directions[direction]
+		
+		if (!filterValue) {
+			throw new Error(`Unknown randombar animation direction: ${direction}. Valid directions are: ${Object.keys(directions).join(', ')}`)
+		}
+		
+		// RandomBar animation effect
+		xml += `<p:animEffect transition="in" filter="${filterValue}">`
+		xml += '<p:cBhvr>'
+		xml += `<p:cTn id="${nodeId + 4}" dur="${duration}"/>`
+		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
+		xml += '</p:cBhvr>'
+		xml += '</p:animEffect>'
+	}
 	else if (animType === 'growandturn') {
 		xml += '<p:set>'
 		xml += '<p:cBhvr>'
@@ -1319,23 +1352,17 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 
 		// Transparency
 		const TRANSPARENCY_LEVELS = {
-			'25%': 0.75,   // 25% transparent = 75% opaque
-			'50%': 0.5,    // 50% transparent = 50% opaque
-			'75%': 0.25,   // 75% transparent = 25% opaque
-			'100%': 0,     // 100% transparent = fully transparent
+			'25%': '0.75',   // 25% transparent = 75% opaque
+			'50%':'0.5',    // 50% transparent = 50% opaque
+			'75%': '0.2',   // 75% transparent = 25% opaque
+			'100%': '0',     // 100% transparent = fully transparent
 		}
 
 
-		let opacityValue: number
+		let opacityValue = '0.5'
 		const transparencyAnim  = animation as TransparencyAnimationConfig
-		// Determine opacity value
-		if (typeof transparencyAnim?.level === 'number') {
-			opacityValue = transparencyAnim.level
-		} else if (transparencyAnim?.level && TRANSPARENCY_LEVELS[transparencyAnim.level]) {
-			opacityValue = TRANSPARENCY_LEVELS[transparencyAnim.level]
-		} else {
-			opacityValue = 0.5
-		}
+
+		opacityValue = transparencyAnim?.level ? TRANSPARENCY_LEVELS[transparencyAnim.level] : '0.5'
 		
 		// Set opacity
 		xml += '<p:set>'
@@ -1474,6 +1501,15 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		xml += '<p:animEffect transition="out" filter="fade">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 3}" dur="${duration}"/><p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl></p:cBhvr>`
 		xml += '</p:animEffect>'
+		
+		// Set visibility to hidden at the end (delay = duration - 1)
+		xml += '<p:set>'
+		xml += `<p:cBhvr><p:cTn id="${nodeId + 4}" dur="1" fill="hold">`
+		xml += `<p:stCondLst><p:cond delay="${duration - 1}"/></p:stCondLst></p:cTn>`
+		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
+		xml += '<p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr>'
+		xml += '<p:to><p:strVal val="hidden"/></p:to>'
+		xml += '</p:set>'
 	}
 	else if (animType === 'flyout') {
 		// Direction mapping with proper coordinates for fly-out
@@ -1777,7 +1813,7 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		// RandomBar exit animation effect
 		xml += `<p:animEffect transition="out" filter="${filterValue}">`
 		xml += '<p:cBhvr>'
-		xml += `<p:cTn id="${nodeId + 1}" dur="${duration}"/>`
+		xml += `<p:cTn id="${nodeId + 3}" dur="${duration}"/>`
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
 		xml += '</p:cBhvr>'
 		xml += '</p:animEffect>'
@@ -1785,7 +1821,7 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		// Visibility set - hide at the end
 		xml += '<p:set>'
 		xml += '<p:cBhvr>'
-		xml += `<p:cTn id="${nodeId + 2}" dur="1" fill="hold">`
+		xml += `<p:cTn id="${nodeId + 4}" dur="1" fill="hold">`
 		xml += `<p:stCondLst><p:cond delay="${duration - 1}"/></p:stCondLst>`
 		xml += '</p:cTn>'
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
@@ -1795,46 +1831,54 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		xml += '</p:set>'
 	}
 	else if (animType === 'shrinkandturn') {
-		// Width shrink
+		// Shrink and turn exit - shrink width and height while rotating
+		
+		// Width animation - shrink to 0
 		xml += '<p:anim calcmode="lin" valueType="num">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 3}" dur="${duration}"/>`
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
-		xml += '<p:attrNameLst><p:attrName>ppt_w</p:attrName></p:attrNameLst>'
-		xml += '</p:cBhvr>'
+		xml += '<p:attrNameLst><p:attrName>ppt_w</p:attrName></p:attrNameLst></p:cBhvr>'
 		xml += '<p:tavLst>'
 		xml += '<p:tav tm="0"><p:val><p:strVal val="ppt_w"/></p:val></p:tav>'
 		xml += '<p:tav tm="100000"><p:val><p:fltVal val="0"/></p:val></p:tav>'
 		xml += '</p:tavLst>'
 		xml += '</p:anim>'
 		
-		// Height shrink
+		// Height animation - shrink to 0
 		xml += '<p:anim calcmode="lin" valueType="num">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 4}" dur="${duration}"/>`
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
-		xml += '<p:attrNameLst><p:attrName>ppt_h</p:attrName></p:attrNameLst>'
-		xml += '</p:cBhvr>'
+		xml += '<p:attrNameLst><p:attrName>ppt_h</p:attrName></p:attrNameLst></p:cBhvr>'
 		xml += '<p:tavLst>'
 		xml += '<p:tav tm="0"><p:val><p:strVal val="ppt_h"/></p:val></p:tav>'
 		xml += '<p:tav tm="100000"><p:val><p:fltVal val="0"/></p:val></p:tav>'
 		xml += '</p:tavLst>'
 		xml += '</p:anim>'
 		
-		// Rotation
+		// Rotation animation - rotate 90 degrees
 		xml += '<p:anim calcmode="lin" valueType="num">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 5}" dur="${duration}"/>`
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
-		xml += '<p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst>'
-		xml += '</p:cBhvr>'
+		xml += '<p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr>'
 		xml += '<p:tavLst>'
 		xml += '<p:tav tm="0"><p:val><p:fltVal val="0"/></p:val></p:tav>'
 		xml += '<p:tav tm="100000"><p:val><p:fltVal val="90"/></p:val></p:tav>'
 		xml += '</p:tavLst>'
 		xml += '</p:anim>'
 		
-		// Fade
+		// Fade out effect
 		xml += '<p:animEffect transition="out" filter="fade">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 6}" dur="${duration}"/><p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl></p:cBhvr>`
 		xml += '</p:animEffect>'
+		
+		// Set visibility to hidden at the end
+		xml += '<p:set>'
+		xml += `<p:cBhvr><p:cTn id="${nodeId + 7}" dur="1" fill="hold">`
+		xml += `<p:stCondLst><p:cond delay="${duration - 1}"/></p:stCondLst></p:cTn>`
+		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
+		xml += '<p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr>'
+		xml += '<p:to><p:strVal val="hidden"/></p:to>'
+		xml += '</p:set>'
 	}
 	else if (animType === 'zoomexit') {
 		const zoomAnim = animation as ZoomAnimationConfig
@@ -1910,17 +1954,16 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		xml += '</p:set>'
 	}
 	else if (animType === 'swivelexit') {
-		// Fade out
+		// Swivel exit - fade with width oscillation
 		xml += '<p:animEffect transition="out" filter="fade">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 3}" dur="${duration}"/><p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl></p:cBhvr>`
 		xml += '</p:animEffect>'
 		
-		// Width oscillation (swivel effect with 20 keyframes)
+		// Width animation - creates the swivel effect
 		xml += '<p:anim calcmode="lin" valueType="num">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 4}" dur="${duration}"/>`
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
-		xml += '<p:attrNameLst><p:attrName>ppt_w</p:attrName></p:attrNameLst>'
-		xml += '</p:cBhvr>'
+		xml += '<p:attrNameLst><p:attrName>ppt_w</p:attrName></p:attrNameLst></p:cBhvr>'
 		xml += '<p:tavLst>'
 		xml += '<p:tav tm="0"><p:val><p:strVal val="ppt_w"/></p:val></p:tav>'
 		xml += '<p:tav tm="5000"><p:val><p:strVal val="0.92*ppt_w"/></p:val></p:tav>'
@@ -1946,17 +1989,25 @@ function genAnimationEffectXml(animation: AnimationConfig, shapeId: number, node
 		xml += '</p:tavLst>'
 		xml += '</p:anim>'
 		
-		// Height constant
+		// Height animation - stays constant
 		xml += '<p:anim calcmode="lin" valueType="num">'
 		xml += `<p:cBhvr><p:cTn id="${nodeId + 5}" dur="${duration}"/>`
 		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
-		xml += '<p:attrNameLst><p:attrName>ppt_h</p:attrName></p:attrNameLst>'
-		xml += '</p:cBhvr>'
+		xml += '<p:attrNameLst><p:attrName>ppt_h</p:attrName></p:attrNameLst></p:cBhvr>'
 		xml += '<p:tavLst>'
 		xml += '<p:tav tm="0"><p:val><p:strVal val="ppt_h"/></p:val></p:tav>'
 		xml += '<p:tav tm="100000"><p:val><p:strVal val="ppt_h"/></p:val></p:tav>'
 		xml += '</p:tavLst>'
 		xml += '</p:anim>'
+		
+		// Set visibility to hidden at the end
+		xml += '<p:set>'
+		xml += `<p:cBhvr><p:cTn id="${nodeId + 6}" dur="1" fill="hold">`
+		xml += `<p:stCondLst><p:cond delay="${duration - 1}"/></p:stCondLst></p:cTn>`
+		xml += `<p:tgtEl><p:spTgt spid="${shapeId}"/></p:tgtEl>`
+		xml += '<p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr>'
+		xml += '<p:to><p:strVal val="hidden"/></p:to>'
+		xml += '</p:set>'
 	}
 	else if (animType === 'bounceexit' ) {
 		// This is a complex bounce exit animation with multiple stages

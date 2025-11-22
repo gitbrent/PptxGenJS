@@ -1573,7 +1573,7 @@ function collectSlideAnimations(slide: PresSlide): SlideObjectAnimation[] {
 	
 	slide._slideObjects.forEach((slideObj, index) => {
 		//check if slideObj.text has more than one element
-		if (slideObj.text.length > 1) {
+		if (slideObj?.text?.length > 1) {
 			// This is an array of text objects - check if any individual pieces have animations
 			slideObj.text.forEach((textObj: TextProps) => {
 				if (textObj.options?.animation) {
