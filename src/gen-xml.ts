@@ -17,6 +17,8 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
+	AnimationConfig,
+	AnimationType,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -25,12 +27,14 @@ import {
 	ObjectOptions,
 	PresSlide,
 	ShadowProps,
+	SlideObjectAnimation,
 	SlideLayout,
 	TableCell,
 	TableCellProps,
 	TextProps,
 	TextPropsOptions,
 } from './core-interfaces'
+import { createTimingXml } from './gen-animations'
 import {
 	convertRotationDegrees,
 	createColorElement,
@@ -1556,14 +1560,80 @@ export function makeXmlPresentationRels (slides: PresSlide[]): string {
  * @param {PresSlide} slide - the slide object to transform into XML
  * @return {string} XML
  */
-export function makeXmlSlide (slide: PresSlide): string {
+
+/**
+ * Collect animations from all objects on a slide
+ * @param {PresSlide} slide - slide object
+ * @returns {SlideObjectAnimation[]} array of object animations with their indices
+ */
+function collectSlideAnimations(slide: PresSlide): SlideObjectAnimation[] {
+	const animations: SlideObjectAnimation[] = []
+	
+	if (!slide._slideObjects) return animations
+	
+	slide._slideObjects.forEach((slideObj, index) => {
+		//check if slideObj.text has more than one element
+		if (slideObj?.text?.length > 1) {
+			// This is an array of text objects - check if any individual pieces have animations
+			slideObj.text.forEach((textObj: TextProps) => {
+				if (textObj.options?.animation) {
+					console.warn(
+						'Warning: Animations on individual text pieces within an array are not supported. ' +
+						'Please apply animation to the container options instead.\n' +
+						`Text: "${textObj.text?.substring(0, 30)}..."`
+					)
+				}
+			})
+		}
+		
+		// Only check container-level options for animation
+		const animConfig = slideObj.options?.animation
+		
+		if (animConfig) {
+			let animation: AnimationConfig
+			
+			if (typeof animConfig === 'string') {
+				animation = {
+					type: animConfig as AnimationType,
+					trigger: 'onClick',
+					duration: 1000,
+					delay: 0
+				}
+			} else {
+				animation = {
+					trigger: 'onClick',
+					duration: 1000,
+					delay: 0,
+					...animConfig
+				}
+			}
+			
+			animations.push({
+				objectIndex: index,
+				animation: animation
+			})
+		}
+	})
+	
+	return animations
+}
+
+
+export function makeXmlSlide(slide: PresSlide): string {
+	// Collect animations from all slide objects
+	const animations = collectSlideAnimations(slide)
+	// Generate timing XML if there are animations
+	const timingXml = animations.length > 0 ? createTimingXml(animations) : ''
+	
 	return (
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
 		'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
 		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
 		`${slide?.hidden ? ' show="0"' : ''}>` +
 		`${slideObjectToXml(slide)}` +
-		'<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>'
+		'<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>' +
+		`${timingXml}` +
+		'</p:sld>'
 	)
 }
 

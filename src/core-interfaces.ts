@@ -90,6 +90,57 @@ export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 
+
+/**
+ * Animation Properties
+ */
+
+export type AnimationTrigger = 'onClick' | 'withPrevious' | 'afterPrevious'
+
+export type EntranceAnimation = 
+  | 'appear' | 'fadein' | 'flyin' | 'floatin' | 'split' | 'wipe' 
+  | 'shape' | 'wheel' | 'randombars' | 'zoom' | 'grow' 
+  | 'growandturn' | 'swivel' | 'bounce'
+
+export type EmphasisAnimation = 
+  | 'pulse' | 'colorpulse' | 'teeter' | 'spin' | 'growshrink'
+  | 'desaturate' | 'darken' | 'lighten' | 'transparency'
+  | 'objectcolor' | 'complementarycolor' | 'linecolor' | 'fillcolor'
+
+export type ExitAnimation = 
+  | 'disappear' | 'fadeout' | 'flyout' | 'floatout' | 'splitexit'
+  | 'wipeexit' | 'shapeexit' | 'wheelexit' | 'randombarsexit'
+  | 'shrinkandturn' | 'zoomexit' | 'swivelexit' | 'bounceexit'
+
+export type PathAnimation = 
+  | 'pathdown' | 'patharcdown' | 'pathturnright' | 'pathcircle' | 'pathzigzag'
+
+export type AnimationType = EntranceAnimation | EmphasisAnimation | ExitAnimation | PathAnimation
+
+// Direction options for different animation types
+// export type FlyDirection = 
+//   | 'fromBottom' | 'fromTop' | 'fromLeft' | 'fromRight'
+//   | 'fromTopLeft' | 'fromTopRight' | 'fromBottomLeft' | 'fromBottomRight'
+//   | 'toBottom' | 'toTop' | 'toLeft' | 'toRight'
+//   | 'toTopLeft' | 'toTopRight' | 'toBottomLeft' | 'toBottomRight'
+
+export type FlyDirection =
+  | 'top' | 'bottom' | 'left' | 'right'
+  | 'topLeft' | 'topRight'
+  | 'bottomLeft' | 'bottomRight'
+
+export type SplitDirection = 'horizontalIn' | 'horizontalOut' | 'verticalIn' | 'verticalOut'
+export type WipeDirection = 'fromBottom' | 'fromTop' | 'fromLeft' | 'fromRight'
+export type ShapeMaskType = 'circle' | 'box' | 'diamond' | 'plus'
+export type ShapeDirection = 'in' | 'out'
+export type FloatDirection = 'floatUp' | 'floatDown'
+export type ZoomDirection = 'slideCenter' | 'objectCenter'
+export type SpinDirection = 'clockwise' | 'counterClockwise'
+export type SpinAmount = 'quarterSpin' | 'halfSpin' | 'fullSpin' | 'twoSpins'
+export type GrowShrinkDirection = 'horizontal' | 'vertical' | 'both'
+export type GrowShrinkAmount = 'tiny' | 'smaller' | 'larger' | 'huge'
+export type TransparencyLevel = '25%' | '50%' | '75%' | '100%' | number
+
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -567,6 +618,16 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 * @example 25 // 25% transparent
 	 */
 	transparency?: number
+
+	/**
+   * Animation configuration
+   * - Can be a simple animation name or full configuration object
+   * @example 'fadein' // simple entrance animation
+   * @example { type: 'flyin', direction: 'fromLeft', duration: 1000 }
+   */
+	animation?: string | AnimationConfig
+
+
 }
 /**
  * Add media (audio/video) to slide
@@ -713,6 +774,13 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * @deprecated v3.10.0 - use `objectName`
 	 */
 	shapeName?: string
+	/**
+   * Animation configuration
+   * - Can be a simple animation name or full configuration object
+   * @example 'fadein' // simple entrance animation
+   * @example { type: 'flyin', direction: 'fromLeft', duration: 1000 }
+   */
+	animation?: string | AnimationConfig
 }
 
 // tables =========================================================================================
@@ -935,6 +1003,14 @@ export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProp
 	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
+
+	/**
+   * Animation configuration
+   * - Can be a simple animation name or full configuration object
+   * @example 'fadein' // simple entrance animation
+   * @example { type: 'flyin', direction: 'fromLeft', duration: 1000 }
+   */
+	animation?: string | AnimationConfig
 }
 export interface TableCell {
 	_type: SLIDE_OBJECT_TYPES.tablecell
@@ -1130,6 +1206,14 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @deprecated v3.3.0 - use `line.endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+
+	/**
+   * Animation configuration
+   * - Can be a simple animation name or full configuration object
+   * @example 'fadein' // simple entrance animation
+   * @example { type: 'flyin', direction: 'fromLeft', duration: 1000 }
+   */
+	animation?: string | AnimationConfig
 }
 export interface TextProps {
 	text?: string
@@ -1620,6 +1704,7 @@ export interface IChartOpts
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
 	 */
 	altText?: string
+	animation?: string | AnimationConfig;
 }
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
@@ -1680,7 +1765,9 @@ export interface ISlideObject {
 	mtype?: MediaType
 	mediaRid?: number
 	shape?: SHAPE_NAME
+	animation?: string | AnimationConfig;
 }
+
 // PRIVATE ^^^
 
 export interface WriteBaseProps {
@@ -1871,4 +1958,102 @@ export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
+}
+
+
+
+export interface BaseAnimationConfig {
+	// Basic properties
+	type: AnimationType;
+	trigger?: AnimationTrigger;
+	duration?: number; // in milliseconds
+	delay?: number; // in milliseconds
+	
+	// Advanced customization (optional - for power users)
+	class?: 'entr' | 'emph' | 'exit' | 'path';
+	presetID?: number;
+	presetSubtype?: number;
+}
+
+export interface FlyAnimationConfig extends BaseAnimationConfig {
+	type: 'flyin' | 'flyout';
+	direction?: FlyDirection;
+}
+
+export interface FloatAnimationConfig extends BaseAnimationConfig {
+	type: 'floatin' | 'floatout';
+	direction?: FloatDirection;
+}
+
+export interface SplitAnimationConfig extends BaseAnimationConfig {
+	type: 'split' | 'splitexit';
+	direction?: SplitDirection;
+}
+
+export interface WipeAnimationConfig extends BaseAnimationConfig {
+	type: 'wipe' | 'wipeexit';
+	direction?: WipeDirection;
+}
+
+export interface ShapeAnimationConfig extends BaseAnimationConfig {
+	type: 'shape' | 'shapeexit';
+	shape?: ShapeMaskType;
+	direction?: ShapeDirection;
+}
+
+export interface WheelAnimationConfig extends BaseAnimationConfig {
+	type: 'wheel' | 'wheelexit';
+	spokes?: 1 | 2 | 3 | 4 | 8;
+}
+
+export interface RandomBarsAnimationConfig extends BaseAnimationConfig {
+	type: 'randombars' | 'randombarsexit';
+	direction?: 'horizontal' | 'vertical';
+}
+
+export interface ZoomAnimationConfig extends BaseAnimationConfig {
+	type: 'zoom' | 'zoomexit';
+	direction?: ZoomDirection;
+}
+
+export interface SpinAnimationConfig extends BaseAnimationConfig {
+	type: 'spin';
+	direction?: SpinDirection;
+	amount?: SpinAmount;
+}
+
+export interface GrowShrinkAnimationConfig extends BaseAnimationConfig {
+	type: 'growshrink';
+	direction?: GrowShrinkDirection;
+	amount?: GrowShrinkAmount;
+}
+
+export interface ColorAnimationConfig extends BaseAnimationConfig {
+	type: 'colorpulse' | 'objectcolor' | 'linecolor' | 'fillcolor';
+	color?: string; // hex color without '#', e.g., 'FFFF00'
+}
+
+export interface TransparencyAnimationConfig extends BaseAnimationConfig {
+	type: 'transparency';
+	level?: TransparencyLevel;
+}
+
+export type AnimationConfig = 
+  | BaseAnimationConfig
+  | FlyAnimationConfig
+  | FloatAnimationConfig
+  | SplitAnimationConfig
+  | WipeAnimationConfig
+  | ShapeAnimationConfig
+  | WheelAnimationConfig
+  | RandomBarsAnimationConfig
+  | ZoomAnimationConfig
+  | SpinAnimationConfig
+  | GrowShrinkAnimationConfig
+  | ColorAnimationConfig
+  | TransparencyAnimationConfig
+
+export interface SlideObjectAnimation {
+	objectIndex: number
+	animation: AnimationConfig  // Changed from AnimationProps
 }
