@@ -1003,6 +1003,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 		shape: (opts?.shape) || SHAPE_TYPE.RECTANGLE,
 		text: !text || text.length === 0 ? [{ text: '', options: null }] : text,
 		options: opts || {},
+		animation: opts?.animation || null
 	}
 
 	function cleanOpts(itemOpts: ObjectOptions): TextPropsOptions {
