@@ -608,7 +608,19 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				strSlideXml += `  <a:off x="${x}" y="${y}"/>`
 				strSlideXml += `  <a:ext cx="${imgWidth}" cy="${imgHeight}"/>`
 				strSlideXml += ' </a:xfrm>'
-				strSlideXml += ` <a:prstGeom prst="${rounding ? 'ellipse' : 'rect'}"><a:avLst/></a:prstGeom>`
+				if (rounding) {
+					strSlideXml += ` <a:prstGeom prst="roundRect"><a:avLst>`
+					if (slideItemObj.options.rectRadius !== undefined) {
+						// Calculate adjustment value: rectRadius is 0.0-1.0 (ratio), convert to Office Open XML adjustment value
+						// Formula matches shape calculation: (rectRadius * EMU * 100000) / min(width, height)
+						// For images, rectRadius is treated as a ratio (0.0 = no rounding, 1.0 = max rounding)
+						const adjValue = Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(imgWidth, imgHeight))
+						strSlideXml += `<a:gd name="adj" fmla="val ${adjValue}"/>`
+					}
+					strSlideXml += `</a:avLst></a:prstGeom>`
+				} else {
+					strSlideXml += ` <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>`
+				}
 
 				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
 				if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {

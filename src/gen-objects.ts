@@ -451,6 +451,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps): void {
 		h: intHeight || 1,
 		altText: opt.altText || '',
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
+		rectRadius: opt.rectRadius,
 		sizing,
 		placeholder: opt.placeholder,
 		rotate: opt.rotate || 0,

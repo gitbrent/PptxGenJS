@@ -514,6 +514,14 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
 	 */
 	rounding?: boolean
 	/**
+	 * Rounded rectangle corner radius (only when rounding is true)
+	 * - values: 0.0 to 1.0 (0.0 = no rounding, 1.0 = maximum rounding)
+	 * @default undefined (uses default PowerPoint rounding)
+	 * @example 0.2 // 20% corner radius
+	 * @example 0.5 // 50% corner radius
+	 */
+	rectRadius?: number
+	/**
 	 * Shadow Props
 	 * - MS-PPT > Format Picture > Shadow
 	 * @example
