@@ -612,8 +612,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 					strSlideXml += ` <a:prstGeom prst="roundRect"><a:avLst>`
 					if (slideItemObj.options.rectRadius !== undefined) {
 						// Calculate adjustment value: rectRadius is 0.0-1.0 (ratio), convert to Office Open XML adjustment value
-						// Formula matches shape calculation: (rectRadius * EMU * 100000) / min(width, height)
-						// For images, rectRadius is treated as a ratio (0.0 = no rounding, 1.0 = max rounding)
+						// (rectRadius * EMU * 100000) / min(width, height)
 						const adjValue = Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(imgWidth, imgHeight))
 						strSlideXml += `<a:gd name="adj" fmla="val ${adjValue}"/>`
 					}

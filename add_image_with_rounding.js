@@ -1,18 +1,11 @@
-/*
- * NAME: add_image_with_rounding.js
- * DESC: Adds an image to a slide with rounding enabled
- * USAGE: node add_image_with_rounding.js
- */
 
 import pptxgen from "pptxgenjs";
 
 const pptx = new pptxgen();
 
-// Create a new slide
 const slide = pptx.addSlide();
 
 
-// Add the image with rounding enabled
 slide.addImage({
 	path: "https://files.chroniclehq.com/card-background-v2/thumbnail/v2-gradient-01-light.jpg",
 	x: 0.528,
@@ -20,7 +13,7 @@ slide.addImage({
 	w: 2.479,
 	h: 1.76,
 	rounding: true,
-	rectRadius: 0.2  // Optional: Set corner radius (0.0 = no rounding, 1.0 = maximum rounding)
+	rectRadius: 0.2 
 });
 
 slide.addImage({
@@ -30,15 +23,15 @@ slide.addImage({
 	w: 2.479,
 	h: 1.76,
 	rounding: true,
-	rectRadius: 0.2  // Optional: Set corner radius (0.0 = no rounding, 1.0 = maximum rounding)
+	rectRadius: 0.2
 });
 
 slide.addImage({
-	path: "atom.svg", // Replace with your SVG file path
-	x: 0.628, // Position after "card" text (adjust as needed)
+	path: "atom.svg", 
+	x: 0.628, 
 	y: 1.295,
-	w: 0.15, // Icon width (adjust size as needed)
-	h: 0.15  // Icon height (adjust size as needed)
+	w: 0.15, 
+	h: 0.15  
 });
 
 slide.addText("Card 1", {
@@ -93,7 +86,7 @@ slide.addImage({
         h: 2.755
     },
 	rounding: true,
-	rectRadius: 0.2  // Optional: Set corner radius (0.0 = no rounding, 1.0 = maximum rounding)
+	rectRadius: 0.2 
 });
 
 slide.addShape(pptx.ShapeType.roundRect, {
@@ -101,16 +94,16 @@ slide.addShape(pptx.ShapeType.roundRect, {
     y: 3.212,        // Vertical position in inches
     w: 2.5,        // Width in inches
     h: 2.0,        // Height in inches
-    fill: { color: "000000", transparency: 92 }, // rgba(0,0,0,0.04) = black with 96% transparency
-    rectRadius: 0.2  // Corner radius: 0 = sharp corners, 1 = fully rounded
+    fill: { color: "000000", transparency: 92 },
+    rectRadius: 0.2 
   });
 
   slide.addImage({
-	path: "acorn.svg", // Replace with your SVG file path
-	x: 0.628, // Position after "card" text (adjust as needed)
+	path: "acorn.svg", 
+	x: 0.628, 
 	y: 3.3,
-	w: 0.15, // Icon width (adjust size as needed)
-	h: 0.15  // Icon height (adjust size as needed)
+	w: 0.15, 
+	h: 0.15  
 });
 
 slide.addText("Card 3", {
@@ -146,7 +139,6 @@ slide.addText("Ut enim ad minim", {
 
 
 
-// Save the presentation
 const exportName = "Image_With_Rounding";
 pptx.writeFile({ fileName: exportName })
 	.then((fileName) => {
