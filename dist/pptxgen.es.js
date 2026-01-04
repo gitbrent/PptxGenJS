@@ -1,4 +1,3 @@
-/* PptxGenJS 1.0.3 @ 2025-12-16T06:04:54.221Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -6333,8 +6332,13 @@ function genXmlTextBody(slideObj) {
             textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel;
             textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore;
             textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter;
-            paragraphPropXml = genXmlParagraphProperties(textObj, false);
-            strSlideXml += paragraphPropXml.replace('<a:pPr></a:pPr>', ''); // IMPORTANT: Empty "pPr" blocks will generate needs-repair/corrupt msg
+            // IMPORTANT: Only add paragraph properties (<a:pPr>) for the FIRST text run in a paragraph.
+            // In OOXML, <a:pPr> should only appear once per <a:p>, right after the opening tag.
+            // Adding it for every text run causes rendering issues (like unwanted line breaks after bold text).
+            if (idx === 0) {
+                paragraphPropXml = genXmlParagraphProperties(textObj, false);
+                strSlideXml += paragraphPropXml.replace('<a:pPr></a:pPr>', ''); // IMPORTANT: Empty "pPr" blocks will generate needs-repair/corrupt msg
+            }
             // C: Inherit any main options (color, fontSize, etc.)
             // NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
             // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
