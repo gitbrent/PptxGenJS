@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-06-25T23:35:35.098Z */
+/* PptxGenJS 4.0.1 @ 2026-01-20T12:41:46.816Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -4433,7 +4433,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     // NOTE: Adding Val Axis Formatting if scatter or bubble charts
     if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE || opts._type === CHART_TYPE.BUBBLE3D) {
-        strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? encodeXmlEntities(opts.valAxisLabelFormatCode) : 'General') + '" sourceLinked="1"/>';
+        strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode ? encodeXmlEntities(opts.catLabelFormatCode) : 'General') + '" sourceLinked="1"/>';
     }
     else {
         strXml += '  <c:numFmt formatCode="' + (encodeXmlEntities(opts.catLabelFormatCode) || 'General') + '" sourceLinked="1"/>';
