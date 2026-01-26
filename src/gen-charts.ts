@@ -690,7 +690,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 		strXml += '  <c:spPr>'
 
 		// OPTION: Fill
-		strXml += rel.opts.plotArea.fill?.color ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>'
+		strXml += rel.opts.plotArea.fill ? genXmlColorSelection(rel.opts.plotArea.fill) : '<a:noFill/>'
 
 		// OPTION: Border
 		strXml += rel.opts.plotArea.border
@@ -737,7 +737,7 @@ export function makeXmlCharts (rel: ISlideRelChart): string {
 
 	// D: CHARTSPACE SHAPE PROPS
 	strXml += '<c:spPr>'
-	strXml += rel.opts.chartArea.fill?.color ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>'
+	strXml += rel.opts.chartArea.fill ? genXmlColorSelection(rel.opts.chartArea.fill) : '<a:noFill/>'
 	strXml += rel.opts.chartArea.border
 		? `<a:ln w="${valToPts(rel.opts.chartArea.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.chartArea.border.color)}</a:ln>`
 		: '<a:ln><a:noFill/></a:ln>'

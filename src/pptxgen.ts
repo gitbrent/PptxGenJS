@@ -70,6 +70,8 @@ import {
 	DEF_PRES_LAYOUT_NAME,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
+	GradientPathType,
+	GradientType,
 	OutputType,
 	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
@@ -79,10 +81,12 @@ import {
 } from './core-enums'
 import {
 	AddSlideProps,
+	GradientFillProps,
 	IPresentationProps,
 	PresLayout,
 	PresSlide,
 	SectionProps,
+	ShapeFillProps,
 	SlideLayout,
 	SlideMasterProps,
 	SlideNumberProps,
@@ -285,6 +289,16 @@ export default class PptxGenJS implements IPresentationProps {
 	private readonly _shapeType = ShapeType
 	public get ShapeType(): typeof ShapeType {
 		return this._shapeType
+	}
+
+	private readonly _gradientType = GradientType
+	public get GradientType(): typeof GradientType {
+		return this._gradientType
+	}
+
+	private readonly _gradientPathType = GradientPathType
+	public get GradientPathType(): typeof GradientPathType {
+		return this._gradientPathType
 	}
 
 	/**
@@ -787,5 +801,14 @@ export default class PptxGenJS implements IPresentationProps {
 			options,
 			options?.masterSlideName ? this.slideLayouts.filter(layout => layout._name === options.masterSlideName)[0] : null
 		)
+	}
+
+	/**
+	 * Create a gradient fill object to use in `fill` options.
+	 * @example
+	 * slide.addShape(pptx.ShapeType.rect, { x:1, y:1, w:4, h:1, fill: pptx.makeGradientFill({ kind:'linear', angle:45, stops:[{pos:0,color:'FF0000'},{pos:100,color:'0000FF'}] }) })
+	 */
+	makeGradientFill(gradient: GradientFillProps): ShapeFillProps {
+		return { type: 'gradient', gradient }
 	}
 }

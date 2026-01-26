@@ -308,13 +308,12 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 							: ''
 						const cellTextDir = (cellOpts.textDirection && cellOpts.textDirection !== 'horz') ? ` vert="${cellOpts.textDirection}"` : ''
 
-						let fillColor =
-							cell._optImp?.fill?.color
-								? cell._optImp.fill.color
-								: cell._optImp?.fill && typeof cell._optImp.fill === 'string'
-									? cell._optImp.fill
-									: ''
-						fillColor = fillColor || cellOpts.fill ? cellOpts.fill : ''
+						let fillColor: any = ''
+						// Prefer any explicit cell fill computed during layout (`_optImp`), else fallback to cell/table options.
+						if (cell._optImp?.fill && typeof cell._optImp.fill === 'object') fillColor = cell._optImp.fill
+						else if (cell._optImp?.fill && typeof cell._optImp.fill === 'string') fillColor = cell._optImp.fill
+						else if (cell._optImp?.fill?.color) fillColor = cell._optImp.fill.color
+						fillColor = fillColor || cellOpts.fill || ''
 						const cellFill = fillColor ? genXmlColorSelection(fillColor) : ''
 
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN

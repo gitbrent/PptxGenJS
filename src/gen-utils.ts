@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps } from './core-interfaces'
+import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, GradientFillProps, GradientStopProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -191,6 +191,55 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
 	let internalElements = ''
 	let outText = ''
 
+	const clamp = (n: number, min: number, max: number): number => Math.min(max, Math.max(min, n))
+	// OOXML percentages are in 1/1000 of a percent: 0..100000
+	const pctToOoxml = (p?: number): number => {
+		if (p === undefined || p === null || isNaN(Number(p))) return 0
+		// Accept 0..1 (fraction) or 0..100 (percent). NOTE: 1 == 100% in this mode.
+		const val = Number(p)
+		const scaled = val <= 1 ? Math.round(val * 100000) : Math.round(val * 1000)
+		return clamp(scaled, 0, 100000)
+	}
+	const alphaFromTransparency = (t?: number): string => {
+		if (t === undefined || t === null || isNaN(Number(t))) return ''
+		return `<a:alpha val="${Math.round((100 - Number(t)) * 1000)}"/>`
+	}
+	const genXmlGradientFill = (grad: GradientFillProps): string => {
+		if (!grad || typeof grad !== 'object') return ''
+		const rotWithShape = grad.rotWithShape === undefined ? 1 : grad.rotWithShape ? 1 : 0
+		const stops: GradientStopProps[] = Array.isArray(grad.stops) ? grad.stops : []
+		if (stops.length === 0) return ''
+
+		let xml = `<a:gradFill rotWithShape="${rotWithShape}">`
+		xml += '<a:gsLst>'
+		stops.forEach(stop => {
+			const pos = pctToOoxml(stop.pos)
+			const stopAlpha = alphaFromTransparency(stop.transparency)
+			xml += `<a:gs pos="${pos}">${createColorElement(stop.color, stopAlpha || undefined)}</a:gs>`
+		})
+		xml += '</a:gsLst>'
+
+		if (grad.kind === 'linear') {
+			const angle = convertRotationDegrees(grad.angle || 0)
+			const scaled = grad.scaled === undefined ? 1 : grad.scaled ? 1 : 0
+			xml += `<a:lin ang="${angle}" scaled="${scaled}"/>`
+		} else if (grad.kind === 'path') {
+			const path = grad.path || 'rect'
+			xml += `<a:path path="${path}">`
+			if (grad.fillToRect) {
+				const l = pctToOoxml(grad.fillToRect.l)
+				const t = pctToOoxml(grad.fillToRect.t)
+				const r = pctToOoxml(grad.fillToRect.r)
+				const b = pctToOoxml(grad.fillToRect.b)
+				xml += `<a:fillToRect l="${l}" t="${t}" r="${r}" b="${b}"/>`
+			}
+			xml += '</a:path>'
+		}
+
+		xml += '</a:gradFill>'
+		return xml
+	}
+
 	if (props) {
 		if (typeof props === 'string') colorVal = props
 		else {
@@ -201,8 +250,15 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
 		}
 
 		switch (fillType) {
+			case 'none':
+				outText += '<a:noFill/>'
+				break
 			case 'solid':
 				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
+				break
+			case 'gradient':
+				// @note: colorVal is ignored for gradients; stops live under `props.gradient`
+				if (typeof props !== 'string' && props.gradient) outText += genXmlGradientFill(props.gradient)
 				break
 			default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
 				outText += ''

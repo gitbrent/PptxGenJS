@@ -75,6 +75,23 @@ function genSlide01(pptx) {
 	}); // TEST: DEPRECATED: `fill`,`line`,`lineSize`
 	slide.addShape(pptx.shapes.ARC, { x: 10.75, y: 2.45, w: 1.5, h: 1.45, fill: { color: pptx.colors.ACCENT3 }, angleRange: [45, 315] });
 
+	// GRADIENT DEMO
+	slide.addShape(pptx.shapes.RECTANGLE, {
+		x: 0.5,
+		y: 3.95,
+		w: 3.2,
+		h: 0.35,
+		fill: pptx.makeGradientFill({
+			kind: "linear",
+			angle: 0,
+			stops: [
+				{ pos: 0, color: "FF0000" },
+				{ pos: 100, color: "0000FF" },
+			],
+		}),
+		line: { type: "none" },
+	});
+
 	// BOTTOM ROW
 
 	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: pptx.colors.ACCENT2, width: 1, dashType: "lgDash" } });

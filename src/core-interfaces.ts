@@ -172,6 +172,76 @@ export interface ShadowProps {
 	rotateWithShape?: boolean
 }
 // used by: shape, table, text
+export type GradientTypeName = 'linear' | 'path'
+export type GradientPathTypeName = 'rect' | 'circle' | 'shape'
+export interface GradientStopProps {
+	/**
+	 * Gradient stop color
+	 * - `HexColor` or `ThemeColor`
+	 * @example 'FF0000'
+	 * @example SchemeColor.accent1
+	 */
+	color: Color
+	/**
+	 * Gradient stop position
+	 * - 0..100 (%)
+	 * @example 0
+	 * @example 50
+	 * @example 100
+	 */
+	pos: number
+	/**
+	 * Gradient stop transparency (percent)
+	 * - range: 0-100
+	 */
+	transparency?: number
+}
+export interface GradientFillBaseProps {
+	/**
+	 * Gradient type
+	 */
+	kind: GradientTypeName
+	/**
+	 * Whether gradient rotates with shape
+	 * @default true
+	 */
+	rotWithShape?: boolean
+	/**
+	 * Gradient stops
+	 * - at least 2 are recommended
+	 */
+	stops: GradientStopProps[]
+}
+export interface GradientFillLinearProps extends GradientFillBaseProps {
+	kind: 'linear'
+	/**
+	 * Gradient angle (degrees)
+	 * - range: 0-359
+	 * @default 0
+	 */
+	angle?: number
+	/**
+	 * Whether gradient is scaled
+	 * @default true
+	 */
+	scaled?: boolean
+}
+export interface GradientFillPathProps extends GradientFillBaseProps {
+	kind: 'path'
+	/**
+	 * Path gradient type
+	 * @default 'rect'
+	 */
+	path?: GradientPathTypeName
+	/**
+	 * Path fill-to-rect (percent)
+	 * - range: 0-100
+	 * - PowerPoint: some radial/rectangular gradients are expressed via this rectangle
+	 */
+	fillToRect?: { l?: number, t?: number, r?: number, b?: number }
+}
+export type GradientFillProps = GradientFillLinearProps | GradientFillPathProps
+
 export interface ShapeFillProps {
 	/**
 	 * Fill color
@@ -191,7 +261,12 @@ export interface ShapeFillProps {
 	 * Fill type
 	 * @default 'solid'
 	 */
-	type?: 'none' | 'solid'
+	type?: 'none' | 'solid' | 'gradient'
+
+	/**
+	 * Gradient fill options (when `type: 'gradient'`)
+	 */
+	gradient?: GradientFillProps
 
 	/**
 	 * Transparency (percent)

@@ -155,6 +155,49 @@ pres.writeFile();
 
 That's really all there is to it!
 
+## 🎨 Gradient Fills (Shapes / Text / Tables)
+
+You can use gradient fills anywhere `fill` accepts `ShapeFillProps` (e.g., `addShape`, `addText` with `shape`, table cell fills).
+
+### Linear Gradient
+
+```typescript
+import pptxgen from "pptxgenjs";
+
+const pptx = new pptxgen();
+const slide = pptx.addSlide();
+
+slide.addShape(pptx.ShapeType.rect, {
+  x: 1, y: 1, w: 6, h: 1,
+  fill: pptx.makeGradientFill({
+    kind: pptx.GradientType.linear,
+    angle: 45,
+    stops: [
+      { pos: 0, color: "FF0000" },
+      { pos: 100, color: "0000FF" },
+    ],
+  }),
+  line: { type: "none" },
+});
+```
+
+### Path (Radial / Rectangular) Gradient
+
+```typescript
+slide.addShape(pptx.ShapeType.ellipse, {
+  x: 1, y: 2.5, w: 2, h: 2,
+  fill: pptx.makeGradientFill({
+    kind: pptx.GradientType.path,
+    path: pptx.GradientPathType.circle, // 'rect' | 'circle' | 'shape'
+    stops: [
+      { pos: 0, color: "FFFFFF" },
+      { pos: 100, color: "000000" },
+    ],
+  }),
+  line: { type: "none" },
+});
+```
+
 ## 💥 HTML-to-PowerPoint Magic
 
 Convert any HTML `<table>` into fully formatted PowerPoint slides - automatically and effortlessly.

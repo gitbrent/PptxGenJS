@@ -23,6 +23,8 @@ declare class PptxGenJS {
 	readonly AlignH: typeof PptxGenJS.AlignH
 	readonly AlignV: typeof PptxGenJS.AlignV
 	readonly ChartType: typeof PptxGenJS.ChartType
+	readonly GradientType: typeof PptxGenJS.GradientType
+	readonly GradientPathType: typeof PptxGenJS.GradientPathType
 	readonly OutputType: typeof PptxGenJS.OutputType
 	readonly SchemeColor: typeof PptxGenJS.SchemeColor
 	readonly ShapeType: typeof PptxGenJS.ShapeType
@@ -141,6 +143,11 @@ declare class PptxGenJS {
 	 * @param {TableToSlidesProps} props generation options
 	 */
 	tableToSlides(eleId: string, props?: PptxGenJS.TableToSlidesProps): void
+
+	/**
+	 * Create a gradient fill object to use in `fill` options.
+	 */
+	makeGradientFill(gradient: PptxGenJS.GradientFillProps): PptxGenJS.ShapeFillProps
 }
 
 declare namespace PptxGenJS {
@@ -168,6 +175,21 @@ declare namespace PptxGenJS {
 		'pie' = 'pie',
 		'radar' = 'radar',
 		'scatter' = 'scatter',
+	}
+	/**
+	 * Gradient fill types
+	 */
+	export enum GradientType {
+		'linear' = 'linear',
+		'path' = 'path',
+	}
+	/**
+	 * Path gradient variants (OOXML `a:path@path`)
+	 */
+	export enum GradientPathType {
+		'rect' = 'rect',
+		'circle' = 'circle',
+		'shape' = 'shape',
 	}
 	export enum OutputType {
 		'arraybuffer' = 'arraybuffer',
@@ -1019,7 +1041,12 @@ declare namespace PptxGenJS {
 		 * Fill type
 		 * @default 'solid'
 		 */
-		type?: 'none' | 'solid'
+		type?: 'none' | 'solid' | 'gradient'
+
+		/**
+		 * Gradient fill options (when `type: 'gradient'`)
+		 */
+		gradient?: GradientFillProps
 
 		/**
 		 * Transparency (percent)
@@ -1027,6 +1054,33 @@ declare namespace PptxGenJS {
 		 */
 		alpha?: number
 	}
+
+	export type GradientTypeName = 'linear' | 'path'
+	export type GradientPathTypeName = 'rect' | 'circle' | 'shape'
+	export interface GradientStopProps {
+		color: Color
+		/**
+		 * Gradient stop position (0..100 %)
+		 */
+		pos: number
+		transparency?: number
+	}
+	export interface GradientFillBaseProps {
+		kind: GradientTypeName
+		rotWithShape?: boolean
+		stops: GradientStopProps[]
+	}
+	export interface GradientFillLinearProps extends GradientFillBaseProps {
+		kind: 'linear'
+		angle?: number
+		scaled?: boolean
+	}
+	export interface GradientFillPathProps extends GradientFillBaseProps {
+		kind: 'path'
+		path?: GradientPathTypeName
+		fillToRect?: { l?: number, t?: number, r?: number, b?: number }
+	}
+	export type GradientFillProps = GradientFillLinearProps | GradientFillPathProps
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
 		 * Line width (pt)

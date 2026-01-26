@@ -314,6 +314,22 @@ export enum SchemeColor {
 	'accent5' = 'accent5',
 	'accent6' = 'accent6',
 }
+
+/**
+ * Gradient fill types
+ */
+export enum GradientType {
+	'linear' = 'linear',
+	'path' = 'path',
+}
+/**
+ * Path gradient variants (OOXML `a:path@path`)
+ */
+export enum GradientPathType {
+	'rect' = 'rect',
+	'circle' = 'circle',
+	'shape' = 'shape',
+}
 export enum AlignH {
 	'left' = 'left',
 	'center' = 'center',
