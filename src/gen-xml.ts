@@ -43,6 +43,75 @@ import {
 	valToPts,
 } from './gen-utils'
 
+function normalizeFontWeightToken (fontWeight?: number | string): string | undefined {
+	if (fontWeight === undefined || fontWeight === null) return undefined
+	let weightValue: number | undefined
+	if (typeof fontWeight === 'number') {
+		weightValue = fontWeight
+	} else {
+		const trimmed = String(fontWeight).trim()
+		const asNumber = Number(trimmed)
+		if (!Number.isNaN(asNumber)) weightValue = asNumber
+		else {
+			const normalized = trimmed.replace(/[\s_-]+/g, '').toUpperCase()
+			const map: Record<string, string> = {
+				THIN: 'Thin',
+				HAIRLINE: 'Thin',
+				EXTRALIGHT: 'ExtraLight',
+				ULTRALIGHT: 'ExtraLight',
+				LIGHT: 'Light',
+				BOOK: 'Book',
+				REGULAR: 'Regular',
+				NORMAL: 'Regular',
+				MEDIUM: 'Medium',
+				SEMIBOLD: 'SemiBold',
+				DEMIBOLD: 'SemiBold',
+				BOLD: 'Bold',
+				EXTRABOLD: 'ExtraBold',
+				ULTRABOLD: 'ExtraBold',
+				BLACK: 'Black',
+				HEAVY: 'Black',
+				EXTRABLACK: 'ExtraBlack',
+				ULTRABLACK: 'ExtraBlack',
+			}
+			return map[normalized] || trimmed
+		}
+	}
+	if (weightValue === undefined) return undefined
+	const weight = Math.max(1, Math.min(1000, Math.round(weightValue)))
+	if (weight <= 150) return 'Thin'
+	if (weight <= 250) return 'ExtraLight'
+	if (weight <= 350) return 'Light'
+	if (weight <= 450) return 'Regular'
+	if (weight <= 550) return 'Medium'
+	if (weight <= 650) return 'SemiBold'
+	if (weight <= 750) return 'Bold'
+	if (weight <= 850) return 'ExtraBold'
+	return 'Black'
+}
+
+function normalizeFontStyleToken (fontStyle?: string): string | undefined {
+	if (!fontStyle) return undefined
+	const style = String(fontStyle).trim().toLowerCase()
+	if (!style) return undefined
+	if (style.includes('italic')) return 'Italic'
+	if (style.includes('oblique')) return 'Oblique'
+	return undefined
+}
+
+function resolveFontFace (opts: Pick<TextPropsOptions, 'fontFace' | 'fontWeight' | 'fontStyle'>): string | undefined {
+	if (!opts?.fontFace) return undefined
+	let weightToken = normalizeFontWeightToken(opts.fontWeight)
+	if (weightToken === 'Regular') weightToken = undefined
+	const styleToken = normalizeFontStyleToken(opts.fontStyle)
+	if (!weightToken && !styleToken) return opts.fontFace
+	const faceLower = opts.fontFace.toLowerCase()
+	const suffixes: string[] = []
+	if (weightToken && !faceLower.includes(weightToken.toLowerCase())) suffixes.push(weightToken)
+	if (styleToken && !faceLower.includes(styleToken.toLowerCase())) suffixes.push(styleToken)
+	return suffixes.length ? `${opts.fontFace} ${suffixes.join(' ')}` : opts.fontFace
+}
+
 const ImageSizingXml = {
 	cover: function (imgSize: { w: number, h: number }, boxDim: { w: number, h: number, x: number, y: number }) {
 		const imgRatio = imgSize.h / imgSize.w
@@ -730,10 +799,11 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 		}
 		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
-		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
+		const slideNumFontFace = resolveFontFace(slide._slideNumberProps)
+		if (slideNumFontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
 			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12) * 100)}">`
 			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
-			if (slide._slideNumberProps.fontFace) { strSlideXml += `<a:latin typeface="${slide._slideNumberProps.fontFace}"/><a:ea typeface="${slide._slideNumberProps.fontFace}"/><a:cs typeface="${slide._slideNumberProps.fontFace}"/>` }
+			if (slideNumFontFace) { strSlideXml += `<a:latin typeface="${slideNumFontFace}"/><a:ea typeface="${slideNumFontFace}"/><a:cs typeface="${slideNumFontFace}"/>` }
 			strSlideXml += '</a:defRPr>'
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
@@ -958,6 +1028,7 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 function genXmlTextRunProperties (opts: ObjectOptions | TextPropsOptions, isDefault: boolean): string {
 	let runProps = ''
 	const runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
+	const resolvedFontFace = resolveFontFace(opts)
 
 	// BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
 	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '')
@@ -984,7 +1055,7 @@ function genXmlTextRunProperties (opts: ObjectOptions | TextPropsOptions, isDefa
 	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
 	// Color / Font / Highlight / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
-	if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
+	if (opts.color || resolvedFontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
@@ -992,9 +1063,9 @@ function genXmlTextRunProperties (opts: ObjectOptions | TextPropsOptions, isDefa
 		if (opts.highlight) runProps += `<a:highlight>${createColorElement(opts.highlight)}</a:highlight>`
 		if (typeof opts.underline === 'object' && opts.underline.color) runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
-		if (opts.fontFace) {
+		if (resolvedFontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
-			runProps += `<a:latin typeface="${opts.fontFace}" pitchFamily="34" charset="0"/><a:ea typeface="${opts.fontFace}" pitchFamily="34" charset="-122"/><a:cs typeface="${opts.fontFace}" pitchFamily="34" charset="-120"/>`
+			runProps += `<a:latin typeface="${resolvedFontFace}" pitchFamily="34" charset="0"/><a:ea typeface="${resolvedFontFace}" pitchFamily="34" charset="-122"/><a:cs typeface="${resolvedFontFace}" pitchFamily="34" charset="-120"/>`
 		}
 	}
 
@@ -1307,12 +1378,13 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 		/* C: Append 'endParaRPr' (when needed) and close current open paragraph
 		 * NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 		 */
-		if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
-			if (opts.fontFace) {
+		if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace || opts.fontWeight || opts.fontStyle)) {
+			const tableFontFace = resolveFontFace(opts)
+			if (tableFontFace) {
 				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0">'
-				strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
-				strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
-				strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
+				strSlideXml += `<a:latin typeface="${tableFontFace}" charset="0"/>`
+				strSlideXml += `<a:ea typeface="${tableFontFace}" charset="0"/>`
+				strSlideXml += `<a:cs typeface="${tableFontFace}" charset="0"/>`
 				strSlideXml += '</a:endParaRPr>'
 			} else {
 				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0"/>'

@@ -1241,6 +1241,19 @@ declare namespace PptxGenJS {
 		 */
 		fontFace?: string
 		/**
+		 * Font weight
+		 * - numeric CSS-like values (100-900) or weight name
+		 * @example 300 // Light
+		 * @example 'SemiBold'
+		 */
+		fontWeight?: number | string
+		/**
+		 * Font style (used to build font face when needed)
+		 * @example 'italic'
+		 * @example 'oblique'
+		 */
+		fontStyle?: string
+		/**
 		 * Font size
 		 * @example 12 // Font size 12
 		 */
