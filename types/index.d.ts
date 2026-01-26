@@ -2418,6 +2418,13 @@ declare namespace PptxGenJS {
 		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
 		 */
 		altText?: string
+		/**
+		 * GeoCache binary data for regionMap (Filled Map) charts
+		 * - Contains cached map rendering data from Bing Maps
+		 * - Required for map charts to display without internet connection
+		 * - Preserved from parsed PPTX for roundtrip
+		 */
+		geoCache?: string
 	}
 	export interface ISlideRelChart extends OptsChartData {
 		type: CHART_NAME | IChartMulti[]

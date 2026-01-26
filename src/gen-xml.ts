@@ -758,19 +758,42 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
-				strSlideXml += '<p:graphicFrame>'
-				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`
-				strSlideXml += '   <p:cNvGraphicFramePr/>'
-				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
-				strSlideXml += ' </p:nvGraphicFramePr>'
-				strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
-				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
-				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
-				strSlideXml += '  </a:graphicData>'
-				strSlideXml += ' </a:graphic>'
-				strSlideXml += '</p:graphicFrame>'
+				if (slideItemObj.isChartEx) {
+					// ChartEx uses different namespace and wrapper structure
+					strSlideXml += '<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex">'
+					strSlideXml += '<mc:Choice Requires="cx1">'
+					strSlideXml += '<p:graphicFrame>'
+					strSlideXml += ' <p:nvGraphicFramePr>'
+					strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`
+					strSlideXml += '   <p:cNvGraphicFramePr/>'
+					strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
+					strSlideXml += ' </p:nvGraphicFramePr>'
+					strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
+					strSlideXml += ' <a:graphic>'
+					strSlideXml += '  <a:graphicData uri="http://schemas.microsoft.com/office/drawing/2014/chartex">'
+					strSlideXml += `   <cx:chart xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId${slideItemObj.chartRid}"/>`
+					strSlideXml += '  </a:graphicData>'
+					strSlideXml += ' </a:graphic>'
+					strSlideXml += '</p:graphicFrame>'
+					strSlideXml += '</mc:Choice>'
+					strSlideXml += '<mc:Fallback/>'
+					strSlideXml += '</mc:AlternateContent>'
+				} else {
+					// Regular chart
+					strSlideXml += '<p:graphicFrame>'
+					strSlideXml += ' <p:nvGraphicFramePr>'
+					strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`
+					strSlideXml += '   <p:cNvGraphicFramePr/>'
+					strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
+					strSlideXml += ' </p:nvGraphicFramePr>'
+					strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
+					strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+					strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
+					strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
+					strSlideXml += '  </a:graphicData>'
+					strSlideXml += ' </a:graphic>'
+					strSlideXml += '</p:graphicFrame>'
+				}
 				break
 
 			default:
@@ -867,7 +890,11 @@ function slideObjectRelationsToXml (slide: PresSlide | SlideLayout, defaultRels:
 	})
 	; (slide._relsChart || []).forEach((rel: ISlideRelChart) => {
 		lastRid = Math.max(lastRid, rel.rId)
-		strXml += `<Relationship Id="rId${rel.rId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="${rel.Target}"/>`
+		// Use different relationship type for ChartEx charts
+		const relType = rel.isChartEx
+			? 'http://schemas.microsoft.com/office/2014/relationships/chartEx'
+			: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart'
+		strXml += `<Relationship Id="rId${rel.rId}" Type="${relType}" Target="${rel.Target}"/>`
 	})
 	; (slide._relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		const relRid = rel.rId.toString()
@@ -1506,7 +1533,14 @@ export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout
 		strXml += `<Override PartName="/ppt/slides/slide${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`
 		// Add charts if any
 		slide._relsChart.forEach(rel => {
-			strXml += `<Override PartName="${rel.Target}" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`
+			// Convert relative path to absolute path for Content_Types.xml
+			// rel.Target is like "../charts/chart1.xml" or "../charts/chartEx32.xml"
+			const absolutePath = rel.Target.replace('../', '/ppt/')
+			// Use different content type for ChartEx files
+			const contentType = rel.isChartEx
+				? 'application/vnd.ms-office.chartex+xml'
+				: 'application/vnd.openxmlformats-officedocument.drawingml.chart+xml'
+			strXml += `<Override PartName="${absolutePath}" ContentType="${contentType}"/>`
 		})
 	})
 
@@ -1520,7 +1554,11 @@ export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout
 	slideLayouts.forEach((layout, idx) => {
 		strXml += `<Override PartName="/ppt/slideLayouts/slideLayout${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>`
 		; (layout._relsChart || []).forEach(rel => {
-			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
+			const absolutePath = rel.Target.replace('../', '/ppt/')
+			const contentType = rel.isChartEx
+				? 'application/vnd.ms-office.chartex+xml'
+				: 'application/vnd.openxmlformats-officedocument.drawingml.chart+xml'
+			strXml += ` <Override PartName="${absolutePath}" ContentType="${contentType}"/>`
 		})
 	})
 
@@ -1531,7 +1569,11 @@ export function makeXmlContTypes (slides: PresSlide[], slideLayouts: SlideLayout
 
 	// STEP 6: Add rels
 	masterSlide._relsChart.forEach(rel => {
-		strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
+		const absolutePath = rel.Target.replace('../', '/ppt/')
+		const contentType = rel.isChartEx
+			? 'application/vnd.ms-office.chartex+xml'
+			: 'application/vnd.openxmlformats-officedocument.drawingml.chart+xml'
+		strXml += ` <Override PartName="${absolutePath}" ContentType="${contentType}"/>`
 	})
 	masterSlide._relsMedia.forEach(rel => {
 		if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && !strXml.includes(rel.type)) { strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>' }

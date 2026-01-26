@@ -39,7 +39,14 @@ export const AXIS_ID_SERIES_PRIMARY = '2094734556'
 
 export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 export type WRITE_OUTPUT_TYPE = JSZIP_OUTPUT_TYPE | 'STREAM'
-export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'bubble3D' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+// CHART_NAME includes both regular charts and ChartEx types
+export type CHART_NAME = 
+  | 'area' | 'area3D' | 'bar' | 'bar3D' | 'bubble' | 'bubble3D'
+  | 'doughnut' | 'line' | 'line3D' | 'ofPie' | 'pie' | 'pie3D'
+  | 'scatter' | 'stock'
+  // ChartEx types
+  | 'treemap' | 'sunburst' | 'histogram' | 'pareto' | 'boxWhisker'
+  | 'waterfallChartEx' | 'funnel' | 'regionMap'
 export type SCHEME_COLORS = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 
 export const LETTERS: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -107,16 +114,29 @@ export enum OutputType {
 	'uint8array' = 'uint8array',
 }
 export enum ChartType {
+	// Column category
 	'area' = 'area',
+	'area3d' = 'area3D',
 	'bar' = 'bar',
 	'bar3d' = 'bar3D',
 	'bubble' = 'bubble',
 	'bubble3d' = 'bubble3D',
 	'doughnut' = 'doughnut',
 	'line' = 'line',
+	'line3d' = 'line3D',
 	'pie' = 'pie',
-	'radar' = 'radar',
+	'pie3d' = 'pie3D',
 	'scatter' = 'scatter',
+	'stock' = 'stock',
+	'ofPie' = 'ofPie',
+	// ChartEx (Extended chart) types
+	'treemap' = 'treemap',
+	'sunburst' = 'sunburst',
+	'histogram' = 'histogram',
+	'pareto' = 'pareto',
+	'boxWhisker' = 'boxWhisker',
+	'waterfallChartEx' = 'waterfallChartEx',
+	'funnel' = 'funnel',
 }
 export enum ShapeType {
 	'accentBorderCallout1' = 'accentBorderCallout1',
@@ -694,17 +714,43 @@ export type SHAPE_NAME =
 	| 'wedgeRectCallout'
 	| 'wedgeRoundRectCallout'
 
+/**
+ * Chart types matching PowerPoint categories:
+ * - Column: BAR, BAR3D (use barDir for horizontal/vertical)
+ * - Line: LINE, LINE3D, AREA, AREA3D
+ * - Pie: PIE, PIE3D, DOUGHNUT, OFPIE
+ * - X Y (Scatter): SCATTER, BUBBLE
+ * - Waterfall: STOCK
+ * - ChartEx (Extended): TREEMAP, SUNBURST, HISTOGRAM, PARETO, BOXWHISKER, WATERFALL_CHARTEX, FUNNEL, REGION_MAP
+ */
 export enum CHART_TYPE {
-	'AREA' = 'area',
+	// Column category
 	'BAR' = 'bar',
 	'BAR3D' = 'bar3D',
-	'BUBBLE' = 'bubble',
-	'BUBBLE3D' = 'bubble3D',
-	'DOUGHNUT' = 'doughnut',
+	// Line category
+	'AREA' = 'area',
+	'AREA3D' = 'area3D',
 	'LINE' = 'line',
+	'LINE3D' = 'line3D',
+	// Pie category
 	'PIE' = 'pie',
-	'RADAR' = 'radar',
+	'PIE3D' = 'pie3D',
+	'DOUGHNUT' = 'doughnut',
+	'OFPIE' = 'ofPie',
+	// X Y (Scatter) category
 	'SCATTER' = 'scatter',
+	'BUBBLE' = 'bubble',
+	// Waterfall category
+	'STOCK' = 'stock',
+	// ChartEx (Extended chart) types - use cx: namespace
+	'TREEMAP' = 'treemap',
+	'SUNBURST' = 'sunburst',
+	'HISTOGRAM' = 'histogram',
+	'PARETO' = 'pareto',
+	'BOXWHISKER' = 'boxWhisker',
+	'WATERFALL_CHARTEX' = 'waterfallChartEx',
+	'FUNNEL' = 'funnel',
+	'REGION_MAP' = 'regionMap',
 }
 
 export enum SCHEME_COLOR_NAMES {
@@ -727,15 +773,18 @@ export enum MASTER_OBJECTS {
 	'rect' = 'rect',
 	'text' = 'text',
 	'placeholder' = 'placeholder',
+	'picturePlaceholder' = 'picturePlaceholder',
 }
 
 export enum SLIDE_OBJECT_TYPES {
 	'chart' = 'chart',
+	'group' = 'group',
 	'hyperlink' = 'hyperlink',
 	'image' = 'image',
 	'media' = 'media',
 	'online' = 'online',
 	'placeholder' = 'placeholder',
+	'picturePlaceholder' = 'picturePlaceholder',
 	'table' = 'table',
 	'tablecell' = 'tablecell',
 	'text' = 'text',
@@ -749,7 +798,7 @@ export enum PLACEHOLDER_TYPES {
 	'table' = 'tbl',
 	'media' = 'media',
 }
-export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
+export type PLACEHOLDER_TYPE = 'title' | 'body' | 'image' | 'pic' | 'chart' | 'table' | 'tbl' | 'media'
 
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
