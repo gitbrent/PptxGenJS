@@ -863,6 +863,51 @@ function genXmlColorSelection(props) {
             case 'solid':
                 outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`;
                 break;
+            case 'gradient':
+                // Handle gradient fills
+                if (typeof props === 'object' && 'gradient' in props && props.gradient) {
+                    const gradient = props.gradient;
+                    outText += '<a:gradFill>';
+                    outText += '<a:gsLst>';
+                    // Generate gradient stops
+                    for (const stop of gradient.stops || []) {
+                        // Position is 0-100, convert to 0-100000 for OOXML
+                        const position = Math.round((stop.position || 0) * 1000);
+                        outText += `<a:gs pos="${position}">`;
+                        // Generate the color with optional transparency
+                        let stopInternalElements = '';
+                        if (stop.transparency !== undefined && stop.transparency > 0) {
+                            // transparency 0-100 maps to alpha 100000-0
+                            stopInternalElements += `<a:alpha val="${Math.round((100 - stop.transparency) * 1000)}"/>`;
+                        }
+                        outText += createColorElement(stop.color || 'FFFFFF', stopInternalElements);
+                        outText += '</a:gs>';
+                    }
+                    outText += '</a:gsLst>';
+                    // Linear or radial gradient
+                    if (gradient.type === 'radial') {
+                        // Radial gradient - use path fill
+                        const radPos = gradient.radialPosition || { x: 50, y: 50 };
+                        // Convert percentage to OOXML units (0-100000)
+                        const left = Math.round(radPos.x * 1000);
+                        const top = Math.round(radPos.y * 1000);
+                        const right = Math.round((100 - radPos.x) * 1000);
+                        const bottom = Math.round((100 - radPos.y) * 1000);
+                        outText += `<a:path path="circle"><a:fillToRect l="${left}" t="${top}" r="${right}" b="${bottom}"/></a:path>`;
+                    }
+                    else {
+                        // Linear gradient (default)
+                        const angle = gradient.angle !== undefined ? gradient.angle : 0;
+                        // Convert degrees to PowerPoint angle units (60000 per degree)
+                        const pptAngle = Math.round(angle * 60000);
+                        outText += `<a:lin ang="${pptAngle}" scaled="0"/>`;
+                    }
+                    outText += '</a:gradFill>';
+                }
+                break;
+            case 'none':
+                outText += '<a:noFill/>';
+                break;
             default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
                 outText += '';
                 break;
