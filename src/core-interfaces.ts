@@ -90,6 +90,33 @@ export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 
+/**
+ * Embedded font entry
+ * Represents a font that is embedded in the PPTX file
+ */
+export interface EmbeddedFont {
+	/**
+	 * Font typeface name (e.g., "Manrope SemiBold")
+	 */
+	fontName: string
+	/**
+	 * Base64-encoded regular font data (.fntdata format)
+	 */
+	regular?: string
+	/**
+	 * Base64-encoded bold font data (.fntdata format)
+	 */
+	bold?: string
+	/**
+	 * Base64-encoded italic font data (.fntdata format)
+	 */
+	italic?: string
+	/**
+	 * Base64-encoded bold-italic font data (.fntdata format)
+	 */
+	boldItalic?: string
+}
+
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -172,6 +199,45 @@ export interface ShadowProps {
 	rotateWithShape?: boolean
 }
 // used by: shape, table, text
+export interface GradientStop {
+	/**
+	 * Stop color (hex format or theme color)
+	 * @example 'FF0000' // red
+	 */
+	color: Color
+	/**
+	 * Stop position (0-100)
+	 */
+	position: number
+	/**
+	 * Transparency/alpha at this stop (0-100)
+	 * 0 = fully opaque, 100 = fully transparent
+	 */
+	transparency?: number
+}
+export interface GradientFillProps {
+	/**
+	 * Gradient type
+	 */
+	type: 'linear' | 'radial'
+	/**
+	 * Gradient angle in degrees (for linear gradients)
+	 * PowerPoint uses 0° = right, 90° = down, 180° = left, 270° = up
+	 */
+	angle?: number
+	/**
+	 * Radial gradient position (for radial gradients)
+	 * x and y are percentages (0-100) where the gradient center is located
+	 * @example { x: 100, y: 100 } // gradient center at bottom-right
+	 * @example { x: 50, y: 50 } // gradient center at center (default)
+	 * @example { x: 0, y: 0 } // gradient center at top-left
+	 */
+	radialPosition?: { x: number; y: number }
+	/**
+	 * Gradient stops
+	 */
+	stops: GradientStop[]
+}
 export interface ShapeFillProps {
 	/**
 	 * Fill color
@@ -191,7 +257,11 @@ export interface ShapeFillProps {
 	 * Fill type
 	 * @default 'solid'
 	 */
-	type?: 'none' | 'solid'
+	type?: 'none' | 'solid' | 'gradient'
+	/**
+	 * Gradient fill configuration (used when type is 'gradient')
+	 */
+	gradient?: GradientFillProps
 
 	/**
 	 * Transparency (percent)
@@ -210,6 +280,12 @@ export interface ShapeLineProps extends ShapeFillProps {
 	 * @default 'solid'
 	 */
 	dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+	/**
+	 * Custom dash pattern - array of dash/space pairs
+	 * Each element has `d` (dash length) and `sp` (space length) in 1/100000 of line width
+	 * When specified, this overrides dashType
+	 */
+	custDash?: Array<{ d: number; sp: number }>
 	/**
 	 * Begin arrow type
 	 * @since v3.3.0
@@ -459,6 +535,37 @@ export interface ObjectNameProps {
 	 */
 	objectName?: string
 }
+/**
+ * Theme color scheme - defines all 12 theme colors
+ * Colors can be specified as hex values (without #) like "317039" or "FFFFFF"
+ */
+export interface ThemeColorScheme {
+	/** Dark 1 (typically text color) - defaults to system windowText (000000) */
+	dk1?: string
+	/** Light 1 (typically background color) - defaults to system window (FFFFFF) */
+	lt1?: string
+	/** Dark 2 - defaults to "44546A" */
+	dk2?: string
+	/** Light 2 - defaults to "E7E6E6" */
+	lt2?: string
+	/** Accent 1 - defaults to "4472C4" */
+	accent1?: string
+	/** Accent 2 - defaults to "ED7D31" */
+	accent2?: string
+	/** Accent 3 - defaults to "A5A5A5" */
+	accent3?: string
+	/** Accent 4 - defaults to "FFC000" */
+	accent4?: string
+	/** Accent 5 - defaults to "5B9BD5" */
+	accent5?: string
+	/** Accent 6 - defaults to "70AD47" */
+	accent6?: string
+	/** Hyperlink color - defaults to "0563C1" */
+	hlink?: string
+	/** Followed hyperlink color - defaults to "954F72" */
+	folHlink?: string
+}
+
 export interface ThemeProps {
 	/**
 	 * Headings font face name
@@ -472,6 +579,11 @@ export interface ThemeProps {
 	 * @default 'Calibri'
 	 */
 	bodyFontFace?: string
+	/**
+	 * Color scheme - defines the 12 theme colors (dk1, lt1, dk2, lt2, accent1-6, hlink, folHlink)
+	 * @example { dk1: '317039', lt1: 'FEFCCC', accent1: '143021' }
+	 */
+	colorScheme?: ThemeColorScheme
 }
 
 // image / media ==================================================================================
@@ -680,6 +792,13 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 */
 	rectRadius?: number
 	/**
+	 * Shape geometry adjustments - raw OOXML adjustment values
+	 * Maps adjustment names (e.g., "adj", "adj1", "adj2") to raw values
+	 * Used for shapes that need custom geometry parameters like plus, cross, arrows, etc.
+	 * Values are passed directly to the a:gd elements in the avLst
+	 */
+	shapeAdjustments?: Record<string, number>
+	/**
 	 * Rotation (degrees)
 	 * - range: -360 to 360
 	 * @default 0
@@ -713,6 +832,105 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
 	 * @deprecated v3.10.0 - use `objectName`
 	 */
 	shapeName?: string
+	/**
+	 * Vertical alignment of text within shape
+	 * Used for shapes without text to preserve the anchor attribute
+	 * @default 'top'
+	 */
+	valign?: VAlign
+	/**
+	 * Internal body properties for XML generation
+	 * Used to preserve anchor attribute for shapes without text
+	 */
+	_bodyProp?: {
+		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
+		autoFit?: boolean
+		align?: TEXT_HALIGN
+		anchor?: TEXT_VALIGN
+		/**
+		 * Whether text is horizontally centered within the text area
+		 * When false (0), text anchors at the edge based on alignment
+		 * @see ECMA-376 anchorCtr attribute
+		 */
+		anchorCtr?: boolean
+		lIns?: number
+		rIns?: number
+		tIns?: number
+		bIns?: number
+		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+		wrap?: boolean
+		/**
+		 * Whether to use first and last paragraph spacing on text body
+		 * When true (1), space before first paragraph and space after last paragraph are applied
+		 * @default true (PowerPoint default)
+		 */
+		spcFirstLastPara?: boolean
+	}
+}
+
+// groups =========================================================================================
+
+/**
+ * A child object within a group - can be a shape, text, or image
+ */
+export interface GroupChild {
+	/**
+	 * Type of child object
+	 */
+	type: 'text' | 'shape' | 'image'
+	/**
+	 * For 'text' type - text options
+	 */
+	text?: string | TextProps[]
+	/**
+	 * For 'shape' type - shape name
+	 */
+	shapeName?: SHAPE_NAME
+	/**
+	 * For 'image' type - image properties
+	 */
+	image?: DataOrPathProps
+	/**
+	 * Position and size options (relative to group)
+	 */
+	options?: ShapeProps | TextPropsOptions | ImageProps
+}
+
+export interface GroupProps extends PositionProps, ObjectNameProps {
+	/**
+	 * Child objects within the group
+	 */
+	children: GroupChild[]
+	/**
+	 * Child coordinate system offset X (EMU)
+	 * - Used internally for proper positioning
+	 */
+	chOffX?: number
+	/**
+	 * Child coordinate system offset Y (EMU)
+	 */
+	chOffY?: number
+	/**
+	 * Child coordinate system extent width (EMU)
+	 */
+	chExtCx?: number
+	/**
+	 * Child coordinate system extent height (EMU)
+	 */
+	chExtCy?: number
+	/**
+	 * Rotation (degrees)
+	 * - range: -360 to 360
+	 */
+	rotate?: number
+	/**
+	 * Flip horizontally
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertically
+	 */
+	flipV?: boolean
 }
 
 // tables =========================================================================================
@@ -935,6 +1153,42 @@ export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProp
 	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
+	
+	/**
+	 * Table style ID (GUID referencing a style in tableStyles.xml)
+	 * @example '{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}'
+	 */
+	tableStyleId?: string
+	/**
+	 * Apply first row formatting from table style
+	 * @default false
+	 */
+	firstRow?: boolean
+	/**
+	 * Apply last row formatting from table style
+	 * @default false
+	 */
+	lastRow?: boolean
+	/**
+	 * Apply first column formatting from table style
+	 * @default false
+	 */
+	firstCol?: boolean
+	/**
+	 * Apply last column formatting from table style
+	 * @default false
+	 */
+	lastCol?: boolean
+	/**
+	 * Apply banded row formatting from table style
+	 * @default false
+	 */
+	bandRow?: boolean
+	/**
+	 * Apply banded column formatting from table style
+	 * @default false
+	 */
+	bandCol?: boolean
 }
 export interface TableCell {
 	_type: SLIDE_OBJECT_TYPES.tablecell
@@ -982,12 +1236,24 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 		autoFit?: boolean
 		align?: TEXT_HALIGN
 		anchor?: TEXT_VALIGN
+		/**
+		 * Whether text is horizontally centered within the text area
+		 * When false (0), text anchors at the edge based on alignment
+		 * @see ECMA-376 anchorCtr attribute
+		 */
+		anchorCtr?: boolean
 		lIns?: number
 		rIns?: number
 		tIns?: number
 		bIns?: number
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
+		/**
+		 * Whether to use first and last paragraph spacing on text body
+		 * When true (1), space before first paragraph and space after last paragraph are applied
+		 * @default true (PowerPoint default)
+		 */
+		spcFirstLastPara?: boolean
 	}
 	_lineIdx?: number
 
@@ -996,6 +1262,16 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * Character spacing
 	 */
 	charSpacing?: number
+	/**
+	 * Kerning threshold in points
+	 * Text will be kerned when its size is equal to or greater than this value
+	 * Set to 0 to disable kerning, or a small value like 1 to enable kerning at all sizes
+	 * PowerPoint default is typically 12pt (kern="1200" in hundredths of a point)
+	 * @example 1 // Enable kerning for all text 1pt and above
+	 * @example 12 // Enable kerning for 12pt and above (default)
+	 * @example 0 // Disable kerning
+	 */
+	kern?: number
 	/**
 	 * Text fit options
 	 *
@@ -1059,6 +1335,25 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 */
 	margin?: Margin
 	outline?: { color: Color, size: number }
+	/**
+	 * Paragraph left margin (EMUs)
+	 * - Used for offsetting text from the left edge of the shape
+	 * @example 457200 // 0.5 inches left margin
+	 */
+	paragraphMarginLeft?: number
+	/**
+	 * Paragraph right margin (EMUs)
+	 * - Used for constraining text wrap width within a paragraph
+	 * @example 1587500 // ~1.75 inches right margin
+	 */
+	paragraphMarginRight?: number
+	/**
+	 * Paragraph first-line indent (EMUs)
+	 * - Positive values indent the first line
+	 * - Negative values create a hanging indent
+	 * @example -228600 // -0.25 inches hanging indent
+	 */
+	paragraphIndent?: number
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
@@ -1068,6 +1363,13 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @default 0
 	 */
 	rectRadius?: number
+	/**
+	 * Shape geometry adjustments - raw OOXML adjustment values
+	 * Maps adjustment names (e.g., "adj", "adj1", "adj2") to raw values
+	 * Used for shapes that need custom geometry parameters like plus, cross, arrows, etc.
+	 * Values are passed directly to the a:gd elements in the avLst
+	 */
+	shapeAdjustments?: Record<string, number>
 	/**
 	 * Rotation (degrees)
 	 * - range: -360 to 360
@@ -1169,6 +1471,11 @@ export interface OptsChartData {
 	 * @example [5, 1, 5, 1]
 	 */
 	sizes?: number[]
+	/**
+	 * subtotal/total indices for waterfall charts (0-based)
+	 * @example [0, 4, 7] // marks categories at these indices as "Set as Total"
+	 */
+	subtotalIndices?: number[]
 	/**
 	 * category values
 	 * @example [2000, 2010, 2020]
@@ -1474,6 +1781,13 @@ export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean
 	holeSize?: number
 }
+export interface IChartPropsChartBubble {
+	/**
+	 * Render bubble chart with 3D effect
+	 * @default false
+	 */
+	bubble3D?: boolean
+}
 export interface IChartPropsChartLine {
 	/**
 	 * MS-PPT > Chart format > Format Data Series > Line > Cap type
@@ -1525,6 +1839,16 @@ export interface IChartPropsChartLine {
 	 * @default false
 	 */
 	lineSmooth?: boolean
+	/**
+	 * Scatter chart style - controls line and marker display
+	 * - 'lineMarker' = straight lines with markers
+	 * - 'line' = straight lines only (no markers)
+	 * - 'marker' = markers only (no lines)
+	 * - 'smooth' = smooth curves only (no markers)
+	 * - 'smoothMarker' = smooth curves with markers
+	 * @default 'lineMarker'
+	 */
+	scatterStyle?: 'lineMarker' | 'line' | 'marker' | 'smooth' | 'smoothMarker'
 }
 export interface IChartPropsChartPie {
 	dataNoEffects?: boolean
@@ -1536,6 +1860,13 @@ export interface IChartPropsChartPie {
 	 * @default 0
 	 */
 	firstSliceAng?: number
+	/**
+	 * Type of "Of Pie" chart (for OFPIE chart type)
+	 * - 'pie' = "Pie of Pie" chart
+	 * - 'bar' = "Bar of Pie" chart
+	 * @default 'pie'
+	 */
+	ofPieType?: 'pie' | 'bar'
 }
 export interface IChartPropsChartRadar {
 	/**
@@ -1544,6 +1875,26 @@ export interface IChartPropsChartRadar {
 	 * @default standard
 	 */
 	radarStyle?: 'standard' | 'marker' | 'filled' // TODO: convert to 'radar'|'markers'|'filled' in 4.0 (verbatim with PPT app UI)
+}
+export interface IChartPropsChartStock {
+	/**
+	 * Stock chart type
+	 * - 'hlc' = High-Low-Close (3 series)
+	 * - 'ohlc' = Open-High-Low-Close (4 series, with upDownBars)
+	 * - 'volumeHlc' = Volume-High-Low-Close (bar + 3 series)
+	 * - 'volumeOhlc' = Volume-Open-High-Low-Close (bar + 4 series, with upDownBars)
+	 * @default 'hlc'
+	 */
+	stockType?: 'hlc' | 'ohlc' | 'volumeHlc' | 'volumeOhlc'
+	/**
+	 * Volume data series for volumeHlc/volumeOhlc stock charts
+	 * This appears as a bar chart overlaid with the stock chart
+	 */
+	volumeData?: {
+		name: string
+		labels: Array<string | number>
+		values: Array<number>
+	}
 }
 export interface IChartPropsDataLabel {
 	dataLabelBkgrdColors?: boolean
@@ -1604,10 +1955,12 @@ export interface IChartOpts
 	IChartPropsAxisVal,
 	IChartPropsBase,
 	IChartPropsChartBar,
+	IChartPropsChartBubble,
 	IChartPropsChartDoughnut,
 	IChartPropsChartLine,
 	IChartPropsChartPie,
 	IChartPropsChartRadar,
+	IChartPropsChartStock,
 	IChartPropsDataLabel,
 	IChartPropsDataTable,
 	IChartPropsLegend,
@@ -1620,6 +1973,25 @@ export interface IChartOpts
 	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
 	 */
 	altText?: string
+	/**
+	 * GeoCache binary data for regionMap (Filled Map) charts
+	 * - Contains cached map rendering data from Bing Maps
+	 * - Required for map charts to display without internet connection
+	 * - Preserved from parsed PPTX for roundtrip
+	 */
+	geoCache?: string
+	/**
+	 * Raw chart style XML for lossless roundtrip
+	 * - Contains the original style definitions from the parsed PPTX
+	 * - If provided, will be used instead of generating default style
+	 */
+	chartStyleXml?: string
+	/**
+	 * Raw chart colors XML for lossless roundtrip
+	 * - Contains the original color scheme from the parsed PPTX
+	 * - If provided, will be used instead of generating default colors
+	 */
+	chartColorsXml?: string
 }
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
@@ -1633,6 +2005,47 @@ export interface ISlideRelChart extends OptsChartData {
 	Target: string
 	globalId: number
 	fileName: string
+	/** Whether this is a ChartEx (extended chart) type */
+	isChartEx?: boolean
+	/** ChartEx-specific data for hierarchical charts (treemap, sunburst) */
+	chartExData?: IChartExData
+	/** Raw chart style XML for lossless roundtrip */
+	chartStyleXml?: string
+	/** Raw chart colors XML for lossless roundtrip */
+	chartColorsXml?: string
+}
+
+/**
+ * ChartEx (Extended Chart) data structure
+ * Used for treemap, sunburst, histogram, pareto, boxWhisker charts
+ */
+export interface IChartExData {
+	/** The layout ID for the ChartEx (treemap, sunburst, clusteredColumn, boxWhisker, paretoLine, waterfall, funnel) */
+	layoutId: string
+	/** Multi-level category labels for hierarchical charts */
+	categoryLevels?: string[][]
+	/** Numeric dimension values */
+	values?: number[]
+	/** Number dimension type: 'val' for value, 'size' for size */
+	numDimType?: 'val' | 'size'
+	/** For boxWhisker: quartile calculation method */
+	quartileMethod?: 'exclusive' | 'inclusive'
+	/** For histogram: binning settings */
+	binning?: {
+		count?: number
+		width?: number
+		overflow?: number
+		underflow?: number
+	}
+	/** For pareto: whether to show pareto line */
+	showParetoLine?: boolean
+	/** Data label settings */
+	dataLabels?: {
+		position?: string
+		showCategoryName?: boolean
+		showValue?: boolean
+		showSeriesName?: boolean
+	}
 }
 
 // Core
@@ -1671,6 +2084,8 @@ export interface ISlideObject {
 	arrTabRows?: TableCell[][]
 	// chart
 	chartRid?: number
+	/** Whether this chart is a ChartEx (extended chart) type */
+	isChartEx?: boolean
 	// image:
 	image?: string
 	imageRid?: number
@@ -1680,6 +2095,8 @@ export interface ISlideObject {
 	mtype?: MediaType
 	mediaRid?: number
 	shape?: SHAPE_NAME
+	// group: child objects that should be grouped together
+	groupChildren?: ISlideObject[]
 }
 // PRIVATE ^^^
 
@@ -1770,12 +2187,33 @@ export interface SlideMasterProps {
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
 	_placeholderIdx?: number
 	_placeholderType?: PLACEHOLDER_TYPE
+	/**
+	 * Group child coordinate system properties (internal use)
+	 */
+	_groupProps?: {
+		chOffX?: number
+		chOffY?: number
+		chExtCx?: number
+		chExtCy?: number
+		rotate?: number
+		flipH?: boolean
+		flipV?: boolean
+	}
 
 	cx?: Coord
 	cy?: Coord
 	margin?: Margin
 	colW?: number | number[] // table
 	rowH?: number | number[] // table
+	
+	// Table style properties (for roundtrip fidelity)
+	tableStyleId?: string // GUID referencing a style in tableStyles.xml
+	firstRow?: boolean
+	lastRow?: boolean
+	firstCol?: boolean
+	lastCol?: boolean
+	bandRow?: boolean
+	bandCol?: boolean
 }
 export interface SlideBaseProps {
 	_bkgdImgRid?: number
@@ -1809,6 +2247,7 @@ export interface PresSlide extends SlideBaseProps {
 	_slideId: number
 
 	addChart: (type: CHART_NAME | IChartMulti[], data: IOptsChartData[], options?: IChartOpts) => PresSlide
+	addGroup: (options: GroupProps) => PresSlide
 	addImage: (options: ImageProps) => PresSlide
 	addMedia: (options: MediaProps) => PresSlide
 	addNotes: (notes: string) => PresSlide
@@ -1849,6 +2288,16 @@ export interface AddSlideProps {
 export interface PresentationProps {
 	author: string
 	company: string
+	/**
+	 * Default kerning threshold in points for text (e.g., 12 means "Use kerning for 12 points and above")
+	 * Set to 0 or undefined to disable kerning
+	 * Value is stored in hundredths of a point internally (e.g., 12 points = 1200)
+	 */
+	defaultTextKern?: number
+	/**
+	 * Embedded fonts to include in the presentation
+	 */
+	embeddedFonts: EmbeddedFont[]
 	layout: string
 	masterSlide: PresSlide
 	/**

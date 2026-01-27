@@ -12,7 +12,9 @@
 		"demo": "node demo.js",
 		"demo-all": "node demo.js All",
 		"demo-text": "node demo.js Text",
-		"demo-stream": "node demo_stream.js"
+		"demo-stream": "node demo_stream.js",
+		"test-shrink-charts": "node test_shrink_charts.js",
+		"test-shrink-charts:build": "cd ../.. && npm run ship && cd demos/node && node test_shrink_charts.js"
 	},
 	"repository": {
 		"type": "git",

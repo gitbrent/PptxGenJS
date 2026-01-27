@@ -1,9 +1,12 @@
 {
-	"name": "pptxgenjs",
-	"version": "4.0.1",
+	"name": "@linedotai/js-to-ppt",
+	"version": "1.0.5",
 	"author": {
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
 	},
 	"description": "Create JavaScript PowerPoint Presentations",
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
@@ -25,7 +28,9 @@
 		"start": "gulp",
 		"ship": "gulp ship",
 		"defs": "gulp reactTestDefs",
-		"watch": "rollup -cw"
+		"watch": "rollup -cw",
+		"dev": "node dev.js",
+		"release": "gulp ship"
 	},
 	"browser": {
 		"express": false,
@@ -67,7 +72,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/gitbrent/PptxGenJS.git"
+		"url": "git+https://github.com/LinedotAI/js-to-ppt.git"
 	},
 	"keywords": [
 		"es6-powerpoint",
@@ -91,6 +96,6 @@
 		"typescript-powerpoint"
 	],
 	"bugs": {
-		"url": "https://github.com/gitbrent/PptxGenJS/issues"
+		"url": "https://github.com/LinedotAI/js-to-ppt/issues"
 	}
 }

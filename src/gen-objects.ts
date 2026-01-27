@@ -27,6 +27,7 @@ import {
 import {
 	AddSlideProps,
 	BackgroundProps,
+	GroupProps,
 	IChartMulti,
 	IChartOptsLib,
 	IOptsChartData,
@@ -79,7 +80,8 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
 				delete object[key].options.name // remap name for earier handling internally
 				object[key].options._placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
-				object[key].options._placeholderIdx = 100 + idx
+				// Use provided idx if available (for preserving original PPTX indices), otherwise compute
+				object[key].options._placeholderIdx = object[key].options.idx !== undefined ? object[key].options.idx : (100 + idx)
 				addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
 				// TODO: ISSUE#599 - only text is suported now (add more below)
 				// else if (object[key].image) addImageDefinition(tgt, object[key].image)
@@ -95,6 +97,11 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
 					</p:cNvPr>
 					<p:cNvSpPr>
 				*/
+			} else if (MASTER_OBJECTS[key] && key === 'picturePlaceholder') {
+				// NEW: Add native picture placeholder (creates <p:pic> element)
+				// Use provided idx if available (for preserving original PPTX indices), otherwise compute
+				const placeholderIdx = object[key].options?.idx !== undefined ? object[key].options.idx : (100 + idx)
+				addPicturePlaceholderDefinition(tgt, object[key], placeholderIdx)
 			}
 		})
 	}
@@ -151,6 +158,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		text: null,
 		options: null,
 		chartRid: null,
+		isChartEx: false,
 	}
 	// DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
 	// EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
@@ -226,11 +234,11 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// Clean up and validate data label positions
 	// REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
 	if (options.dataLabelPosition) {
-		if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR) { delete options.dataLabelPosition }
-		if (options._type === CHART_TYPE.PIE) {
+		if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT) { delete options.dataLabelPosition }
+		if (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.PIE3D) {
 			if (!['bestFit', 'ctr', 'inEnd', 'outEnd'].includes(options.dataLabelPosition)) delete options.dataLabelPosition
 		}
-		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.BUBBLE3D || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+		if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
 			if (!['b', 'ctr', 'l', 'r', 't'].includes(options.dataLabelPosition)) delete options.dataLabelPosition
 		}
 		if (options._type === CHART_TYPE.BAR) {
@@ -251,7 +259,6 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 	if (!['circle', 'dash', 'diamond', 'dot', 'none', 'square', 'triangle'].includes(options.lineDataSymbol || '')) options.lineDataSymbol = 'circle'
 	if (!['gap', 'span'].includes(options.displayBlanksAs || '')) options.displayBlanksAs = 'span'
-	if (!['standard', 'marker', 'filled'].includes(options.radarStyle || '')) options.radarStyle = 'standard'
 	options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6
 	options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? valToPts(options.lineDataSymbolLineSize) : valToPts(0.75)
 	// `layout` allows the override of PPT defaults to maximize space
@@ -301,7 +308,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
-		: options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
+		: options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.PIE3D || options._type === CHART_TYPE.DOUGHNUT
 			? PIECHART_COLORS
 			: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
@@ -339,7 +346,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	}
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
-	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)) { options.dataLabelFormatCode = options.showPercent ? '0%' : 'General' }
+	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.PIE3D || options._type === CHART_TYPE.DOUGHNUT)) { options.dataLabelFormatCode = options.showPercent ? '0%' : 'General' }
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
@@ -354,10 +361,26 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		delete options.catAxisMultiLevelLabels
 	}
 
+	// Check if this is a ChartEx type (treemap, sunburst, histogram, pareto, boxWhisker, regionMap, etc.)
+	const chartExTypes = [
+		CHART_TYPE.TREEMAP, CHART_TYPE.SUNBURST, CHART_TYPE.HISTOGRAM,
+		CHART_TYPE.PARETO, CHART_TYPE.BOXWHISKER, CHART_TYPE.WATERFALL_CHARTEX, CHART_TYPE.FUNNEL, CHART_TYPE.REGION_MAP,
+		'treemap', 'sunburst', 'histogram', 'pareto', 'boxWhisker', 'waterfallChartEx', 'funnel', 'regionMap'
+	]
+	const isChartEx = chartExTypes.includes(options._type as any)
+	// DEBUG: Log to stderr so it's not filtered
+	if (typeof process !== 'undefined' && process.stderr) {
+		process.stderr.write(`[PPTX] chartId=${chartId}, _type=${JSON.stringify(options._type)}, isChartEx=${isChartEx}\n`)
+	}
+	const chartFileName = isChartEx ? `chartEx${chartId}.xml` : `chart${chartId}.xml`
+	// Use relative path from slide to charts folder
+	const chartTarget = isChartEx ? `../charts/chartEx${chartId}.xml` : `../charts/chart${chartId}.xml`
+
 	// STEP 4: Set props
 	resultObject._type = 'chart'
 	resultObject.options = options
 	resultObject.chartRid = getNewRelId(target)
+	resultObject.isChartEx = isChartEx
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 	target._relsChart.push({
@@ -366,8 +389,11 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		opts: options,
 		type: options._type,
 		globalId: chartId,
-		fileName: `chart${chartId}.xml`,
-		Target: `/ppt/charts/chart${chartId}.xml`,
+		fileName: chartFileName,
+		Target: chartTarget,
+		isChartEx: isChartEx,
+		chartStyleXml: options.chartStyleXml,
+		chartColorsXml: options.chartColorsXml,
 	})
 
 	target._slideObjects.push(resultObject)
@@ -688,6 +714,8 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 		dashType: options.line.dashType || 'solid',
 		beginArrowType: options.line.beginArrowType || null,
 		endArrowType: options.line.endArrowType || null,
+		// Preserve custom dash pattern if present
+		custDash: options.line.custDash || null,
 	}
 	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
@@ -711,7 +739,17 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLineProps` now)
 	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLineProps` now)
 
-	// 4: Create hyperlink rels
+	// 4: Handle valign for shapes (set _bodyProp.anchor for XML generation)
+	// This is needed for shapes without text that still need anchor attribute preserved
+	if ((options as any).valign) {
+		options._bodyProp = options._bodyProp || {}
+		const valign = String((options as any).valign).toLowerCase()
+		if (valign.indexOf('b') === 0) options._bodyProp.anchor = TEXT_VALIGN.b
+		else if (valign.indexOf('m') === 0) options._bodyProp.anchor = TEXT_VALIGN.ctr
+		else if (valign.indexOf('t') === 0) options._bodyProp.anchor = TEXT_VALIGN.t
+	}
+
+	// 5: Create hyperlink rels
 	createHyperlinkRels(target, newObject)
 
 	// LAST: Add object to slide
@@ -790,26 +828,35 @@ export function addTableDefinition(
 				}
 
 				// C: Set cell borders
-				newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				// When using tableStyleId, don't default to 'none' borders - let table style provide them
+				const hasTableStyle = !!opt.tableStyleId
+				if (!hasTableStyle) {
+					newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				} else {
+					// Only use explicit cell border if set, don't inherit from table options
+					newCell.options.border = newCell.options.border || undefined
+				}
 				const cellBorder = newCell.options.border
 
 				// CASE 1: border interface is: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
-				if (!Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
+				if (cellBorder && !Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
 				// Handle: [null, null, {type:'solid'}, null]
-				if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
-				if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
-				if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
-				if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
+				if (newCell.options.border) {
+					if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
+					if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
+					if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
+					if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
 
-				// set complete BorderOptions for all sides
-				const arrSides = [0, 1, 2, 3]
-				arrSides.forEach(idx => {
-					newCell.options.border[idx] = {
-						type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
-						color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
-						pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
-					}
-				})
+					// set complete BorderOptions for all sides
+					const arrSides = [0, 1, 2, 3]
+					arrSides.forEach(idx => {
+						newCell.options.border[idx] = {
+							type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
+							color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+							pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
+						}
+					})
+				}
 
 				// LAST:
 				newRow.push(newCell)
@@ -990,6 +1037,38 @@ export function addTableDefinition(
 }
 
 /**
+ * Adds a picture placeholder object to a slide/layout definition.
+ * Creates a native <p:pic> element with empty <p:blipFill/> that acts as an image placeholder.
+ * @param {PresSlide} target - slide/layout object that the placeholder should be added to
+ * @param {object} props - picture placeholder properties (x, y, w, h, name, idx)
+ * @param {number} placeholderIdx - the placeholder index
+ * @since: 1.0.6
+ */
+export function addPicturePlaceholderDefinition(target: PresSlide, props: { x: number; y: number; w: number; h: number; name?: string; idx?: number }, placeholderIdx: number): void {
+	const objectName = props.name || `Picture Placeholder ${placeholderIdx}`
+	
+	const newObject: ISlideObject = {
+		_type: SLIDE_OBJECT_TYPES.picturePlaceholder,
+		text: null,
+		options: {
+			x: props.x || 0,
+			y: props.y || 0,
+			w: props.w || 1,
+			h: props.h || 1,
+			objectName,
+			_placeholderIdx: props.idx ?? placeholderIdx,
+			_placeholderType: 'image', // Will be mapped to 'pic' in XML generation
+		},
+		image: null,
+		imageRid: null,
+		hyperlink: null,
+	}
+	
+	// Add the slide object
+	target._slideObjects.push(newObject)
+}
+
+/**
  * Adds a text object to a slide definition.
  * @param {PresSlide} target - slide object that the text should be added to
  * @param {string|TextProps[]} text text string or object
@@ -1009,21 +1088,31 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 		// STEP 1: Set some options
 		{
 			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
-			if (!itemOpts.placeholder) {
+			// Check both the item itself AND the parent object - text runs inside placeholder content
+			// should also inherit color, not have a default applied
+			if (!itemOpts.placeholder && !newObject.options.placeholder && !isPlaceholder) {
 				itemOpts.color = itemOpts.color || newObject.options.color || target.color || DEF_FONT_COLOR
 			}
 
-			// A.2: Placeholder should inherit their bullets or override them, so don't default them
-			if (itemOpts.placeholder || isPlaceholder) {
-				itemOpts.bullet = itemOpts.bullet || false
-			}
+			// A.2: Placeholder should inherit their bullets from master/layout, don't set a default
+			// Note: When bullet is undefined, we leave it undefined so PowerPoint inherits from the layout
+			// Only when bullet is explicitly set (true/false or an object) do we use it
+			// (no code needed here - we simply don't default bullet for placeholders)
 
 			// A.3: Text targeting a placeholder need to inherit the placeholders options (eg: margin, valign, etc.) (Issue #640)
+			// Note: We only inherit layout/positioning options, NOT font styling (fontFace, fontSize, color)
+			// Font styling should be defined in the layout placeholder and inherited by PowerPoint, not baked into the slide
 			if (itemOpts.placeholder && target._slideLayout && target._slideLayout._slideObjects) {
 				const placeHold = target._slideLayout._slideObjects.filter(
 					item => item._type === 'placeholder' && item.options && item.options.placeholder && item.options.placeholder === itemOpts.placeholder
 				)[0]
-				if (placeHold?.options) itemOpts = { ...itemOpts, ...placeHold.options }
+				if (placeHold?.options) {
+					// Only inherit structural/layout options, not font styling
+					// This allows slide content to inherit font styling from the layout placeholder
+					// itemOpts comes AFTER layoutOptions so explicit overrides take precedence
+					const { fontFace, fontSize, color, bold, italic, ...layoutOptions } = placeHold.options
+					itemOpts = { ...layoutOptions, ...itemOpts }
+				}
 			}
 
 			// A.4: Other options
@@ -1119,17 +1208,21 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
  * @param {PresSlide} slide - slide object containing layouts
  */
 export function addPlaceholdersToSlideLayouts(slide: PresSlide): void {
-	// Add all placeholders on this Slide that dont already exist
-	(slide._slideLayout._slideObjects || []).forEach(slideLayoutObj => {
-		if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
-			// A: Search for this placeholder on Slide before we add
-			// NOTE: Check to ensure a placeholder does not already exist on the Slide
-			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
-			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, false)
-			}
-		}
-	})
+	// LINEDOT CHANGE: Do NOT add empty placeholders from layouts to slides.
+	// The original pptxgenjs behavior was to add all placeholders from the layout
+	// to every slide, even if they had no content. This causes PowerPoint to show
+	// "Click to add text" for unused placeholders, which is not desired for roundtrip.
+	// 
+	// Original code was:
+	// (slide._slideLayout._slideObjects || []).forEach(slideLayoutObj => {
+	//   if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
+	//     if (slide._slideObjects.filter(...).length === 0) {
+	//       addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, false)
+	//     }
+	//   }
+	// })
+	//
+	// Now we skip adding empty placeholders entirely.
 }
 
 /* -------------------------------------------------------------------------------- */
@@ -1240,4 +1333,82 @@ function createHyperlinkRels(
 			}
 		}
 	})
+}
+
+// =================================================================================================
+// GROUPS
+// =================================================================================================
+
+/**
+ * Adds a group object to the slide
+ * @param {PresSlide} target - slide to add group to
+ * @param {GroupProps} opts - group options including children
+ */
+export function addGroupDefinition(target: PresSlide, opts: GroupProps): void {
+	// Convert children to ISlideObject format
+	const groupChildren: ISlideObject[] = []
+
+	if (opts.children && Array.isArray(opts.children)) {
+		opts.children.forEach((child, idx) => {
+			const childObject: ISlideObject = {
+				_type: null,
+				options: child.options || {},
+			}
+
+			switch (child.type) {
+				case 'text':
+					childObject._type = SLIDE_OBJECT_TYPES.text
+					childObject.shape = (child.options as TextPropsOptions)?.shape || SHAPE_TYPE.RECTANGLE
+					childObject.text = typeof child.text === 'string' ? [{ text: child.text, options: null }] : (child.text || [])
+					break
+				case 'shape':
+					childObject._type = SLIDE_OBJECT_TYPES.text // shapes are text objects with shape property
+					childObject.shape = child.shapeName || SHAPE_TYPE.RECTANGLE
+					// Support text inside shapes (e.g., TextBox inside groups)
+					childObject.text = child.text 
+						? (typeof child.text === 'string' ? [{ text: child.text, options: null }] : child.text)
+						: []
+					break
+				case 'image':
+					childObject._type = SLIDE_OBJECT_TYPES.image
+					if (child.image) {
+						childObject.image = (child.image as any).path || ''
+						childObject.imageRid = 0 // Will be set during relationship processing
+					}
+					break
+			}
+
+			if (!childObject.options.objectName) {
+				childObject.options.objectName = `GroupChild ${idx + 1}`
+			}
+
+			groupChildren.push(childObject)
+		})
+	}
+
+	// Create the group slide object
+	const newObject: ISlideObject = {
+		_type: SLIDE_OBJECT_TYPES.group,
+		options: {
+			x: opts.x,
+			y: opts.y,
+			w: opts.w,
+			h: opts.h,
+			objectName: opts.objectName || `Group ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.group).length + 1}`,
+			// Store child coordinate system info and transforms
+			_groupProps: {
+				chOffX: opts.chOffX,
+				chOffY: opts.chOffY,
+				chExtCx: opts.chExtCx,
+				chExtCy: opts.chExtCy,
+				rotate: opts.rotate,
+				flipH: opts.flipH,
+				flipV: opts.flipV,
+			},
+		},
+		groupChildren,
+	}
+
+	// Add to slide objects
+	target._slideObjects.push(newObject)
 }

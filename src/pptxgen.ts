@@ -79,6 +79,7 @@ import {
 } from './core-enums'
 import {
 	AddSlideProps,
+	EmbeddedFont,
 	IPresentationProps,
 	PresLayout,
 	PresSlide,
@@ -87,6 +88,7 @@ import {
 	SlideMasterProps,
 	SlideNumberProps,
 	TableToSlidesProps,
+	ThemeColorScheme,
 	ThemeProps,
 	WriteBaseProps,
 	WriteFileProps,
@@ -225,6 +227,24 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._rtlMode
 	}
 
+	/** Embedded fonts in the presentation */
+	private _embeddedFonts: EmbeddedFont[] = []
+	public get embeddedFonts(): EmbeddedFont[] {
+		return this._embeddedFonts
+	}
+	public set embeddedFonts(value: EmbeddedFont[]) {
+		this._embeddedFonts = value
+	}
+	
+	/** Custom table styles XML (for roundtrip preservation) */
+	private _tableStylesXml: string | undefined
+	public get tableStylesXml(): string | undefined {
+		return this._tableStylesXml
+	}
+	public set tableStylesXml(value: string | undefined) {
+		this._tableStylesXml = value
+	}
+
 	/** master slide layout object */
 	private readonly _masterSlide: PresSlide
 	public get masterSlide(): PresSlide {
@@ -358,6 +378,7 @@ export default class PptxGenJS implements IPresentationProps {
 		this._sections = []
 		this._masterSlide = {
 			addChart: null,
+			addGroup: null,
 			addImage: null,
 			addMedia: null,
 			addNotes: null,
@@ -510,16 +531,39 @@ export default class PptxGenJS implements IPresentationProps {
 			zip.folder('ppt/theme')
 			zip.folder('ppt/notesMasters').folder('_rels')
 			zip.folder('ppt/notesSlides').folder('_rels')
-			zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)) // TODO: pass only `this` like below! 20200206
+			// Add fonts folder if there are embedded fonts
+			if (this._embeddedFonts && this._embeddedFonts.length > 0) {
+				zip.folder('ppt/fonts')
+			}
+			zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide, this._embeddedFonts))
 			zip.file('_rels/.rels', genXml.makeXmlRootRels())
 			zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company)) // TODO: pass only `this` like below! 20200206
 			zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision)) // TODO: pass only `this` like below! 20200206
-			zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
+			zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides, this._embeddedFonts))
 			zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme(this))
 			zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this))
 			zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
-			zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
+			zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles(this._tableStylesXml))
 			zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
+			
+			// B2: Add embedded font files
+			if (this._embeddedFonts && this._embeddedFonts.length > 0) {
+				this._embeddedFonts.forEach(font => {
+					const safeFileName = font.fontName.replace(/\s+/g, '')
+					if (font.regular) {
+						zip.file(`ppt/fonts/${safeFileName}-regular.fntdata`, font.regular, { base64: true })
+					}
+					if (font.bold) {
+						zip.file(`ppt/fonts/${safeFileName}-bold.fntdata`, font.bold, { base64: true })
+					}
+					if (font.italic) {
+						zip.file(`ppt/fonts/${safeFileName}-italic.fntdata`, font.italic, { base64: true })
+					}
+					if (font.boldItalic) {
+						zip.file(`ppt/fonts/${safeFileName}-boldItalic.fntdata`, font.boldItalic, { base64: true })
+					}
+				})
+			}
 
 			// C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
 			this.slideLayouts.forEach((layout, idx) => {

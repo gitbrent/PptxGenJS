@@ -6,6 +6,7 @@ import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
 	AddSlideProps,
 	BackgroundProps,
+	GroupProps,
 	HexColor,
 	IChartMulti,
 	IChartOpts,
@@ -170,6 +171,16 @@ export default class Slide {
 		const optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
 		genObj.addChartDefinition(this, type, data, options)
+		return this
+	}
+
+	/**
+	 * Add group to Slide
+	 * @param {GroupProps} options - group options
+	 * @return {Slide} this Slide
+	 */
+	addGroup(options: GroupProps): Slide {
+		genObj.addGroupDefinition(this, options)
 		return this
 	}
 
