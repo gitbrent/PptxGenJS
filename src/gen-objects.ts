@@ -392,6 +392,8 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		fileName: chartFileName,
 		Target: chartTarget,
 		isChartEx: isChartEx,
+		chartStyleXml: options.chartStyleXml,
+		chartColorsXml: options.chartColorsXml,
 	})
 
 	target._slideObjects.push(resultObject)
@@ -826,26 +828,35 @@ export function addTableDefinition(
 				}
 
 				// C: Set cell borders
-				newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				// When using tableStyleId, don't default to 'none' borders - let table style provide them
+				const hasTableStyle = !!opt.tableStyleId
+				if (!hasTableStyle) {
+					newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				} else {
+					// Only use explicit cell border if set, don't inherit from table options
+					newCell.options.border = newCell.options.border || undefined
+				}
 				const cellBorder = newCell.options.border
 
 				// CASE 1: border interface is: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
-				if (!Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
+				if (cellBorder && !Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
 				// Handle: [null, null, {type:'solid'}, null]
-				if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
-				if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
-				if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
-				if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
+				if (newCell.options.border) {
+					if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
+					if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
+					if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
+					if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
 
-				// set complete BorderOptions for all sides
-				const arrSides = [0, 1, 2, 3]
-				arrSides.forEach(idx => {
-					newCell.options.border[idx] = {
-						type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
-						color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
-						pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
-					}
-				})
+					// set complete BorderOptions for all sides
+					const arrSides = [0, 1, 2, 3]
+					arrSides.forEach(idx => {
+						newCell.options.border[idx] = {
+							type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
+							color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+							pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
+						}
+					})
+				}
 
 				// LAST:
 				newRow.push(newCell)
@@ -1083,10 +1094,10 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 				itemOpts.color = itemOpts.color || newObject.options.color || target.color || DEF_FONT_COLOR
 			}
 
-			// A.2: Placeholder should inherit their bullets or override them, so don't default them
-			if (itemOpts.placeholder || isPlaceholder) {
-				itemOpts.bullet = itemOpts.bullet || false
-			}
+			// A.2: Placeholder should inherit their bullets from master/layout, don't set a default
+			// Note: When bullet is undefined, we leave it undefined so PowerPoint inherits from the layout
+			// Only when bullet is explicitly set (true/false or an object) do we use it
+			// (no code needed here - we simply don't default bullet for placeholders)
 
 			// A.3: Text targeting a placeholder need to inherit the placeholders options (eg: margin, valign, etc.) (Issue #640)
 			// Note: We only inherit layout/positioning options, NOT font styling (fontFace, fontSize, color)

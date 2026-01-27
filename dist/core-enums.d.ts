@@ -567,9 +567,13 @@ export declare enum PLACEHOLDER_TYPES {
     'image' = "pic",
     'chart' = "chart",
     'table' = "tbl",
-    'media' = "media"
+    'media' = "media",
+    'content' = "",// Content placeholder (no type = generic 6-icon picker)
+    'clipArt' = "clipArt",// Online image placeholder
+    'diagram' = "dgm",// SmartArt/diagram placeholder
+    'cameo' = "media"
 }
-export type PLACEHOLDER_TYPE = 'title' | 'body' | 'image' | 'pic' | 'chart' | 'table' | 'tbl' | 'media';
+export type PLACEHOLDER_TYPE = 'title' | 'body' | 'image' | 'pic' | 'chart' | 'table' | 'tbl' | 'media' | 'content' | 'clipArt' | 'diagram' | 'cameo';
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
  * Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp

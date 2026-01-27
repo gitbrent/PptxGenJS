@@ -1,7 +1,7 @@
 /**
  * PptxGenJS: XML Generation
  */
-import { IPresentationProps, ISlideObject, PresSlide, ShadowProps, SlideLayout, TableCell } from './core-interfaces';
+import { EmbeddedFont, IPresentationProps, ISlideObject, PresSlide, ShadowProps, SlideLayout, TableCell, TextProps } from './core-interfaces';
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
  * @param {ISlideObject|TableCell} slideObj - slideObj or tableCell
@@ -30,7 +30,7 @@ export declare function genXmlTextBody(slideObj: ISlideObject | TableCell): stri
  * @param {ISlideObject} placeholderObj
  * @returns XML
  */
-export declare function genXmlPlaceholder(placeholderObj: ISlideObject): string;
+export declare function genXmlPlaceholder(placeholderObj: ISlideObject, isLayoutPlaceholder?: boolean, slideText?: TextProps[]): string;
 /**
  * Generate XML ContentType
  * @param {PresSlide[]} slides - slides
@@ -38,7 +38,7 @@ export declare function genXmlPlaceholder(placeholderObj: ISlideObject): string;
  * @param {PresSlide} masterSlide - master slide
  * @returns XML
  */
-export declare function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[], masterSlide?: PresSlide): string;
+export declare function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[], masterSlide?: PresSlide, embeddedFonts?: EmbeddedFont[]): string;
 /**
  * Creates `_rels/.rels`
  * @returns XML
@@ -63,9 +63,10 @@ export declare function makeXmlCore(title: string, subject: string, author: stri
 /**
  * Creates `ppt/_rels/presentation.xml.rels`
  * @param {PresSlide[]} slides - Presenation Slides
+ * @param {EmbeddedFont[]} embeddedFonts - Embedded fonts (optional)
  * @returns XML
  */
-export declare function makeXmlPresentationRels(slides: PresSlide[]): string;
+export declare function makeXmlPresentationRels(slides: PresSlide[], embeddedFonts?: EmbeddedFont[]): string;
 /**
  * Generates XML for the slide file (`ppt/slides/slide1.xml`)
  * @param {PresSlide} slide - the slide object to transform into XML
@@ -137,6 +138,7 @@ export declare function makeXmlMasterRel(masterSlide: PresSlide, slideLayouts: S
 export declare function makeXmlNotesMasterRel(): string;
 /**
  * Creates `ppt/theme/theme1.xml`
+ * Supports custom theme colors via pres.theme.colorScheme
  * @return {string} XML
  */
 export declare function makeXmlTheme(pres: IPresentationProps): string;
@@ -156,9 +158,10 @@ export declare function makeXmlPresProps(): string;
 /**
  * Create `ppt/tableStyles.xml`
  * @see: http://openxmldeveloper.org/discussions/formats/f/13/p/2398/8107.aspx
+ * @param {string} [customXml] - Custom table styles XML content (without XML declaration)
  * @return {string} XML
  */
-export declare function makeXmlTableStyles(): string;
+export declare function makeXmlTableStyles(customXml?: string): string;
 /**
  * Creates `ppt/viewProps.xml`
  * @return {string} XML

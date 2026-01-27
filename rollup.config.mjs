@@ -9,13 +9,13 @@ export default {
 	input: "src/pptxgen.ts",
 	output: [
 		{
-			file: "./src/bld/pptxgen.js",
+			file: "./dist/pptxgen.js",
 			format: "iife",
 			name: "PptxGenJS",
 			globals: { jszip: "JSZip" },
 		},
-		{ file: "./src/bld/pptxgen.cjs.js", format: "cjs", exports: "default" },
-		{ file: "./src/bld/pptxgen.es.js", format: "es" },
+		{ file: "./dist/pptxgen.cjs.js", format: "cjs", exports: "default" },
+		{ file: "./dist/pptxgen.es.js", format: "es" },
 	],
 	external: [
 		nodeBuiltinsRE,

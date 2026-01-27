@@ -2,7 +2,7 @@
  * PptxGenJS: Slide Class
  */
 import { CHART_NAME, SHAPE_NAME } from './core-enums';
-import { AddSlideProps, BackgroundProps, HexColor, IChartMulti, IChartOpts, IOptsChartData, ISlideObject, ISlideRel, ISlideRelChart, ISlideRelMedia, ImageProps, MediaProps, PresLayout, PresSlide, ShapeProps, SlideLayout, SlideNumberProps, TableProps, TableRow, TextProps, TextPropsOptions } from './core-interfaces';
+import { AddSlideProps, BackgroundProps, GroupProps, HexColor, IChartMulti, IChartOpts, IOptsChartData, ISlideObject, ISlideRel, ISlideRelChart, ISlideRelMedia, ImageProps, MediaProps, PresLayout, PresSlide, ShapeProps, SlideLayout, SlideNumberProps, TableProps, TableRow, TextProps, TextPropsOptions } from './core-interfaces';
 export default class Slide {
     private readonly _setSlideNum;
     addSlide: (options?: AddSlideProps) => PresSlide;
@@ -76,6 +76,12 @@ export default class Slide {
      * @return {Slide} this Slide
      */
     addChart(type: CHART_NAME | IChartMulti[], data: IOptsChartData[], options?: IChartOpts): Slide;
+    /**
+     * Add group to Slide
+     * @param {GroupProps} options - group options
+     * @return {Slide} this Slide
+     */
+    addGroup(options: GroupProps): Slide;
     /**
      * Add image to Slide
      * @param {ImageProps} options - image options

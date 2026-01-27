@@ -30,7 +30,7 @@
  *  SOFTWARE.
  */
 import { AlignH, AlignV, CHART_TYPE, ChartType, OutputType, SCHEME_COLOR_NAMES, SHAPE_TYPE, SchemeColor, ShapeType, WRITE_OUTPUT_TYPE } from './core-enums';
-import { AddSlideProps, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, TableToSlidesProps, ThemeProps, WriteBaseProps, WriteFileProps, WriteProps } from './core-interfaces';
+import { AddSlideProps, EmbeddedFont, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, TableToSlidesProps, ThemeProps, WriteBaseProps, WriteFileProps, WriteProps } from './core-interfaces';
 export default class PptxGenJS implements IPresentationProps {
     /**
      * Presentation layout name
@@ -96,6 +96,14 @@ export default class PptxGenJS implements IPresentationProps {
     private _rtlMode;
     set rtlMode(value: boolean);
     get rtlMode(): boolean;
+    /** Embedded fonts in the presentation */
+    private _embeddedFonts;
+    get embeddedFonts(): EmbeddedFont[];
+    set embeddedFonts(value: EmbeddedFont[]);
+    /** Custom table styles XML (for roundtrip preservation) */
+    private _tableStylesXml;
+    get tableStylesXml(): string | undefined;
+    set tableStylesXml(value: string | undefined);
     /** master slide layout object */
     private readonly _masterSlide;
     get masterSlide(): PresSlide;

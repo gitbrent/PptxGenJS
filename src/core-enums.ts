@@ -797,8 +797,13 @@ export enum PLACEHOLDER_TYPES {
 	'chart' = 'chart',
 	'table' = 'tbl',
 	'media' = 'media',
+	// Extended placeholder types for roundtrip fidelity
+	'content' = '',           // Content placeholder (no type = generic 6-icon picker)
+	'clipArt' = 'clipArt',    // Online image placeholder
+	'diagram' = 'dgm',        // SmartArt/diagram placeholder
+	'cameo' = 'media',        // Camera placeholder (uses media type with cameo extension)
 }
-export type PLACEHOLDER_TYPE = 'title' | 'body' | 'image' | 'pic' | 'chart' | 'table' | 'tbl' | 'media'
+export type PLACEHOLDER_TYPE = 'title' | 'body' | 'image' | 'pic' | 'chart' | 'table' | 'tbl' | 'media' | 'content' | 'clipArt' | 'diagram' | 'cameo'
 
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options

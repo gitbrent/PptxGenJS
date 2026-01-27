@@ -484,6 +484,36 @@ export interface ObjectNameProps {
      */
     objectName?: string;
 }
+/**
+ * Theme color scheme - defines all 12 theme colors
+ * Colors can be specified as hex values (without #) like "317039" or "FFFFFF"
+ */
+export interface ThemeColorScheme {
+    /** Dark 1 (typically text color) - defaults to system windowText (000000) */
+    dk1?: string;
+    /** Light 1 (typically background color) - defaults to system window (FFFFFF) */
+    lt1?: string;
+    /** Dark 2 - defaults to "44546A" */
+    dk2?: string;
+    /** Light 2 - defaults to "E7E6E6" */
+    lt2?: string;
+    /** Accent 1 - defaults to "4472C4" */
+    accent1?: string;
+    /** Accent 2 - defaults to "ED7D31" */
+    accent2?: string;
+    /** Accent 3 - defaults to "A5A5A5" */
+    accent3?: string;
+    /** Accent 4 - defaults to "FFC000" */
+    accent4?: string;
+    /** Accent 5 - defaults to "5B9BD5" */
+    accent5?: string;
+    /** Accent 6 - defaults to "70AD47" */
+    accent6?: string;
+    /** Hyperlink color - defaults to "0563C1" */
+    hlink?: string;
+    /** Followed hyperlink color - defaults to "954F72" */
+    folHlink?: string;
+}
 export interface ThemeProps {
     /**
      * Headings font face name
@@ -497,6 +527,11 @@ export interface ThemeProps {
      * @default 'Calibri'
      */
     bodyFontFace?: string;
+    /**
+     * Color scheme - defines the 12 theme colors (dk1, lt1, dk2, lt2, accent1-6, hlink, folHlink)
+     * @example { dk1: '317039', lt1: 'FEFCCC', accent1: '143021' }
+     */
+    colorScheme?: ThemeColorScheme;
 }
 export type MediaType = 'audio' | 'online' | 'video';
 export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
@@ -726,6 +761,13 @@ export interface ShapeProps extends PositionProps, ObjectNameProps {
      * @default 0
      */
     rectRadius?: number;
+    /**
+     * Shape geometry adjustments - raw OOXML adjustment values
+     * Maps adjustment names (e.g., "adj", "adj1", "adj2") to raw values
+     * Used for shapes that need custom geometry parameters like plus, cross, arrows, etc.
+     * Values are passed directly to the a:gd elements in the avLst
+     */
+    shapeAdjustments?: Record<string, number>;
     /**
      * Rotation (degrees)
      * - range: -360 to 360
@@ -1079,6 +1121,41 @@ export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProp
      * @deprecated v3.3.0 - use `autoPageSlideStartY`
      */
     newSlideStartY?: number;
+    /**
+     * Table style ID (GUID referencing a style in tableStyles.xml)
+     * @example '{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}'
+     */
+    tableStyleId?: string;
+    /**
+     * Apply first row formatting from table style
+     * @default false
+     */
+    firstRow?: boolean;
+    /**
+     * Apply last row formatting from table style
+     * @default false
+     */
+    lastRow?: boolean;
+    /**
+     * Apply first column formatting from table style
+     * @default false
+     */
+    firstCol?: boolean;
+    /**
+     * Apply last column formatting from table style
+     * @default false
+     */
+    lastCol?: boolean;
+    /**
+     * Apply banded row formatting from table style
+     * @default false
+     */
+    bandRow?: boolean;
+    /**
+     * Apply banded column formatting from table style
+     * @default false
+     */
+    bandCol?: boolean;
 }
 export interface TableCell {
     _type: SLIDE_OBJECT_TYPES.tablecell;
@@ -1249,6 +1326,13 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
      * @default 0
      */
     rectRadius?: number;
+    /**
+     * Shape geometry adjustments - raw OOXML adjustment values
+     * Maps adjustment names (e.g., "adj", "adj1", "adj2") to raw values
+     * Used for shapes that need custom geometry parameters like plus, cross, arrows, etc.
+     * Values are passed directly to the a:gd elements in the avLst
+     */
+    shapeAdjustments?: Record<string, number>;
     /**
      * Rotation (degrees)
      * - range: -360 to 360
@@ -1822,6 +1906,18 @@ export interface IChartOpts extends IChartPropsAxisCat, IChartPropsAxisSer, ICha
      * - Preserved from parsed PPTX for roundtrip
      */
     geoCache?: string;
+    /**
+     * Raw chart style XML for lossless roundtrip
+     * - Contains the original style definitions from the parsed PPTX
+     * - If provided, will be used instead of generating default style
+     */
+    chartStyleXml?: string;
+    /**
+     * Raw chart colors XML for lossless roundtrip
+     * - Contains the original color scheme from the parsed PPTX
+     * - If provided, will be used instead of generating default colors
+     */
+    chartColorsXml?: string;
 }
 export interface IChartOptsLib extends IChartOpts {
     _type?: CHART_NAME | IChartMulti[];
@@ -1838,6 +1934,10 @@ export interface ISlideRelChart extends OptsChartData {
     isChartEx?: boolean;
     /** ChartEx-specific data for hierarchical charts (treemap, sunburst) */
     chartExData?: IChartExData;
+    /** Raw chart style XML for lossless roundtrip */
+    chartStyleXml?: string;
+    /** Raw chart colors XML for lossless roundtrip */
+    chartColorsXml?: string;
 }
 /**
  * ChartEx (Extended Chart) data structure
@@ -2021,6 +2121,13 @@ export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, Ta
     margin?: Margin;
     colW?: number | number[];
     rowH?: number | number[];
+    tableStyleId?: string;
+    firstRow?: boolean;
+    lastRow?: boolean;
+    firstCol?: boolean;
+    lastCol?: boolean;
+    bandRow?: boolean;
+    bandCol?: boolean;
 }
 export interface SlideBaseProps {
     _bkgdImgRid?: number;
