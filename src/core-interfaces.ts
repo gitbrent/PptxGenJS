@@ -1967,4 +1967,8 @@ export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
+	/**
+	 * Presentation-level guides (appear in View > Guides)
+	 */
+	guides?: SlideGuide[]
 }

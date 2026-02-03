@@ -83,6 +83,7 @@ import {
 	PresLayout,
 	PresSlide,
 	SectionProps,
+	SlideGuide,
 	SlideLayout,
 	SlideMasterProps,
 	SlideNumberProps,
@@ -249,6 +250,12 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._slideLayouts
 	}
 
+	/** presentation-level guides (appear in View > Guides) */
+	private _guides: SlideGuide[]
+	public get guides(): SlideGuide[] {
+		return this._guides
+	}
+
 	private LAYOUTS: { [key: string]: PresLayout }
 
 	// Exposed class props
@@ -356,6 +363,7 @@ export default class PptxGenJS implements IPresentationProps {
 		]
 		this._slides = []
 		this._sections = []
+		this._guides = []
 		this._masterSlide = {
 			addChart: null,
 			addImage: null,
@@ -779,19 +787,31 @@ export default class PptxGenJS implements IPresentationProps {
 		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 
-		// STEP 5: Add guides to master slide (if any)
-		// Guides defined on slide layouts are added to the master slide for use in slideMaster1.xml
+		// STEP 5: Add guides to master slide, all layouts, and presentation level (if any)
+		// Guides defined on slide layouts are added to:
+		// 1. The master slide for use in slideMaster1.xml
+		// 2. The presentation-level guides for presentation.xml
+		// 3. Each layout keeps its own guides for slideLayoutX.xml
 		if (newLayout._guides && newLayout._guides.length > 0) {
 			if (!this.masterSlide._guides) {
 				this.masterSlide._guides = []
 			}
 			// Add guides from this layout, avoiding duplicates
 			newLayout._guides.forEach(guide => {
-				const exists = this.masterSlide._guides.some(
+				// Add to master slide
+				const existsInMaster = this.masterSlide._guides.some(
 					g => g.position === guide.position && g.orientation === guide.orientation
 				)
-				if (!exists) {
+				if (!existsInMaster) {
 					this.masterSlide._guides.push(guide)
+				}
+				
+				// Add to presentation-level guides
+				const existsInPres = this._guides.some(
+					g => g.position === guide.position && g.orientation === guide.orientation
+				)
+				if (!existsInPres) {
+					this._guides.push(guide)
 				}
 			})
 		}

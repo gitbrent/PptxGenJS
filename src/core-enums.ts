@@ -13,11 +13,11 @@ export const LAYOUT_IDX_SERIES_BASE = 2147483649
 export const REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/
 export const LINEH_MODIFIER = 1.67 // AKA: Golden Ratio Typography
 
-export const DEF_BULLET_MARGIN = 27
-export const DEF_CELL_BORDER: BorderProps = { type: 'solid', color: '666666', pt: 1 }
+export const DEF_BULLET_MARGIN = 14
+export const DEF_CELL_BORDER: BorderProps = { type: 'solid', color: 'BBBDBF', pt: 0.25 }
 export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style // DEPRECATED 3.8.0
-export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.1, 0.05, 0.1] // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
-export const DEF_CHART_BORDER: BorderProps = { type: 'solid', color: '363636', pt: 1 }
+export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.04, 0.05, 0.02]
+export const DEF_CHART_BORDER: BorderProps = { type: 'solid', color: 'BBBDBF', pt: 0.25 }
 export const DEF_CHART_GRIDLINE: OptsChartGridLine = { color: '888888', style: 'solid', size: 1, cap: 'flat' }
 export const DEF_FONT_COLOR = '000000'
 export const DEF_FONT_SIZE = 12
@@ -27,7 +27,7 @@ export const DEF_PRES_LAYOUT_NAME = 'DEFAULT'
 export const DEF_SHAPE_LINE_COLOR = '333333'
 export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_SLIDE_BKGD = 'FFFFFF'
-export const DEF_SLIDE_MARGIN_IN: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
+export const DEF_SLIDE_MARGIN_IN: [number, number, number, number] = [0, 0, 0, 0] // TRBL-style
 export const DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 }
 export const DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 }
 

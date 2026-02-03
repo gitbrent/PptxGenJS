@@ -1614,10 +1614,16 @@ export function makeXmlNotesSlide (slide: PresSlide): string {
  * @return {string} XML
  */
 export function makeXmlLayout (layout: SlideLayout): string {
-	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	let strXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 		<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">
 		${slideObjectToXml(layout)}
-		<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>`
+		<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>`
+	
+	// Add extension list with guides if any are defined on the layout
+	strXml += buildMasterExtLst(layout._guides)
+	
+	strXml += '</p:sldLayout>'
+	return strXml
 }
 
 /**
@@ -1967,17 +1973,43 @@ export function makeXmlPresentation (pres: IPresentationProps): string {
 	}
 	strXml += '</p:defaultTextStyle>'
 
-	// STEP 6: Add Sections (if any)
-	if (pres.sections && pres.sections.length > 0) {
-		strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
-		strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
-		pres.sections.forEach(sect => {
-			strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
-			sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide._slideId}"/>`))
-			strXml += '</p14:sldIdLst></p14:section>'
-		})
-		strXml += '</p14:sectionLst></p:ext>'
-		strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
+	// STEP 6: Add Sections (if any) and guides
+	const hasSections = pres.sections && pres.sections.length > 0
+	const hasGuides = pres.guides && pres.guides.length > 0
+	
+	if (hasSections || hasGuides) {
+		strXml += '<p:extLst>'
+		
+		// Add sections
+		if (hasSections) {
+			strXml += '<p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
+			strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
+			pres.sections.forEach(sect => {
+				strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
+				sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide._slideId}"/>`))
+				strXml += '</p14:sldIdLst></p14:section>'
+			})
+			strXml += '</p14:sectionLst></p:ext>'
+		}
+		
+		// Add presentation-level guides using the p15:sldGuideLst extension
+		if (hasGuides) {
+			strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}">'
+			strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">'
+			pres.guides.forEach((guide, idx) => {
+				const posValue = Math.round(guide.position * 9144)
+				const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : ''
+				const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4'
+				strXml += `<p15:guide id="${idx + 1}" pos="${posValue}"${orient} userDrawn="1">`
+				strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`
+				strXml += '</p15:guide>'
+			})
+			strXml += '</p15:sldGuideLst></p:ext>'
+		} else if (hasSections) {
+			// Empty sldGuideLst when we have sections but no guides
+			strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
+		}
+		
 		strXml += '</p:extLst>'
 	}
 
