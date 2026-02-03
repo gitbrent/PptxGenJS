@@ -2039,8 +2039,20 @@ export function makeXmlTableStyles (): string {
  * Creates `ppt/viewProps.xml`
  * @return {string} XML
  */
-export function makeXmlViewProps (): string {
-	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:normalViewPr horzBarState="maximized"><p:restoredLeft sz="15611"/><p:restoredTop sz="94610"/></p:normalViewPr><p:slideViewPr><p:cSldViewPr snapToGrid="0" snapToObjects="1"><p:cViewPr varScale="1"><p:scale><a:sx n="136" d="100"/><a:sy n="136" d="100"/></p:scale><p:origin x="216" y="312"/></p:cViewPr><p:guideLst/></p:cSldViewPr></p:slideViewPr><p:notesTextViewPr><p:cViewPr><p:scale><a:sx n="1" d="1"/><a:sy n="1" d="1"/></p:scale><p:origin x="0" y="0"/></p:cViewPr></p:notesTextViewPr><p:gridSpacing cx="76200" cy="76200"/></p:viewPr>`
+export function makeXmlViewProps (guides?: SlideGuide[]): string {
+	// Build guideLst content
+	let guideLstXml = '<p:guideLst/>'
+	if (guides && guides.length > 0) {
+		guideLstXml = '<p:guideLst>'
+		guides.forEach((guide, idx) => {
+			// Guide pos uses 1/100th of a point units: inches * 72 * 100 = inches * 7200
+			const posValue = Math.round(guide.position * 7200)
+			const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : ''
+			guideLstXml += `<p:guide orient="${guide.orientation === 'horizontal' ? 'horz' : 'vert'}" pos="${posValue}"/>`
+		})
+		guideLstXml += '</p:guideLst>'
+	}
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:normalViewPr horzBarState="maximized"><p:restoredLeft sz="15611"/><p:restoredTop sz="94610"/></p:normalViewPr><p:slideViewPr><p:cSldViewPr snapToGrid="0" snapToObjects="1"><p:cViewPr varScale="1"><p:scale><a:sx n="136" d="100"/><a:sy n="136" d="100"/></p:scale><p:origin x="216" y="312"/></p:cViewPr>${guideLstXml}</p:cSldViewPr></p:slideViewPr><p:notesTextViewPr><p:cViewPr><p:scale><a:sx n="1" d="1"/><a:sy n="1" d="1"/></p:scale><p:origin x="0" y="0"/></p:cViewPr></p:notesTextViewPr><p:gridSpacing cx="76200" cy="76200"/></p:viewPr>`
 }
 
 /**
