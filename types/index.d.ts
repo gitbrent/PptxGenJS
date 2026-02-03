@@ -143,6 +143,23 @@ declare class PptxGenJS {
 	tableToSlides(eleId: string, props?: PptxGenJS.TableToSlidesProps): void
 }
 
+    export interface SlideGuide {
+        /**
+         * Position of the guide in inches from the left (vertical guide) or top (horizontal guide)
+         */
+        position: number
+        /**
+         * Guide orientation
+         * @default 'vertical'
+         */
+        orientation?: 'vertical' | 'horizontal'
+        /**
+         * Guide color (hex without #)
+         * @default 'A4A3A4' (gray)
+         */
+        color?: string
+    }
+
 declare namespace PptxGenJS {
 	// Exported enums for module apps
 	// @example: pptxgen.ShapeType.rect
@@ -2495,6 +2512,7 @@ declare namespace PptxGenJS {
 		background?: BackgroundProps
 		margin?: Margin
 		slideNumber?: SlideNumberProps
+        guides?: SlideGuide[]
 		objects?: Array<| { chart: IChartOpts }
 			| { image: ImageProps }
 			| { line: ShapeProps }
