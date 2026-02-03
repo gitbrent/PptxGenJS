@@ -787,17 +787,50 @@ export default class PptxGenJS implements IPresentationProps {
 		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 
-		// STEP 5: Add guides to master slide, all layouts, and presentation level (if any)
-		// Guides defined on slide layouts are added to:
-		// 1. The master slide for use in slideMaster1.xml
-		// 2. The presentation-level guides for presentation.xml
-		// 3. Each layout keeps its own guides for slideLayoutX.xml
-		if (newLayout._guides && newLayout._guides.length > 0) {
+		// STEP 5: Add guides to appropriate levels
+		// Support both legacy `guides` property and new `guideDefinitions`
+		const guideDefs = propsClone.guideDefinitions
+		const legacyGuides = propsClone.guides
+		
+		if (guideDefs) {
+			// New multi-level guide definitions with different URIs for each level
+			// Add presentation-level guides (URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A})
+			if (guideDefs.presentation && guideDefs.presentation.length > 0) {
+				guideDefs.presentation.forEach(guide => {
+					const exists = this._guides.some(
+						g => g.position === guide.position && g.orientation === guide.orientation
+					)
+					if (!exists) {
+						this._guides.push(guide)
+					}
+				})
+			}
+			
+			// Add master-level guides (URI: {27BBF7A9-308A-43DC-89C8-2F10F3537804})
+			if (guideDefs.master && guideDefs.master.length > 0) {
+				if (!this.masterSlide._guides) {
+					this.masterSlide._guides = []
+				}
+				guideDefs.master.forEach(guide => {
+					const exists = this.masterSlide._guides.some(
+						g => g.position === guide.position && g.orientation === guide.orientation
+					)
+					if (!exists) {
+						this.masterSlide._guides.push(guide)
+					}
+				})
+			}
+			
+			// Add layout-level guides (URI: {DCECCB84-F9BA-43D5-87BE-67443E8EF086})
+			if (guideDefs.layout && guideDefs.layout.length > 0) {
+				newLayout._layoutGuides = guideDefs.layout
+			}
+		} else if (legacyGuides && legacyGuides.length > 0) {
+			// Legacy behavior: add guides to all levels with same content
 			if (!this.masterSlide._guides) {
 				this.masterSlide._guides = []
 			}
-			// Add guides from this layout, avoiding duplicates
-			newLayout._guides.forEach(guide => {
+			legacyGuides.forEach(guide => {
 				// Add to master slide
 				const existsInMaster = this.masterSlide._guides.some(
 					g => g.position === guide.position && g.orientation === guide.orientation
@@ -814,6 +847,8 @@ export default class PptxGenJS implements IPresentationProps {
 					this._guides.push(guide)
 				}
 			})
+			// Also set layout guides for legacy behavior
+			newLayout._layoutGuides = legacyGuides
 		}
 	}
 

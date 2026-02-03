@@ -1619,8 +1619,9 @@ export function makeXmlLayout (layout: SlideLayout): string {
 		${slideObjectToXml(layout)}
 		<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>`
 	
-	// Add extension list with guides if any are defined on the layout
-	strXml += buildMasterExtLst(layout._guides)
+	// Add extension list with layout-specific guides (uses LAYOUT URI)
+	// Prefer _layoutGuides if available, otherwise fall back to _guides
+	strXml += buildLayoutExtLst(layout._layoutGuides || layout._guides)
 	
 	strXml += '</p:sldLayout>'
 	return strXml
@@ -1687,7 +1688,7 @@ export function makeXmlMaster (slide: PresSlide, layouts: SlideLayout[]): string
  * @param {SlideGuide[]} guides - array of guide definitions
  * @return {string} XML
  */
-function buildMasterExtLst (guides?: { position: number, orientation?: 'vertical' | 'horizontal', color?: string }[]): string {
+function buildMasterExtLst (guides?: { position: number, orientation?: 'vertical' | 'horizontal', color?: string, id?: number }[]): string {
     // If no guides, return empty extLst or skip entirely
     if (!guides || guides.length === 0) {
         return ''
@@ -1698,16 +1699,45 @@ function buildMasterExtLst (guides?: { position: number, orientation?: 'vertical
     strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">'
     
     guides.forEach((guide, idx) => {
-        // Convert inches to position units (1 inch = 914400 EMU, but guide pos appears to be in 1/100 of an inch * ~9.144)
-        // Actually, looking at the example: pos="3840" for a guide
-        // PowerPoint uses 1/9144 inch units for guide positions (different from EMU!)
-        // So: position in inches * 914400 / 100 = pos value, OR position * 9144
-        // Example: 0.42 inches = 0.42 * 9144 ≈ 3840
         const posValue = Math.round(guide.position * 9144)
         const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : ''
         const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4'
+        const guideId = guide.id || (idx + 1)
         
-        strXml += `<p15:guide id="${idx + 1}" pos="${posValue}"${orient} userDrawn="1">`
+        strXml += `<p15:guide id="${guideId}" pos="${posValue}"${orient} userDrawn="1">`
+        strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`
+        strXml += '</p15:guide>'
+    })
+    
+    strXml += '</p15:sldGuideLst>'
+    strXml += '</p:ext>'
+    strXml += '</p:extLst>'
+    
+    return strXml
+}
+
+/**
+ * Build the extension list XML for slide layout (uses different URI than master)
+ * @param {SlideGuide[]} guides - array of guide definitions
+ * @return {string} XML
+ */
+function buildLayoutExtLst (guides?: { position: number, orientation?: 'vertical' | 'horizontal', color?: string, id?: number }[]): string {
+    // If no guides, return empty extLst or skip entirely
+    if (!guides || guides.length === 0) {
+        return ''
+    }
+    
+    let strXml = '<p:extLst>'
+    strXml += '<p:ext uri="{DCECCB84-F9BA-43D5-87BE-67443E8EF086}">'
+    strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">'
+    
+    guides.forEach((guide, idx) => {
+        const posValue = Math.round(guide.position * 9144)
+        const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : ''
+        const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4'
+        const guideId = guide.id || (idx + 1)
+        
+        strXml += `<p15:guide id="${guideId}" pos="${posValue}"${orient} userDrawn="1">`
         strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`
         strXml += '</p15:guide>'
     })
@@ -1993,21 +2023,23 @@ export function makeXmlPresentation (pres: IPresentationProps): string {
 		}
 		
 		// Add presentation-level guides using the p15:sldGuideLst extension
+		// Uses PRESENTATION URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A}
 		if (hasGuides) {
-			strXml += '<p:ext uri="{27BBF7A9-308A-43DC-89C8-2F10F3537804}">'
+			strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}">'
 			strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">'
 			pres.guides.forEach((guide, idx) => {
 				const posValue = Math.round(guide.position * 9144)
 				const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : ''
 				const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4'
-				strXml += `<p15:guide id="${idx + 1}" pos="${posValue}"${orient} userDrawn="1">`
+				const guideId = guide.id || (idx + 1)
+				strXml += `<p15:guide id="${guideId}" pos="${posValue}"${orient} userDrawn="1">`
 				strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`
 				strXml += '</p15:guide>'
 			})
 			strXml += '</p15:sldGuideLst></p:ext>'
 		} else if (hasSections) {
 			// Empty sldGuideLst when we have sections but no guides
-			strXml += '<p:ext uri="{27BBF7A9-308A-43DC-89C8-2F10F3537804}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
+			strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
 		}
 		
 		strXml += '</p:extLst>'

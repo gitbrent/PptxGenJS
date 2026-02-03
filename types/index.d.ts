@@ -158,6 +158,35 @@ declare class PptxGenJS {
          * @default 'A4A3A4' (gray)
          */
         color?: string
+        /**
+         * Unique ID for the guide (auto-generated if not provided)
+         * IDs should be unique within each XML file
+         */
+        id?: number
+    }
+
+    /**
+     * Options for defining guides at presentation, master, and layout levels
+     * Each level uses a different URI in the OOXML and can have different guides
+     */
+    export interface GuideDefinitions {
+        /**
+         * Guides that appear in presentation.xml (visible in normal slide editing view)
+         * These are the main guides users see when editing slides
+         * Uses URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A}
+         */
+        presentation?: SlideGuide[]
+        /**
+         * Guides that appear in slideMaster1.xml (visible when editing the slide master)
+         * Uses URI: {27BBF7A9-308A-43DC-89C8-2F10F3537804}
+         */
+        master?: SlideGuide[]
+        /**
+         * Guides that appear in slideLayout.xml (visible when editing specific layouts)
+         * These are layout-specific guides
+         * Uses URI: {DCECCB84-F9BA-43D5-87BE-67443E8EF086}
+         */
+        layout?: SlideGuide[]
     }
 
 declare namespace PptxGenJS {
@@ -2512,7 +2541,18 @@ declare namespace PptxGenJS {
 		background?: BackgroundProps
 		margin?: Margin
 		slideNumber?: SlideNumberProps
+		/**
+		 * Slide guides for alignment (simple format - adds to all levels with same guides)
+		 * These appear as dashed lines in PowerPoint's View > Guides
+		 * @deprecated Use `guideDefinitions` for more control over where guides appear
+		 */
         guides?: SlideGuide[]
+		/**
+		 * Define guides at specific levels (presentation, master, layout)
+		 * Provides fine-grained control over guide placement in different XML files
+		 * Each level can have different guides with unique IDs
+		 */
+		guideDefinitions?: GuideDefinitions
 		objects?: Array<| { chart: IChartOpts }
 			| { image: ImageProps }
 			| { line: ShapeProps }
