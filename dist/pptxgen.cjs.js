@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-06-25T23:35:35.096Z */
+/* PptxGenJS 4.0.1 @ 2026-02-04T15:32:58.245Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -46,10 +46,10 @@ const CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 const LAYOUT_IDX_SERIES_BASE = 2147483649;
 const REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 const LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
-const DEF_BULLET_MARGIN = 27;
-const DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
-const DEF_CELL_MARGIN_IN = [0.05, 0.1, 0.05, 0.1]; // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
-const DEF_CHART_BORDER = { color: '363636', pt: 1 };
+const DEF_BULLET_MARGIN = 14;
+const DEF_CELL_BORDER = { type: 'solid', color: 'BBBDBF', pt: 0.25 };
+const DEF_CELL_MARGIN_IN = [0.05, 0.04, 0.05, 0.02];
+const DEF_CHART_BORDER = { color: 'BBBDBF', pt: 0.25 };
 const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1, cap: 'flat' };
 const DEF_FONT_COLOR = '000000';
 const DEF_FONT_SIZE = 12;
@@ -58,7 +58,7 @@ const DEF_PRES_LAYOUT = 'LAYOUT_16x9';
 const DEF_PRES_LAYOUT_NAME = 'DEFAULT';
 const DEF_SHAPE_LINE_COLOR = '333333';
 const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
-const DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+const DEF_SLIDE_MARGIN_IN = [0, 0, 0, 0]; // TRBL-style
 const DEF_TEXT_SHADOW = { color: '000000'};
 const DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 };
 const AXIS_ID_VALUE_PRIMARY = '2094734552';
@@ -599,6 +599,8 @@ var PLACEHOLDER_TYPES;
     PLACEHOLDER_TYPES["chart"] = "chart";
     PLACEHOLDER_TYPES["table"] = "tbl";
     PLACEHOLDER_TYPES["media"] = "media";
+    PLACEHOLDER_TYPES["footer"] = "ftr";
+    PLACEHOLDER_TYPES["slideNumber"] = "sldNum";
 })(PLACEHOLDER_TYPES || (PLACEHOLDER_TYPES = {}));
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
@@ -1573,58 +1575,43 @@ function genTableToSlides(pptx, tabEleId, options = {}, masterSlide) {
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter = 0;
 /**
- * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {SlideMasterProps} props - slide definition
- * @param {PresSlide|SlideLayout} target - empty slide object that should be updated by the passed definition
+ * Creates a slide layout with its objects
+ * @param {SlideLayoutProps} props - layout properties
+ * @param {SlideLayout} target - target layout object
  */
-function createSlideMaster(props, target) {
-    // STEP 1: Add background if either the slide or layout has background props
-    // if (props.background || target.background) addBackgroundDefinition(props.background, target)
+function createSlideLayout(props, target) {
+    // Add background
     if (props.bkgd)
-        target.bkgd = props.bkgd; // DEPRECATED: (remove in v4.0.0)
-    // STEP 2: Add all Slide Master objects in the order they were given
+        target.bkgd = props.bkgd;
+    // Add objects to the layout
     if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
         props.objects.forEach((object, idx) => {
             const key = Object.keys(object)[0];
             const tgt = target;
-            if (MASTER_OBJECTS[key] && key === 'chart')
+            if (key === 'chart')
                 addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts);
-            else if (MASTER_OBJECTS[key] && key === 'image')
+            else if (key === 'image')
                 addImageDefinition(tgt, object[key]);
-            else if (MASTER_OBJECTS[key] && key === 'line')
+            else if (key === 'line')
                 addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key]);
-            else if (MASTER_OBJECTS[key] && key === 'rect')
+            else if (key === 'rect')
                 addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key]);
-            else if (MASTER_OBJECTS[key] && key === 'text')
-                addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false);
-            else if (MASTER_OBJECTS[key] && key === 'placeholder') {
-                // TODO: 20180820: Check for existing `name`?
-                object[key].options.placeholder = object[key].options.name;
-                delete object[key].options.name; // remap name for earier handling internally
-                object[key].options._placeholderType = object[key].options.type;
-                delete object[key].options.type; // remap name for earier handling internally
-                object[key].options._placeholderIdx = 100 + idx;
-                addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true);
-                // TODO: ISSUE#599 - only text is suported now (add more below)
-                // else if (object[key].image) addImageDefinition(tgt, object[key].image)
-                /* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
-                    <p:sp>
-                  <p:nvSpPr>
-                    <p:cNvPr id="7" name="Picture Placeholder 6">
-                      <a:extLst>
-                        <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
-                          <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{CE1AE45D-8641-0F4F-BDB5-080E69CCB034}"/>
-                        </a:ext>
-                      </a:extLst>
-                    </p:cNvPr>
-                    <p:cNvSpPr>
-                */
+            else if (key === 'text') {
+                // Handle text array or string
+                const txtContent = object[key].text;
+                const textArray = Array.isArray(txtContent) ? txtContent : [{ text: txtContent }];
+                addTextDefinition(tgt, textArray, object[key].options, false);
+            }
+            else if (key === 'placeholder') {
+                const phOpts = object[key].options;
+                const phText = object[key].text || '';
+                const opts = Object.assign(Object.assign({}, phOpts), { placeholder: phOpts.name, _placeholderType: phOpts.type, _placeholderIdx: phOpts.idx !== undefined ? phOpts.idx : (100 + idx), _placeholderSz: phOpts.sz, _userDrawn: phOpts.userDrawn, objectName: phOpts.name, margin: phOpts.margin !== undefined ? phOpts.margin : 0 });
+                // Handle text array or string
+                const textArray = Array.isArray(phText) ? phText : [{ text: phText }];
+                addTextDefinition(tgt, textArray, opts, true);
             }
         });
     }
-    // STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
-    if (props.slideNumber && typeof props.slideNumber === 'object')
-        target._slideNumberProps = props.slideNumber;
 }
 /**
  * Generate the chart based on input data.
@@ -5094,7 +5081,7 @@ const ImageSizingXml = {
 function slideObjectToXml(slide) {
     var _a;
     let strSlideXml = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>';
-    let intTableNum = 1;
+    let objectId = 2; // Start at 2 because id="1" is reserved for nvGrpSpPr
     // STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
     if (slide._bkgdImgRid) {
         strSlideXml += `<p:bg><p:bgPr><a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${slide._bkgdImgRid}"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>`;
@@ -5128,8 +5115,10 @@ function slideObjectToXml(slide) {
         let strXml = null;
         const sizing = (_a = slideItemObj.options) === null || _a === void 0 ? void 0 : _a.sizing;
         const rounding = (_b = slideItemObj.options) === null || _b === void 0 ? void 0 : _b.rounding;
-        if (slide._slideLayout !== undefined &&
-            slide._slideLayout._slideObjects !== undefined &&
+        // Get the next unique object ID for this object
+        const currentId = objectId++;
+        if (slide._slideLayout &&
+            slide._slideLayout._slideObjects &&
             slideItemObj.options &&
             slideItemObj.options.placeholder) {
             placeholderObj = slide._slideLayout._slideObjects.filter((object) => object.options.placeholder === slideItemObj.options.placeholder)[0];
@@ -5173,29 +5162,19 @@ function slideObjectToXml(slide) {
                 intColCnt = 0;
                 intColW = 0;
                 // Calc number of columns
-                // NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
-                // ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
                 arrTabRows[0].forEach(cell => {
                     cellOpts = cell.options || null;
                     intColCnt += (cellOpts === null || cellOpts === void 0 ? void 0 : cellOpts.colspan) ? Number(cellOpts.colspan) : 1;
                 });
-                // STEP 1: Start Table XML
-                // NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-                strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="${slideItemObj.options.objectName}"/>`;
+                // STEP 1: Start Table XML - USE currentId instead of formula
+                strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${currentId}" name="${slideItemObj.options.objectName}"/>`;
                 strXml +=
                     '<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
                         '  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
                         '</p:nvGraphicFramePr>';
                 strXml += `<p:xfrm><a:off x="${x || (x === 0 ? 0 : EMU)}" y="${y || (y === 0 ? 0 : EMU)}"/><a:ext cx="${cx || (cx === 0 ? 0 : EMU)}" cy="${cy || EMU}"/></p:xfrm>`;
                 strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>';
-                // + '        <a:tblPr bandRow="1"/>';
-                // TODO: Support banded rows, first/last row, etc.
-                // NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
-                // <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
                 // STEP 2: Set column widths
-                // Evenly distribute cols/rows across size provided when applicable (calc them if only overall dimensions were provided)
-                // A: Col widths provided?
-                // B: Table Width provided without colW? Then distribute cols
                 if (Array.isArray(objTabOpts.colW)) {
                     strXml += '<a:tblGrid>';
                     for (let col = 0; col < intColCnt; col++) {
@@ -5217,20 +5196,7 @@ function slideObjectToXml(slide) {
                     }
                     strXml += '</a:tblGrid>';
                 }
-                // STEP 3: Build our row arrays into an actual grid to match the XML we will be building next (ISSUE #36)
-                // Note row arrays can arrive "lopsided" as in row1:[1,2,3] row2:[3] when first two cols rowspan!,
-                // so a simple loop below in XML building wont suffice to build table correctly.
-                // We have to build an actual grid now
-                /*
-                    EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
-
-                    /------|------|------|------\
-                    |  A0  |  B0  |  C0  |  D0  |
-                    |      |  B1  |  C1  |      |
-                    |      |      |  C2  |  D2  |
-                    \------|------|------|------/
-                */
-                // A: add _hmerge cell for colspan. should reserve rowspan
+                // STEP 3: Build our row arrays into an actual grid
                 arrTabRows.forEach(cells => {
                     var _a, _b;
                     for (let cIdx = 0; cIdx < cells.length;) {
@@ -5249,7 +5215,6 @@ function slideObjectToXml(slide) {
                         }
                     }
                 });
-                // B: add _vmerge cell for rowspan. should reserve colspan/_hmerge
                 arrTabRows.forEach((cells, rIdx) => {
                     const nextRow = arrTabRows[rIdx + 1];
                     if (!nextRow)
@@ -5267,8 +5232,7 @@ function slideObjectToXml(slide) {
                 });
                 // STEP 4: Build table rows/cells
                 arrTabRows.forEach((cells, rIdx) => {
-                    // A: Table Height provided without rowH? Then distribute rows
-                    let intRowH = 0; // IMPORTANT: Default must be zero for auto-sizing to work
+                    let intRowH = 0;
                     if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx])
                         intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]));
                     else if (objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH)))
@@ -5277,9 +5241,7 @@ function slideObjectToXml(slide) {
                         intRowH = Math.round((slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : typeof slideItemObj.options.cy === 'number' ? slideItemObj.options.cy : 1) /
                             arrTabRows.length);
                     }
-                    // B: Start row
                     strXml += `<a:tr h="${intRowH}">`;
-                    // C: Loop over each CELL
                     cells.forEach(cellObj => {
                         var _a, _b, _c, _d, _e;
                         const cell = cellObj;
@@ -5296,12 +5258,10 @@ function slideObjectToXml(slide) {
                             .join(' ');
                         if (cellSpanAttrStr)
                             cellSpanAttrStr = ' ' + cellSpanAttrStr;
-                        // 1: COLSPAN/ROWSPAN: Add dummy cells for any active colspan/rowspan
                         if (cell._hmerge || cell._vmerge) {
                             strXml += `<a:tc${cellSpanAttrStr}><a:tcPr/></a:tc>`;
                             return;
                         }
-                        // 2: OPTIONS: Build/set cell options
                         const cellOpts = cell.options || {};
                         cell.options = cellOpts;
                         ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'textDirection', 'underline', 'valign'].forEach(name => {
@@ -5322,10 +5282,6 @@ function slideObjectToXml(slide) {
                         let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
-                        /** FUTURE: DEPRECATED:
-                         * - Backwards-Compat: Oops! Discovered we were still using points for cell margin before v3.8.0 (UGH!)
-                         * - We cant introduce a breaking change before v4.0, so...
-                         */
                         let cellMarginXml = '';
                         if (cellMargin[0] >= 1) {
                             cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(cellMargin[2])}"`;
@@ -5333,15 +5289,8 @@ function slideObjectToXml(slide) {
                         else {
                             cellMarginXml = ` marL="${inch2Emu(cellMargin[3])}" marR="${inch2Emu(cellMargin[1])}" marT="${inch2Emu(cellMargin[0])}" marB="${inch2Emu(cellMargin[2])}"`;
                         }
-                        // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
-                        // 4: Set CELL content and properties ==================================
                         strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`;
-                        // strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
-                        // FIXME: 20200525: ^^^
-                        // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
-                        // 5: Borders: Add any borders
                         if (cellOpts.border && Array.isArray(cellOpts.border)) {
-                            // NOTE: *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
                             [
                                 { idx: 3, name: 'lnL' },
                                 { idx: 1, name: 'lnR' },
@@ -5359,30 +5308,22 @@ function slideObjectToXml(slide) {
                                 }
                             });
                         }
-                        // 6: Close cell Properties & Cell
                         strXml += cellFill;
                         strXml += '  </a:tcPr>';
                         strXml += ' </a:tc>';
                     });
-                    // D: Complete row
                     strXml += '</a:tr>';
                 });
-                // STEP 5: Complete table
                 strXml += '      </a:tbl>';
                 strXml += '    </a:graphicData>';
                 strXml += '  </a:graphic>';
                 strXml += '</p:graphicFrame>';
-                // STEP 6: Set table XML
                 strSlideXml += strXml;
-                // LAST: Increment counter
-                intTableNum++;
                 break;
             case SLIDE_OBJECT_TYPES.text:
             case SLIDE_OBJECT_TYPES.placeholder:
-                // Lines can have zero cy, but text should not
                 if (!slideItemObj.options.line && cy === 0)
                     cy = EMU * 0.3;
-                // Margin/Padding/Inset for textboxes
                 if (!slideItemObj.options._bodyProp)
                     slideItemObj.options._bodyProp = {};
                 if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
@@ -5397,32 +5338,43 @@ function slideObjectToXml(slide) {
                     slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin);
                     slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin);
                 }
-                // A: Start SHAPE =======================================================
+                else if (slideItemObj.options._bodyProp.lIns === undefined) {
+                    slideItemObj.options._bodyProp.lIns = 0;
+                    slideItemObj.options._bodyProp.rIns = 0;
+                    slideItemObj.options._bodyProp.tIns = 0;
+                    slideItemObj.options._bodyProp.bIns = 0;
+                }
                 strSlideXml += '<p:sp>';
-                // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-                strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`;
-                // <Hyperlink>
+                strSlideXml += `<p:nvSpPr><p:cNvPr id="${currentId}" name="${slideItemObj.options.objectName}">`;
                 if ((_c = slideItemObj.options.hyperlink) === null || _c === void 0 ? void 0 : _c.url) {
                     strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}"/>`;
                 }
                 if ((_d = slideItemObj.options.hyperlink) === null || _d === void 0 ? void 0 : _d.slide) {
                     strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}" action="ppaction://hlinksldjump"/>`;
                 }
-                // </Hyperlink>
                 strSlideXml += '</p:cNvPr>';
-                strSlideXml += '<p:cNvSpPr' + (((_e = slideItemObj.options) === null || _e === void 0 ? void 0 : _e.isTextBox) ? ' txBox="1"/>' : '/>');
-                strSlideXml += `<p:nvPr>${slideItemObj._type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`;
+                if (slideItemObj._type === SLIDE_OBJECT_TYPES.placeholder) {
+                    strSlideXml += '<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>';
+                }
+                else {
+                    strSlideXml += '<p:cNvSpPr' + (((_e = slideItemObj.options) === null || _e === void 0 ? void 0 : _e.isTextBox) ? ' txBox="1"/>' : '/>');
+                }
+                if (slideItemObj._type === SLIDE_OBJECT_TYPES.placeholder) {
+                    const userDrawnAttr = slideItemObj.options._userDrawn ? ' userDrawn="1"' : '';
+                    strSlideXml += `<p:nvPr${userDrawnAttr}>${genXmlPlaceholder(slideItemObj)}</p:nvPr>`;
+                }
+                else {
+                    strSlideXml += `<p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`;
+                }
                 strSlideXml += '</p:nvSpPr><p:spPr>';
                 strSlideXml += `<a:xfrm${locationAttr}>`;
                 strSlideXml += `<a:off x="${x}" y="${y}"/>`;
                 strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`;
                 if (slideItemObj.shape === 'custGeom') {
                     strSlideXml += '<a:custGeom><a:avLst />';
-                    strSlideXml += '<a:gdLst>';
-                    strSlideXml += '</a:gdLst>';
+                    strSlideXml += '<a:gdLst></a:gdLst>';
                     strSlideXml += '<a:ahLst />';
-                    strSlideXml += '<a:cxnLst>';
-                    strSlideXml += '</a:cxnLst>';
+                    strSlideXml += '<a:cxnLst></a:cxnLst>';
                     strSlideXml += '<a:rect l="l" t="t" r="r" b="b" />';
                     strSlideXml += '<a:pathLst>';
                     strSlideXml += `<a:path w="${cx}" h="${cy}">`;
@@ -5433,17 +5385,10 @@ function slideObjectToXml(slide) {
                                     strSlideXml += `<a:arcTo hR="${getSmartParseNumber(point.curve.hR, 'Y', slide._presLayout)}" wR="${getSmartParseNumber(point.curve.wR, 'X', slide._presLayout)}" stAng="${convertRotationDegrees(point.curve.stAng)}" swAng="${convertRotationDegrees(point.curve.swAng)}" />`;
                                     break;
                                 case 'cubic':
-                                    strSlideXml += `<a:cubicBezTo>
-									<a:pt x="${getSmartParseNumber(point.curve.x1, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout)}" />
-									<a:pt x="${getSmartParseNumber(point.curve.x2, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y2, 'Y', slide._presLayout)}" />
-									<a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.y, 'Y', slide._presLayout)}" />
-									</a:cubicBezTo>`;
+                                    strSlideXml += `<a:cubicBezTo><a:pt x="${getSmartParseNumber(point.curve.x1, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout)}" /><a:pt x="${getSmartParseNumber(point.curve.x2, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y2, 'Y', slide._presLayout)}" /><a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.y, 'Y', slide._presLayout)}" /></a:cubicBezTo>`;
                                     break;
                                 case 'quadratic':
-                                    strSlideXml += `<a:quadBezTo>
-									<a:pt x="${getSmartParseNumber(point.curve.x1, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout)}" />
-									<a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.y, 'Y', slide._presLayout)}" />
-									</a:quadBezTo>`;
+                                    strSlideXml += `<a:quadBezTo><a:pt x="${getSmartParseNumber(point.curve.x1, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.curve.y1, 'Y', slide._presLayout)}" /><a:pt x="${getSmartParseNumber(point.x, 'X', slide._presLayout)}" y="${getSmartParseNumber(point.y, 'Y', slide._presLayout)}" /></a:quadBezTo>`;
                                     break;
                             }
                         }
@@ -5477,9 +5422,7 @@ function slideObjectToXml(slide) {
                     }
                     strSlideXml += '</a:avLst></a:prstGeom>';
                 }
-                // Option: FILL
                 strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
-                // shape Type: LINE: line color
                 if (slideItemObj.options.line) {
                     strSlideXml += slideItemObj.options.line.width ? `<a:ln w="${valToPts(slideItemObj.options.line.width)}">` : '<a:ln>';
                     if (slideItemObj.options.line.color)
@@ -5490,10 +5433,8 @@ function slideObjectToXml(slide) {
                         strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`;
                     if (slideItemObj.options.line.endArrowType)
                         strSlideXml += `<a:tailEnd type="${slideItemObj.options.line.endArrowType}"/>`;
-                    // FUTURE: `endArrowSize` < a: headEnd type = "arrow" w = "lg" len = "lg" /> 'sm' | 'med' | 'lg'(values are 1 - 9, making a 3x3 grid of w / len possibilities)
                     strSlideXml += '</a:ln>';
                 }
-                // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
                 if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
                     slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
                     slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8);
@@ -5508,27 +5449,14 @@ function slideObjectToXml(slide) {
                     strSlideXml += ' </a:outerShdw>';
                     strSlideXml += '</a:effectLst>';
                 }
-                /* TODO: FUTURE: Text wrapping (copied from MS-PPTX export)
-                    // Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
-                    if ( slideItemObj.options.textWrap ) {
-                        strSlideXml += '<a:extLst>'
-                                    + '<a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
-                                    + '<ma14:wrappingTextBoxFlag xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main" val="1"/>'
-                                    + '</a:ext>'
-                                    + '</a:extLst>';
-                    }
-                */
-                // B: Close shape Properties
                 strSlideXml += '</p:spPr>';
-                // C: Add formatted text (text body "bodyPr")
                 strSlideXml += genXmlTextBody(slideItemObj);
-                // LAST: Close SHAPE =======================================================
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += `<p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image)}">`;
+                strSlideXml += `<p:cNvPr id="${currentId}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || slideItemObj.image)}">`;
                 if ((_g = slideItemObj.hyperlink) === null || _g === void 0 ? void 0 : _g.url) {
                     strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''}"/>`;
                 }
@@ -5540,7 +5468,6 @@ function slideObjectToXml(slide) {
                 strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
                 strSlideXml += '  </p:nvPicPr>';
                 strSlideXml += '<p:blipFill>';
-                // NOTE: This works for both cases: either `path` or `data` contains the SVG
                 if ((slide._relsMedia || []).filter(rel => rel.rId === slideItemObj.imageRid)[0] &&
                     (slide._relsMedia || []).filter(rel => rel.rId === slideItemObj.imageRid)[0].extn === 'svg') {
                     strSlideXml += `<a:blip r:embed="rId${slideItemObj.imageRid - 1}">`;
@@ -5576,7 +5503,6 @@ function slideObjectToXml(slide) {
                 strSlideXml += `  <a:ext cx="${imgWidth}" cy="${imgHeight}"/>`;
                 strSlideXml += ' </a:xfrm>';
                 strSlideXml += ` <a:prstGeom prst="${rounding ? 'ellipse' : 'rect'}"><a:avLst/></a:prstGeom>`;
-                // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
                 if (slideItemObj.options.shadow && slideItemObj.options.shadow.type !== 'none') {
                     slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
                     slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8);
@@ -5598,15 +5524,13 @@ function slideObjectToXml(slide) {
                 if (slideItemObj.mtype === 'online') {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
-                    // IMPORTANT: <p:cNvPr id="" value is critical - if its not the same number as preview image `rId`, PowerPoint throws error!
-                    strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}"/>`;
+                    strSlideXml += `<p:cNvPr id="${currentId}" name="${slideItemObj.options.objectName}"/>`;
                     strSlideXml += ' <p:cNvPicPr/>';
                     strSlideXml += ' <p:nvPr>';
                     strSlideXml += `  <a:videoFile r:link="rId${slideItemObj.mediaRid}"/>`;
                     strSlideXml += ' </p:nvPr>';
                     strSlideXml += ' </p:nvPicPr>';
-                    // NOTE: `blip` is diferent than videos; also there's no preview "p:extLst" above but exists in videos
-                    strSlideXml += ` <p:blipFill><a:blip r:embed="rId${slideItemObj.mediaRid + 1}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>`; // NOTE: Preview image is required!
+                    strSlideXml += ` <p:blipFill><a:blip r:embed="rId${slideItemObj.mediaRid + 1}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>`;
                     strSlideXml += ' <p:spPr>';
                     strSlideXml += `  <a:xfrm${locationAttr}><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`;
                     strSlideXml += '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
@@ -5616,8 +5540,7 @@ function slideObjectToXml(slide) {
                 else {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
-                    // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
-                    strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>`;
+                    strSlideXml += `<p:cNvPr id="${currentId}" name="${slideItemObj.options.objectName}"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>`;
                     strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                     strSlideXml += ' <p:nvPr>';
                     strSlideXml += `  <a:videoFile r:link="rId${slideItemObj.mediaRid}"/>`;
@@ -5628,7 +5551,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '  </p:extLst>';
                     strSlideXml += ' </p:nvPr>';
                     strSlideXml += ' </p:nvPicPr>';
-                    strSlideXml += ` <p:blipFill><a:blip r:embed="rId${slideItemObj.mediaRid + 2}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>`; // NOTE: Preview image is required!
+                    strSlideXml += ` <p:blipFill><a:blip r:embed="rId${slideItemObj.mediaRid + 2}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>`;
                     strSlideXml += ' <p:spPr>';
                     strSlideXml += `  <a:xfrm${locationAttr}><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`;
                     strSlideXml += '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
@@ -5639,7 +5562,7 @@ function slideObjectToXml(slide) {
             case SLIDE_OBJECT_TYPES.chart:
                 strSlideXml += '<p:graphicFrame>';
                 strSlideXml += ' <p:nvGraphicFramePr>';
-                strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`;
+                strSlideXml += `   <p:cNvPr id="${currentId}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`;
                 strSlideXml += '   <p:cNvGraphicFramePr/>';
                 strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`;
                 strSlideXml += ' </p:nvGraphicFramePr>';
@@ -5656,14 +5579,13 @@ function slideObjectToXml(slide) {
                 break;
         }
     });
-    // STEP 4: Add slide numbers (if any) last
+    // STEP 4: Add slide numbers (if any) last - use next available objectId
     if (slide._slideNumberProps) {
-        // Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
         if (!slide._slideNumberProps.align)
             slide._slideNumberProps.align = 'left';
         strSlideXml += '<p:sp>';
         strSlideXml += ' <p:nvSpPr>';
-        strSlideXml += '  <p:cNvPr id="25" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>';
+        strSlideXml += `  <p:cNvPr id="${objectId++}" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>`;
         strSlideXml += '  <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>';
         strSlideXml += ' </p:nvSpPr>';
         strSlideXml += ' <p:spPr>';
@@ -5719,7 +5641,6 @@ function slideObjectToXml(slide) {
     // STEP 5: Close spTree and finalize slide XML
     strSlideXml += '</p:spTree>';
     strSlideXml += '</p:cSld>';
-    // LAST: Return
     return strSlideXml;
 }
 /**
@@ -6032,7 +5953,7 @@ function genXmlTextRun(textObj) {
  */
 function genXmlBodyProperties(slideObject) {
     let bodyProperties = '<a:bodyPr';
-    if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options._bodyProp) {
+    if (slideObject && (slideObject._type === SLIDE_OBJECT_TYPES.text || slideObject._type === SLIDE_OBJECT_TYPES.placeholder) && slideObject.options._bodyProp) {
         // PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
         // A: Enable or disable textwrapping none or square
         bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="square"' : ' wrap="none"';
@@ -6304,17 +6225,25 @@ function genXmlTextBody(slideObj) {
  * @returns XML
  */
 function genXmlPlaceholder(placeholderObj) {
-    var _a, _b;
+    var _a, _b, _c;
     if (!placeholderObj)
         return '';
-    const placeholderIdx = ((_a = placeholderObj.options) === null || _a === void 0 ? void 0 : _a._placeholderIdx) ? placeholderObj.options._placeholderIdx : '';
+    const placeholderIdx = (_a = placeholderObj.options) === null || _a === void 0 ? void 0 : _a._placeholderIdx;
     const placeholderTyp = ((_b = placeholderObj.options) === null || _b === void 0 ? void 0 : _b._placeholderType) ? placeholderObj.options._placeholderType : '';
-    const placeholderType = placeholderTyp && PLACEHOLDER_TYPES[placeholderTyp] ? (PLACEHOLDER_TYPES[placeholderTyp]).toString() : '';
-    return `<p:ph
-		${placeholderIdx ? ' idx="' + placeholderIdx.toString() + '"' : ''}
-		${placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ` type="${placeholderType}"` : ''}
-		${placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : ''}
-		/>`;
+    const placeholderSz = ((_c = placeholderObj.options) === null || _c === void 0 ? void 0 : _c._placeholderSz) ? placeholderObj.options._placeholderSz : '';
+    // Get the actual placeholder type value (e.g., 'title', 'body', 'ftr', 'sldNum', etc.)
+    const placeholderType = placeholderTyp && PLACEHOLDER_TYPES[placeholderTyp] ? PLACEHOLDER_TYPES[placeholderTyp].toString() : placeholderTyp;
+    let xmlStr = '<p:ph';
+    if (placeholderType)
+        xmlStr += ` type="${placeholderType}"`;
+    if (placeholderSz)
+        xmlStr += ` sz="${placeholderSz}"`;
+    if (placeholderIdx !== undefined && placeholderIdx !== null)
+        xmlStr += ` idx="${placeholderIdx}"`;
+    if (placeholderObj.text && placeholderObj.text.length > 0 && placeholderObj.text[0].text)
+        xmlStr += ' hasCustomPrompt="1"';
+    xmlStr += '/>';
+    return xmlStr;
 }
 // XML-GEN: First 6 functions create the base /ppt files
 /**
@@ -6349,6 +6278,7 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     // STEP 2: Add presentation and slide master(s)/slide(s)
     strXml += '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
     strXml += '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>';
+    // Add slides (and slideMaster entry per slide - matches original PptxGenJS behavior)
     slides.forEach((slide, idx) => {
         strXml += `<Override PartName="/ppt/slideMasters/slideMaster${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>`;
         strXml += `<Override PartName="/ppt/slides/slide${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`;
@@ -6533,10 +6463,15 @@ function makeXmlNotesSlide(slide) {
  * @return {string} XML
  */
 function makeXmlLayout(layout) {
-    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    let strXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 		<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">
 		${slideObjectToXml(layout)}
-		<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>`;
+		<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>`;
+    // Add extension list with layout-specific guides (uses LAYOUT URI)
+    // Prefer _layoutGuides if available, otherwise fall back to _guides
+    strXml += buildLayoutExtLst(layout._layoutGuides || layout._guides);
+    strXml += '</p:sldLayout>';
+    return strXml;
 }
 /**
  * Creates Slide Master 1 (`ppt/slideMasters/slideMaster1.xml`)
@@ -6584,7 +6519,63 @@ function makeXmlMaster(slide, layouts) {
             '  <a:lvl9pPr marL="3657600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl9pPr>' +
             ' </p:otherStyle>' +
             '</p:txStyles>';
+    // Add extension list with guides if any are defined
+    strXml += buildMasterExtLst(slide._guides);
     strXml += '</p:sldMaster>';
+    return strXml;
+}
+/**
+ * Build the extension list XML for slide master (includes guides)
+ * @param {SlideGuide[]} guides - array of guide definitions
+ * @return {string} XML
+ */
+function buildMasterExtLst(guides) {
+    // If no guides, return empty extLst or skip entirely
+    if (!guides || guides.length === 0) {
+        return '';
+    }
+    let strXml = '<p:extLst>';
+    strXml += '<p:ext uri="{27BBF7A9-308A-43DC-89C8-2F10F3537804}">';
+    strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">';
+    guides.forEach((guide, idx) => {
+        const posValue = Math.round(guide.position * 9144);
+        const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : '';
+        const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4';
+        const guideId = guide.id || (idx + 1);
+        strXml += `<p15:guide id="${guideId}" pos="${posValue}"${orient} userDrawn="1">`;
+        strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`;
+        strXml += '</p15:guide>';
+    });
+    strXml += '</p15:sldGuideLst>';
+    strXml += '</p:ext>';
+    strXml += '</p:extLst>';
+    return strXml;
+}
+/**
+ * Build the extension list XML for slide layout (uses different URI than master)
+ * @param {SlideGuide[]} guides - array of guide definitions
+ * @return {string} XML
+ */
+function buildLayoutExtLst(guides) {
+    // If no guides, return empty extLst or skip entirely
+    if (!guides || guides.length === 0) {
+        return '';
+    }
+    let strXml = '<p:extLst>';
+    strXml += '<p:ext uri="{DCECCB84-F9BA-43D5-87BE-67443E8EF086}">';
+    strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">';
+    guides.forEach((guide, idx) => {
+        const posValue = Math.round(guide.position * 9144);
+        const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : '';
+        const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4';
+        const guideId = guide.id || (idx + 1);
+        strXml += `<p15:guide id="${guideId}" pos="${posValue}"${orient} userDrawn="1">`;
+        strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`;
+        strXml += '</p15:guide>';
+    });
+    strXml += '</p15:sldGuideLst>';
+    strXml += '</p:ext>';
+    strXml += '</p:extLst>';
     return strXml;
 }
 /**
@@ -6677,35 +6668,27 @@ function getLayoutIdxForSlide(slides, slideLayouts, slideNumber) {
  * Creates `ppt/theme/theme1.xml`
  * @return {string} XML
  */
-export function makeXmlTheme (pres: IPresentationProps): string {
-    const theme = pres.theme || {}
-    const themeName = theme.themeName || 'Office Theme'
-    const colorSchemeName = theme.colorSchemeName || 'Office'
-    
+function makeXmlTheme(pres) {
+    const theme = pres.theme || {};
+    const themeName = theme.themeName || 'Office Theme';
+    const colorSchemeName = theme.colorSchemeName || 'Office';
     // Font configuration
-    const majorFont = theme.headFontFace 
-        ? `<a:latin typeface="${theme.headFontFace}"/>` 
-        : '<a:latin typeface="Calibri Light" panose="020F0302020204030204"/>'
-    const minorFont = theme.bodyFontFace 
-        ? `<a:latin typeface="${theme.bodyFontFace}"/>` 
-        : '<a:latin typeface="Calibri" panose="020F0502020204030204"/>'
-
+    const majorFont = theme.headFontFace
+        ? `<a:latin typeface="${theme.headFontFace}"/>`
+        : '<a:latin typeface="Calibri Light" panose="020F0302020204030204"/>';
+    const minorFont = theme.bodyFontFace
+        ? `<a:latin typeface="${theme.bodyFontFace}"/>`
+        : '<a:latin typeface="Calibri" panose="020F0502020204030204"/>';
     // Color scheme configuration
-    const colors = theme.colors || {}
-    const colorSchemeXml = buildColorSchemeXml(colorSchemeName, colors)
-    
+    const colors = theme.colors || {};
+    const colorSchemeXml = buildColorSchemeXml(colorSchemeName, colors);
     // Custom colors list
-    const customColorsXml = buildCustomColorsXml(theme.customColors)
-    
+    const customColorsXml = buildCustomColorsXml(theme.customColors);
     // Font scheme sections (keeping existing structure)
-    const majorFontSection = `<a:majorFont>${majorFont}<a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="游ゴシック Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="等线 Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/><a:font script="Armn" typeface="Arial"/><a:font script="Bugi" typeface="Leelawadee UI"/><a:font script="Bopo" typeface="Microsoft JhengHei"/><a:font script="Java" typeface="Javanese Text"/><a:font script="Lisu" typeface="Segoe UI"/><a:font script="Mymr" typeface="Myanmar Text"/><a:font script="Nkoo" typeface="Ebrima"/><a:font script="Olck" typeface="Nirmala UI"/><a:font script="Osma" typeface="Ebrima"/><a:font script="Phag" typeface="Phagspa"/><a:font script="Syrn" typeface="Estrangelo Edessa"/><a:font script="Syrj" typeface="Estrangelo Edessa"/><a:font script="Syre" typeface="Estrangelo Edessa"/><a:font script="Sora" typeface="Nirmala UI"/><a:font script="Tale" typeface="Microsoft Tai Le"/><a:font script="Talu" typeface="Microsoft New Tai Lue"/><a:font script="Tfng" typeface="Ebrima"/></a:majorFont>`
-    
-    const minorFontSection = `<a:minorFont>${minorFont}<a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="游ゴシック"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="等线"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/><a:font script="Armn" typeface="Arial"/><a:font script="Bugi" typeface="Leelawadee UI"/><a:font script="Bopo" typeface="Microsoft JhengHei"/><a:font script="Java" typeface="Javanese Text"/><a:font script="Lisu" typeface="Segoe UI"/><a:font script="Mymr" typeface="Myanmar Text"/><a:font script="Nkoo" typeface="Ebrima"/><a:font script="Olck" typeface="Nirmala UI"/><a:font script="Osma" typeface="Ebrima"/><a:font script="Phag" typeface="Phagspa"/><a:font script="Syrn" typeface="Estrangelo Edessa"/><a:font script="Syrj" typeface="Estrangelo Edessa"/><a:font script="Syre" typeface="Estrangelo Edessa"/><a:font script="Sora" typeface="Nirmala UI"/><a:font script="Tale" typeface="Microsoft Tai Le"/><a:font script="Talu" typeface="Microsoft New Tai Lue"/><a:font script="Tfng" typeface="Ebrima"/></a:minorFont>`
-    
-    const fontSchemeName = theme.headFontFace || theme.bodyFontFace ? 'Custom' : 'Office'
-    
-    const fmtSchemeXml = '<a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme>'
-    
+    const majorFontSection = `<a:majorFont>${majorFont}<a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="游ゴシック Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="等线 Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/><a:font script="Armn" typeface="Arial"/><a:font script="Bugi" typeface="Leelawadee UI"/><a:font script="Bopo" typeface="Microsoft JhengHei"/><a:font script="Java" typeface="Javanese Text"/><a:font script="Lisu" typeface="Segoe UI"/><a:font script="Mymr" typeface="Myanmar Text"/><a:font script="Nkoo" typeface="Ebrima"/><a:font script="Olck" typeface="Nirmala UI"/><a:font script="Osma" typeface="Ebrima"/><a:font script="Phag" typeface="Phagspa"/><a:font script="Syrn" typeface="Estrangelo Edessa"/><a:font script="Syrj" typeface="Estrangelo Edessa"/><a:font script="Syre" typeface="Estrangelo Edessa"/><a:font script="Sora" typeface="Nirmala UI"/><a:font script="Tale" typeface="Microsoft Tai Le"/><a:font script="Talu" typeface="Microsoft New Tai Lue"/><a:font script="Tfng" typeface="Ebrima"/></a:majorFont>`;
+    const minorFontSection = `<a:minorFont>${minorFont}<a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="游ゴシック"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="等线"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/><a:font script="Armn" typeface="Arial"/><a:font script="Bugi" typeface="Leelawadee UI"/><a:font script="Bopo" typeface="Microsoft JhengHei"/><a:font script="Java" typeface="Javanese Text"/><a:font script="Lisu" typeface="Segoe UI"/><a:font script="Mymr" typeface="Myanmar Text"/><a:font script="Nkoo" typeface="Ebrima"/><a:font script="Olck" typeface="Nirmala UI"/><a:font script="Osma" typeface="Ebrima"/><a:font script="Phag" typeface="Phagspa"/><a:font script="Syrn" typeface="Estrangelo Edessa"/><a:font script="Syrj" typeface="Estrangelo Edessa"/><a:font script="Syre" typeface="Estrangelo Edessa"/><a:font script="Sora" typeface="Nirmala UI"/><a:font script="Tale" typeface="Microsoft Tai Le"/><a:font script="Talu" typeface="Microsoft New Tai Lue"/><a:font script="Tfng" typeface="Ebrima"/></a:minorFont>`;
+    const fontSchemeName = theme.headFontFace || theme.bodyFontFace ? 'Custom' : 'Office';
+    const fmtSchemeXml = '<a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme>';
     return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
         `<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="${themeName}">` +
         `<a:themeElements>` +
@@ -6720,7 +6703,7 @@ export function makeXmlTheme (pres: IPresentationProps): string {
         `<a:extraClrSchemeLst/>` +
         customColorsXml +
         `<a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}"><thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="${themeName}" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst>` +
-        `</a:theme>`
+        `</a:theme>`;
 }
 /**
  * Build color scheme XML
@@ -6728,11 +6711,11 @@ export function makeXmlTheme (pres: IPresentationProps): string {
  * @param {ThemeColorScheme} colors - color definitions
  * @return {string} XML
  */
-function buildColorSchemeXml (name: string, colors: { dk1?: string, lt1?: string, dk2?: string, lt2?: string, accent1?: string, accent2?: string, accent3?: string, accent4?: string, accent5?: string, accent6?: string, hlink?: string, folHlink?: string }): string {
+function buildColorSchemeXml(name, colors) {
     // Default Office colors
     const defaults = {
-        dk1: '000000',   // Black (system windowText)
-        lt1: 'FFFFFF',   // White (system window)
+        dk1: '000000', // Black (system windowText)
+        lt1: 'FFFFFF', // White (system window)
         dk2: '44546A',
         lt2: 'E7E6E6',
         accent1: '4472C4',
@@ -6743,16 +6726,14 @@ function buildColorSchemeXml (name: string, colors: { dk1?: string, lt1?: string
         accent6: '70AD47',
         hlink: '0563C1',
         folHlink: '954F72'
-    }
-    
+    };
     // Use system colors for dk1 and lt1 by default (like Office does)
-    const dk1 = colors.dk1 
-        ? `<a:srgbClr val="${colors.dk1.replace('#', '')}"/>` 
-        : `<a:sysClr val="windowText" lastClr="${defaults.dk1}"/>`
-    const lt1 = colors.lt1 
-        ? `<a:srgbClr val="${colors.lt1.replace('#', '')}"/>` 
-        : `<a:sysClr val="window" lastClr="${defaults.lt1}"/>`
-    
+    const dk1 = colors.dk1
+        ? `<a:srgbClr val="${colors.dk1.replace('#', '')}"/>`
+        : `<a:sysClr val="windowText" lastClr="${defaults.dk1}"/>`;
+    const lt1 = colors.lt1
+        ? `<a:srgbClr val="${colors.lt1.replace('#', '')}"/>`
+        : `<a:sysClr val="window" lastClr="${defaults.lt1}"/>`;
     return `<a:clrScheme name="${name}">` +
         `<a:dk1>${dk1}</a:dk1>` +
         `<a:lt1>${lt1}</a:lt1>` +
@@ -6766,26 +6747,24 @@ function buildColorSchemeXml (name: string, colors: { dk1?: string, lt1?: string
         `<a:accent6><a:srgbClr val="${(colors.accent6 || defaults.accent6).replace('#', '')}"/></a:accent6>` +
         `<a:hlink><a:srgbClr val="${(colors.hlink || defaults.hlink).replace('#', '')}"/></a:hlink>` +
         `<a:folHlink><a:srgbClr val="${(colors.folHlink || defaults.folHlink).replace('#', '')}"/></a:folHlink>` +
-        `</a:clrScheme>`
+        `</a:clrScheme>`;
 }
 /**
  * Build custom colors list XML
  * @param {CustomColor[]} customColors - array of custom color definitions
  * @return {string} XML
  */
-function buildCustomColorsXml (customColors?: { name: string, value: string }[]): string {
+function buildCustomColorsXml(customColors) {
     if (!customColors || customColors.length === 0) {
-        return ''
+        return '';
     }
-    
-    let xml = '<a:custClrLst>'
+    let xml = '<a:custClrLst>';
     customColors.forEach(color => {
-        const hexValue = color.value.replace('#', '').toUpperCase()
-        xml += `<a:custClr name="${encodeXmlEntities(color.name)}"><a:srgbClr val="${hexValue}"/></a:custClr>`
-    })
-    xml += '</a:custClrLst>'
-    
-    return xml
+        const hexValue = color.value.replace('#', '').toUpperCase();
+        xml += `<a:custClr name="${encodeXmlEntities(color.name)}"><a:srgbClr val="${hexValue}"/></a:custClr>`;
+    });
+    xml += '</a:custClrLst>';
+    return xml;
 }
 /**
  * Create presentation file (`ppt/presentation.xml`)
@@ -6822,9 +6801,15 @@ function makeXmlPresentation(pres) {
                 `</a:defRPr></a:lvl${idy}pPr>`;
     }
     strXml += '</p:defaultTextStyle>';
-    // STEP 6: Add Sections (if any)
-    if (pres.sections && pres.sections.length > 0) {
-        strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">';
+    // STEP 6: Add Sections (if any) - do NOT add presentation-level guides
+    // NOTE: Presentation-level guides (URI {EFAFB233-063F-42B5-8137-9DF3F51BA10A}) can conflict 
+    // with slideMaster guides (URI {27BBF7A9-308A-43DC-89C8-2F10F3537804}) and cause repair prompts.
+    // The official approach is to define guides only at the slideMaster level.
+    const hasSections = pres.sections && pres.sections.length > 0;
+    if (hasSections) {
+        strXml += '<p:extLst>';
+        // Add sections
+        strXml += '<p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">';
         strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">';
         pres.sections.forEach(sect => {
             strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`;
@@ -6832,9 +6817,12 @@ function makeXmlPresentation(pres) {
             strXml += '</p14:sldIdLst></p14:section>';
         });
         strXml += '</p14:sectionLst></p:ext>';
+        // Empty sldGuideLst when we have sections (required for compatibility)
         strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>';
         strXml += '</p:extLst>';
     }
+    // NOTE: Removed presentation-level guides (hasGuides block) - guides should be defined 
+    // only at slideMaster level using URI {27BBF7A9-308A-43DC-89C8-2F10F3537804}
     // Done
     strXml += '</p:presentation>';
     return strXml;
@@ -6964,6 +6952,9 @@ class PptxGenJS {
     }
     get slideLayouts() {
         return this._slideLayouts;
+    }
+    get guides() {
+        return this._guides;
     }
     get AlignH() {
         return this._alignH;
@@ -7231,6 +7222,7 @@ class PptxGenJS {
         ];
         this._slides = [];
         this._sections = [];
+        this._guides = [];
         this._masterSlide = {
             addChart: null,
             addImage: null,
@@ -7429,11 +7421,74 @@ class PptxGenJS {
      * Create a new slide master [layout] for the Presentation
      * @param {SlideMasterProps} props - layout properties
      */
+    /**
+     * Configure the slide master (slideMaster1.xml)
+     * The slide master defines default styles and placeholders inherited by all layouts
+     * @param {SlideMasterProps} props - master slide properties
+     */
     defineSlideMaster(props) {
-        // (ISSUE#406;PULL#1176) deep clone the props object to avoid mutating the original object
+        var _a;
+        const propsClone = JSON.parse(JSON.stringify(props));
+        // Add objects to the master slide (slideMaster1.xml)
+        if (propsClone.objects && Array.isArray(propsClone.objects) && propsClone.objects.length > 0) {
+            propsClone.objects.forEach((object, idx) => {
+                const key = Object.keys(object)[0];
+                if (key === 'placeholder') {
+                    const phOpts = object[key].options;
+                    const phText = object[key].text || '';
+                    const opts = Object.assign(Object.assign({}, phOpts), { placeholder: phOpts.name, _placeholderType: phOpts.type, _placeholderIdx: phOpts.idx, _placeholderSz: phOpts.sz, _userDrawn: phOpts.userDrawn, objectName: phOpts.name, margin: phOpts.margin !== undefined ? phOpts.margin : 0 });
+                    // Handle text array or string
+                    const textArray = Array.isArray(phText) ? phText : [{ text: phText }];
+                    addTextDefinition(this.masterSlide, textArray, opts, true);
+                }
+                else if (key === 'image') {
+                    addImageDefinition(this.masterSlide, object[key]);
+                }
+                else if (key === 'rect') {
+                    addShapeDefinition(this.masterSlide, SHAPE_TYPE.RECTANGLE, object[key]);
+                }
+                else if (key === 'text') {
+                    // Handle text array or string
+                    const txtContent = object[key].text;
+                    const txtArray = Array.isArray(txtContent) ? txtContent : [{ text: txtContent }];
+                    addTextDefinition(this.masterSlide, txtArray, object[key].options, false);
+                }
+            });
+        }
+        // Add background to master slide
+        if (propsClone.background || propsClone.bkgd) {
+            addBackgroundDefinition(propsClone.background || propsClone.bkgd, this.masterSlide);
+        }
+        // Add guides to master slide
+        if (propsClone.guides && propsClone.guides.length > 0) {
+            this.masterSlide._guides = propsClone.guides;
+        }
+        if ((_a = propsClone.guideDefinitions) === null || _a === void 0 ? void 0 : _a.master) {
+            this.masterSlide._guides = propsClone.guideDefinitions.master;
+        }
+        // Add slide number properties
+        if (propsClone.slideNumber) {
+            this.masterSlide._slideNumberProps = propsClone.slideNumber;
+        }
+    }
+    /**
+     * Create a new slide layout for the Presentation
+     * Slide layouts inherit from the slide master but can have different placeholders/objects
+     * @param {SlideLayoutProps} props - layout properties
+     */
+    defineSlideLayout(props) {
+        var _a, _b, _c;
         const propsClone = JSON.parse(JSON.stringify(props));
         if (!propsClone.title)
-            throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
+            throw new Error('defineSlideLayout() object argument requires a `title` value.');
+        // Determine layout guides: prefer guideDefinitions.layout, then fallback to guides
+        let layoutGuides = null;
+        if ((_a = propsClone.guideDefinitions) === null || _a === void 0 ? void 0 : _a.layout) {
+            layoutGuides = propsClone.guideDefinitions.layout;
+        }
+        else if (propsClone.guides) {
+            layoutGuides = propsClone.guides;
+        }
         const newLayout = {
             _margin: propsClone.margin || DEF_SLIDE_MARGIN_IN,
             _name: propsClone.title,
@@ -7445,19 +7500,36 @@ class PptxGenJS {
             _slideNum: 1000 + this.slideLayouts.length + 1,
             _slideNumberProps: propsClone.slideNumber || null,
             _slideObjects: [],
+            _layoutGuides: layoutGuides,
             background: propsClone.background || null,
             bkgd: propsClone.bkgd || null,
         };
-        // STEP 1: Create the Slide Master/Layout
-        createSlideMaster(propsClone, newLayout);
-        // STEP 2: Add it to layout defs
+        // Create the layout with its objects
+        createSlideLayout(propsClone, newLayout);
+        // Remove the default blank layout if it exists (only happens on first user layout)
+        const defaultLayoutIdx = this.slideLayouts.findIndex(layout => layout._name === DEF_PRES_LAYOUT_NAME);
+        if (defaultLayoutIdx !== -1) {
+            this.slideLayouts.splice(defaultLayoutIdx, 1);
+        }
+        // Add the new layout
         this.slideLayouts.push(newLayout);
-        // STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
-        if (propsClone.background || propsClone.bkgd)
+        // Add background if specified
+        if (propsClone.background || propsClone.bkgd) {
             addBackgroundDefinition(propsClone.background, newLayout);
-        // STEP 4: Add slideNumber to master slide (if any)
-        if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps)
-            this.masterSlide._slideNumberProps = newLayout._slideNumberProps;
+        }
+        // Handle presentation-level guides from guideDefinitions
+        if (((_b = propsClone.guideDefinitions) === null || _b === void 0 ? void 0 : _b.presentation) && propsClone.guideDefinitions.presentation.length > 0) {
+            // Add to presentation guides (merge with existing)
+            if (!this._guides)
+                this._guides = [];
+            this._guides.push(...propsClone.guideDefinitions.presentation);
+        }
+        // Handle master-level guides from guideDefinitions
+        if (((_c = propsClone.guideDefinitions) === null || _c === void 0 ? void 0 : _c.master) && propsClone.guideDefinitions.master.length > 0) {
+            if (!this.masterSlide._guides)
+                this.masterSlide._guides = [];
+            this.masterSlide._guides.push(...propsClone.guideDefinitions.master);
+        }
     }
     // HTML-TO-SLIDES METHODS
     /**

@@ -844,15 +844,17 @@ export default class PptxGenJS implements IPresentationProps {
             bkgd: propsClone.bkgd || null,
         }
 
-        // Create the layout with its objects
-        genObj.createSlideLayout(propsClone, newLayout)
+		// Create the layout with its objects
+		genObj.createSlideLayout(propsClone, newLayout)
 
-        // Remove the default blank layout if this is the first user-defined layout
-        if (this.slideLayouts.length === 1 && this.slideLayouts[0]._name === DEF_PRES_LAYOUT_NAME) {
-            this.slideLayouts[0] = newLayout
-        } else {
-            this.slideLayouts.push(newLayout)
-        }
+		// Remove the default blank layout if it exists (only happens on first user layout)
+		const defaultLayoutIdx = this.slideLayouts.findIndex(layout => layout._name === DEF_PRES_LAYOUT_NAME)
+		if (defaultLayoutIdx !== -1) {
+			this.slideLayouts.splice(defaultLayoutIdx, 1)
+		}
+
+		// Add the new layout
+		this.slideLayouts.push(newLayout)
 
         // Add background if specified
         if (propsClone.background || propsClone.bkgd) {
