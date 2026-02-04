@@ -671,8 +671,10 @@ declare namespace PptxGenJS {
 		'chart' = 'chart',
 		'table' = 'tbl',
 		'media' = 'media',
+		'footer' = 'ftr',
+        'slideNumber' = 'sldNum',
 	}
-	export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
+	export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media' | 'ftr' | 'sldNum'
 
 	export type SHAPE_NAME =
 		| 'accentBorderCallout1'
@@ -1315,12 +1317,48 @@ declare namespace PptxGenJS {
 		valign?: VAlign
 	}
 	export interface PlaceholderProps extends PositionProps, TextBaseProps {
+		/**
+		 * Placeholder name (appears in PowerPoint Selection Pane)
+		 */
 		name: string
+		/**
+		 * Placeholder type
+		 */
 		type: PLACEHOLDER_TYPE
 		/**
-		 * margin (points)
+		 * Placeholder index - used to identify placeholders
+		 * Standard indices: title=0, body=1, ftr=10, dt=11, sldNum=12
 		 */
-		margin?: Margin
+		idx?: number
+		/**
+		 * Placeholder size - 'full', 'half', 'quarter'
+		 * @default undefined (no sz attribute)
+		 */
+		sz?: 'full' | 'half' | 'quarter'
+		/**
+		 * margin (points) - defaults to [0,0,0,0]
+		 */
+		margin?: number | [number, number, number, number]
+		/**
+		 * Text vertical alignment
+		 */
+		valign?: 't' | 'ctr' | 'b'
+		/**
+		 * Text horizontal alignment
+		 */
+		align?: 'l' | 'ctr' | 'r'
+		/**
+		 * Font size in points
+		 */
+		fontSize?: number
+		/**
+		 * Text wrap mode
+		 */
+		wrap?: boolean | 'none' | 'square'
+		/**
+		 * Whether this is a user-drawn placeholder (userDrawn="1")
+		 */
+		userDrawn?: boolean
 	}
 	export interface ObjectNameProps {
 		/**
@@ -2574,9 +2612,57 @@ declare namespace PptxGenJS {
 		 */
 		bkgd?: string | BackgroundProps
 	}
+	/**
+	 * Properties for defining a slide layout (slideLayout{N}.xml)
+	 * Slide layouts inherit from the slide master but can have different placeholders/objects
+	 */
+	export interface SlideLayoutProps {
+		/**
+		 * Unique name for this layout (used when adding slides with masterName)
+		 */
+		title: string
+		/**
+		 * Background for this layout (overrides master background)
+		 */
+		background?: BackgroundProps
+		/**
+		 * Slide margin
+		 */
+		margin?: Margin
+		/**
+		 * Slide number properties for this layout
+		 */
+		slideNumber?: SlideNumberProps
+		/**
+		 * Layout-specific guides
+		 */
+		guides?: SlideGuide[]
+		/**
+		 * Objects to add to this layout (placeholders, text, images, shapes, etc.)
+		 */
+		objects?: Array<
+			| { chart: IChartOpts }
+			| { image: ImageProps }
+			| { line: ShapeProps }
+			| { rect: ShapeProps }
+			| { text: TextProps }
+			| {
+				placeholder: {
+					options: PlaceholderProps
+					text?: string
+				}
+			}
+		>
+		/**
+		 * @deprecated v3.3.0 - use `background`
+		 */
+		bkgd?: string | BackgroundProps
+	}
 	export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
-		//_placeholderIdx?: number
-		//_placeholderType?: PLACEHOLDER_TYPE
+		_placeholderIdx?: number
+		_placeholderType?: PLACEHOLDER_TYPE
+		_placeholderSz?: 'full' | 'half' | 'quarter'
+		_userDrawn?: boolean
 
 		cx?: Coord
 		cy?: Coord

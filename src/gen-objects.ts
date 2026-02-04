@@ -40,6 +40,7 @@ import {
 	ShapeLineProps,
 	ShapeProps,
 	SlideLayout,
+	SlideLayoutProps,
 	SlideMasterProps,
 	TableCell,
 	TableProps,
@@ -58,54 +59,95 @@ let _chartCounter = 0
  * @param {SlideMasterProps} props - slide definition
  * @param {PresSlide|SlideLayout} target - empty slide object that should be updated by the passed definition
  */
+
 export function createSlideMaster(props: SlideMasterProps, target: SlideLayout): void {
-	// STEP 1: Add background if either the slide or layout has background props
-	// if (props.background || target.background) addBackgroundDefinition(props.background, target)
-	if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
+    // STEP 1: Add background if either the slide or layout has background props
+    // if (props.background || target.background) addBackgroundDefinition(props.background, target)
+    if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
 
-	// Store guides if provided
-	if (props.guides && Array.isArray(props.guides)) {
-		target._guides = props.guides
-	}
+    // Store guides if provided
+    if (props.guides && Array.isArray(props.guides)) {
+        target._guides = props.guides
+    }
 
-	// STEP 2: Add all Slide Master objects in the order they were given
-	if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
-		props.objects.forEach((object, idx) => {
-			const key = Object.keys(object)[0]
-			const tgt = target as PresSlide
-			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
-			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
-			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
-				// TODO: 20180820: Check for existing `name`?
-				object[key].options.placeholder = object[key].options.name
-				delete object[key].options.name // remap name for earier handling internally
-				object[key].options._placeholderType = object[key].options.type
-				delete object[key].options.type // remap name for earier handling internally
-				object[key].options._placeholderIdx = 100 + idx
-				addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
-				// TODO: ISSUE#599 - only text is suported now (add more below)
-				// else if (object[key].image) addImageDefinition(tgt, object[key].image)
-				/* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
-					<p:sp>
-				  <p:nvSpPr>
-					<p:cNvPr id="7" name="Picture Placeholder 6">
-					  <a:extLst>
-						<a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
-						  <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{CE1AE45D-8641-0F4F-BDB5-080E69CCB034}"/>
-						</a:ext>
-					  </a:extLst>
-					</p:cNvPr>
-					<p:cNvSpPr>
-				*/
-			}
-		})
-	}
+    // STEP 2: Add all Slide Master objects in the order they were given
+    if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
+        props.objects.forEach((object, idx) => {
+            const key = Object.keys(object)[0]
+            const tgt = target as PresSlide
+            if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
+            else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
+            else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
+            else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
+            else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
+            else if (MASTER_OBJECTS[key] && key === 'placeholder') {
+                const phOpts = object[key].options
+                const phText = object[key].text || ''
+                
+                // Build options for the placeholder
+                const opts: TextPropsOptions = {
+                    ...phOpts,
+                    placeholder: phOpts.name,
+                    _placeholderType: phOpts.type,
+                    _placeholderIdx: phOpts.idx !== undefined ? phOpts.idx : (100 + idx),
+                    _placeholderSz: phOpts.sz,
+                    _userDrawn: phOpts.userDrawn,
+                    objectName: phOpts.name,
+                }
+                
+                // Set margin defaults to 0 if not specified
+                if (opts.margin === undefined) {
+                    opts.margin = 0
+                }
+                
+                addTextDefinition(tgt, [{ text: phText }], opts, true)
+            }
+        })
+    }
 
-	// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
-	if (props.slideNumber && typeof props.slideNumber === 'object') target._slideNumberProps = props.slideNumber
+    // STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
+    if (props.slideNumber && typeof props.slideNumber === 'object') target._slideNumberProps = props.slideNumber
+}
+
+/**
+ * Creates a slide layout with its objects
+ * @param {SlideLayoutProps} props - layout properties
+ * @param {SlideLayout} target - target layout object
+ */
+export function createSlideLayout(props: SlideLayoutProps, target: SlideLayout): void {
+    // Add background
+    if (props.bkgd) target.bkgd = props.bkgd
+
+    // Add objects to the layout
+    if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
+        props.objects.forEach((object, idx) => {
+            const key = Object.keys(object)[0]
+            const tgt = target as PresSlide
+            
+            if (key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
+            else if (key === 'image') addImageDefinition(tgt, object[key])
+            else if (key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
+            else if (key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
+            else if (key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
+            else if (key === 'placeholder') {
+                const phOpts = object[key].options
+                const phText = object[key].text || ''
+                
+                const opts: TextPropsOptions = {
+                    ...phOpts,
+                    placeholder: phOpts.name,
+                    _placeholderType: phOpts.type,
+                    _placeholderIdx: phOpts.idx !== undefined ? phOpts.idx : (100 + idx),
+                    _placeholderSz: phOpts.sz,
+                    _userDrawn: phOpts.userDrawn,
+                    objectName: phOpts.name,
+                    margin: phOpts.margin !== undefined ? phOpts.margin : 0,
+                }
+                
+                addTextDefinition(tgt, [{ text: phText }], opts, true)
+            }
+        })
+    }
 }
 
 /**

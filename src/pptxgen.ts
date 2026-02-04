@@ -85,9 +85,11 @@ import {
 	SectionProps,
 	SlideGuide,
 	SlideLayout,
+	SlideLayoutProps,
 	SlideMasterProps,
 	SlideNumberProps,
 	TableToSlidesProps,
+	TextPropsOptions,
 	ThemeProps,
 	WriteBaseProps,
 	WriteFileProps,
@@ -747,110 +749,103 @@ export default class PptxGenJS implements IPresentationProps {
 	 * Create a new slide master [layout] for the Presentation
 	 * @param {SlideMasterProps} props - layout properties
 	 */
+    /**
+     * Configure the slide master (slideMaster1.xml)
+     * The slide master defines default styles and placeholders inherited by all layouts
+     * @param {SlideMasterProps} props - master slide properties
+     */
+    defineSlideMaster(props: SlideMasterProps): void {
+        const propsClone = JSON.parse(JSON.stringify(props))
+        
+        // Add objects to the master slide (slideMaster1.xml)
+        if (propsClone.objects && Array.isArray(propsClone.objects) && propsClone.objects.length > 0) {
+            propsClone.objects.forEach((object, idx) => {
+                const key = Object.keys(object)[0]
+                if (key === 'placeholder') {
+                    const phOpts = object[key].options
+                    const phText = object[key].text || ''
+                    
+                    const opts: TextPropsOptions = {
+                        ...phOpts,
+                        placeholder: phOpts.name,
+                        _placeholderType: phOpts.type,
+                        _placeholderIdx: phOpts.idx,
+                        _placeholderSz: phOpts.sz,
+                        _userDrawn: phOpts.userDrawn,
+                        objectName: phOpts.name,
+                        margin: phOpts.margin !== undefined ? phOpts.margin : 0,
+                    }
+                    
+                    genObj.addTextDefinition(this.masterSlide, [{ text: phText }], opts, true)
+                } else if (key === 'image') {
+                    genObj.addImageDefinition(this.masterSlide, object[key])
+                } else if (key === 'rect') {
+                    genObj.addShapeDefinition(this.masterSlide, SHAPE_TYPE.RECTANGLE, object[key])
+                } else if (key === 'text') {
+                    genObj.addTextDefinition(this.masterSlide, [{ text: object[key].text }], object[key].options, false)
+                }
+            })
+        }
+        
+        // Add background to master slide
+        if (propsClone.background || propsClone.bkgd) {
+            genObj.addBackgroundDefinition(propsClone.background || propsClone.bkgd, this.masterSlide)
+        }
+        
+        // Add guides to master slide
+        if (propsClone.guides && propsClone.guides.length > 0) {
+            this.masterSlide._guides = propsClone.guides
+        }
+        if (propsClone.guideDefinitions?.master) {
+            this.masterSlide._guides = propsClone.guideDefinitions.master
+        }
+        
+        // Add slide number properties
+        if (propsClone.slideNumber) {
+            this.masterSlide._slideNumberProps = propsClone.slideNumber
+        }
+    }
 
-	defineSlideMaster(props: SlideMasterProps): void {
-		// (ISSUE#406;PULL#1176) deep clone the props object to avoid mutating the original object
-		const propsClone = JSON.parse(JSON.stringify(props))
-		if (!propsClone.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+    /**
+     * Create a new slide layout for the Presentation
+     * Slide layouts inherit from the slide master but can have different placeholders/objects
+     * @param {SlideLayoutProps} props - layout properties
+     */
+    defineSlideLayout(props: SlideLayoutProps): void {
+        const propsClone = JSON.parse(JSON.stringify(props))
+        if (!propsClone.title) throw new Error('defineSlideLayout() object argument requires a `title` value.')
 
-		const newLayout: SlideLayout = {
-			_margin: propsClone.margin || DEF_SLIDE_MARGIN_IN,
-			_name: propsClone.title,
-			_presLayout: this.presLayout,
-			_rels: [],
-			_relsChart: [],
-			_relsMedia: [],
-			_slide: null,
-			_slideNum: 1000 + this.slideLayouts.length + 1,
-			_slideNumberProps: propsClone.slideNumber || null,
-			_slideObjects: [],
-			background: propsClone.background || null,
-			bkgd: propsClone.bkgd || null,
-		}
+        const newLayout: SlideLayout = {
+            _margin: propsClone.margin || DEF_SLIDE_MARGIN_IN,
+            _name: propsClone.title,
+            _presLayout: this.presLayout,
+            _rels: [],
+            _relsChart: [],
+            _relsMedia: [],
+            _slide: null,
+            _slideNum: 1000 + this.slideLayouts.length + 1,
+            _slideNumberProps: propsClone.slideNumber || null,
+            _slideObjects: [],
+            _layoutGuides: propsClone.guides || null,
+            background: propsClone.background || null,
+            bkgd: propsClone.bkgd || null,
+        }
 
-		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideMaster(propsClone, newLayout)
+        // Create the layout with its objects
+        genObj.createSlideLayout(propsClone, newLayout)
 
-		// STEP 2: Remove the default blank layout if this is the first user-defined layout
-		// Check if the only layout is the DEFAULT one
-		if (this.slideLayouts.length === 1 && this.slideLayouts[0]._name === DEF_PRES_LAYOUT_NAME) {
-			// Replace the DEFAULT layout with the user-defined one
-			this.slideLayouts[0] = newLayout
-		} else {
-			// Add it to layout defs
-			this.slideLayouts.push(newLayout)
-		}
+        // Remove the default blank layout if this is the first user-defined layout
+        if (this.slideLayouts.length === 1 && this.slideLayouts[0]._name === DEF_PRES_LAYOUT_NAME) {
+            this.slideLayouts[0] = newLayout
+        } else {
+            this.slideLayouts.push(newLayout)
+        }
 
-		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
-		if (propsClone.background || propsClone.bkgd) genObj.addBackgroundDefinition(propsClone.background, newLayout)
-
-		// STEP 4: Add slideNumber to master slide (if any)
-		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
-
-		// STEP 5: Add guides to appropriate levels
-		// Support both legacy `guides` property and new `guideDefinitions`
-		const guideDefs = propsClone.guideDefinitions
-		const legacyGuides = propsClone.guides
-		
-		if (guideDefs) {
-			// New multi-level guide definitions with different URIs for each level
-			// Add presentation-level guides (URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A})
-			if (guideDefs.presentation && guideDefs.presentation.length > 0) {
-				guideDefs.presentation.forEach(guide => {
-					const exists = this._guides.some(
-						g => g.position === guide.position && g.orientation === guide.orientation
-					)
-					if (!exists) {
-						this._guides.push(guide)
-					}
-				})
-			}
-			
-			// Add master-level guides (URI: {27BBF7A9-308A-43DC-89C8-2F10F3537804})
-			if (guideDefs.master && guideDefs.master.length > 0) {
-				if (!this.masterSlide._guides) {
-					this.masterSlide._guides = []
-				}
-				guideDefs.master.forEach(guide => {
-					const exists = this.masterSlide._guides.some(
-						g => g.position === guide.position && g.orientation === guide.orientation
-					)
-					if (!exists) {
-						this.masterSlide._guides.push(guide)
-					}
-				})
-			}
-			
-			// Add layout-level guides (URI: {DCECCB84-F9BA-43D5-87BE-67443E8EF086})
-			if (guideDefs.layout && guideDefs.layout.length > 0) {
-				newLayout._layoutGuides = guideDefs.layout
-			}
-		} else if (legacyGuides && legacyGuides.length > 0) {
-			// Legacy behavior: add guides to all levels with same content
-			if (!this.masterSlide._guides) {
-				this.masterSlide._guides = []
-			}
-			legacyGuides.forEach(guide => {
-				// Add to master slide
-				const existsInMaster = this.masterSlide._guides.some(
-					g => g.position === guide.position && g.orientation === guide.orientation
-				)
-				if (!existsInMaster) {
-					this.masterSlide._guides.push(guide)
-				}
-				
-				// Add to presentation-level guides
-				const existsInPres = this._guides.some(
-					g => g.position === guide.position && g.orientation === guide.orientation
-				)
-				if (!existsInPres) {
-					this._guides.push(guide)
-				}
-			})
-			// Also set layout guides for legacy behavior
-			newLayout._layoutGuides = legacyGuides
-		}
-	}
+        // Add background if specified
+        if (propsClone.background || propsClone.bkgd) {
+            genObj.addBackgroundDefinition(propsClone.background, newLayout)
+        }
+    }
 
 	// HTML-TO-SLIDES METHODS
 

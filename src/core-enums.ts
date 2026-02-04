@@ -742,14 +742,16 @@ export enum SLIDE_OBJECT_TYPES {
 	'notes' = 'notes',
 }
 export enum PLACEHOLDER_TYPES {
-	'title' = 'title',
-	'body' = 'body',
-	'image' = 'pic',
-	'chart' = 'chart',
-	'table' = 'tbl',
-	'media' = 'media',
+    'title' = 'title',
+    'body' = 'body',
+    'image' = 'pic',
+    'chart' = 'chart',
+    'table' = 'tbl',
+    'media' = 'media',
+    'footer' = 'ftr',
+    'slideNumber' = 'sldNum'
 }
-export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
+export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media' | 'ftr' | 'sldNum'
 
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options

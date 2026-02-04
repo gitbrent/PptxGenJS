@@ -121,8 +121,8 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 		const rounding = slideItemObj.options?.rounding
 
 		if (
-			(slide as PresSlide)._slideLayout !== undefined &&
-			(slide as PresSlide)._slideLayout._slideObjects !== undefined &&
+			(slide as PresSlide)._slideLayout &&
+			(slide as PresSlide)._slideLayout._slideObjects &&
 			slideItemObj.options &&
 			slideItemObj.options.placeholder
 		) {
@@ -413,22 +413,36 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				}
 
 				// A: Start SHAPE =======================================================
-				strSlideXml += '<p:sp>'
+                strSlideXml += '<p:sp>'
 
-				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`
-				// <Hyperlink>
-				if (slideItemObj.options.hyperlink?.url) {
-					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}"/>`
-				}
-				if (slideItemObj.options.hyperlink?.slide) {
-					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}" action="ppaction://hlinksldjump"/>`
-				}
-				// </Hyperlink>
-				strSlideXml += '</p:cNvPr>'
-				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options?.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += `<p:nvPr>${slideItemObj._type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
-				strSlideXml += '</p:nvSpPr><p:spPr>'
+                // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
+                strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`
+                // <Hyperlink>
+                if (slideItemObj.options.hyperlink?.url) {
+                    strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}"/>`
+                }
+                if (slideItemObj.options.hyperlink?.slide) {
+                    strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}" action="ppaction://hlinksldjump"/>`
+                }
+                // </Hyperlink>
+                strSlideXml += '</p:cNvPr>'
+                
+                // C: Add cNvSpPr with spLocks for placeholders
+                if (slideItemObj._type === SLIDE_OBJECT_TYPES.placeholder) {
+                    strSlideXml += '<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>'
+                } else {
+                    strSlideXml += '<p:cNvSpPr' + (slideItemObj.options?.isTextBox ? ' txBox="1"/>' : '/>')
+                }
+                
+                // D: Add nvPr with placeholder info and userDrawn attribute
+                if (slideItemObj._type === SLIDE_OBJECT_TYPES.placeholder) {
+                    const userDrawnAttr = slideItemObj.options._userDrawn ? ' userDrawn="1"' : ''
+                    strSlideXml += `<p:nvPr${userDrawnAttr}>${genXmlPlaceholder(slideItemObj)}</p:nvPr>`
+                } else {
+                    strSlideXml += `<p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
+                }
+                
+                strSlideXml += '</p:nvSpPr><p:spPr>'
 				strSlideXml += `<a:xfrm${locationAttr}>`
 				strSlideXml += `<a:off x="${x}" y="${y}"/>`
 				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
@@ -1080,7 +1094,7 @@ function genXmlTextRun (textObj: TextProps): string {
 function genXmlBodyProperties (slideObject: ISlideObject | TableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
-	if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options._bodyProp) {
+	if (slideObject && (slideObject._type === SLIDE_OBJECT_TYPES.text || slideObject._type === SLIDE_OBJECT_TYPES.placeholder) && slideObject.options._bodyProp) {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
@@ -1361,17 +1375,22 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
  * @returns XML
  */
 export function genXmlPlaceholder (placeholderObj: ISlideObject): string {
-	if (!placeholderObj) return ''
+    if (!placeholderObj) return ''
 
-	const placeholderIdx = placeholderObj.options?._placeholderIdx ? placeholderObj.options._placeholderIdx : ''
-	const placeholderTyp = placeholderObj.options?._placeholderType ? placeholderObj.options._placeholderType : ''
-	const placeholderType: string = placeholderTyp && PLACEHOLDER_TYPES[placeholderTyp] ? (PLACEHOLDER_TYPES[placeholderTyp]).toString() : ''
+    const placeholderIdx = placeholderObj.options?._placeholderIdx
+    const placeholderTyp = placeholderObj.options?._placeholderType ? placeholderObj.options._placeholderType : ''
+    const placeholderSz = placeholderObj.options?._placeholderSz ? placeholderObj.options._placeholderSz : ''
+    // Get the actual placeholder type value (e.g., 'title', 'body', 'ftr', 'sldNum', etc.)
+    const placeholderType: string = placeholderTyp && PLACEHOLDER_TYPES[placeholderTyp] ? PLACEHOLDER_TYPES[placeholderTyp].toString() : placeholderTyp
 
-	return `<p:ph
-		${placeholderIdx ? ' idx="' + placeholderIdx.toString() + '"' : ''}
-		${placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ` type="${placeholderType}"` : ''}
-		${placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : ''}
-		/>`
+    let xmlStr = '<p:ph'
+    if (placeholderType) xmlStr += ` type="${placeholderType}"`
+    if (placeholderSz) xmlStr += ` sz="${placeholderSz}"`
+    if (placeholderIdx !== undefined && placeholderIdx !== null) xmlStr += ` idx="${placeholderIdx}"`
+    if (placeholderObj.text && placeholderObj.text.length > 0 && placeholderObj.text[0].text) xmlStr += ' hasCustomPrompt="1"'
+    xmlStr += '/>'
+    
+    return xmlStr
 }
 
 // XML-GEN: First 6 functions create the base /ppt files
