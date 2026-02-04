@@ -428,7 +428,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		type: options._type,
 		globalId: chartId,
 		fileName: `chart${chartId}.xml`,
-		Target: `/charts/chart${chartId}.xml`,
+		Target: `/ppt/charts/chart${chartId}.xml`,
 	})
 
 	target._slideObjects.push(resultObject)

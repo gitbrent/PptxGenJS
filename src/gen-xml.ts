@@ -587,7 +587,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
                 strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
                 strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
                 strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-                strSlideXml += `   <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId${slideItemObj.chartRid}"/>`
+                strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
                 strSlideXml += '  </a:graphicData>'
                 strSlideXml += ' </a:graphic>'
                 strSlideXml += '</p:graphicFrame>'
@@ -1905,51 +1905,36 @@ export function makeXmlPresentation (pres: IPresentationProps): string {
 	}
 	strXml += '</p:defaultTextStyle>'
 
-	// STEP 6: Add Sections (if any) and guides
-	const hasSections = pres.sections && pres.sections.length > 0
-	const hasGuides = pres.guides && pres.guides.length > 0
-	
-	if (hasSections || hasGuides) {
-		strXml += '<p:extLst>'
-		
-		// Add sections
-		if (hasSections) {
-			strXml += '<p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
-			strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
-			pres.sections.forEach(sect => {
-				strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
-				sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide._slideId}"/>`))
-				strXml += '</p14:sldIdLst></p14:section>'
-			})
-			strXml += '</p14:sectionLst></p:ext>'
-		}
-		
-		// Add presentation-level guides using the p15:sldGuideLst extension
-		// Uses PRESENTATION URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A}
-		if (hasGuides) {
-			strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}">'
-			strXml += '<p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main">'
-			pres.guides.forEach((guide, idx) => {
-				const posValue = Math.round(guide.position * 9144)
-				const orient = guide.orientation === 'horizontal' ? ' orient="horz"' : ''
-				const color = guide.color ? guide.color.replace('#', '') : 'A4A3A4'
-				const guideId = guide.id || (idx + 1)
-				strXml += `<p15:guide id="${guideId}" pos="${posValue}"${orient} userDrawn="1">`
-				strXml += `<p15:clr><a:srgbClr val="${color}"/></p15:clr>`
-				strXml += '</p15:guide>'
-			})
-			strXml += '</p15:sldGuideLst></p:ext>'
-		} else if (hasSections) {
-			// Empty sldGuideLst when we have sections but no guides
-			strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
-		}
-		
-		strXml += '</p:extLst>'
-	}
+	// STEP 6: Add Sections (if any) - do NOT add presentation-level guides
+    // NOTE: Presentation-level guides (URI {EFAFB233-063F-42B5-8137-9DF3F51BA10A}) can conflict 
+    // with slideMaster guides (URI {27BBF7A9-308A-43DC-89C8-2F10F3537804}) and cause repair prompts.
+    // The official approach is to define guides only at the slideMaster level.
+    const hasSections = pres.sections && pres.sections.length > 0
+    
+    if (hasSections) {
+        strXml += '<p:extLst>'
+        
+        // Add sections
+        strXml += '<p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
+        strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
+        pres.sections.forEach(sect => {
+            strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
+            sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide._slideId}"/>`))
+            strXml += '</p14:sldIdLst></p14:section>'
+        })
+        strXml += '</p14:sectionLst></p:ext>'
+        
+        // Empty sldGuideLst when we have sections (required for compatibility)
+        strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
+        
+        strXml += '</p:extLst>'
+    }
+    // NOTE: Removed presentation-level guides (hasGuides block) - guides should be defined 
+    // only at slideMaster level using URI {27BBF7A9-308A-43DC-89C8-2F10F3537804}
 
-	// Done
-	strXml += '</p:presentation>'
-	return strXml
+    // Done
+    strXml += '</p:presentation>'
+    return strXml
 }
 
 /**
