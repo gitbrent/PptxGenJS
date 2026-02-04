@@ -776,13 +776,18 @@ export default class PptxGenJS implements IPresentationProps {
                         margin: phOpts.margin !== undefined ? phOpts.margin : 0,
                     }
                     
-                    genObj.addTextDefinition(this.masterSlide, [{ text: phText }], opts, true)
+                    // Handle text array or string
+                    const textArray = Array.isArray(phText) ? phText : [{ text: phText }]
+                    genObj.addTextDefinition(this.masterSlide, textArray, opts, true)
                 } else if (key === 'image') {
                     genObj.addImageDefinition(this.masterSlide, object[key])
                 } else if (key === 'rect') {
                     genObj.addShapeDefinition(this.masterSlide, SHAPE_TYPE.RECTANGLE, object[key])
                 } else if (key === 'text') {
-                    genObj.addTextDefinition(this.masterSlide, [{ text: object[key].text }], object[key].options, false)
+                    // Handle text array or string
+                    const txtContent = object[key].text
+                    const txtArray = Array.isArray(txtContent) ? txtContent : [{ text: txtContent }]
+                    genObj.addTextDefinition(this.masterSlide, txtArray, object[key].options, false)
                 }
             })
         }
