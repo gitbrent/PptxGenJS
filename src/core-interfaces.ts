@@ -1943,6 +1943,12 @@ export interface SlideLayoutProps {
      */
     guides?: SlideGuide[]
     /**
+     * Define guides at specific levels (presentation, master, layout)
+     * When using defineSlideLayout, only 'layout' guides will be applied
+     * Use defineSlideMaster for master and presentation level guides
+     */
+    guideDefinitions?: GuideDefinitions
+	/**
      * Objects to add to this layout (placeholders, text, images, shapes, etc.)
      */
     objects?: Array<

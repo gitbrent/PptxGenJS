@@ -815,6 +815,14 @@ export default class PptxGenJS implements IPresentationProps {
         const propsClone = JSON.parse(JSON.stringify(props))
         if (!propsClone.title) throw new Error('defineSlideLayout() object argument requires a `title` value.')
 
+        // Determine layout guides: prefer guideDefinitions.layout, then fallback to guides
+        let layoutGuides = null
+        if (propsClone.guideDefinitions?.layout) {
+            layoutGuides = propsClone.guideDefinitions.layout
+        } else if (propsClone.guides) {
+            layoutGuides = propsClone.guides
+        }
+
         const newLayout: SlideLayout = {
             _margin: propsClone.margin || DEF_SLIDE_MARGIN_IN,
             _name: propsClone.title,
@@ -826,7 +834,7 @@ export default class PptxGenJS implements IPresentationProps {
             _slideNum: 1000 + this.slideLayouts.length + 1,
             _slideNumberProps: propsClone.slideNumber || null,
             _slideObjects: [],
-            _layoutGuides: propsClone.guides || null,
+            _layoutGuides: layoutGuides,
             background: propsClone.background || null,
             bkgd: propsClone.bkgd || null,
         }
@@ -844,6 +852,19 @@ export default class PptxGenJS implements IPresentationProps {
         // Add background if specified
         if (propsClone.background || propsClone.bkgd) {
             genObj.addBackgroundDefinition(propsClone.background, newLayout)
+        }
+        
+        // Handle presentation-level guides from guideDefinitions
+        if (propsClone.guideDefinitions?.presentation && propsClone.guideDefinitions.presentation.length > 0) {
+            // Add to presentation guides (merge with existing)
+            if (!this._guides) this._guides = []
+            this._guides.push(...propsClone.guideDefinitions.presentation)
+        }
+        
+        // Handle master-level guides from guideDefinitions
+        if (propsClone.guideDefinitions?.master && propsClone.guideDefinitions.master.length > 0) {
+            if (!this.masterSlide._guides) this.masterSlide._guides = []
+            this.masterSlide._guides.push(...propsClone.guideDefinitions.master)
         }
     }
 

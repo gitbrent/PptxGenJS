@@ -79,7 +79,12 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
             else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
             else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
             else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-            else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
+            else if (MASTER_OBJECTS[key] && key === 'text') {
+                // Handle text array or string
+                const txtContent = object[key].text
+                const textArray = Array.isArray(txtContent) ? txtContent : [{ text: txtContent }]
+                addTextDefinition(tgt, textArray, object[key].options, false)
+            }
             else if (MASTER_OBJECTS[key] && key === 'placeholder') {
                 const phOpts = object[key].options
                 const phText = object[key].text || ''
@@ -100,7 +105,9 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
                     opts.margin = 0
                 }
                 
-                addTextDefinition(tgt, [{ text: phText }], opts, true)
+                // Handle text array or string
+                const textArray = Array.isArray(phText) ? phText : [{ text: phText }]
+                addTextDefinition(tgt, textArray, opts, true)
             }
         })
     }
@@ -128,7 +135,12 @@ export function createSlideLayout(props: SlideLayoutProps, target: SlideLayout):
             else if (key === 'image') addImageDefinition(tgt, object[key])
             else if (key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
             else if (key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-            else if (key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
+            else if (key === 'text') {
+                // Handle text array or string
+                const txtContent = object[key].text
+                const textArray = Array.isArray(txtContent) ? txtContent : [{ text: txtContent }]
+                addTextDefinition(tgt, textArray, object[key].options, false)
+            }
             else if (key === 'placeholder') {
                 const phOpts = object[key].options
                 const phText = object[key].text || ''
@@ -144,7 +156,9 @@ export function createSlideLayout(props: SlideLayoutProps, target: SlideLayout):
                     margin: phOpts.margin !== undefined ? phOpts.margin : 0,
                 }
                 
-                addTextDefinition(tgt, [{ text: phText }], opts, true)
+                // Handle text array or string
+                const textArray = Array.isArray(phText) ? phText : [{ text: phText }]
+                addTextDefinition(tgt, textArray, opts, true)
             }
         })
     }
