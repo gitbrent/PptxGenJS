@@ -417,20 +417,30 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 				// Margin/Padding/Inset for textboxes
 				if (!slideItemObj.options._bodyProp) slideItemObj.options._bodyProp = {}
-				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
+			// NOTE: margin property processing has been moved to gen-objects.ts addTextDefinition()
+			// Skip processing if margins are already set (would have been set in gen-objects.ts)
+			const hasSetMargins = slideItemObj.options._bodyProp.lIns !== undefined ||
+			                      slideItemObj.options._bodyProp.tIns !== undefined ||
+			                      slideItemObj.options._bodyProp.rIns !== undefined ||
+			                      slideItemObj.options._bodyProp.bIns !== undefined
+
+			if (!hasSetMargins && slideItemObj.options.margin !== undefined) {
+				if (Array.isArray(slideItemObj.options.margin)) {
+					// TRBL format: [top, right, bottom, left]
+					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[3] || 0)
+					slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin[0] || 0)
 					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
 					slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0)
-					slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0)
 				} else if (typeof slideItemObj.options.margin === 'number') {
 					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin)
 					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin)
 					slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin)
 				}
+			}
 
-				// A: Start SHAPE =======================================================
-				strSlideXml += '<p:sp>'
+			// A: Start SHAPE =======================================================
+			strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
 				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`

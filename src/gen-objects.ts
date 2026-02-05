@@ -91,8 +91,9 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
 					object[key].options._placeholderType = 'pic'
 					addImagePlaceholderDefinition(tgt, object[key].options)
 				} else {
-					// Text placeholder handling
-					addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
+					// Text placeholder handling - support both string and array of text runs
+					const textContent = Array.isArray(object[key].text) ? object[key].text : [{ text: object[key].text }]
+					addTextDefinition(tgt, textContent, object[key].options, true)
 				}
 			}
 		})
@@ -1133,6 +1134,21 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 
 			// F: Transform @deprecated props
 			if (typeof itemOpts.underline === 'boolean' && itemOpts.underline === true) itemOpts.underline = { style: 'sng' }
+		}
+			// G: Handle margin property (modern approach)
+			if (itemOpts.margin !== undefined) {
+			if (Array.isArray(itemOpts.margin)) {
+				// TRBL format: [top, right, bottom, left]
+				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.margin[3] || 0)
+				itemOpts._bodyProp.tIns = inch2Emu(itemOpts.margin[0] || 0)
+				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.margin[1] || 0)
+				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.margin[2] || 0)
+			} else if (typeof itemOpts.margin === 'number') {
+				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.margin)
+				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.margin)
+				itemOpts._bodyProp.tIns = inch2Emu(itemOpts.margin)
+				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.margin)
+			}
 		}
 
 		// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen
