@@ -83,7 +83,6 @@ import {
 	PresLayout,
 	PresSlide,
 	SectionProps,
-	SlideGuide,
 	SlideLayout,
 	SlideLayoutProps,
 	SlideMasterProps,
@@ -252,12 +251,6 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._slideLayouts
 	}
 
-	/** presentation-level guides (appear in View > Guides) */
-	private _guides: SlideGuide[]
-	public get guides(): SlideGuide[] {
-		return this._guides
-	}
-
 	private LAYOUTS: { [key: string]: PresLayout }
 
 	// Exposed class props
@@ -321,16 +314,11 @@ export default class PptxGenJS implements IPresentationProps {
 	}
 
 	constructor() {
-		const layout4x3: PresLayout = { name: 'screen4x3', width: 9144000, height: 6858000 }
-		const layout16x9: PresLayout = { name: 'screen16x9', width: 9144000, height: 5143500 }
-		const layout16x10: PresLayout = { name: 'screen16x10', width: 9144000, height: 5715000 }
-		const layoutWide: PresLayout = { name: 'custom', width: 12192000, height: 6858000 }
+		// S-P Global custom layout (13.333" x 7.5")
+		const layoutSPGlobal: PresLayout = { name: 'S-P Global EDP 2026 16-9', width: 12192000, height: 6858000 }
 		// Set available layouts
 		this.LAYOUTS = {
-			LAYOUT_4x3: layout4x3,
-			LAYOUT_16x9: layout16x9,
-			LAYOUT_16x10: layout16x10,
-			LAYOUT_WIDE: layoutWide,
+			'S-P Global EDP 2026 16-9': layoutSPGlobal,
 		}
 
 		// Core
@@ -365,7 +353,6 @@ export default class PptxGenJS implements IPresentationProps {
 		]
 		this._slides = []
 		this._sections = []
-		this._guides = []
 		this._masterSlide = {
 			addChart: null,
 			addImage: null,
@@ -421,8 +408,10 @@ export default class PptxGenJS implements IPresentationProps {
 		// 1: Add slideNumber to slideMaster1.xml
 		this.masterSlide._slideNumberProps = slideNum
 
-		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => layout._name === DEF_PRES_LAYOUT_NAME)[0]._slideNumberProps = slideNum
+		// 2: Add slideNumber to first layout (if exists)
+		if (this.slideLayouts.length > 0) {
+			this.slideLayouts[0]._slideNumberProps = slideNum
+		}
 	}
 
 	/**
@@ -749,76 +738,10 @@ export default class PptxGenJS implements IPresentationProps {
 	 * Create a new slide master [layout] for the Presentation
 	 * @param {SlideMasterProps} props - layout properties
 	 */
-    /**
-     * Configure the slide master (slideMaster1.xml)
-     * The slide master defines default styles and placeholders inherited by all layouts
-     * @param {SlideMasterProps} props - master slide properties
-     */
-    defineSlideMaster(props: SlideMasterProps): void {
-        const propsClone = JSON.parse(JSON.stringify(props))
-        
-        // Add objects to the master slide (slideMaster1.xml)
-        if (propsClone.objects && Array.isArray(propsClone.objects) && propsClone.objects.length > 0) {
-            propsClone.objects.forEach((object, idx) => {
-                const key = Object.keys(object)[0]
-                if (key === 'placeholder') {
-                    const phOpts = object[key].options
-                    const phText = object[key].text || ''
-                    
-                    const opts: TextPropsOptions = {
-                        ...phOpts,
-                        placeholder: phOpts.name,
-                        _placeholderType: phOpts.type,
-                        _placeholderIdx: phOpts.idx,
-                        _placeholderSz: phOpts.sz,
-                        _userDrawn: phOpts.userDrawn,
-                        objectName: phOpts.name,
-                        margin: phOpts.margin !== undefined ? phOpts.margin : 0,
-                    }
-                    
-                    // Handle text array or string
-                    const textArray = Array.isArray(phText) ? phText : [{ text: phText }]
-                    genObj.addTextDefinition(this.masterSlide, textArray, opts, true)
-                } else if (key === 'image') {
-                    genObj.addImageDefinition(this.masterSlide, object[key])
-                } else if (key === 'rect') {
-                    genObj.addShapeDefinition(this.masterSlide, SHAPE_TYPE.RECTANGLE, object[key])
-                } else if (key === 'text') {
-                    // Handle text array or string
-                    const txtContent = object[key].text
-                    const txtArray = Array.isArray(txtContent) ? txtContent : [{ text: txtContent }]
-                    genObj.addTextDefinition(this.masterSlide, txtArray, object[key].options, false)
-                }
-            })
-        }
-        
-        // Add background to master slide
-        if (propsClone.background || propsClone.bkgd) {
-            genObj.addBackgroundDefinition(propsClone.background || propsClone.bkgd, this.masterSlide)
-        }
-        
-        // Add guides to master slide
-        if (propsClone.guides && propsClone.guides.length > 0) {
-            this.masterSlide._guides = propsClone.guides
-        }
-        if (propsClone.guideDefinitions?.master) {
-            this.masterSlide._guides = propsClone.guideDefinitions.master
-        }
-        
-        // Add slide number properties
-        if (propsClone.slideNumber) {
-            this.masterSlide._slideNumberProps = propsClone.slideNumber
-        }
-    }
-
-    /**
-     * Create a new slide layout for the Presentation
-     * Slide layouts inherit from the slide master but can have different placeholders/objects
-     * @param {SlideLayoutProps} props - layout properties
-     */
-    defineSlideLayout(props: SlideLayoutProps): void {
-        const propsClone = JSON.parse(JSON.stringify(props))
-        if (!propsClone.title) throw new Error('defineSlideLayout() object argument requires a `title` value.')
+	defineSlideMaster(props: SlideMasterProps): void {
+		// (ISSUE#406;PULL#1176) deep clone the props object to avoid mutating the original object
+		const propsClone = JSON.parse(JSON.stringify(props))
+		if (!propsClone.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
         // Determine layout guides: prefer guideDefinitions.layout, then fallback to guides
         let layoutGuides = null
@@ -856,24 +779,22 @@ export default class PptxGenJS implements IPresentationProps {
 		// Add the new layout
 		this.slideLayouts.push(newLayout)
 
-        // Add background if specified
-        if (propsClone.background || propsClone.bkgd) {
-            genObj.addBackgroundDefinition(propsClone.background, newLayout)
-        }
-        
-        // Handle presentation-level guides from guideDefinitions
-        if (propsClone.guideDefinitions?.presentation && propsClone.guideDefinitions.presentation.length > 0) {
-            // Add to presentation guides (merge with existing)
-            if (!this._guides) this._guides = []
-            this._guides.push(...propsClone.guideDefinitions.presentation)
-        }
-        
-        // Handle master-level guides from guideDefinitions
-        if (propsClone.guideDefinitions?.master && propsClone.guideDefinitions.master.length > 0) {
-            if (!this.masterSlide._guides) this.masterSlide._guides = []
-            this.masterSlide._guides.push(...propsClone.guideDefinitions.master)
-        }
-    }
+		// STEP 2: Remove the default blank layout if this is the first user-defined layout
+		// Check if the only layout is the DEFAULT one
+		if (this.slideLayouts.length === 1 && this.slideLayouts[0]._name === DEF_PRES_LAYOUT_NAME) {
+			// Replace the DEFAULT layout with the user-defined one
+			this.slideLayouts[0] = newLayout
+		} else {
+			// Add it to layout defs
+			this.slideLayouts.push(newLayout)
+		}
+
+		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (propsClone.background || propsClone.bkgd) genObj.addBackgroundDefinition(propsClone.background, newLayout)
+
+		// STEP 4: Add slideNumber to master slide (if any)
+		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
+	}
 
 	// HTML-TO-SLIDES METHODS
 

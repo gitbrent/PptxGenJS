@@ -90,55 +90,6 @@ export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 
-/**
- * Slide guide definition for alignment
- */
-export interface SlideGuide {
-    /**
-     * Position of the guide in inches from the left (vertical guide) or top (horizontal guide)
-     */
-    position: number
-    /**
-     * Guide orientation
-     * @default 'vertical'
-     */
-    orientation?: 'vertical' | 'horizontal'
-    /**
-     * Guide color (hex without #)
-     * @default 'A4A3A4' (gray)
-     */
-    color?: string
-    /**
-     * Unique ID for the guide (auto-generated if not provided)
-     * IDs should be unique within each XML file
-     */
-    id?: number
-}
-
-/**
- * Options for defining guides at presentation, master, and layout levels
- * Each level uses a different URI in the OOXML and can have different guides
- */
-export interface GuideDefinitions {
-    /**
-     * Guides that appear in presentation.xml (visible in normal slide editing view)
-     * These are the main guides users see when editing slides
-     * Uses URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A}
-     */
-    presentation?: SlideGuide[]
-    /**
-     * Guides that appear in slideMaster1.xml (visible when editing the slide master)
-     * Uses URI: {27BBF7A9-308A-43DC-89C8-2F10F3537804}
-     */
-    master?: SlideGuide[]
-    /**
-     * Guides that appear in slideLayout.xml (visible when editing specific layouts)
-     * These are layout-specific guides
-     * Uses URI: {DCECCB84-F9BA-43D5-87BE-67443E8EF086}
-     */
-    layout?: SlideGuide[]
-}
-
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -336,7 +287,7 @@ export interface TextBaseProps {
 		/**
 		 * Indentation (space between bullet and text) (points)
 		 * @since v3.3.0
-		 * @default 27 // DEF_BULLET_MARGIN
+		 * @default 14 // DEF_BULLET_MARGIN
 		 * @example 10 // Indents text 10 points from bullet
 		 */
 		indent?: number
@@ -369,6 +320,13 @@ export interface TextBaseProps {
 		 * @example 10 // numbered bullets start with 10
 		 */
 		numberStartAt?: number
+		/**
+		 * Bullet indent levels start at
+		 * @since v1.0.0
+		 * @default 0
+		 * @example 0 // bullets start with first level indent
+		 */
+		indentLevel?: number
 
 		// DEPRECATED
 
@@ -532,9 +490,7 @@ export interface ObjectNameProps {
 	 */
 	objectName?: string
 }
-/**
- * Theme color scheme - defines the standard Office theme colors
- */
+
 export interface ThemeColorScheme {
 	/** Dark 1 - typically black for dark text */
 	dk1?: string
@@ -1180,6 +1136,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * line spacing multiple (percent)
 	 * - range: 0.0-9.99
 	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Multiple"
+	 * @default 1.0 // single line spacing
 	 * @example 1.5 // 1.5X line spacing
 	 * @since v3.5.0
 	 */
@@ -1396,7 +1353,7 @@ export interface IChartPropsBase {
 	 */
 	showLegend?: boolean
 	/**
-	 * @default false
+	 * @default true
 	 */
 	showPercent?: boolean
 	/**
@@ -1408,7 +1365,7 @@ export interface IChartPropsBase {
 	 */
 	showTitle?: boolean
 	/**
-	 * @default false
+	 * @default true
 	 */
 	showValue?: boolean
 	/**
@@ -1874,143 +1831,65 @@ export interface SlideNumberProps extends PositionProps, TextBaseProps {
 	 */
 	margin?: Margin // TODO: convert to inches in 4.0 (valid values are 0-22)
 }
-
 export interface SlideMasterProps {
-    /**
-     * Unique name for this master
-     */
-    title: string
-    background?: BackgroundProps
-    margin?: Margin
-    slideNumber?: SlideNumberProps
-    /**
-     * Slide guides for alignment (simple format - adds to all levels with same guides)
-     * These appear as dashed lines in PowerPoint's View > Guides
-     * @deprecated Use `guideDefinitions` for more control over where guides appear
-     */
-    guides?: SlideGuide[]
-    /**
-     * Define guides at specific levels (presentation, master, layout)
-     * Provides fine-grained control over guide placement in different XML files
-     * Each level can have different guides with unique IDs
-     */
-    guideDefinitions?: GuideDefinitions
-    objects?: Array< | { chart: IChartOpts }
-    | { image: ImageProps }
-    | { line: ShapeProps }
-    | { rect: ShapeProps }
-    | { text: TextProps }
-    | {
-        placeholder: {
-            options: PlaceholderProps
-            /**
-             * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-             * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-             */
-            text?: string
-        }
-    }>
-
-    /**
-     * @deprecated v3.3.0 - use `background`
-     */
-    bkgd?: string | BackgroundProps
-}
-
-/**
- * Properties for defining a slide layout (slideLayout{N}.xml)
- * Slide layouts inherit from the slide master but can have different placeholders/objects
- */
-export interface SlideLayoutProps {
-    /**
-     * Unique name for this layout (used when adding slides with masterName)
-     */
-    title: string
-    /**
-     * Background for this layout (overrides master background)
-     */
-    background?: BackgroundProps
-    /**
-     * Slide margin
-     */
-    margin?: Margin
-    /**
-     * Slide number properties for this layout
-     */
-    slideNumber?: SlideNumberProps
-    /**
-     * Layout-specific guides
-     */
-    guides?: SlideGuide[]
-    /**
-     * Define guides at specific levels (presentation, master, layout)
-     * When using defineSlideLayout, only 'layout' guides will be applied
-     * Use defineSlideMaster for master and presentation level guides
-     */
-    guideDefinitions?: GuideDefinitions
 	/**
-     * Objects to add to this layout (placeholders, text, images, shapes, etc.)
-     */
-    objects?: Array<
-        | { chart: IChartOpts }
-        | { image: ImageProps }
-        | { line: ShapeProps }
-        | { rect: ShapeProps }
-        | { text: TextProps }
-        | {
-            placeholder: {
-                options: PlaceholderProps
-                text?: string
-            }
-        }
-    >
-    /**
-     * @deprecated v3.3.0 - use `background`
-     */
-    bkgd?: string | BackgroundProps
-}
+	 * Unique name for this master
+	 */
+	title: string
+	background?: BackgroundProps
+	margin?: Margin
+	slideNumber?: SlideNumberProps
+	objects?: Array< | { chart: IChartOpts }
+	| { image: ImageProps }
+	| { line: ShapeProps }
+	| { rect: ShapeProps }
+	| { text: TextProps }
+	| {
+		placeholder: {
+			options: PlaceholderProps
+			/**
+			 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+			 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+			 */
+			text?: string
+		}
+	}>
 
+	/**
+	 * @deprecated v3.3.0 - use `background`
+	 */
+	bkgd?: string | BackgroundProps
+}
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
-    _placeholderIdx?: number
-    _placeholderType?: PLACEHOLDER_TYPE
-    _placeholderSz?: 'full' | 'half' | 'quarter'
-    _userDrawn?: boolean
+	_placeholderIdx?: number
+	_placeholderType?: PLACEHOLDER_TYPE
 
-    cx?: Coord
-    cy?: Coord
-    margin?: Margin
-    colW?: number | number[] // table
-    rowH?: number | number[] // table
+	cx?: Coord
+	cy?: Coord
+	margin?: Margin
+	colW?: number | number[] // table
+	rowH?: number | number[] // table
+	idx?: number // placeholder index
+	name?: string // placeholder name
 }
-
 export interface SlideBaseProps {
-    _bkgdImgRid?: number
-    _margin?: Margin
-    _name?: string
-    _presLayout: PresLayout
-    _rels: ISlideRel[]
-    _relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
-    _relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
-    _slideNum: number
-    _slideNumberProps?: SlideNumberProps
-    _slideObjects?: ISlideObject[]
-    /**
-     * Slide master guides for alignment (for slideMaster1.xml)
-     */
-    _guides?: SlideGuide[]
-    /**
-     * Layout-specific guides (for slideLayoutX.xml)
-     * Uses different URI than master guides
-     */
-    _layoutGuides?: SlideGuide[]
+	_bkgdImgRid?: number
+	_margin?: Margin
+	_name?: string
+	_presLayout: PresLayout
+	_rels: ISlideRel[]
+	_relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
+	_relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
+	_slideNum: number
+	_slideNumberProps?: SlideNumberProps
+	_slideObjects?: ISlideObject[]
 
-    background?: BackgroundProps
-    /**
-     * @deprecated v3.3.0 - use `background`
-     */
-    bkgd?: string | BackgroundProps
+	background?: BackgroundProps
+	/**
+	 * @deprecated v3.3.0 - use `background`
+	 */
+	bkgd?: string | BackgroundProps
 }
-
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {
 		_bkgdImgRid?: number
@@ -2087,8 +1966,4 @@ export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
-	/**
-	 * Presentation-level guides (appear in View > Guides)
-	 */
-	guides?: SlideGuide[]
 }
