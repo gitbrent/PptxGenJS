@@ -63,11 +63,6 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
 	// if (props.background || target.background) addBackgroundDefinition(props.background, target)
 	if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
 
-	// Store guides if provided
-	if (props.guides && Array.isArray(props.guides)) {
-		target._guides = props.guides
-	}
-
 	// STEP 2: Add all Slide Master objects in the order they were given
 	if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
 		props.objects.forEach((object, idx) => {
@@ -77,29 +72,28 @@ export function createSlideMaster(props: SlideMasterProps, target: SlideLayout):
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
+			else if (MASTER_OBJECTS[key] && key === 'text') {
+    			// Support both string and array of text runs for slide master text objects
+    			const textContent = Array.isArray(object[key].text) ? object[key].text : [{ text: object[key].text }]
+    			addTextDefinition(tgt, textContent, object[key].options, false)
+			}
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
-				// TODO: 20180820: Check for existing `name`?
+				// Remap name to placeholder for internal handling
 				object[key].options.placeholder = object[key].options.name
-				delete object[key].options.name // remap name for earier handling internally
+				delete object[key].options.name
 				object[key].options._placeholderType = object[key].options.type
-				delete object[key].options.type // remap name for earier handling internally
+				delete object[key].options.type
 				object[key].options._placeholderIdx = 100 + idx
-				addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
-				// TODO: ISSUE#599 - only text is suported now (add more below)
-				// else if (object[key].image) addImageDefinition(tgt, object[key].image)
-				/* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
-					<p:sp>
-				  <p:nvSpPr>
-					<p:cNvPr id="7" name="Picture Placeholder 6">
-					  <a:extLst>
-						<a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
-						  <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{CE1AE45D-8641-0F4F-BDB5-080E69CCB034}"/>
-						</a:ext>
-					  </a:extLst>
-					</p:cNvPr>
-					<p:cNvSpPr>
-				*/
+				
+				// Check if this is an image/picture placeholder
+				if (object[key].options._placeholderType === 'pic' || object[key].options._placeholderType === 'image') {
+					// Normalize type to 'pic' for PowerPoint compatibility
+					object[key].options._placeholderType = 'pic'
+					addImagePlaceholderDefinition(tgt, object[key].options)
+				} else {
+					// Text placeholder handling
+					addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
+				}
 			}
 		})
 	}
@@ -396,6 +390,28 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps): void {
 		imageRid: null,
 		hyperlink: null,
 	}
+	
+	// Check if targeting a placeholder - if so, inherit position/size from the placeholder definition
+	if (opt.placeholder && target._slideLayout) {
+		const placeholderObj = target._slideLayout._slideObjects?.find(
+			(obj: ISlideObject) => obj._type === SLIDE_OBJECT_TYPES.placeholder && 
+				   obj.options?.placeholder === opt.placeholder &&
+				   obj.options?._placeholderType === 'pic'
+		)
+		
+		if (placeholderObj && placeholderObj.options) {
+			// Inherit position and size from placeholder if not explicitly provided
+			const phOpts = placeholderObj.options;
+			if (opt.x === undefined) { opt.x = phOpts.x; }
+			if (opt.y === undefined) { opt.y = phOpts.y; }
+			if (opt.w === undefined) { opt.w = phOpts.w; }
+			if (opt.h === undefined) { opt.h = phOpts.h; }
+			// Store placeholder index for XML generation
+			(opt as ObjectOptions)._placeholderIdx = phOpts._placeholderIdx;
+			(opt as ObjectOptions)._placeholderType = 'pic';
+		}
+	}
+	
 	// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
 	const intPosX = opt.x || 0
 	const intPosY = opt.y || 0
@@ -458,6 +474,8 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps): void {
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
 		sizing,
 		placeholder: opt.placeholder,
+		_placeholderIdx: (opt as ObjectOptions)._placeholderIdx,
+		_placeholderType: (opt as ObjectOptions)._placeholderType,
 		rotate: opt.rotate || 0,
 		flipV: opt.flipV || false,
 		flipH: opt.flipH || false,
@@ -526,6 +544,29 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps): void {
 	}
 
 	// STEP 6: Add object to slide
+	target._slideObjects.push(newObject)
+}
+
+/**
+ * Adds an image placeholder to a slide master/layout definition.
+ * This creates a placeholder that can be filled with an image later using addImage({ placeholder: 'name', ... })
+ * @param {PresSlide} target - slide/layout that the placeholder should be added to
+ * @param {ObjectOptions} opts - placeholder options including position (x, y, w, h) and name
+ */
+export function addImagePlaceholderDefinition(target: PresSlide, opts: ObjectOptions): void {
+	const newObject: ISlideObject = {
+		_type: SLIDE_OBJECT_TYPES.placeholder,
+		image: null,
+		imageRid: null,
+		text: null,
+		hyperlink: null,
+		options: {
+			...opts,
+			objectName: opts.placeholder ? `Picture Placeholder ${opts.placeholder}` : `Picture Placeholder ${opts._placeholderIdx}`,
+		},
+	}
+
+	// Add placeholder to slide objects
 	target._slideObjects.push(newObject)
 }
 
@@ -1071,7 +1112,13 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			// D: Transform text options to bodyProperties as thats how we build XML
 			itemOpts._bodyProp = itemOpts._bodyProp || {}
 			itemOpts._bodyProp.autoFit = itemOpts.autoFit || false // DEPRECATED: (3.3.0) If true, shape will collapse to text size (Fit To shape)
-			itemOpts._bodyProp.anchor = !itemOpts.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
+
+			// D.1: Process valign FIRST before setting default anchor (fixes issue with placeholders not respecting valign)
+			if ((itemOpts.valign || '').toLowerCase().indexOf('b') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.b
+			else if ((itemOpts.valign || '').toLowerCase().indexOf('m') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.ctr
+			else if ((itemOpts.valign || '').toLowerCase().indexOf('t') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.t
+			else itemOpts._bodyProp.anchor = !itemOpts.placeholder ? TEXT_VALIGN.ctr : null // Set default only if valign not explicitly provided
+
 			itemOpts._bodyProp.vert = itemOpts.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 			itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true
 
@@ -1095,9 +1142,10 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			else if ((itemOpts.align || '').toLowerCase().indexOf('r') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.right
 			else if ((itemOpts.align || '').toLowerCase().indexOf('j') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.justify
 
-			if ((itemOpts.valign || '').toLowerCase().indexOf('b') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.b
-			else if ((itemOpts.valign || '').toLowerCase().indexOf('m') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.ctr
-			else if ((itemOpts.valign || '').toLowerCase().indexOf('t') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.t
+			// REMOVED: valign processing moved to section D.1 above
+			// if ((itemOpts.valign || '').toLowerCase().indexOf('b') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.b
+			// else if ((itemOpts.valign || '').toLowerCase().indexOf('m') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.ctr
+			// else if ((itemOpts.valign || '').toLowerCase().indexOf('t') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.t
 		}
 
 		// STEP 3: ROBUST: Set rational values for some shadow props if needed

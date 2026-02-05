@@ -16,15 +16,15 @@ export const LINEH_MODIFIER = 1.67 // AKA: Golden Ratio Typography
 export const DEF_BULLET_MARGIN = 14
 export const DEF_CELL_BORDER: BorderProps = { type: 'solid', color: 'BBBDBF', pt: 0.25 }
 export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style // DEPRECATED 3.8.0
-export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.04, 0.05, 0.02]
-export const DEF_CHART_BORDER: BorderProps = { type: 'solid', color: 'BBBDBF', pt: 0.25 }
-export const DEF_CHART_GRIDLINE: OptsChartGridLine = { color: '888888', style: 'solid', size: 1, cap: 'flat' }
+export const DEF_CELL_MARGIN_IN: [number, number, number, number] = [0.05, 0.04, 0.05, 0.02] // "Normal" margins in PPT-2021 ("Narrow" is `0.05` for all 4)
+export const DEF_CHART_BORDER: BorderProps = { type: 'none' }
+export const DEF_CHART_GRIDLINE: OptsChartGridLine = { color: 'D9D9D9', style: 'solid', size: 0.75, cap: 'flat' }
 export const DEF_FONT_COLOR = '000000'
 export const DEF_FONT_SIZE = 12
-export const DEF_FONT_TITLE_SIZE = 18
-export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
-export const DEF_PRES_LAYOUT_NAME = 'DEFAULT'
-export const DEF_SHAPE_LINE_COLOR = '333333'
+export const DEF_FONT_TITLE_SIZE = 24
+export const DEF_PRES_LAYOUT = 'S-P Global EDP 2026 16-9'
+export const DEF_PRES_LAYOUT_NAME = 'S-P Global EDP 2026 16-9'
+export const DEF_SHAPE_LINE_COLOR = 'FFFFFF'
 export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_SLIDE_BKGD = 'FFFFFF'
 export const DEF_SLIDE_MARGIN_IN: [number, number, number, number] = [0, 0, 0, 0] // TRBL-style
@@ -44,42 +44,48 @@ export type SCHEME_COLORS = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2
 
 export const LETTERS: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 export const BARCHART_COLORS: string[] = [
-	'C0504D',
-	'4F81BD',
-	'9BBB59',
-	'8064A2',
-	'4BACC6',
-	'F79646',
-	'628FC6',
-	'C86360',
-	'C0504D',
-	'4F81BD',
-	'9BBB59',
-	'8064A2',
-	'4BACC6',
-	'F79646',
-	'628FC6',
-	'C86360'
+	'006D89',
+	'DC7900',
+	'B92051',
+	'501555',
+	'0F9E7A',
+	'00495B',
+	'C94100',
+	'1D3BAA',
+	'CD6083',
+	'125E1F',
+	'929497',
+	'782080',
+	'7284CA',
+	'9D5700',
+	'B280B6',
+	'566CBF',
+	'6CABBB',
+	'C18B28',
+	'3C9D4D',
+	'6B0F01'
 ]
 export const PIECHART_COLORS: string[] = [
-	'5DA5DA',
-	'FAA43A',
-	'60BD68',
-	'F17CB0',
-	'B2912F',
-	'B276B2',
-	'DECF3F',
-	'F15854',
-	'A7A7A7',
-	'5DA5DA',
-	'FAA43A',
-	'60BD68',
-	'F17CB0',
-	'B2912F',
-	'B276B2',
-	'DECF3F',
-	'F15854',
-	'A7A7A7',
+	'006D89',
+	'DC7900',
+	'B92051',
+	'501555',
+	'0F9E7A',
+	'00495B',
+	'C94100',
+	'1D3BAA',
+	'CD6083',
+	'125E1F',
+	'929497',
+	'782080',
+	'7284CA',
+	'9D5700',
+	'B280B6',
+	'566CBF',
+	'6CABBB',
+	'C18B28',
+	'3C9D4D',
+	'6B0F01'
 ]
 export enum TEXT_HALIGN {
 	'left' = 'left',
@@ -758,9 +764,9 @@ export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'med
  */
 export enum BULLET_TYPES {
 	'DEFAULT' = '&#x2022;',
-	'CHECK' = '&#x2713;',
-	'STAR' = '&#x2605;',
-	'TRIANGLE' = '&#x25B6;',
+	'SECOND' = '&#x2013;',
+	'THIRD' = '&#x2022;',
+	'FOURTH' = '&#x2013;',
 }
 
 // IMAGES (base64)

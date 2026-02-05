@@ -83,7 +83,6 @@ import {
 	PresLayout,
 	PresSlide,
 	SectionProps,
-	SlideGuide,
 	SlideLayout,
 	SlideMasterProps,
 	SlideNumberProps,
@@ -250,12 +249,6 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._slideLayouts
 	}
 
-	/** presentation-level guides (appear in View > Guides) */
-	private _guides: SlideGuide[]
-	public get guides(): SlideGuide[] {
-		return this._guides
-	}
-
 	private LAYOUTS: { [key: string]: PresLayout }
 
 	// Exposed class props
@@ -319,16 +312,11 @@ export default class PptxGenJS implements IPresentationProps {
 	}
 
 	constructor() {
-		const layout4x3: PresLayout = { name: 'screen4x3', width: 9144000, height: 6858000 }
-		const layout16x9: PresLayout = { name: 'screen16x9', width: 9144000, height: 5143500 }
-		const layout16x10: PresLayout = { name: 'screen16x10', width: 9144000, height: 5715000 }
-		const layoutWide: PresLayout = { name: 'custom', width: 12192000, height: 6858000 }
+		// S-P Global custom layout (13.333" x 7.5")
+		const layoutSPGlobal: PresLayout = { name: 'S-P Global EDP 2026 16-9', width: 12192000, height: 6858000 }
 		// Set available layouts
 		this.LAYOUTS = {
-			LAYOUT_4x3: layout4x3,
-			LAYOUT_16x9: layout16x9,
-			LAYOUT_16x10: layout16x10,
-			LAYOUT_WIDE: layoutWide,
+			'S-P Global EDP 2026 16-9': layoutSPGlobal,
 		}
 
 		// Core
@@ -363,7 +351,6 @@ export default class PptxGenJS implements IPresentationProps {
 		]
 		this._slides = []
 		this._sections = []
-		this._guides = []
 		this._masterSlide = {
 			addChart: null,
 			addImage: null,
@@ -419,8 +406,10 @@ export default class PptxGenJS implements IPresentationProps {
 		// 1: Add slideNumber to slideMaster1.xml
 		this.masterSlide._slideNumberProps = slideNum
 
-		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => layout._name === DEF_PRES_LAYOUT_NAME)[0]._slideNumberProps = slideNum
+		// 2: Add slideNumber to first layout (if exists)
+		if (this.slideLayouts.length > 0) {
+			this.slideLayouts[0]._slideNumberProps = slideNum
+		}
 	}
 
 	/**
@@ -747,7 +736,6 @@ export default class PptxGenJS implements IPresentationProps {
 	 * Create a new slide master [layout] for the Presentation
 	 * @param {SlideMasterProps} props - layout properties
 	 */
-
 	defineSlideMaster(props: SlideMasterProps): void {
 		// (ISSUE#406;PULL#1176) deep clone the props object to avoid mutating the original object
 		const propsClone = JSON.parse(JSON.stringify(props))
@@ -786,70 +774,6 @@ export default class PptxGenJS implements IPresentationProps {
 
 		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
-
-		// STEP 5: Add guides to appropriate levels
-		// Support both legacy `guides` property and new `guideDefinitions`
-		const guideDefs = propsClone.guideDefinitions
-		const legacyGuides = propsClone.guides
-		
-		if (guideDefs) {
-			// New multi-level guide definitions with different URIs for each level
-			// Add presentation-level guides (URI: {EFAFB233-063F-42B5-8137-9DF3F51BA10A})
-			if (guideDefs.presentation && guideDefs.presentation.length > 0) {
-				guideDefs.presentation.forEach(guide => {
-					const exists = this._guides.some(
-						g => g.position === guide.position && g.orientation === guide.orientation
-					)
-					if (!exists) {
-						this._guides.push(guide)
-					}
-				})
-			}
-			
-			// Add master-level guides (URI: {27BBF7A9-308A-43DC-89C8-2F10F3537804})
-			if (guideDefs.master && guideDefs.master.length > 0) {
-				if (!this.masterSlide._guides) {
-					this.masterSlide._guides = []
-				}
-				guideDefs.master.forEach(guide => {
-					const exists = this.masterSlide._guides.some(
-						g => g.position === guide.position && g.orientation === guide.orientation
-					)
-					if (!exists) {
-						this.masterSlide._guides.push(guide)
-					}
-				})
-			}
-			
-			// Add layout-level guides (URI: {DCECCB84-F9BA-43D5-87BE-67443E8EF086})
-			if (guideDefs.layout && guideDefs.layout.length > 0) {
-				newLayout._layoutGuides = guideDefs.layout
-			}
-		} else if (legacyGuides && legacyGuides.length > 0) {
-			// Legacy behavior: add guides to all levels with same content
-			if (!this.masterSlide._guides) {
-				this.masterSlide._guides = []
-			}
-			legacyGuides.forEach(guide => {
-				// Add to master slide
-				const existsInMaster = this.masterSlide._guides.some(
-					g => g.position === guide.position && g.orientation === guide.orientation
-				)
-				if (!existsInMaster) {
-					this.masterSlide._guides.push(guide)
-				}
-				
-				// Add to presentation-level guides
-				const existsInPres = this._guides.some(
-					g => g.position === guide.position && g.orientation === guide.orientation
-				)
-				if (!existsInPres) {
-					this._guides.push(guide)
-				}
-			})
-			// Also set layout guides for legacy behavior
-			newLayout._layoutGuides = legacyGuides
-		}
 	}
 
 	// HTML-TO-SLIDES METHODS
