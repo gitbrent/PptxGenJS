@@ -334,6 +334,10 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	options.showLegend = typeof options.showLegend !== 'undefined' ? options.showLegend : false
 	options.showPercent = typeof options.showPercent !== 'undefined' ? options.showPercent : true
 	options.showTitle = typeof options.showTitle !== 'undefined' ? options.showTitle : false
+	// Ensure chart title is set when showTitle is enabled (fallback to 'Chart Title' if not provided)
+	if (options.showTitle && !options.title) {
+		options.title = 'Chart Title'
+	}
 	options.showValue = typeof options.showValue !== 'undefined' ? options.showValue : false
 	options.showLeaderLines = typeof options.showLeaderLines !== 'undefined' ? options.showLeaderLines : false
 	options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true

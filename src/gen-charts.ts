@@ -1902,11 +1902,12 @@ function makeSerAxis (opts: IChartOptsLib, axisId: string, valAxisId: string): s
 }
 
 /**
- * Create char title elements
+ * Create chart title elements
  * @param {IChartPropsTitle} opts - options
  * @return {string} XML `<c:title>`
  */
 function genXmlTitle (opts: IChartPropsTitle, chartX?: number, chartY?: number): string {
+	const titleText = opts.title || ''
 	const align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : '<a:pPr>'
 	const rotate = opts.titleRotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.titleRotate)}"/>` : '<a:bodyPr/>' // don't specify rotation to get default (ex. vertical for cat axis)
 	const sizeAttr = opts.fontSize ? `sz="${Math.round(opts.fontSize * 100)}"` : '' // only set the font size if specified.  Powerpoint will handle the default size
@@ -1943,7 +1944,7 @@ function genXmlTitle (opts: IChartPropsTitle, chartX?: number, chartY?: number):
               <a:solidFill>${createColorElement(opts.color || DEF_FONT_COLOR)}</a:solidFill>
               <a:latin typeface="${opts.fontFace || 'Arial'}"/>
             </a:rPr>
-            <a:t>${encodeXmlEntities(opts.title) || ''}</a:t>
+            <a:t>${encodeXmlEntities(titleText)}</a:t>
           </a:r>
         </a:p>
         </c:rich>
