@@ -292,7 +292,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 			}
 		}
 	}
-	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors || !options.dataLabelBkgrdColors ? options.dataLabelBkgrdColors : false
+	options.dataLabelBkgrdColors = typeof options.dataLabelBkgrdColors !== 'undefined' ? options.dataLabelBkgrdColors : false
 	if (!['b', 'l', 'r', 't', 'tr'].includes(options.legendPos || '')) options.legendPos = 'r'
 
 	// 3D bar: ST_Shape
@@ -325,24 +325,24 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	correctShadowOptions(options.shadow)
 
 	// C: Options: plotArea
-	options.showDataTable = options.showDataTable || !options.showDataTable ? options.showDataTable : false
-	options.showDataTableHorzBorder = options.showDataTableHorzBorder || !options.showDataTableHorzBorder ? options.showDataTableHorzBorder : true
-	options.showDataTableVertBorder = options.showDataTableVertBorder || !options.showDataTableVertBorder ? options.showDataTableVertBorder : true
-	options.showDataTableOutline = options.showDataTableOutline || !options.showDataTableOutline ? options.showDataTableOutline : true
-	options.showDataTableKeys = options.showDataTableKeys || !options.showDataTableKeys ? options.showDataTableKeys : true
-	options.showLabel = options.showLabel || !options.showLabel ? options.showLabel : false
-	options.showLegend = options.showLegend || !options.showLegend ? options.showLegend : false
-	options.showPercent = options.showPercent || !options.showPercent ? options.showPercent : true
-	options.showTitle = options.showTitle || !options.showTitle ? options.showTitle : false
-	options.showValue = options.showValue || !options.showValue ? options.showValue : false
-	options.showLeaderLines = options.showLeaderLines || !options.showLeaderLines ? options.showLeaderLines : false
+	options.showDataTable = typeof options.showDataTable !== 'undefined' ? options.showDataTable : false
+	options.showDataTableHorzBorder = typeof options.showDataTableHorzBorder !== 'undefined' ? options.showDataTableHorzBorder : true
+	options.showDataTableVertBorder = typeof options.showDataTableVertBorder !== 'undefined' ? options.showDataTableVertBorder : true
+	options.showDataTableOutline = typeof options.showDataTableOutline !== 'undefined' ? options.showDataTableOutline : true
+	options.showDataTableKeys = typeof options.showDataTableKeys !== 'undefined' ? options.showDataTableKeys : true
+	options.showLabel = typeof options.showLabel !== 'undefined' ? options.showLabel : false
+	options.showLegend = typeof options.showLegend !== 'undefined' ? options.showLegend : false
+	options.showPercent = typeof options.showPercent !== 'undefined' ? options.showPercent : true
+	options.showTitle = typeof options.showTitle !== 'undefined' ? options.showTitle : false
+	options.showValue = typeof options.showValue !== 'undefined' ? options.showValue : false
+	options.showLeaderLines = typeof options.showLeaderLines !== 'undefined' ? options.showLeaderLines : false
 	options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true
 	options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true
 	options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true
 
 	options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30
 	options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30
-	options.v3DRAngAx = options.v3DRAngAx || !options.v3DRAngAx ? options.v3DRAngAx : true
+	options.v3DRAngAx = typeof options.v3DRAngAx !== 'undefined' ? options.v3DRAngAx : true
 	options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30
 
 	// D: Options: chart
