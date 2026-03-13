@@ -450,6 +450,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps): void {
 		w: intWidth || 1,
 		h: intHeight || 1,
 		altText: opt.altText || '',
+		comment: opt.comment,
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
 		sizing,
 		placeholder: opt.placeholder,
@@ -570,6 +571,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps): void {
 	slideData.options.y = intPosY
 	slideData.options.w = intSizeX
 	slideData.options.h = intSizeY
+	slideData.options.comment = opt.comment
 	slideData.options.objectName = objectName
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)

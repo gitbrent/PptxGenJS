@@ -480,6 +480,7 @@ export default class PptxGenJS implements IPresentationProps {
 		const arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
 		const zip = new JSZip()
+		const commentsPresent = genXml.hasComments(this.slides)
 
 		// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
 		this.slides.forEach(slide => {
@@ -510,11 +511,13 @@ export default class PptxGenJS implements IPresentationProps {
 			zip.folder('ppt/theme')
 			zip.folder('ppt/notesMasters').folder('_rels')
 			zip.folder('ppt/notesSlides').folder('_rels')
+			if (commentsPresent) zip.folder('ppt/comments')
 			zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)) // TODO: pass only `this` like below! 20200206
 			zip.file('_rels/.rels', genXml.makeXmlRootRels())
 			zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company)) // TODO: pass only `this` like below! 20200206
 			zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision)) // TODO: pass only `this` like below! 20200206
 			zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
+			if (commentsPresent) zip.file('ppt/authors.xml', genXml.makeXmlCommentAuthors(this.slides, this.author))
 			zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme(this))
 			zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this))
 			zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
@@ -529,6 +532,7 @@ export default class PptxGenJS implements IPresentationProps {
 			this.slides.forEach((slide, idx) => {
 				zip.file(`ppt/slides/slide${idx + 1}.xml`, genXml.makeXmlSlide(slide))
 				zip.file(`ppt/slides/_rels/slide${idx + 1}.xml.rels`, genXml.makeXmlSlideRel(this.slides, this.slideLayouts, idx + 1))
+				if (genXml.slideHasComments(slide)) zip.file(`ppt/comments/${genXml.getCommentPartNameForSlide(slide, idx + 1)}`, genXml.makeXmlComments(this.slides, idx + 1, this.author))
 				// Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
 				zip.file(`ppt/notesSlides/notesSlide${idx + 1}.xml`, genXml.makeXmlNotesSlide(slide))
 				zip.file(`ppt/notesSlides/_rels/notesSlide${idx + 1}.xml.rels`, genXml.makeXmlNotesSlideRel(idx + 1))

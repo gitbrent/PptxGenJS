@@ -155,6 +155,81 @@ pres.writeFile();
 
 That's really all there is to it!
 
+### Slide Notes
+
+Syntax
+
+```javascript
+slide.addNotes("TEXT");
+```
+
+Example: JavaScript
+
+```javascript
+let pptx = new PptxGenJS();
+let slide = pptx.addSlide();
+
+slide.addText("Hello World!", { x: 1.5, y: 1.5, fontSize: 18, color: "363636" });
+slide.addNotes("This is my favorite slide!");
+
+pptx.writeFile({ fileName: "Sample Speaker Notes.pptx" });
+```
+
+### Native PowerPoint Comments
+
+Add native PowerPoint review comments directly to supported slide objects. Comment badges stay attached to the element in PowerPoint.
+
+Supported objects: `addText()`, `addShape()`, `addTable()`, and `addImage()`.
+
+Syntax
+
+```javascript
+slide.addText("Quarterly Results", {
+	x: 1.0,
+	y: 1.0,
+	w: 3.5,
+	h: 0.5,
+	comment: "Confirm the final wording before sending to legal."
+});
+```
+
+```javascript
+slide.addShape(pptx.ShapeType.rect, {
+	x: 1.0,
+	y: 2.0,
+	w: 3.0,
+	h: 1.0,
+	comment: {
+		text: "Use the approved Q4 color palette.",
+		authorName: "Alex Smith",
+		authorInitials: "AS"
+	}
+});
+```
+
+Example: JavaScript
+
+```javascript
+let pptx = new PptxGenJS();
+let slide = pptx.addSlide();
+
+slide.addText("Hello World!", {
+	x: 1.5,
+	y: 1.5,
+	fontSize: 18,
+	color: "363636",
+	comment: {
+		text: "This title should match the final cover wording.",
+		authorName: "Design Review",
+		authorInitials: "DR"
+	}
+});
+
+slide.addNotes("This is my favorite slide!");
+
+pptx.writeFile({ fileName: "Sample Comments.pptx" });
+```
+
 ## 💥 HTML-to-PowerPoint Magic
 
 Convert any HTML `<table>` into fully formatted PowerPoint slides - automatically and effortlessly.

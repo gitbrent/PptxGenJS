@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-06-25T23:35:35.098Z */
+/* PptxGenJS 4.0.1 @ 2026-03-13T23:42:18.203Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -1983,6 +1983,7 @@ function addImageDefinition(target, opt) {
         w: intWidth || 1,
         h: intHeight || 1,
         altText: opt.altText || '',
+        comment: opt.comment,
         rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
         sizing,
         placeholder: opt.placeholder,
@@ -2096,6 +2097,7 @@ function addMediaDefinition(target, opt) {
     slideData.options.y = intPosY;
     slideData.options.w = intSizeX;
     slideData.options.h = intSizeY;
+    slideData.options.comment = opt.comment;
     slideData.options.objectName = objectName;
     // STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
     /**
@@ -5051,6 +5053,188 @@ function getSizeFromImage (inImgUrl: string): { width: number, height: number } 
 /**
  * PptxGenJS: XML Generation
  */
+const COMMENT_AUTHOR_LIST_NAMESPACE = 'http://schemas.microsoft.com/office/powerpoint/2018/8/main';
+const COMMENT_MARKER_NAMESPACE = 'http://schemas.microsoft.com/office/powerpoint/2013/main/command';
+const COMMENT_DRAWING_MARKER_NAMESPACE = 'http://schemas.microsoft.com/office/drawing/2013/main/command';
+const COMMENT_AUTHORS_REL_TYPE = 'http://schemas.microsoft.com/office/2018/10/relationships/authors';
+const COMMENT_REL_TYPE = 'http://schemas.microsoft.com/office/2018/10/relationships/comments';
+const COMMENT_AUTHORS_CONTENT_TYPE = 'application/vnd.ms-powerpoint.authors+xml';
+const COMMENT_CONTENT_TYPE = 'application/vnd.ms-powerpoint.comments+xml';
+const COMMENT_REL_EXT_URI = '{6950BFC3-D8DA-4A85-94F7-54DA5524770B}';
+const SLIDE_CREATION_ID_EXT_URI = '{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}';
+const OBJECT_CREATION_ID_EXT_URI = '{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}';
+const COMMENT_PROVIDER_ID = 'PptxGenJS';
+function hashSeed(seed) {
+    let hash = 2166136261;
+    for (let i = 0; i < seed.length; i++) {
+        hash ^= seed.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+}
+function hashSeedHex(seed, length) {
+    let hex = '';
+    let salt = 0;
+    while (hex.length < length) {
+        hex += hashSeed(`${seed}:${salt++}`).toString(16).toUpperCase().padStart(8, '0');
+    }
+    return hex.slice(0, length);
+}
+function makeSeededGuid(seed) {
+    const part1 = hashSeedHex(`${seed}:1`, 8);
+    const part2 = hashSeedHex(`${seed}:2`, 4);
+    const part3 = `4${hashSeedHex(`${seed}:3`, 3)}`;
+    const part4Seed = hashSeedHex(`${seed}:4`, 4);
+    const part4 = `${((parseInt(part4Seed[0], 16) & 0x3) | 0x8).toString(16).toUpperCase()}${part4Seed.slice(1)}`;
+    const part5 = hashSeedHex(`${seed}:5`, 12);
+    return `{${part1}-${part2}-${part3}-${part4}-${part5}}`;
+}
+function getSlideCreationId(slide) {
+    return (0xffd00000 + slide._slideId) >>> 0;
+}
+function getSlideCommentPartName(slide, slideNumber) {
+    return `modernComment_${slideNumber + 99}_${getSlideCreationId(slide).toString(16).toUpperCase().padStart(8, '0')}.xml`;
+}
+function getSlideMaxRelId(slide) {
+    let lastRid = 0;
+    slide._rels.forEach(rel => { lastRid = Math.max(lastRid, rel.rId); });
+    (slide._relsChart || []).forEach(rel => { lastRid = Math.max(lastRid, rel.rId); });
+    (slide._relsMedia || []).forEach(rel => { lastRid = Math.max(lastRid, rel.rId); });
+    return lastRid;
+}
+function getSlideCommentRelId(slide) {
+    return getSlideMaxRelId(slide) + 2;
+}
+function canUseCommentAnchors(slide) {
+    return typeof slide._slideId === 'number' && typeof slide._slideNum === 'number';
+}
+function getSlideObjectCreationId(slide, objectIndex) {
+    return makeSeededGuid(`comment-anchor:${slide._slideId}:${objectIndex}`);
+}
+function getSlideObjectCommentAnchor(slide, slideItem, objectIndex, tableIndex) {
+    const creationId = getSlideObjectCreationId(slide, objectIndex);
+    switch (slideItem._type) {
+        case SLIDE_OBJECT_TYPES.text:
+        case SLIDE_OBJECT_TYPES.placeholder:
+            return { markerTag: 'spMk', objectId: objectIndex + 2, creationId };
+        case SLIDE_OBJECT_TYPES.image:
+            return { markerTag: 'picMk', objectId: objectIndex + 2, creationId };
+        case SLIDE_OBJECT_TYPES.media:
+            return typeof slideItem.mediaRid === 'number' ? { markerTag: 'picMk', objectId: slideItem.mediaRid + 2, creationId } : null;
+        case SLIDE_OBJECT_TYPES.table:
+            return { markerTag: 'graphicFrameMk', objectId: objectIndex + 2, creationId };
+        case SLIDE_OBJECT_TYPES.chart:
+            return { markerTag: 'graphicFrameMk', objectId: objectIndex + 2, creationId };
+        default:
+            return null;
+    }
+}
+function makeSlideObjectCreationIdXml(slide, objectIndex) {
+    return `<a:extLst><a:ext uri="${OBJECT_CREATION_ID_EXT_URI}"><a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="${getSlideObjectCreationId(slide, objectIndex)}"/></a:ext></a:extLst>`;
+}
+function appendXmlBeforeClosingTag(xml, tagName, content) {
+    const closingTag = `</${tagName}>`;
+    return xml.includes(closingTag) ? xml.replace(closingTag, `${content}${closingTag}`) : xml;
+}
+function deriveCommentInitials(name) {
+    const nameParts = name.split(/\s+/).filter(Boolean);
+    const initials = nameParts.slice(0, 2).map(part => part[0]).join('').toUpperCase();
+    return initials || name.slice(0, 2).toUpperCase() || 'PP';
+}
+function normalizeCommentDate(date) {
+    const parsedDate = date instanceof Date ? date : date ? new Date(date) : new Date();
+    return (isNaN(parsedDate.valueOf()) ? new Date() : parsedDate).toISOString().replace(/Z$/, '');
+}
+function normalizeObjectComment(comment) {
+    var _a;
+    if (!comment)
+        return null;
+    if (typeof comment === 'string') {
+        const text = comment.toString().trim();
+        return text ? { text } : null;
+    }
+    const text = (_a = comment.text) === null || _a === void 0 ? void 0 : _a.toString().trim();
+    if (!text)
+        return null;
+    return Object.assign(Object.assign({}, comment), { text });
+}
+function resolvePresentationComments(slides, defaultAuthorName) {
+    const authors = [];
+    const commentsBySlide = new Map();
+    const authorLookup = new Map();
+    const fallbackAuthorName = (defaultAuthorName === null || defaultAuthorName === void 0 ? void 0 : defaultAuthorName.trim()) || 'PptxGenJS';
+    slides.forEach((slide, slideIndex) => {
+        slide._slideObjects.forEach((slideItem, objectIndex) => {
+            var _a, _b, _c;
+            const comment = normalizeObjectComment((_a = slideItem.options) === null || _a === void 0 ? void 0 : _a.comment);
+            const anchor = getSlideObjectCommentAnchor(slide, slideItem, objectIndex);
+            if (slideItem._type === SLIDE_OBJECT_TYPES.table)
+                ;
+            if (!comment || !anchor)
+                return;
+            const authorName = ((_b = comment.authorName) === null || _b === void 0 ? void 0 : _b.trim()) || fallbackAuthorName;
+            const authorInitials = ((_c = comment.authorInitials) === null || _c === void 0 ? void 0 : _c.trim()) || deriveCommentInitials(authorName);
+            const authorKey = `${authorName}::${authorInitials}`;
+            let author = authorLookup.get(authorKey);
+            if (!author) {
+                author = {
+                    id: makeSeededGuid(`comment-author:${authorKey}`),
+                    name: authorName,
+                    initials: authorInitials,
+                    providerId: COMMENT_PROVIDER_ID,
+                    userId: `S::${authorName}::${makeSeededGuid(`comment-user:${authorKey}`).slice(1, -1)}`,
+                };
+                authors.push(author);
+                authorLookup.set(authorKey, author);
+            }
+            const slideNumber = slideIndex + 1;
+            const slideComments = commentsBySlide.get(slideNumber) || [];
+            slideComments.push({
+                id: makeSeededGuid(`comment:${slideNumber}:${objectIndex}:${comment.text}`),
+                authorId: author.id,
+                date: normalizeCommentDate(comment.date),
+                text: comment.text,
+                markerTag: anchor.markerTag,
+                objectId: anchor.objectId,
+                objectCreationId: anchor.creationId,
+            });
+            commentsBySlide.set(slideNumber, slideComments);
+        });
+    });
+    return { authors, commentsBySlide };
+}
+function slideHasComments(slide) {
+    return slide._slideObjects.some(slideItem => { var _a; return !!normalizeObjectComment((_a = slideItem.options) === null || _a === void 0 ? void 0 : _a.comment); });
+}
+function hasComments(slides) {
+    return slides.some(slideHasComments);
+}
+function makeXmlCommentAuthors(slides, defaultAuthorName) {
+    const { authors } = resolvePresentationComments(slides, defaultAuthorName);
+    let strXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}`;
+    strXml += `<p188:authorLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p188="${COMMENT_AUTHOR_LIST_NAMESPACE}">`;
+    authors.forEach(author => {
+        strXml += `<p188:author id="${author.id}" name="${encodeXmlEntities(author.name)}" initials="${encodeXmlEntities(author.initials)}" userId="${encodeXmlEntities(author.userId)}" providerId="${encodeXmlEntities(author.providerId)}"/>`;
+    });
+    strXml += '</p188:authorLst>';
+    return strXml;
+}
+function makeXmlComments(slides, slideNumber, defaultAuthorName) {
+    const { commentsBySlide } = resolvePresentationComments(slides, defaultAuthorName);
+    const comments = commentsBySlide.get(slideNumber) || [];
+    const slide = slides[slideNumber - 1];
+    const slideCreationId = getSlideCreationId(slide);
+    let strXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}`;
+    strXml += `<p188:cmLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p188="${COMMENT_AUTHOR_LIST_NAMESPACE}">`;
+    comments.forEach(comment => {
+        strXml += `<p188:cm id="${comment.id}" authorId="${comment.authorId}" created="${comment.date}"><ac:deMkLst xmlns:ac="${COMMENT_DRAWING_MARKER_NAMESPACE}"><pc:docMk xmlns:pc="${COMMENT_MARKER_NAMESPACE}"/><pc:sldMk xmlns:pc="${COMMENT_MARKER_NAMESPACE}" cId="${slideCreationId}" sldId="${slide._slideId}"/><ac:${comment.markerTag} id="${comment.objectId}" creationId="${comment.objectCreationId}"/></ac:deMkLst><p188:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>${encodeXmlEntities(comment.text)}</a:t></a:r></a:p></p188:txBody></p188:cm>`;
+    });
+    strXml += '</p188:cmLst>';
+    return strXml;
+}
+function getCommentPartNameForSlide(slide, slideNumber) {
+    return getSlideCommentPartName(slide, slideNumber);
+}
 const ImageSizingXml = {
     cover: function (imgSize, boxDim) {
         const imgRatio = imgSize.h / imgSize.w;
@@ -5092,7 +5276,6 @@ const ImageSizingXml = {
 function slideObjectToXml(slide) {
     var _a;
     let strSlideXml = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>';
-    let intTableNum = 1;
     // STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
     if (slide._bkgdImgRid) {
         strSlideXml += `<p:bg><p:bgPr><a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${slide._bkgdImgRid}"><a:lum/></a:blip><a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill><a:effectLst/></p:bgPr></p:bg>`;
@@ -5126,6 +5309,8 @@ function slideObjectToXml(slide) {
         let strXml = null;
         const sizing = (_a = slideItemObj.options) === null || _a === void 0 ? void 0 : _a.sizing;
         const rounding = (_b = slideItemObj.options) === null || _b === void 0 ? void 0 : _b.rounding;
+        const anchor = canUseCommentAnchors(slide) ? getSlideObjectCommentAnchor(slide, slideItemObj, idx) : null;
+        const creationIdXml = canUseCommentAnchors(slide) && anchor ? makeSlideObjectCreationIdXml(slide, idx) : '';
         if (slide._slideLayout !== undefined &&
             slide._slideLayout._slideObjects !== undefined &&
             slideItemObj.options &&
@@ -5179,7 +5364,7 @@ function slideObjectToXml(slide) {
                 });
                 // STEP 1: Start Table XML
                 // NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-                strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="${slideItemObj.options.objectName}"/>`;
+                strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${anchor ? anchor.objectId : idx + 2}" name="${slideItemObj.options.objectName}">${creationIdXml}</p:cNvPr>`;
                 strXml +=
                     '<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
                         '  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -5372,8 +5557,6 @@ function slideObjectToXml(slide) {
                 strXml += '</p:graphicFrame>';
                 // STEP 6: Set table XML
                 strSlideXml += strXml;
-                // LAST: Increment counter
-                intTableNum++;
                 break;
             case SLIDE_OBJECT_TYPES.text:
             case SLIDE_OBJECT_TYPES.placeholder:
@@ -5407,6 +5590,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}" action="ppaction://hlinksldjump"/>`;
                 }
                 // </Hyperlink>
+                strSlideXml += creationIdXml;
                 strSlideXml += '</p:cNvPr>';
                 strSlideXml += '<p:cNvSpPr' + (((_e = slideItemObj.options) === null || _e === void 0 ? void 0 : _e.isTextBox) ? ' txBox="1"/>' : '/>');
                 strSlideXml += `<p:nvPr>${slideItemObj._type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`;
@@ -5533,6 +5717,7 @@ function slideObjectToXml(slide) {
                 if ((_h = slideItemObj.hyperlink) === null || _h === void 0 ? void 0 : _h.slide) {
                     strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''}" action="ppaction://hlinksldjump"/>`;
                 }
+                strSlideXml += creationIdXml;
                 strSlideXml += '    </p:cNvPr>';
                 strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                 strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
@@ -5597,7 +5782,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
                     // IMPORTANT: <p:cNvPr id="" value is critical - if its not the same number as preview image `rId`, PowerPoint throws error!
-                    strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}"/>`;
+                    strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}">${creationIdXml}</p:cNvPr>`;
                     strSlideXml += ' <p:cNvPicPr/>';
                     strSlideXml += ' <p:nvPr>';
                     strSlideXml += `  <a:videoFile r:link="rId${slideItemObj.mediaRid}"/>`;
@@ -5615,7 +5800,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
                     // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
-                    strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>`;
+                    strSlideXml += `<p:cNvPr id="${slideItemObj.mediaRid + 2}" name="${slideItemObj.options.objectName}"><a:hlinkClick r:id="" action="ppaction://media"/>${creationIdXml}</p:cNvPr>`;
                     strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                     strSlideXml += ' <p:nvPr>';
                     strSlideXml += `  <a:videoFile r:link="rId${slideItemObj.mediaRid}"/>`;
@@ -5637,7 +5822,7 @@ function slideObjectToXml(slide) {
             case SLIDE_OBJECT_TYPES.chart:
                 strSlideXml += '<p:graphicFrame>';
                 strSlideXml += ' <p:nvGraphicFramePr>';
-                strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`;
+                strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}">${creationIdXml}</p:cNvPr>`;
                 strSlideXml += '   <p:cNvGraphicFramePr/>';
                 strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`;
                 strSlideXml += ' </p:nvGraphicFramePr>';
@@ -6323,6 +6508,7 @@ function genXmlPlaceholder(placeholderObj) {
  * @returns XML
  */
 function makeXmlContTypes(slides, slideLayouts, masterSlide) {
+    const commentMeta = resolvePresentationComments(slides, '');
     let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
     strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">';
     strXml += '<Default Extension="xml" ContentType="application/xml"/>';
@@ -6347,9 +6533,14 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     // STEP 2: Add presentation and slide master(s)/slide(s)
     strXml += '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
     strXml += '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>';
+    if (commentMeta.authors.length > 0)
+        strXml += `<Override PartName="/ppt/authors.xml" ContentType="${COMMENT_AUTHORS_CONTENT_TYPE}"/>`;
     slides.forEach((slide, idx) => {
         strXml += `<Override PartName="/ppt/slideMasters/slideMaster${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>`;
         strXml += `<Override PartName="/ppt/slides/slide${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`;
+        if (commentMeta.commentsBySlide.has(idx + 1)) {
+            strXml += `<Override PartName="/ppt/comments/${getSlideCommentPartName(slide, idx + 1)}" ContentType="${COMMENT_CONTENT_TYPE}"/>`;
+        }
         // Add charts if any
         slide._relsChart.forEach(rel => {
             strXml += `<Override PartName="${rel.Target}" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`;
@@ -6467,6 +6658,14 @@ function makeXmlCore(title, subject, author, revision) {
  */
 function makeXmlPresentationRels(slides) {
     let intRelNum = 1;
+    const trailingRels = [
+        { type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster', target: 'notesMasters/notesMaster1.xml' },
+        ...(hasComments(slides) ? [{ type: COMMENT_AUTHORS_REL_TYPE, target: 'authors.xml' }] : []),
+        { type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps', target: 'presProps.xml' },
+        { type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps', target: 'viewProps.xml' },
+        { type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme', target: 'theme/theme1.xml' },
+        { type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles', target: 'tableStyles.xml' },
+    ];
     let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
     strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
     strXml += '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>';
@@ -6474,13 +6673,10 @@ function makeXmlPresentationRels(slides) {
         strXml += `<Relationship Id="rId${++intRelNum}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide${idx}.xml"/>`;
     }
     intRelNum++;
-    strXml +=
-        `<Relationship Id="rId${intRelNum + 0}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>` +
-            `<Relationship Id="rId${intRelNum + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>` +
-            `<Relationship Id="rId${intRelNum + 2}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>` +
-            `<Relationship Id="rId${intRelNum + 3}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>` +
-            `<Relationship Id="rId${intRelNum + 4}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>` +
-            '</Relationships>';
+    trailingRels.forEach((rel, idx) => {
+        strXml += `<Relationship Id="rId${intRelNum + idx}" Type="${rel.type}" Target="${rel.target}"/>`;
+    });
+    strXml += '</Relationships>';
     return strXml;
 }
 // XML-GEN: Functions that run 1-N times (once for each Slide)
@@ -6490,12 +6686,19 @@ function makeXmlPresentationRels(slides) {
  * @return {string} XML
  */
 function makeXmlSlide(slide) {
+    const creationIdXml = slideHasComments(slide)
+        ? `<p:extLst><p:ext uri="${SLIDE_CREATION_ID_EXT_URI}"><p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="${getSlideCreationId(slide)}"/></p:ext></p:extLst>`
+        : '';
+    const commentRelXml = slideHasComments(slide)
+        ? `<p:extLst><p:ext uri="${COMMENT_REL_EXT_URI}"><p188:commentRel xmlns:p188="${COMMENT_AUTHOR_LIST_NAMESPACE}" r:id="rId${getSlideCommentRelId(slide)}"/></p:ext></p:extLst>`
+        : '';
+    const slideContentXml = creationIdXml ? appendXmlBeforeClosingTag(slideObjectToXml(slide), 'p:cSld', creationIdXml) : slideObjectToXml(slide);
     return (`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
         '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
         'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
         `${(slide === null || slide === void 0 ? void 0 : slide.hidden) ? ' show="0"' : ''}>` +
-        `${slideObjectToXml(slide)}` +
-        '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>');
+        `${slideContentXml}` +
+        `<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>${commentRelXml}</p:sld>`);
 }
 /**
  * Get text content of Notes from Slide
@@ -6607,16 +6810,21 @@ function makeXmlSlideLayoutRel(layoutNumber, slideLayouts) {
  * @return {string} XML
  */
 function makeXmlSlideRel(slides, slideLayouts, slideNumber) {
-    return slideObjectRelationsToXml(slides[slideNumber - 1], [
+    const slide = slides[slideNumber - 1];
+    const defaultRels = [
         {
             target: `../slideLayouts/slideLayout${getLayoutIdxForSlide(slides, slideLayouts, slideNumber)}.xml`,
             type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
         },
+        ...(slideHasComments(slide)
+            ? [{ target: `../comments/${getSlideCommentPartName(slide, slideNumber)}`, type: COMMENT_REL_TYPE }]
+            : []),
         {
             target: `../notesSlides/notesSlide${slideNumber}.xml`,
             type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide',
         },
-    ]);
+    ];
+    return slideObjectRelationsToXml(slide, defaultRels);
 }
 /**
  * Generates XML string for a slide relation file.
@@ -7003,6 +7211,7 @@ class PptxGenJS {
             const arrChartPromises = [];
             let arrMediaPromises = [];
             const zip = new JSZip();
+            const commentsPresent = hasComments(this.slides);
             // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
             this.slides.forEach(slide => {
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
@@ -7031,11 +7240,15 @@ class PptxGenJS {
                 zip.folder('ppt/theme');
                 zip.folder('ppt/notesMasters').folder('_rels');
                 zip.folder('ppt/notesSlides').folder('_rels');
+                if (commentsPresent)
+                    zip.folder('ppt/comments');
                 zip.file('[Content_Types].xml', makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)); // TODO: pass only `this` like below! 20200206
                 zip.file('_rels/.rels', makeXmlRootRels());
                 zip.file('docProps/app.xml', makeXmlApp(this.slides, this.company)); // TODO: pass only `this` like below! 20200206
                 zip.file('docProps/core.xml', makeXmlCore(this.title, this.subject, this.author, this.revision)); // TODO: pass only `this` like below! 20200206
                 zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(this.slides));
+                if (commentsPresent)
+                    zip.file('ppt/authors.xml', makeXmlCommentAuthors(this.slides, this.author));
                 zip.file('ppt/theme/theme1.xml', makeXmlTheme(this));
                 zip.file('ppt/presentation.xml', makeXmlPresentation(this));
                 zip.file('ppt/presProps.xml', makeXmlPresProps());
@@ -7049,6 +7262,8 @@ class PptxGenJS {
                 this.slides.forEach((slide, idx) => {
                     zip.file(`ppt/slides/slide${idx + 1}.xml`, makeXmlSlide(slide));
                     zip.file(`ppt/slides/_rels/slide${idx + 1}.xml.rels`, makeXmlSlideRel(this.slides, this.slideLayouts, idx + 1));
+                    if (slideHasComments(slide))
+                        zip.file(`ppt/comments/${getCommentPartNameForSlide(slide, idx + 1)}`, makeXmlComments(this.slides, idx + 1, this.author));
                     // Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
                     zip.file(`ppt/notesSlides/notesSlide${idx + 1}.xml`, makeXmlNotesSlide(slide));
                     zip.file(`ppt/notesSlides/_rels/notesSlide${idx + 1}.xml.rels`, makeXmlNotesSlideRel(idx + 1));
