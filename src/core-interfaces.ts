@@ -459,6 +459,37 @@ export interface ObjectNameProps {
 	 */
 	objectName?: string
 }
+export interface CommentProps {
+	/**
+	 * Comment text
+	 * @example 'Needs legal review'
+	 */
+	text: string
+	/**
+	 * Comment author name
+	 * @example 'Alex Smith'
+	 */
+	authorName?: string
+	/**
+	 * Comment author initials
+	 * @example 'AS'
+	 */
+	authorInitials?: string
+	/**
+	 * Comment timestamp
+	 * @example '2026-03-13T11:30:00Z'
+	 */
+	date?: string | Date
+}
+export interface Commentable {
+	/**
+	 * PowerPoint review comment attached to this element
+	 * - renders using native slide comments positioned near the element
+	 * @example 'Confirm Q4 totals'
+	 * @example { text: 'Confirm Q4 totals', authorName: 'Alex Smith', authorInitials: 'AS' }
+	 */
+	comment?: string | CommentProps
+}
 export interface ThemeProps {
 	/**
 	 * Headings font face name
@@ -477,7 +508,7 @@ export interface ThemeProps {
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
 
-export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps {
+export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNameProps, Commentable {
 	/**
 	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
 	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
@@ -572,7 +603,7 @@ export interface ImageProps extends PositionProps, DataOrPathProps, ObjectNamePr
  * Add media (audio/video) to slide
  * @requires either `link` or `path`
  */
-export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps {
+export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNameProps, Commentable {
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -608,7 +639,7 @@ export interface MediaProps extends PositionProps, DataOrPathProps, ObjectNamePr
 
 // shapes =========================================================================================
 
-export interface ShapeProps extends PositionProps, ObjectNameProps {
+export interface ShapeProps extends PositionProps, ObjectNameProps, Commentable {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -845,7 +876,7 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	rowspan?: number
 }
-export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps {
+export interface TableProps extends PositionProps, TextBaseProps, ObjectNameProps, Commentable {
 	_arrObjTabHeadRows?: TableRow[]
 
 	/**
@@ -976,7 +1007,7 @@ export interface TextGlowProps {
 	size: number
 }
 
-export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps {
+export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps, ObjectNameProps, Commentable {
 	_bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
 		autoFit?: boolean
@@ -1612,6 +1643,7 @@ export interface IChartOpts
 	IChartPropsDataTable,
 	IChartPropsLegend,
 	IChartPropsTitle,
+	Commentable,
 	ObjectNameProps,
 	OptsChartGridLine,
 	PositionProps {
