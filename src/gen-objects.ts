@@ -1126,7 +1126,7 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide): void {
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, false)
+				addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, true)
 			}
 		}
 	})
