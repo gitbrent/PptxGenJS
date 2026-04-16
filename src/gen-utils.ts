@@ -204,6 +204,12 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
 			case 'solid':
 				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
 				break
+			case 'gradient':
+				outText += genXmlGradientFill(props as ShapeFillProps)
+				break
+			case 'none':
+				outText += '<a:noFill/>'
+				break
 			default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
 				outText += ''
 				break
@@ -211,6 +217,37 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
 	}
 
 	return outText
+}
+
+/**
+ * Generate gradient fill XML
+ * @param {ShapeFillProps} props fill props with gradient settings
+ * @returns XML string for gradient fill
+ */
+function genXmlGradientFill (props: ShapeFillProps): string {
+	if (!props.stops || props.stops.length < 2) {
+		// Fallback to solid fill if no valid stops
+		return props.color ? `<a:solidFill>${createColorElement(props.color)}</a:solidFill>` : ''
+	}
+
+	// OOXML uses 60000ths of a degree for angles
+	const angle = (props.rotate || 0) * 60000
+
+	let stopsXml = ''
+	for (const stop of props.stops) {
+		// Position is in 1/1000ths of a percent (0-100000)
+		const pos = Math.round(stop.position * 1000)
+		const color = (stop.color || '000000').replace('#', '')
+		let alphaXml = ''
+		if (stop.transparency && stop.transparency > 0) {
+			// Transparency: 0 = opaque, 100 = fully transparent
+			// Alpha value: 100000 = opaque, 0 = fully transparent
+			alphaXml = `<a:alpha val="${Math.round((100 - stop.transparency) * 1000)}"/>`
+		}
+		stopsXml += `<a:gs pos="${pos}"><a:srgbClr val="${color}">${alphaXml}</a:srgbClr></a:gs>`
+	}
+
+	return `<a:gradFill><a:gsLst>${stopsXml}</a:gsLst><a:lin ang="${angle}" scaled="1"/></a:gradFill>`
 }
 
 /**
