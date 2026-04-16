@@ -171,6 +171,27 @@ export interface ShadowProps {
 	 */
 	rotateWithShape?: boolean
 }
+// Gradient stop for linear gradients
+export interface GradientStop {
+	/**
+	 * Stop position (0-100, as percentage)
+	 * @example 0 // start of gradient
+	 * @example 50 // middle
+	 * @example 100 // end of gradient
+	 */
+	position: number
+	/**
+	 * Stop color (hex format without #)
+	 * @example 'FF0000' // red
+	 */
+	color: HexColor
+	/**
+	 * Stop transparency (0-100, optional)
+	 * @default 0
+	 */
+	transparency?: number
+}
+
 // used by: shape, table, text
 export interface ShapeFillProps {
 	/**
@@ -191,7 +212,24 @@ export interface ShapeFillProps {
 	 * Fill type
 	 * @default 'solid'
 	 */
-	type?: 'none' | 'solid'
+	type?: 'none' | 'solid' | 'gradient'
+	/**
+	 * Gradient type (only used when type is 'gradient')
+	 * @default 'linear'
+	 */
+	gradientType?: 'linear'
+	/**
+	 * Gradient rotation angle in degrees (only used when type is 'gradient')
+	 * - 0 = left to right
+	 * - 90 = top to bottom
+	 * @default 0
+	 */
+	rotate?: number
+	/**
+	 * Gradient stops (only used when type is 'gradient')
+	 * - minimum 2 stops required
+	 */
+	stops?: GradientStop[]
 
 	/**
 	 * Transparency (percent)
