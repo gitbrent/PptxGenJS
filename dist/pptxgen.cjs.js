@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-10-03T16:19:06.284Z */
+/* PptxGenJS 4.0.1 @ 2026-04-29T20:30:01.693Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5334,7 +5334,16 @@ function slideObjectToXml(slide) {
                                 ? cell._optImp.fill
                                 : '';
                         fillColor = fillColor || cellOpts.fill ? cellOpts.fill : '';
-                        const cellFill = fillColor ? genXmlColorSelection(fillColor) : '';
+                        const _fillImgData = cellOpts.fill && typeof cellOpts.fill === 'object' && cellOpts.fill.data ? cellOpts.fill.data : '';
+                        let cellFill;
+                        if (_fillImgData) {
+                            const _imgRelId = getNewRelId(slide);
+                            slide._relsMedia.push({ rId: _imgRelId, type: 'image/png', extn: 'png', data: _fillImgData, path: '', isDuplicate: false, Target: `../media/image-${slide._slideNum}-${slide._relsMedia.length + 1}.png` });
+                            cellFill = `<a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${_imgRelId}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>`;
+                        }
+                        else {
+                            cellFill = fillColor ? genXmlColorSelection(fillColor) : '';
+                        }
                         let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];

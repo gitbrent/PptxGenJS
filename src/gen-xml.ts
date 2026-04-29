@@ -37,6 +37,7 @@ import {
 	createGlowElement,
 	encodeXmlEntities,
 	genXmlColorSelection,
+	getNewRelId,
 	getSmartParseNumber,
 	getUuid,
 	inch2Emu,
@@ -315,7 +316,15 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 									? cell._optImp.fill
 									: ''
 						fillColor = fillColor || cellOpts.fill ? cellOpts.fill : ''
-						const cellFill = fillColor ? genXmlColorSelection(fillColor) : ''
+						const _fillImgData = cellOpts.fill && typeof cellOpts.fill === 'object' && (cellOpts.fill as { data?: string }).data ? (cellOpts.fill as { data?: string }).data : ''
+						let cellFill: string
+						if (_fillImgData) {
+							const _imgRelId = getNewRelId(slide as PresSlide)
+							;(slide._relsMedia as ISlideRelMedia[]).push({ rId: _imgRelId, type: 'image/png', extn: 'png', data: _fillImgData, path: '', isDuplicate: false, Target: `../media/image-${(slide as PresSlide)._slideNum}-${(slide._relsMedia as ISlideRelMedia[]).length + 1}.png` })
+							cellFill = `<a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${_imgRelId}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>`
+						} else {
+							cellFill = fillColor ? genXmlColorSelection(fillColor) : ''
+						}
 
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_IN
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]

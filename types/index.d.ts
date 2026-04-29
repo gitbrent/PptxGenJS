@@ -1026,6 +1026,11 @@ declare namespace PptxGenJS {
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
+		/**
+		 * Image data URI (e.g. `data:image/png;base64,...`) for image fill (blipFill).
+		 * When set, the cell background is filled with the image instead of a solid color.
+		 */
+		data?: string
 	}
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
