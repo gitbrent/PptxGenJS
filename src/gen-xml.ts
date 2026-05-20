@@ -319,9 +319,18 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 						const _fillImgData = cellOpts.fill && typeof cellOpts.fill === 'object' && (cellOpts.fill as { data?: string }).data ? (cellOpts.fill as { data?: string }).data : ''
 						let cellFill: string
 						if (_fillImgData) {
-							const _imgRelId = getNewRelId(slide as PresSlide)
-							;(slide._relsMedia as ISlideRelMedia[]).push({ rId: _imgRelId, type: 'image/png', extn: 'png', data: _fillImgData, path: '', isDuplicate: false, Target: `../media/image-${(slide as PresSlide)._slideNum}-${(slide._relsMedia as ISlideRelMedia[]).length + 1}.png` })
-							cellFill = `<a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${_imgRelId}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>`
+							const _isSvg = _fillImgData.toLowerCase().includes('image/svg+xml')
+							if (_isSvg) {
+								const _pngRelId = getNewRelId(slide as PresSlide)
+								;(slide._relsMedia as ISlideRelMedia[]).push({ rId: _pngRelId, type: 'image/png', extn: 'png', data: _fillImgData, path: '', isDuplicate: false, isSvgPng: true, Target: `../media/image-${(slide as PresSlide)._slideNum}-${(slide._relsMedia as ISlideRelMedia[]).length + 1}.png` })
+								const _svgRelId = getNewRelId(slide as PresSlide)
+								;(slide._relsMedia as ISlideRelMedia[]).push({ rId: _svgRelId, type: 'image/svg+xml', extn: 'svg', data: _fillImgData, path: '', isDuplicate: false, Target: `../media/image-${(slide as PresSlide)._slideNum}-${(slide._relsMedia as ISlideRelMedia[]).length + 1}.svg` })
+								cellFill = `<a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${_pngRelId}"><a:extLst><a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}"><asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId${_svgRelId}"/></a:ext></a:extLst></a:blip><a:stretch><a:fillRect/></a:stretch></a:blipFill>`
+							} else {
+								const _imgRelId = getNewRelId(slide as PresSlide)
+								;(slide._relsMedia as ISlideRelMedia[]).push({ rId: _imgRelId, type: 'image/png', extn: 'png', data: _fillImgData, path: '', isDuplicate: false, Target: `../media/image-${(slide as PresSlide)._slideNum}-${(slide._relsMedia as ISlideRelMedia[]).length + 1}.png` })
+								cellFill = `<a:blipFill dpi="0" rotWithShape="1"><a:blip r:embed="rId${_imgRelId}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>`
+							}
 						} else {
 							cellFill = fillColor ? genXmlColorSelection(fillColor) : ''
 						}
