@@ -2499,6 +2499,7 @@ declare namespace PptxGenJS {
 			| { image: ImageProps }
 			| { line: ShapeProps }
 			| { rect: ShapeProps }
+			| { roundRect: ShapeProps }
 			| { text: TextProps }
 			| {
 				placeholder: {

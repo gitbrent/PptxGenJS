@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2025-06-25T23:35:35.096Z */
+/* PptxGenJS 4.0.1 @ 2026-05-26T11:55:55.354Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -575,6 +575,7 @@ var MASTER_OBJECTS;
     MASTER_OBJECTS["image"] = "image";
     MASTER_OBJECTS["line"] = "line";
     MASTER_OBJECTS["rect"] = "rect";
+    MASTER_OBJECTS["roundRect"] = "roundRect";
     MASTER_OBJECTS["text"] = "text";
     MASTER_OBJECTS["placeholder"] = "placeholder";
 })(MASTER_OBJECTS || (MASTER_OBJECTS = {}));
@@ -1595,6 +1596,8 @@ function createSlideMaster(props, target) {
                 addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'rect')
                 addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key]);
+            else if (MASTER_OBJECTS[key] && key === 'roundRect')
+                addShapeDefinition(tgt, SHAPE_TYPE.ROUNDED_RECTANGLE, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'text')
                 addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false);
             else if (MASTER_OBJECTS[key] && key === 'placeholder') {

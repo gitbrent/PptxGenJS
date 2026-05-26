@@ -725,6 +725,7 @@ export enum MASTER_OBJECTS {
 	'image' = 'image',
 	'line' = 'line',
 	'rect' = 'rect',
+	'roundRect' = 'roundRect',
 	'text' = 'text',
 	'placeholder' = 'placeholder',
 }
