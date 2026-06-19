@@ -39,7 +39,6 @@
 	},
 	"dependencies": {
 		"@types/node": "^22.8.1",
-		"https": "^1.0.0",
 		"image-size": "^1.2.1",
 		"jszip": "^3.10.1"
 	},
