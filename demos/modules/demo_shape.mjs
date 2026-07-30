@@ -28,6 +28,73 @@ export function genSlides_Shape(pptx) {
 
 	genSlide01(pptx);
 	genSlide02(pptx);
+	genSlide03(pptx);
+}
+
+/**
+ * SLIDE 3: Gradient Fills
+ * @param {PptxGenJS} pptx
+ */
+function genSlide03(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Shapes" });
+
+	slide.addTable([[{ text: "Shape Examples: Gradient Fills", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
+
+	const examples = [
+		{
+			label: "linear / 0deg",
+			fill: { type: "gradient", gradient: { angle: 0, stops: [{ pos: 0, color: pptx.colors.ACCENT1 }, { pos: 100, color: pptx.colors.ACCENT2 }] } },
+		},
+		{
+			label: "linear / 90deg / 3 stops",
+			fill: { type: "gradient", gradient: { angle: 90, stops: [{ pos: 0, color: "FF0000" }, { pos: 50, color: "FFFF00" }, { pos: 100, color: "00B050" }] } },
+		},
+		{
+			label: "linear / per-stop transparency",
+			fill: { type: "gradient", gradient: { stops: [{ pos: 0, color: "0E1A2B", transparency: 0 }, { pos: 100, color: "0E1A2B", transparency: 75 }] } },
+		},
+		{
+			label: "radial",
+			fill: { type: "gradient", gradient: { type: "radial", stops: [{ pos: 0, color: "FFFFFF" }, { pos: 100, color: pptx.colors.ACCENT5 }] } },
+		},
+	];
+
+	examples.forEach((example, index) => {
+		const x = 0.5 + index * 2.9;
+		slide.addText(example.label, { x, y: 0.6, w: 2.6, h: 0.3, align: "center", fontSize: 11 });
+		slide.addShape(pptx.shapes.RECTANGLE, { x, y: 1.0, w: 2.6, h: 1.8, fill: example.fill, line: { color: "696969", width: 1 } });
+	});
+
+	slide.addText("gradient line", { x: 0.5, y: 3.25, w: 2.6, h: 0.3, align: "center", fontSize: 11 });
+	slide.addShape(pptx.shapes.LINE, {
+		x: 0.5,
+		y: 3.9,
+		w: 5.5,
+		h: 0,
+		line: {
+			type: "gradient",
+			width: 4,
+			gradient: { stops: [{ pos: 0, color: pptx.colors.ACCENT1 }, { pos: 100, color: pptx.colors.ACCENT4 }] },
+		},
+	});
+
+	slide.addShape(pptx.shapes.RECTANGLE, {
+		x: 6.3,
+		y: 3.35,
+		w: 5.5,
+		h: 1.2,
+		fill: {
+			type: "gradient",
+			gradient: {
+				angle: 45,
+				rotateWithShape: false,
+				stops: [{ pos: 0, color: "7030A0" }, { pos: 100, color: "00B0F0" }],
+			},
+		},
+		line: { color: "696969", width: 1 },
+	});
+	slide.addText("rotateWithShape:false", { x: 6.3, y: 4.8, w: 5.5, h: 0.3, align: "center", fontSize: 11 });
 }
 
 /**

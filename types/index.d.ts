@@ -1019,13 +1019,62 @@ declare namespace PptxGenJS {
 		 * Fill type
 		 * @default 'solid'
 		 */
-		type?: 'none' | 'solid'
+		type?: 'none' | 'solid' | 'gradient'
+		/**
+		 * Gradient fill definition
+		 * - required when `type` is `'gradient'` (ignored otherwise)
+		 * @example { type:'gradient', gradient:{ angle:90, stops:[{pos:0,color:'FF0000'},{pos:100,color:'0000FF'}] } }
+		 */
+		gradient?: ShapeGradientProps
 
 		/**
 		 * Transparency (percent)
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
+	}
+	export interface ShapeGradientStopProps {
+		/**
+		 * Stop color
+		 * - `HexColor` or `ThemeColor`
+		 */
+		color: Color
+		/**
+		 * Stop position along the gradient (percent)
+		 * - range: 0-100 (values outside the range are clamped)
+		 */
+		pos: number
+		/**
+		 * Stop transparency (percent)
+		 * - range: 0-100
+		 * @default 0
+		 */
+		transparency?: number
+	}
+	export interface ShapeGradientProps {
+		/**
+		 * Gradient geometry
+		 * @default 'linear'
+		 */
+		type?: 'linear' | 'radial'
+		/**
+		 * Gradient angle (degrees, clockwise)
+		 * - 0 = left-to-right, 90 = top-to-bottom
+		 * - normalized into the range 0-359
+		 * @default 0
+		 */
+		angle?: number
+		/**
+		 * Whether the gradient rotates with its shape
+		 * @default true
+		 */
+		rotateWithShape?: boolean
+		/**
+		 * Gradient color stops
+		 * - MS-PPT requires **at least 2 stops**; fewer degrades to a solid fill
+		 * - stops are sorted by `pos` before being written
+		 */
+		stops: ShapeGradientStopProps[]
 	}
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
