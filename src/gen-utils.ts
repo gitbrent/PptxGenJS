@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps } from './core-interfaces'
+import { PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, Coord, ShadowProps, ShapeGradientProps } from './core-interfaces'
 
 /**
  * Translates any type of `x`/`y`/`w`/`h` prop to EMU
@@ -181,6 +181,52 @@ export function createGlowElement (options: TextGlowProps, defaults: TextGlowPro
 }
 
 /**
+ * Create a DrawingML gradient fill element (`a:gradFill`)
+ * @param {ShapeGradientProps} gradient gradient definition
+ * @param {string} fallbackColor color used if the gradient is unusable (fewer than 2 stops)
+ * @param {string} fallbackInner alpha element(s) for the fallback solid fill
+ * @returns {string} XML string
+ * @see http://officeopenxml.com/drwSp-GradFill.php
+ * @note MS-PPT (CT_GradientStopList) requires a minimum of 2 stops; we degrade to a solid fill rather than emit invalid XML
+ */
+function createGradientFillElement (gradient: ShapeGradientProps, fallbackColor: string, fallbackInner: string): string {
+	const stops = (gradient?.stops ?? [])
+		.filter(stop => stop && stop.color !== undefined && stop.color !== null)
+		.map(stop => ({
+			color: stop.color,
+			// @note `pos` is clamped: ST_PositiveFixedPercentage only permits 0-100000 (0-100%)
+			pos: Math.round(Math.min(100, Math.max(0, Number(stop.pos) || 0)) * 1000),
+			transparency: stop.transparency,
+		}))
+		// @note MS-PPT renders stops in document order, so sort ascending to make `pos` authoritative
+		.sort((a, b) => a.pos - b.pos)
+
+	if (stops.length < 2) {
+		// @note fall back rather than emit `<a:gsLst>` with too few stops, which MS-PPT flags as needing repair
+		console.warn('`gradient.stops` requires at least 2 stops! A solid fill was used instead.')
+		const soleColor = stops.length === 1 ? String(stops[0].color) : fallbackColor
+		return soleColor ? `<a:solidFill>${createColorElement(soleColor, fallbackInner)}</a:solidFill>` : ''
+	}
+
+	const gsLst = stops
+		.map(stop => {
+			const inner = typeof stop.transparency === 'number' ? `<a:alpha val="${Math.round((100 - Math.min(100, Math.max(0, stop.transparency))) * 1000)}"/>` : ''
+			return `<a:gs pos="${stop.pos}">${createColorElement(String(stop.color), inner)}</a:gs>`
+		})
+		.join('')
+
+	const rotateWithShape = gradient?.rotateWithShape === false ? 0 : 1
+	const geometry = gradient?.type === 'radial'
+		? '<a:path path="circle"></a:path>'
+		: (() => {
+			// @note `ang` is ST_PositiveFixedAngle (0 to 21599999, in 60000ths of a degree), so normalize into 0-359 first
+			const degrees = ((Number(gradient?.angle) || 0) % 360 + 360) % 360
+			return `<a:lin ang="${Math.round(degrees * 60000)}" scaled="${gradient?.scaled === true ? 1 : 0}"/>`
+		})()
+	return `<a:gradFill rotWithShape="${rotateWithShape}"><a:gsLst>${gsLst}</a:gsLst>${geometry}</a:gradFill>`
+}
+
+/**
  * Create color selection
  * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
  * @returns XML string
@@ -203,6 +249,9 @@ export function genXmlColorSelection (props: Color | ShapeFillProps | ShapeLineP
 		switch (fillType) {
 			case 'solid':
 				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
+				break
+			case 'gradient':
+				outText += createGradientFillElement(typeof props === 'string' ? undefined : props.gradient, colorVal, internalElements)
 				break
 			default: // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
 				outText += ''
