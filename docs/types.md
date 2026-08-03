@@ -66,7 +66,7 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 | Name         | Type                                               | Description         | Possible Values                                   |
 | :----------- | :------------------------------------------------- | :------------------ | :------------------------------------------------ |
 | `align`      | string                                             | alignment           | `left` or `center` or `right`. Default: `left`    |
-| `fill`       | [ShapeFillProps](#shape-fill-props-shapefillprops) | fill props          | Fill color/transparency props                     |
+| `fill`       | [ShapeFillProps](#shape-fill-props-shapefillprops) | fill props          | Solid or gradient fill props                      |
 | `flipH`      | boolean                                            | flip Horizontal     | `true` or `false`                                 |
 | `flipV`      | boolean                                            | flip Vertical       | `true` or `false`                                 |
 | `hyperlink`  | [HyperlinkProps](#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
@@ -78,13 +78,34 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 
 ## Shape Fill Props (`ShapeFillProps`)
 
-| Name           | Type   | Default  | Description  | Possible Values                                     |
-| :------------- | :----- | :------- | :----------- | :-------------------------------------------------- |
-| `color`        | string | `000000` | fill color   | hex color or [scheme color](./shapes-and-schemes.md). |
-| `transparency` | number | `0`      | transparency | transparency percentage: 0-100                      |
-| `type`         | string | `solid`  | fill type    | shape fill type                                     |
+| Name           | Type                                                        | Default | Description              | Possible Values                                       |
+| :------------- | :---------------------------------------------------------- | :------ | :----------------------- | :---------------------------------------------------- |
+| `color`        | string                                                        |         | fill color               | hex color or [scheme color](./shapes-and-schemes.md). |
+| `gradient`     | [ShapeGradientProps](#shape-gradient-props-shapegradientprops) |         | gradient fill definition | required when `type` is `gradient`                    |
+| `transparency` | number                                                        | `0`     | transparency             | transparency percentage: 0-100                        |
+| `type`         | string                                                        | `solid` | fill type                | `none`, `solid`, or `gradient`                        |
+
+## Shape Gradient Props (`ShapeGradientProps`)
+
+| Name              | Type                                                                       | Default  | Description                         | Possible Values                                               |
+| :---------------- | :------------------------------------------------------------------------- | :------- | :---------------------------------- | :------------------------------------------------------------ |
+| `angle`           | number                                                                     | `0`      | clockwise linear-gradient angle     | degrees; `0` is left-to-right and `90` is top-to-bottom       |
+| `rotateWithShape` | boolean                                                                    | `true`   | rotate the gradient with the shape  | `true` or `false`                                             |
+| `scaled`          | boolean                                                                    | `false`  | scale the angle with the fill region | `true` or `false`; applies to linear gradients                 |
+| `stops`           | [ShapeGradientStopProps](#shape-gradient-stop-props-shapegradientstopprops)[] | required | gradient color stops                | at least two stops; sorted by `pos`                            |
+| `type`            | string                                                                     | `linear` | gradient geometry                   | `linear` or `radial`                                          |
+
+## Shape Gradient Stop Props (`ShapeGradientStopProps`)
+
+| Name           | Type   | Default  | Description                   | Possible Values                                       |
+| :------------- | :----- | :------- | :---------------------------- | :---------------------------------------------------- |
+| `color`        | string | required | stop color                    | hex color or [scheme color](./shapes-and-schemes.md). |
+| `pos`          | number | required | position along the gradient   | percentage: 0-100                                     |
+| `transparency` | number | `0`      | transparency for this stop    | percentage: 0-100                                     |
 
 ## Shape Line Props (`ShapeLineProps`)
+
+`ShapeLineProps` includes all [ShapeFillProps](#shape-fill-props-shapefillprops), so lines can also use gradient fills.
 
 | Name             | Type   | Default | Description         | Possible Values                                                                          |
 | :--------------- | :----- | :------ | :------------------ | :--------------------------------------------------------------------------------------- |
