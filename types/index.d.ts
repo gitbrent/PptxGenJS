@@ -1065,6 +1065,11 @@ declare namespace PptxGenJS {
 		 */
 		angle?: number
 		/**
+		 * Whether the gradient angle scales with the fill region
+		 * @default false
+		 */
+		scaled?: boolean
+		/**
 		 * Whether the gradient rotates with its shape
 		 * @default true
 		 */

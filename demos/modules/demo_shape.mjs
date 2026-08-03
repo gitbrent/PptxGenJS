@@ -40,6 +40,11 @@ function genSlide03(pptx) {
 
 	slide.addTable([[{ text: "Shape Examples: Gradient Fills", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
+	slide.background = {
+		type: "gradient",
+		gradient: { angle: 0, stops: [{ pos: 0, color: "D9EAF7" }, { pos: 100, color: "FFFFFF" }] },
+	};
+	slide.addText("slide background: linear / 0deg", { x: 0.5, y: 6.85, w: 4.0, h: 0.25, fontSize: 11, color: "5B6573" });
 
 	const examples = [
 		{
@@ -88,13 +93,14 @@ function genSlide03(pptx) {
 			type: "gradient",
 			gradient: {
 				angle: 45,
+				scaled: true,
 				rotateWithShape: false,
 				stops: [{ pos: 0, color: "7030A0" }, { pos: 100, color: "00B0F0" }],
 			},
 		},
 		line: { color: "696969", width: 1 },
 	});
-	slide.addText("rotateWithShape:false", { x: 6.3, y: 4.8, w: 5.5, h: 0.3, align: "center", fontSize: 11 });
+	slide.addText("rotateWithShape:false / scaled:true", { x: 6.3, y: 4.8, w: 5.5, h: 0.3, align: "center", fontSize: 11 });
 }
 
 /**

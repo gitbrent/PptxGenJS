@@ -221,7 +221,7 @@ function createGradientFillElement (gradient: ShapeGradientProps, fallbackColor:
 		: (() => {
 			// @note `ang` is ST_PositiveFixedAngle (0 to 21599999, in 60000ths of a degree), so normalize into 0-359 first
 			const degrees = ((Number(gradient?.angle) || 0) % 360 + 360) % 360
-			return `<a:lin ang="${Math.round(degrees * 60000)}" scaled="0"/>`
+			return `<a:lin ang="${Math.round(degrees * 60000)}" scaled="${gradient?.scaled === true ? 1 : 0}"/>`
 		})()
 	return `<a:gradFill rotWithShape="${rotateWithShape}"><a:gsLst>${gsLst}</a:gsLst>${geometry}</a:gradFill>`
 }
