@@ -59,6 +59,20 @@ function genSlide01(pptx) {
 		{ x: 10, y: 2.25, w: 3.0, h: 1.0, color: "FFFFFF", fill: { color: "C00000" }, valign: "bottom", align: "right", margin: 0 }
 	);
 
+	// TEST-CASE: text margin arrays are TRBL [top, right, bottom, left]
+	// Left inset should be large here (not top). Regression: LRBT mapping swapped ends.
+	slide.addText("margin:[5,5,5,40]\n(left=40pt)", {
+		x: 10,
+		y: 3.35,
+		w: 3.0,
+		h: 0.9,
+		color: "363636",
+		fill: { color: "F1F1F1" },
+		fontSize: 12,
+		valign: "middle",
+		margin: [5, 5, 5, 40],
+	});
+
 	slide.addText("^ (50%/50%)", { x: "50%", y: "50%", w: 2 });
 
 	slide.addText("Plain x/y coords", { x: 10, y: 4.35, w: 3 });
@@ -202,6 +216,7 @@ function genSlide02(pptx) {
 	});
 
 	// 4: Line-Spacing (bullets)
+	// TEST-CASE: margin [0,0,0,10] = left 10pt (TRBL), not top
 	slide.addText("Line-Spacing (bullets):", { x: 7.0, y: 5.6, w: "40%", h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
 	slide.addText([{ text: "lineSpacing\n35pt", options: { fontSize: 24, bullet: true, color: "99ABCC", lineSpacing: 35 } }], {
 		x: 7.0,
