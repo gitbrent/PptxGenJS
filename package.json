@@ -25,8 +25,7 @@
 		"start": "gulp",
 		"ship": "gulp ship",
 		"defs": "gulp reactTestDefs",
-		"watch": "rollup -cw",
-		"test": "node --test test/*.test.mjs"
+		"watch": "rollup -cw"
 	},
 	"browser": {
 		"express": false,
