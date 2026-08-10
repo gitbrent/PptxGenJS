@@ -1,4 +1,4 @@
-/* PptxGenJS 4.0.1 @ 2026-08-10T15:39:34.553Z */
+/* PptxGenJS 4.0.1 @ 2025-06-25T23:35:35.098Z */
 import JSZip from 'jszip';
 
 /******************************************************************************
@@ -5380,14 +5380,14 @@ function slideObjectToXml(slide) {
                 // Lines can have zero cy, but text should not
                 if (!slideItemObj.options.line && cy === 0)
                     cy = EMU * 0.3;
-                // Margin/Padding/Inset for textboxes (TRBL: [top, right, bottom, left])
+                // Margin/Padding/Inset for textboxes
                 if (!slideItemObj.options._bodyProp)
                     slideItemObj.options._bodyProp = {};
                 if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-                    slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin[0] || 0);
+                    slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0);
                     slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0);
                     slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0);
-                    slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[3] || 0);
+                    slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0);
                 }
                 else if (typeof slideItemObj.options.margin === 'number') {
                     slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin);
