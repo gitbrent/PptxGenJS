@@ -124,6 +124,28 @@ export function createMasterSlides(pptx) {
 		],
 	});
 
+	// PLACEHOLDER_TYPES_SLIDE: every placeholder type, incl. the non-text ones (`pic`/`tbl`)
+	pptx.defineSlideMaster({
+		title: "PLACEHOLDER_TYPES_SLIDE",
+		background: { color: "FFFFFF" },
+		objects: [
+			{
+				placeholder: {
+					options: { name: "title", type: "title", x: 0.6, y: 0.2, w: 12, h: 1.0, align: "center", valign: "middle" },
+					text: "",
+				},
+			},
+			{
+				// Left unfilled on purpose, so the exported layout XML carries the placeholder itself
+				// (`<p:ph type="pic"/>`) rather than a filled shape.
+				placeholder: { options: { name: "picture", type: "pic", x: 0.6, y: 1.5, w: 5.9, h: 4.0 }, text: "" },
+			},
+			{
+				placeholder: { options: { name: "table", type: "tbl", x: 6.8, y: 1.5, w: 5.9, h: 4.0 }, text: "" },
+			},
+		],
+	});
+
 	// THANKS_SLIDE (THANKS_PLACEHOLDER)
 	pptx.defineSlideMaster({
 		title: "THANKS_SLIDE",
