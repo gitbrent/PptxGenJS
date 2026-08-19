@@ -12,6 +12,7 @@ import {
 	DEF_TEXT_SHADOW,
 	EMU,
 	LAYOUT_IDX_SERIES_BASE,
+	PLACEHOLDER_TYPE,
 	PLACEHOLDER_TYPES,
 	SLDNUMFLDID,
 	SLIDE_OBJECT_TYPES,
@@ -1349,6 +1350,25 @@ export function genXmlTextBody (slideObj: ISlideObject | TableCell): string {
 }
 
 /**
+ * Resolve a placeholder type to the value OOXML expects in `<p:ph type="..."/>`
+ * `PlaceholderProps.type` is documented (and typed) as the OOXML value itself - 'pic', 'tbl', etc -
+ * whereas the `PLACEHOLDER_TYPES` enum is keyed by friendly name ('image', 'table'). Both forms are
+ * accepted here so that `type: 'pic'` and `type: PLACEHOLDER_TYPES.image` alike emit `type="pic"`.
+ * @param {PLACEHOLDER_TYPE} type - placeholder type as provided by the user
+ * @returns OOXML placeholder type, or an empty string when unrecognized
+ */
+function resolvePlaceholderType (type: PLACEHOLDER_TYPE): string {
+	if (!type) return ''
+
+	// A) OOXML value ('pic'): the documented form of `PlaceholderProps.type`
+	const ooxmlTypes: string[] = Object.values(PLACEHOLDER_TYPES)
+	if (ooxmlTypes.includes(type)) return type
+
+	// B) Enum key ('image'): tolerated so untyped (JS) callers keep working
+	return PLACEHOLDER_TYPES[type as unknown as keyof typeof PLACEHOLDER_TYPES] ?? ''
+}
+
+/**
  * Generate an XML Placeholder
  * @param {ISlideObject} placeholderObj
  * @returns XML
@@ -1357,12 +1377,11 @@ export function genXmlPlaceholder (placeholderObj: ISlideObject): string {
 	if (!placeholderObj) return ''
 
 	const placeholderIdx = placeholderObj.options?._placeholderIdx ? placeholderObj.options._placeholderIdx : ''
-	const placeholderTyp = placeholderObj.options?._placeholderType ? placeholderObj.options._placeholderType : ''
-	const placeholderType: string = placeholderTyp && PLACEHOLDER_TYPES[placeholderTyp] ? (PLACEHOLDER_TYPES[placeholderTyp]).toString() : ''
+	const placeholderType = resolvePlaceholderType(placeholderObj.options?._placeholderType)
 
 	return `<p:ph
 		${placeholderIdx ? ' idx="' + placeholderIdx.toString() + '"' : ''}
-		${placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ` type="${placeholderType}"` : ''}
+		${placeholderType ? ` type="${placeholderType}"` : ''}
 		${placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : ''}
 		/>`
 }

@@ -18,6 +18,7 @@ export function genSlides_Master(pptx) {
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
+	genSlidePlaceholderTypes(pptx);
 	//genSlide07(pptx);
 }
 
@@ -121,4 +122,16 @@ function genSlide07(pptx) {
 		//let slide7 = pptx.addSlide( pptx.masters.LEGACY_TEST_ONLY );
 		//let slide7 = pptx.addSlide('PLACEHOLDER_SLIDE');
 	}
+}
+
+/**
+ * SLIDE 8: Placeholder types - `pic` and `tbl` alongside the text ones
+ * The `pic`/`tbl` placeholders are left unfilled so the generated layout XML carries
+ * `<p:ph type="pic"/>` and `<p:ph type="tbl"/>`.
+ * @param {PptxGenJS} pptx
+ */
+function genSlidePlaceholderTypes(pptx) {
+	let slide = pptx.addSlide({ masterName: "PLACEHOLDER_TYPES_SLIDE", sectionTitle: "Masters" });
+	slide.addNotes("Master name: `PLACEHOLDER_TYPES_SLIDE` showing `pic` and `tbl` placeholders left unfilled");
+	slide.addText("Placeholder Types: pic + tbl", { placeholder: "title" });
 }
