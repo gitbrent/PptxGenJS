@@ -25,7 +25,8 @@
 		"start": "gulp",
 		"ship": "gulp ship",
 		"defs": "gulp reactTestDefs",
-		"watch": "rollup -cw"
+		"watch": "rollup -cw",
+		"test": "npm run build && node --test test/*.cjs"
 	},
 	"browser": {
 		"express": false,
