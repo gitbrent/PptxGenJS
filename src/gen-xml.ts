@@ -84,7 +84,10 @@ const ImageSizingXml = {
  */
 function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 	let strSlideXml: string = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>'
-	let intTableNum = 1
+	// ECMA-376: p:cNvPr/@id must be unique within the slide's p:spTree.
+	// id="1" is reserved for p:nvGrpSpPr; remaining ids are allocated monotonically.
+	let nextCnvPrId = 2
+	const allocCnvPrId = (): number => nextCnvPrId++
 
 	// STEP 1: Add background color/image (ensure only a single `<p:bg>` tag is created, ex: when master-baskground has both `color` and `path`)
 	if (slide._bkgdImgRid) {
@@ -103,7 +106,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
 	// STEP 3: Loop over all Slide.data objects and add them to this slide
-	slide._slideObjects.forEach((slideItemObj: ISlideObject, idx: number) => {
+	slide._slideObjects.forEach((slideItemObj: ISlideObject) => {
 		let x = 0
 		let y = 0
 		let cx = getSmartParseNumber('75%', 'X', slide._presLayout)
@@ -172,7 +175,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 				// STEP 1: Start Table XML
 				// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-				strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="${slideItemObj.options.objectName}"/>`
+				strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${allocCnvPrId()}" name="${slideItemObj.options.objectName}"/>`
 				strXml +=
 					'<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 					'  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -382,8 +385,6 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				// STEP 6: Set table XML
 				strSlideXml += strXml
 
-				// LAST: Increment counter
-				intTableNum++
 				break
 
 			case SLIDE_OBJECT_TYPES.text:
@@ -409,7 +410,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 				strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}">`
+				strSlideXml += `<p:nvSpPr><p:cNvPr id="${allocCnvPrId()}" name="${slideItemObj.options.objectName}">`
 				// <Hyperlink>
 				if (slideItemObj.options.hyperlink?.url) {
 					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.options.hyperlink._rId}" tooltip="${slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : ''}"/>`
@@ -556,7 +557,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 			case SLIDE_OBJECT_TYPES.image:
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += `<p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
+				strSlideXml += `<p:cNvPr id="${allocCnvPrId()}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(
 					slideItemObj.options.altText || slideItemObj.image
 				)}">`
 				if (slideItemObj.hyperlink?.url) {
@@ -676,7 +677,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 			case SLIDE_OBJECT_TYPES.chart:
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`
+				strSlideXml += `   <p:cNvPr id="${allocCnvPrId()}" name="${slideItemObj.options.objectName}" descr="${encodeXmlEntities(slideItemObj.options.altText || '')}"/>`
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
 				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += ' </p:nvGraphicFramePr>'
@@ -702,7 +703,7 @@ function slideObjectToXml (slide: PresSlide | SlideLayout): string {
 
 		strSlideXml += '<p:sp>'
 		strSlideXml += ' <p:nvSpPr>'
-		strSlideXml += '  <p:cNvPr id="25" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>'
+		strSlideXml += `  <p:cNvPr id="${allocCnvPrId()}" name="Slide Number Placeholder 0"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>`
 		strSlideXml += '  <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>'
 		strSlideXml += ' </p:nvSpPr>'
 		strSlideXml += ' <p:spPr>'
