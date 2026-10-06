@@ -738,7 +738,8 @@ export function addTableDefinition(
 	getSlide: (slideNumber: number) => PresSlide
 ): PresSlide[] {
 	const slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
-	const opt: TableProps = options && typeof options === 'object' ? options : {}
+	// Keep unit conversion and auto-page state local so callers can reuse their table options.
+	const opt: TableProps = options && typeof options === 'object' ? { ...options } : {}
 	opt.objectName = opt.objectName ? encodeXmlEntities(opt.objectName) : `Table ${target._slideObjects.filter(obj => obj._type === SLIDE_OBJECT_TYPES.table).length}`
 
 	// STEP 1: REALITY-CHECK
