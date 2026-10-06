@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "baseUrl": "../../..",
+    "paths": {
+      "pptxgenjs": ["types/index.d.ts"],
+      "pptxgenjs/types": ["types/index.d.ts"]
+    },
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2020",
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": false
+  },
+  "files": ["consumer.ts", "direct-subpath.ts"]
+}

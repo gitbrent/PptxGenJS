@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": false
+  },
+  "files": ["index.mts", "commonjs.cts"]
+}

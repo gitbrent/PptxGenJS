@@ -9,9 +9,14 @@
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
 	"exports": {
-		"types": "./types/index.d.ts",
-		"import": "./dist/pptxgen.es.js",
-		"require": "./dist/pptxgen.cjs.js"
+		"import": {
+			"types": "./types/index.d.mts",
+			"default": "./dist/pptxgen.es.js"
+		},
+		"require": {
+			"types": "./types/core.d.ts",
+			"default": "./dist/pptxgen.cjs.js"
+		}
 	},
 	"main": "dist/pptxgen.cjs.js",
 	"module": "dist/pptxgen.es.js",
@@ -22,6 +27,7 @@
 	"types": "types",
 	"scripts": {
 		"build": "rollup -c --bundleConfigAsCjs",
+		"test:types": "tsc --noEmit -p test/types/nodenext/tsconfig.json && tsc --noEmit -p test/types/bundler/tsconfig.json && tsc --noEmit -p test/types/legacy/tsconfig.json && tsc --noEmit -p test/types/umd/tsconfig.json",
 		"start": "gulp",
 		"ship": "gulp ship",
 		"defs": "gulp reactTestDefs",
