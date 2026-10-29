@@ -905,7 +905,9 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 
 				paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
 				}" indent="-${bulletMarL}"`
-				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
+				strXmlBullet =
+					(textObj.options.bullet.color ? `<a:buClr>${createColorElement(textObj.options.bullet.color)}</a:buClr>` : '') +
+					'<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
 			} else if (textObj.options.bullet.code) {
 				// @deprecated `bullet.code` v3.3.0
 				let bulletCode = `&#x${textObj.options.bullet.code};`
@@ -918,11 +920,15 @@ function genXmlParagraphProperties (textObj: ISlideObject | TextProps, isDefault
 
 				paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
 				}" indent="-${bulletMarL}"`
-				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
+				strXmlBullet =
+					(textObj.options.bullet.color ? `<a:buClr>${createColorElement(textObj.options.bullet.color)}</a:buClr>` : '') +
+					'<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
 			} else {
 				paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
 				}" indent="-${bulletMarL}"`
-				strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES.DEFAULT}"/>`
+				strXmlBullet =
+					(textObj.options.bullet.color ? `<a:buClr>${createColorElement(textObj.options.bullet.color)}</a:buClr>` : '') +
+					`<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES.DEFAULT}"/>`
 			}
 		} else if (textObj.options.bullet) {
 			paragraphPropXml += ` marL="${textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL

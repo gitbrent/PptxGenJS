@@ -18,6 +18,7 @@ export function genSlides_Text(pptx) {
 	genSlide04(pptx);
 	genSlide05(pptx);
 	genSlide06(pptx);
+	genSlide07(pptx);
 }
 
 /**
@@ -316,6 +317,7 @@ function genSlide03(pptx) {
 			{ text: "`bullet: { code: '25BA' }`", options: { fontSize: 18, color: pptx.colors.ACCENT1, bullet: { code: "25BA" } } },
 			{ text: "`bullet: { code: '25D1' }`", options: { fontSize: 18, color: pptx.colors.ACCENT5, bullet: { code: "25D1" } } },
 			{ text: "`bullet: { code: '25CC' }`", options: { fontSize: 18, color: pptx.colors.ACCENT6, bullet: { code: "25CC" } } },
+			{ text: "`bullet: { code: '25A0', color: '0070F2' }`", options: { fontSize: 18, bullet: { code: "25A0", color: "0070F2" } } },
 			{ text: "Mix and... ", options: { fontSize: 24, color: "FF0000", bullet: { code: "25BA" } } },
 			{ text: "match formatting as well.", options: { fontSize: 16, color: "00CD00" } },
 		],
@@ -483,4 +485,46 @@ function genSlide06(pptx) {
 
 	// NEGATIVE TEST:
 	//slide.addText("NEGTEST / NEGTEST", { x:0.5, y:0.5, w:'40%', h:0.38, color:pptx.colors.NEGTEST01, fill:{color:pptx.colors.NEGTEST02} });
+}
+
+/**
+ * SLIDE 7: Bullet Color (`bullet.color`)
+ * @param {PptxGenJS} pptx
+ */
+function genSlide07(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Text" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
+	slide.addTable([[{ text: "Text Examples: Bullet Color", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	// 1: bullet.color with characterCode
+	slide.addText("bullet.color with characterCode:", { x: 0.5, y: 0.7, w: 6.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText(
+		[
+			{ text: "Red bullet  (FF0000)", options: { bullet: { characterCode: "25A0", color: "FF0000" }, color: "000000", fontSize: 18 } },
+			{ text: "Green bullet (00B050)", options: { bullet: { characterCode: "25A0", color: "00B050" }, color: "000000", fontSize: 18 } },
+			{ text: "Blue bullet  (0070F2)", options: { bullet: { characterCode: "25A0", color: "0070F2" }, color: "000000", fontSize: 18 } },
+		],
+		{ x: 0.5, y: 1.1, w: 6.0, h: 2.0, fontFace: "Arial" }
+	);
+
+	// 2: bullet.color with default (boolean true) bullet — color has no effect on buChar DEFAULT
+	slide.addText("bullet.color with default bullet char:", { x: 0.5, y: 3.4, w: 6.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText(
+		[
+			{ text: "Accent1 bullet", options: { bullet: { color: pptx.colors.ACCENT1 }, color: "000000", fontSize: 18 } },
+			{ text: "Accent2 bullet", options: { bullet: { color: pptx.colors.ACCENT2 }, color: "000000", fontSize: 18 } },
+			{ text: "Accent3 bullet", options: { bullet: { color: pptx.colors.ACCENT3 }, color: "000000", fontSize: 18 } },
+		],
+		{ x: 0.5, y: 3.8, w: 6.0, h: 2.0, fontFace: "Arial" }
+	);
+
+	// 3: bullet.color with deprecated code property
+	slide.addText("bullet.color with deprecated code:", { x: 7.0, y: 0.7, w: 6.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText(
+		[
+			{ text: "Orange bullet (FF6600)", options: { bullet: { code: "25CF", color: "FF6600" }, color: "000000", fontSize: 18 } },
+			{ text: "Purple bullet (7030A0)", options: { bullet: { code: "25CF", color: "7030A0" }, color: "000000", fontSize: 18 } },
+		],
+		{ x: 7.0, y: 1.1, w: 6.0, h: 1.5, fontFace: "Arial" }
+	);
 }

@@ -1113,6 +1113,14 @@ declare namespace PptxGenJS {
 			 */
 			characterCode?: string
 			/**
+			 * Bullet color
+			 * - `HexColor` or `ThemeColor`
+			 * @since v3.12.0
+			 * @example 'FF0000' // hex color (red)
+			 * @example pptx.SchemeColor.accent1 // Theme color (Accent1)
+			 */
+			color?: Color
+			/**
 			 * Indentation (space between bullet and text) (points)
 			 * @since v3.3.0
 			 * @default 27 // DEF_BULLET_MARGIN

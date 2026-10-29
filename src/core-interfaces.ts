@@ -340,6 +340,14 @@ export interface TextBaseProps {
 		 */
 		startAt?: number
 		/**
+		 * Bullet color
+		 * - `HexColor` or `ThemeColor`
+		 * @since v3.12.0
+		 * @example 'FF0000' // hex color (red)
+		 * @example pptx.SchemeColor.accent1 // Theme color (Accent1)
+		 */
+		color?: Color
+		/**
 		 * Number type
 		 * @deprecated v3.3.0 - use `numberType`
 		 */
